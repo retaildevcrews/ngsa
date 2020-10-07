@@ -17,6 +17,7 @@ assignees: ''
 - [ ] Collaboration and Communication Tooling  (Teams)
 - [ ] Share user lists for Azure AD 
 - [ ] Share user lists for Source Control
+- [ ] Ensure Resource Groups are locked
 
 ## Planning
 - [ ] Define success criteria 
