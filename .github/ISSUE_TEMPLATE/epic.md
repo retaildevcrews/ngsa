@@ -1,9 +1,9 @@
 ---
-name: User Story
+name: Epic
 about: Describes type of user, what they want, and why; valuable increment of functionality,
   testable by users.
 title: ''
-labels: User Story
+labels: Epic
 assignees: ''
 
 ---
