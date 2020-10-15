@@ -55,6 +55,9 @@
   </ItemGroup>
 
   <ItemGroup>
+	  <Content Update="secrets/**">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
 	  <Content Update="ascii-art.txt">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>

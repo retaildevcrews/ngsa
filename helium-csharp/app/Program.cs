@@ -54,14 +54,33 @@ namespace CSE.Helium
         /// </summary>
         /// <param name="args">command line args</param>
         /// <returns>IActionResult</returns>
-        // public static async Task<int> Main(string[] args)
-        public static int Main()
+        public static async Task<int> Main() // string[] args)
         {
+            // env vars
             Console.WriteLine(System.Environment.GetEnvironmentVariable("APP_INSIGHTS_KEY"));
             Console.WriteLine(System.Environment.GetEnvironmentVariable("COSMOS_COLLECTION"));
             Console.WriteLine(System.Environment.GetEnvironmentVariable("COSMOS_DATABASE"));
             Console.WriteLine(System.Environment.GetEnvironmentVariable("COSMOS_KEY"));
             Console.WriteLine(System.Environment.GetEnvironmentVariable("COSMOS_URL"));
+
+            // files
+            if (Directory.Exists("secrets"))
+            {
+                Console.WriteLine("\nValues from Files");
+                GetSecretFromFile("appInsightsKey");
+                GetSecretFromFile("cosmosCollection");
+                GetSecretFromFile("cosmosDatabase");
+                GetSecretFromFile("cosmosKey");
+                GetSecretFromFile("cosmosUrl");
+            }
+            else
+            {
+                Console.WriteLine("secrets directory not found");
+            }
+
+            Console.WriteLine("\n\nSleeping ...");
+
+            await Task.Delay(-1).ConfigureAwait(false);
 
             return 0;
 
@@ -71,6 +90,20 @@ namespace CSE.Helium
 
             // run the app
             // return await root.InvokeAsync(CombineEnvVarsWithCommandLine(args)).ConfigureAwait(false);
+        }
+
+        public static void GetSecretFromFile(string key)
+        {
+            string val = string.Empty;
+
+            Console.Write($"{key}: ");
+
+            if (File.Exists($"secrets/{key}"))
+            {
+                val = File.ReadAllText($"secrets/{key}").Trim();
+            }
+
+            Console.WriteLine(val);
         }
 
         /// <summary>
