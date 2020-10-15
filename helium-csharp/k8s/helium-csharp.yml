@@ -13,3 +13,4 @@ spec:
   - name: secrets
     secret:
       secretName: helium-secrets
+      defaultMode: 444
