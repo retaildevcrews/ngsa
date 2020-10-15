@@ -29,7 +29,7 @@ COPY app /src
 WORKDIR /src
 
 # build the app
-dotnet publish -c Release -o /app
+RUN dotnet publish -c Release -o /app
 
 ###########################################################
 
