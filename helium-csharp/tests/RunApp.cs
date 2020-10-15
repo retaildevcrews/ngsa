@@ -1,9 +1,10 @@
 using System;
 using System.CommandLine;
 using System.Threading.Tasks;
+using CSE.NextGenApp;
 using Xunit;
 
-namespace CSE.Helium.Tests
+namespace Tests
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1001:Types that own disposable fields should be disposable")]
     public class AppTest

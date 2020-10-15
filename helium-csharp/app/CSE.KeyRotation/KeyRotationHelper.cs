@@ -4,9 +4,9 @@
 using System;
 using System.Net;
 using System.Threading;
-using CSE.Helium;
-using CSE.Helium.DataAccessLayer;
 using CSE.KeyVault;
+using CSE.NextGenApp;
+using CSE.NextGenApp.DataAccessLayer;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Extensions.Configuration;

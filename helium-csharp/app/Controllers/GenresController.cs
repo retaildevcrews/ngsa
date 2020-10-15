@@ -2,12 +2,12 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Threading.Tasks;
-using CSE.Helium.DataAccessLayer;
 using CSE.KeyRotation;
+using CSE.NextGenApp.DataAccessLayer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace CSE.Helium.Controllers
+namespace CSE.NextGenApp.Controllers
 {
     /// <summary>
     /// Handle the single /api/genres requests

@@ -3,13 +3,13 @@
 
 using System;
 using System.Threading.Tasks;
-using CSE.Helium.DataAccessLayer;
-using CSE.Helium.Model;
+using CSE.NextGenApp.DataAccessLayer;
+using CSE.NextGenApp.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 
-namespace CSE.Helium.Controllers
+namespace CSE.NextGenApp.Controllers
 {
     /// <summary>
     /// Handle the /healthz* requests

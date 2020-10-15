@@ -5,10 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
-using CSE.Helium.Model;
+using CSE.NextGenApp.Model;
 using Microsoft.Azure.Cosmos;
 
-namespace CSE.Helium.DataAccessLayer
+namespace CSE.NextGenApp.DataAccessLayer
 {
     /// <summary>
     /// Data Access Layer for CosmosDB

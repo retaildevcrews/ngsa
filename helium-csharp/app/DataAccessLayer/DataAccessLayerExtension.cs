@@ -4,7 +4,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CSE.Helium.DataAccessLayer
+namespace CSE.NextGenApp.DataAccessLayer
 {
     /// <summary>
     /// Extension to allow services.AddDal(url, key, db, coll)

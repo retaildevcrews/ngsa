@@ -3,12 +3,12 @@
 
 using System;
 using System.Threading.Tasks;
-using CSE.Helium.DataAccessLayer;
-using Helium.Extensions;
+using CSE.NextGenApp.DataAccessLayer;
+using CSE.NextGenApp.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace CSE.Helium.Controllers
+namespace CSE.NextGenApp.Controllers
 {
     /// <summary>
     /// Handle all of the /api/movies requests

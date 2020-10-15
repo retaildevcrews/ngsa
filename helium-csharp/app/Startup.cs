@@ -4,9 +4,8 @@
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using CSE.Helium.Validation;
 using CSE.Middleware;
-using Helium;
+using CSE.NextGenApp.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -14,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace CSE.Helium
+namespace CSE.NextGenApp
 {
     /// <summary>
     /// WebHostBuilder Startup

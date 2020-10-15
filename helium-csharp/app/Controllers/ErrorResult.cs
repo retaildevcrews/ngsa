@@ -3,7 +3,7 @@
 
 using System.Net;
 
-namespace CSE.Helium.Controllers
+namespace CSE.NextGenApp.Controllers
 {
     public class ErrorResult
     {

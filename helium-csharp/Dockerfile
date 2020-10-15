@@ -43,15 +43,15 @@ WORKDIR /app
 
 ### create a user
 ### dotnet needs a home directory
-RUN addgroup -S helium && \
-    adduser -S helium -G helium && \
-    mkdir -p /home/helium && \
-    chown -R helium:helium /home/helium
+RUN addgroup -S ngap && \
+    adduser -S ngap -G ngap && \
+    mkdir -p /home/ngap && \
+    chown -R ngap:ngap /home/ngap
 
-### run as helium user
-USER helium
+### run as ngap user
+USER ngap
 
 ### copy the app
 COPY --from=test /app .
 
-ENTRYPOINT [ "dotnet",  "helium.dll" ]
+ENTRYPOINT [ "dotnet",  "ngap.dll" ]

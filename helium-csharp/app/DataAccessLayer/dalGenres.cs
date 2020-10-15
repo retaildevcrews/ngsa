@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace CSE.Helium.DataAccessLayer
+namespace CSE.NextGenApp.DataAccessLayer
 {
     /// <summary>
     /// Data Access Layer for CosmosDB

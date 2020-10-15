@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using CSE.Helium.Model;
+using CSE.NextGenApp.Model;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace CSE.Helium
+namespace CSE.NextGenApp
 {
     public partial class CosmosHealthCheck : IHealthCheck
     {

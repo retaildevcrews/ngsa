@@ -4,7 +4,7 @@
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
-using CSE.Helium.Model;
+using CSE.NextGenApp.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;

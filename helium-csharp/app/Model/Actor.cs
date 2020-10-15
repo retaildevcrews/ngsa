@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace CSE.Helium.Model
+namespace CSE.NextGenApp.Model
 {
     public class Actor
     {

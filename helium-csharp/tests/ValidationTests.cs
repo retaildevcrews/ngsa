@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using CSE.NextGenApp;
 using Xunit;
 
-namespace CSE.Helium.Tests
+namespace Tests
 {
     public class ValidationTests
     {

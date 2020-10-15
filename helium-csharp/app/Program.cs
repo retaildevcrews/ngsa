@@ -7,9 +7,9 @@ using System.CommandLine.Invocation;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using CSE.Helium.DataAccessLayer;
 using CSE.KeyRotation;
 using CSE.KeyVault;
+using CSE.NextGenApp.DataAccessLayer;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -19,7 +19,7 @@ using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace CSE.Helium
+namespace CSE.NextGenApp
 {
     /// <summary>
     /// Main application class
@@ -54,7 +54,7 @@ namespace CSE.Helium
         /// </summary>
         /// <param name="args">command line args</param>
         /// <returns>IActionResult</returns>
-        public static async Task<int> Main() // string[] args)
+        public static async Task<int> Main(string[] args)
         {
             // get k8s secrets from files
             if (Directory.Exists("secrets"))
@@ -75,14 +75,15 @@ namespace CSE.Helium
 
             await Task.Delay(-1).ConfigureAwait(false);
 
-            return 0;
-
             // build the System.CommandLine.RootCommand
-            // RootCommand root = BuildRootCommand();
-            // root.Handler = CommandHandler.Create<string, AuthenticationType, LogLevel, bool>(RunApp);
+            RootCommand root = BuildRootCommand();
+            root.Handler = CommandHandler.Create<string, AuthenticationType, LogLevel, bool>(RunApp);
+
+            var cmd = CombineEnvVarsWithCommandLine(args);
 
             // run the app
-            // return await root.InvokeAsync(CombineEnvVarsWithCommandLine(args)).ConfigureAwait(false);
+            // return await root.InvokeAsync(cmd).ConfigureAwait(false);
+            return 0;
         }
 
         public static void GetSecretFromFile(string key)
@@ -266,7 +267,7 @@ namespace CSE.Helium
                     logger.AddFilter("Microsoft", AppLogLevel)
                     .AddFilter("System", AppLogLevel)
                     .AddFilter("Default", AppLogLevel)
-                    .AddFilter("CSE.Helium", AppLogLevel);
+                    .AddFilter("CSE.NextGenAppPlat", AppLogLevel);
                 }
             });
 

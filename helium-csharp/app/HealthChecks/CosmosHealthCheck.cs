@@ -7,18 +7,18 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using CSE.Helium.DataAccessLayer;
-using CSE.Helium.Model;
+using CSE.NextGenApp.DataAccessLayer;
+using CSE.NextGenApp.Model;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 
-namespace CSE.Helium
+namespace CSE.NextGenApp
 {
     public partial class CosmosHealthCheck : IHealthCheck
     {
-        public static readonly string ServiceId = "helium-csharp";
-        public static readonly string Description = "Helium C# Health Check";
+        public static readonly string ServiceId = "ngap";
+        public static readonly string Description = "NGAP C# Health Check";
 
         private static JsonSerializerOptions jsonOptions;
 

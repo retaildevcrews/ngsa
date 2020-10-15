@@ -4,7 +4,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Helium
+namespace CSE.NextGenApp
 {
     /// <summary>
     /// Add static service resolver to use when dependencies injection is not available

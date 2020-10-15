@@ -13,7 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace CSE.Helium
+namespace CSE.NextGenApp
 {
     /// <summary>
     /// Main application class
@@ -75,8 +75,8 @@ namespace CSE.Helium
         {
             RootCommand root = new RootCommand
             {
-                Name = "helium",
-                Description = "helium-csharp web app",
+                Name = "ngap",
+                Description = "Next Gen App",
                 TreatUnmatchedTokensAsErrors = true,
             };
 

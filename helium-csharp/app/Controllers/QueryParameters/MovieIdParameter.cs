@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using CSE.Helium.Validation;
+using CSE.NextGenApp.Validation;
 
-namespace CSE.Helium
+namespace CSE.NextGenApp
 {
     /// <summary>
     /// Movie ID query string validation class

@@ -1,4 +1,4 @@
-﻿namespace CSE.Helium.Tests
+﻿namespace CSE.NextGenApp.Tests
 {
     public sealed class AssertValues
     {

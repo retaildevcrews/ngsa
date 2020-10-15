@@ -2,10 +2,10 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
-using CSE.Helium;
+using CSE.NextGenApp;
 using Microsoft.AspNetCore.Http;
 
-namespace Helium.Extensions
+namespace CSE.NextGenApp.Extensions
 {
     public static class ActorExtensions
     {

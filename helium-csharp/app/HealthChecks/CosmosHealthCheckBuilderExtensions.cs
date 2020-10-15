@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace CSE.Helium
+namespace CSE.NextGenApp
 {
     public static class CosmosHealthCheckBuilderExtensions
     {

@@ -1,7 +1,7 @@
-﻿using CSE.Helium;
-using CSE.Helium.Controllers;
-using CSE.Helium.DataAccessLayer;
-using Helium.Extensions;
+﻿using CSE.NextGenApp;
+using CSE.NextGenApp.Controllers;
+using CSE.NextGenApp.DataAccessLayer;
+using CSE.NextGenApp.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;

@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 
-namespace CSE.Helium.Model
+namespace CSE.NextGenApp.Model
 {
     public class Role
     {

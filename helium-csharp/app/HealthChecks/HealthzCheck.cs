@@ -5,7 +5,7 @@ using System;
 using System.Globalization;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace CSE.Helium.Model
+namespace CSE.NextGenApp.Model
 {
     /// <summary>
     /// Health Check that supports dotnet IHeathCheck

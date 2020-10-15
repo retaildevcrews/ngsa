@@ -2,9 +2,9 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.ComponentModel.DataAnnotations;
-using CSE.Helium.Validation;
+using CSE.NextGenApp.Validation;
 
-namespace CSE.Helium
+namespace CSE.NextGenApp
 {
     public sealed class MovieQueryParameters : QueryParameters
     {

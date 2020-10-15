@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "Helium",
+    "title": "Next Gen App Platform",
     "version": "1.0"
   },
   "paths": {
@@ -824,8 +824,8 @@
                 },
                 "example": {
                   "status": "pass",
-                  "serviceId": "helium",
-                  "description": "Helium Health Check",
+                  "serviceId": "ngap",
+                  "description": "NGAP Health Check",
                   "instance": "0",
                   "version": "1.0.0502.0026",
                   "checks": {

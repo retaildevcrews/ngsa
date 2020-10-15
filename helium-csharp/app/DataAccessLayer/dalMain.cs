@@ -7,7 +7,7 @@ using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
 
-namespace CSE.Helium.DataAccessLayer
+namespace CSE.NextGenApp.DataAccessLayer
 {
     /// <summary>
     /// Data Access Layer for CosmosDB

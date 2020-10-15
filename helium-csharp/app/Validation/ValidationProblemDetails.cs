@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 
-namespace CSE.Helium.Validation
+namespace CSE.NextGenApp.Validation
 {
     public class ValidationProblemDetails
     {

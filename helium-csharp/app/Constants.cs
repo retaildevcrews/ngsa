@@ -1,15 +1,15 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-namespace CSE.Helium
+namespace CSE.NextGenApp
 {
     /// <summary>
     /// Application constants
     /// </summary>
     public sealed class Constants
     {
-        public const string SwaggerTitle = "Helium";
-        public const string SwaggerPath = "/swagger/helium.json";
+        public const string SwaggerTitle = "NextGenAppPlat";
+        public const string SwaggerPath = "/swagger/ngap.json";
 
         public const string KeyVaultName = "KEYVAULT_NAME";
         public const string AuthType = "AUTH_TYPE";

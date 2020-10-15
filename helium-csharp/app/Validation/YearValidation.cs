@@ -4,7 +4,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace CSE.Helium.Validation
+namespace CSE.NextGenApp.Validation
 {
     [AttributeUsage(AttributeTargets.Property)]
     public sealed class YearValidation : ValidationAttribute
