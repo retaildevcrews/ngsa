@@ -24,9 +24,9 @@ ENV DEBIAN_FRONTEND=dialog
 EXPOSE 4120
 
 ### copy the source and tests
-COPY app /src
+COPY . /src
 
-WORKDIR /src
+WORKDIR /src/app
 
 # build the app
 RUN dotnet publish -c Release -o /app
