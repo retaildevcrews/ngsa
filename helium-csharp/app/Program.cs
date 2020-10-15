@@ -54,14 +54,23 @@ namespace CSE.Helium
         /// </summary>
         /// <param name="args">command line args</param>
         /// <returns>IActionResult</returns>
-        public static async Task<int> Main(string[] args)
+        // public static async Task<int> Main(string[] args)
+        public static int Main()
         {
+            Console.WriteLine(System.Environment.GetEnvironmentVariable("APP_INSIGHTS_KEY"));
+            Console.WriteLine(System.Environment.GetEnvironmentVariable("COSMOS_COLLECTION"));
+            Console.WriteLine(System.Environment.GetEnvironmentVariable("COSMOS_DATABASE"));
+            Console.WriteLine(System.Environment.GetEnvironmentVariable("COSMOS_KEY"));
+            Console.WriteLine(System.Environment.GetEnvironmentVariable("COSMOS_URL"));
+
+            return 0;
+
             // build the System.CommandLine.RootCommand
-            RootCommand root = BuildRootCommand();
-            root.Handler = CommandHandler.Create<string, AuthenticationType, LogLevel, bool>(RunApp);
+            // RootCommand root = BuildRootCommand();
+            // root.Handler = CommandHandler.Create<string, AuthenticationType, LogLevel, bool>(RunApp);
 
             // run the app
-            return await root.InvokeAsync(CombineEnvVarsWithCommandLine(args)).ConfigureAwait(false);
+            // return await root.InvokeAsync(CombineEnvVarsWithCommandLine(args)).ConfigureAwait(false);
         }
 
         /// <summary>
