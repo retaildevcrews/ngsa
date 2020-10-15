@@ -67,11 +67,11 @@ namespace CSE.Helium
             if (Directory.Exists("secrets"))
             {
                 Console.WriteLine("\nValues from Files");
-                GetSecretFromFile("appInsightsKey");
-                GetSecretFromFile("cosmosCollection");
-                GetSecretFromFile("cosmosDatabase");
-                GetSecretFromFile("cosmosKey");
-                GetSecretFromFile("cosmosUrl");
+                GetSecretFromFile("AppInsightsKey");
+                GetSecretFromFile("CosmosCollection");
+                GetSecretFromFile("CosmosDatabase");
+                GetSecretFromFile("CosmosKey");
+                GetSecretFromFile("CosmosUrl");
             }
             else
             {
