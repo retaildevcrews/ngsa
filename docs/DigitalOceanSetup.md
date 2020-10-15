@@ -6,6 +6,7 @@ Setup a k8s IaaS cluster on Digital Ocean VMs
 
 - Go to the DO portal and create a droplet
   - minimum 2 GB / 2 core for k8s controller
+  - make sure to use `Ubuntu 18.04`
   - copy the setup script below and paste into the `User data` section
 - ssh into the public IP address displayed on the portal
 
