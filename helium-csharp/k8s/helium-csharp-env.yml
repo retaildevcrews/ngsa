@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: helium-csharp
+spec:
+  containers:
+  - name: helium-csharp
+    image: retaildevcrew/helium-k8s-csharp:beta
+    env:
+      - name: COSMOS_DATABASE
+        valueFrom:
+          secretKeyRef:
+            name: helium-secrets
+            key: CosmosDatabase
+      - name: COSMOS_COLLECTION
+        valueFrom:
+          secretKeyRef:
+            name: helium-secrets
+            key: CosmosCollection
+      - name: COSMOS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: helium-secrets
+            key: CosmosKey
+      - name: COSMOS_URL
+        valueFrom:
+          secretKeyRef:
+            name: helium-secrets
+            key: CosmosUrl
+      - name: APP_INSIGHTS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: helium-secrets
+            key: AppInsightsKey
+  restartPolicy: Never
