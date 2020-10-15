@@ -56,14 +56,7 @@ namespace CSE.Helium
         /// <returns>IActionResult</returns>
         public static async Task<int> Main() // string[] args)
         {
-            // env vars
-            Console.WriteLine(System.Environment.GetEnvironmentVariable("APP_INSIGHTS_KEY"));
-            Console.WriteLine(System.Environment.GetEnvironmentVariable("COSMOS_COLLECTION"));
-            Console.WriteLine(System.Environment.GetEnvironmentVariable("COSMOS_DATABASE"));
-            Console.WriteLine(System.Environment.GetEnvironmentVariable("COSMOS_KEY"));
-            Console.WriteLine(System.Environment.GetEnvironmentVariable("COSMOS_URL"));
-
-            // files
+            // get k8s secrets from files
             if (Directory.Exists("secrets"))
             {
                 Console.WriteLine("\nValues from Files");
