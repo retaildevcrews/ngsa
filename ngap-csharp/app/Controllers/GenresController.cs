@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Threading.Tasks;
-using CSE.KeyRotation;
 using CSE.NextGenApp.DataAccessLayer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,19 +16,16 @@ namespace CSE.NextGenApp.Controllers
     {
         private readonly ILogger logger;
         private readonly IDAL dal;
-        private readonly IKeyRotation keyRotation;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="logger">log instance</param>
         /// <param name="dal">data access layer instance</param>
-        /// <param name="keyRotation">KeyRotationHelper instance</param>
-        public GenresController(ILogger<GenresController> logger, IDAL dal, IKeyRotation keyRotation)
+        public GenresController(ILogger<GenresController> logger, IDAL dal)
         {
             this.logger = logger;
             this.dal = dal;
-            this.keyRotation = keyRotation;
         }
 
         /// <summary>
@@ -41,7 +37,8 @@ namespace CSE.NextGenApp.Controllers
         public async Task<IActionResult> GetGenresAsync()
         {
             // get list of genres as list of string
-            return await ResultHandler.Handle(keyRotation.RetryCosmosPolicy.ExecuteAsync(() => dal.GetGenresAsync()), nameof(GetGenresAsync), Constants.GenresControllerException, logger).ConfigureAwait(false);
+
+            return await ResultHandler.Handle(dal.GetGenresAsync(), nameof(GetGenresAsync), Constants.GenresControllerException, logger).ConfigureAwait(false);
         }
     }
 }
