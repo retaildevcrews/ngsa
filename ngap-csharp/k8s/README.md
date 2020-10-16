@@ -24,7 +24,7 @@ Deploy ngap-csharp
 
 ```bash
 
-k apply -f ngap-csharp.yml
+k apply -f ngap.yml
 
 ```
 
@@ -34,6 +34,6 @@ Check results
 
 k get pods
 
-k logs ngap-csharp
+k logs ngap
 
 ```
