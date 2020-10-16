@@ -30,7 +30,7 @@ sudo shutdown -r now
 # ssh back into the VM
 
 # setup k8s control plane
-sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address YourPublicIPAddress
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address 172.16.1.4
 
 # setup your config file
 mkdir -p $HOME/.kube
@@ -68,6 +68,9 @@ sudo kubeadm reset
 # replace bartr with your ID
 export ME=bartr
 
+# comment this line for Azure
+useradd -m -s /bin/bash ${ME}
+
 mkdir -p /home/${ME}/.ssh
 mkdir -p /home/${ME}/bin
 mkdir -p /home/${ME}/.local/bin
@@ -75,18 +78,19 @@ mkdir -p /home/${ME}/go/src
 mkdir -p /home/${ME}/go/bin
 mkdir -p /home/${ME}/go/pkg
 
+echo "starting" > /home/${ME}/status
+
 cp /usr/share/zoneinfo/America/Chicago /etc/localtime
 w
 
 groupadd docker
 
-useradd -m -s /bin/bash ${ME}
 usermod -aG sudo ${ME}
 usermod -aG admin ${ME}
 usermod -aG docker ${ME}
 gpasswd -a ${ME} sudo
 
-cp /root/.ssh/authorized_keys  /home/${ME}/.ssh
+#cp /root/.ssh/authorized_keys  /home/${ME}/.ssh
 
 echo "${ME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/90-cloud-init-users
 
@@ -126,6 +130,8 @@ EOF
 
 chown -R  ${ME}:${ME} /home/${ME}
 
+echo "updating" > /home/${ME}/status
+
 apt-get update
 
 # add Docker repo
@@ -163,14 +169,23 @@ add-apt-repository ppa:longsleep/golang-backports -y
 
 apt-get update
 
+echo "install 1" > /home/${ME}/status
 apt-get install -y apt-utils dialog apt-transport-https ca-certificates
+
+echo "install 2" > /home/${ME}/status
 apt-get install -y curl git wget nano jq zip unzip httpie dnsutils
+
+echo "install 3" > /home/${ME}/status
 apt-get install -y software-properties-common libssl-dev libffi-dev python-dev build-essential lsb-release gnupg-agent
 
+echo "install 4" > /home/${ME}/status
 apt-get install -y docker-ce docker-ce-cli containerd.io kubectl kubelet kubeadm kubernetes-cni
+
+echo "install 5" > /home/${ME}/status
 apt-get install -y azure-cli
 
 # optional
+# echo "install 6" > /home/${ME}/status
 # apt-get install -y golang-go
 # apt-get install -y dotnet-sdk-3.1
 
@@ -183,6 +198,7 @@ chmod 600 /home/${ME}/.ssh/*
 # pull the images
 kubeadm config images pull
 
+echo "updating" > /home/${ME}/status
 apt-get autoremove -y
 apt-get upgrade -y
 apt-get update
