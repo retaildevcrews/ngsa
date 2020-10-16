@@ -119,12 +119,6 @@ namespace CSE.NextGenApp
         /// <returns>status</returns>
         public static async Task<int> RunApp(string keyvaultName, AuthenticationType authType, LogLevel logLevel, bool dryRun)
         {
-            // validate keyvaultName and convert to URL
-            if (!KeyVaultHelper.BuildKeyVaultConnectionString(keyvaultName, out string kvUrl))
-            {
-                return -1;
-            }
-
             try
             {
                 // setup ctl c handler
@@ -133,7 +127,7 @@ namespace CSE.NextGenApp
                 AppLogLevel = logLevel;
 
                 // build the host
-                host = await BuildHost(kvUrl, authType).ConfigureAwait(false);
+                host = BuildHost();
 
                 if (host == null)
                 {
@@ -143,7 +137,7 @@ namespace CSE.NextGenApp
                 // don't start the web server
                 if (dryRun)
                 {
-                    return DoDryRun(kvUrl, authType);
+                    return DoDryRun(authType);
                 }
 
                 // log startup messages
@@ -184,13 +178,11 @@ namespace CSE.NextGenApp
         /// <summary>
         /// Display the dry run message
         /// </summary>
-        /// <param name="kvUrl">keyvault url</param>
         /// <param name="authType">authentication type</param>
         /// <returns>0</returns>
-        private static int DoDryRun(string kvUrl, AuthenticationType authType)
+        private static int DoDryRun(AuthenticationType authType)
         {
             Console.WriteLine($"Version            {Middleware.VersionExtension.Version}");
-            Console.WriteLine($"Keyvault           {kvUrl}");
             Console.WriteLine($"Auth Type          {authType}");
             Console.WriteLine($"Log Level          {AppLogLevel}");
             Console.WriteLine($"Cosmos Server      {config.GetValue<string>(Constants.CosmosUrl)}");

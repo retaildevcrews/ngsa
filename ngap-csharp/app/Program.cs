@@ -179,7 +179,7 @@ namespace CSE.NextGenApp
         /// <param name="kvClient">Key Vault Client</param>
         /// <param name="kvUrl">Key Vault URL</param>
         /// <returns>Root Configuration</returns>
-        private static IConfigurationRoot BuildConfig(KeyVaultClient kvClient, string kvUrl)
+        private static IConfigurationRoot BuildConfig()
         {
             try
             {
@@ -187,9 +187,6 @@ namespace CSE.NextGenApp
                 IConfigurationBuilder cfgBuilder = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json", optional: false);
-
-                    // use Azure Key Vault
-                    //.AddAzureKeyVault(kvUrl, kvClient, new DefaultKeyVaultSecretManager());
 
                 // build the config
                 return cfgBuilder.Build();
@@ -210,19 +207,10 @@ namespace CSE.NextGenApp
         /// <param name="kvUrl">URL of the Key Vault</param>
         /// <param name="authType">MI, CLI, VS</param>
         /// <returns>Web Host ready to run</returns>
-        private static async Task<IWebHost> BuildHost(string kvUrl, AuthenticationType authType)
+        private static IWebHost BuildHost()
         {
-            // create the Key Vault Client
-            KeyVaultClient kvClient = null; // await KeyVaultHelper.GetKeyVaultClient(kvUrl, authType, Constants.CosmosDatabase).ConfigureAwait(false);
-
-            if (kvClient == null)
-            {
-                //return null;
-            }
-
             // build the config
-            // we need the key vault values for the DAL
-            config = BuildConfig(kvClient, kvUrl);
+            config = BuildConfig();
 
             // configure the web host builder
             IWebHostBuilder builder = WebHost.CreateDefaultBuilder()
@@ -233,19 +221,10 @@ namespace CSE.NextGenApp
                 .ConfigureServices(services =>
                 {
                     // add the data access layer via DI
-                    //services.AddDal(
-                    //    new Uri(config.GetValue<string>(Constants.CosmosUrl)),
-                    //    config.GetValue<string>(Constants.CosmosKey),
-                    //    config.GetValue<string>(Constants.CosmosDatabase),
-                    //    config.GetValue<string>(Constants.CosmosCollection));
                     services.AddDal(new Uri(Config.CosmosUrl), Config.CosmosKey, Config.CosmosDatabase, Config.CosmosCollection);
-
-                    // add the KeyVaultConnection via DI
-                    //services.AddKeyVaultConnection(kvClient, kvUrl);
 
                     // add IConfigurationRoot
                     services.AddSingleton<IConfigurationRoot>(config);
-                    //services.AddKeyRotation();
                     services.AddResponseCaching();
                 });
 

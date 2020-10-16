@@ -101,7 +101,7 @@ namespace CSE.NextGenApp
         /// Service configuration
         /// </summary>
         /// <param name="services">The services in the web host</param>
-        public void ConfigureServices(IServiceCollection services)
+        public static void ConfigureServices(IServiceCollection services)
         {
             // set json serialization defaults and api behavior
             services.AddControllers()

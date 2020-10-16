@@ -37,7 +37,6 @@ namespace CSE.NextGenApp.Controllers
         public async Task<IActionResult> GetGenresAsync()
         {
             // get list of genres as list of string
-
             return await ResultHandler.Handle(dal.GetGenresAsync(), nameof(GetGenresAsync), Constants.GenresControllerException, logger).ConfigureAwait(false);
         }
     }
