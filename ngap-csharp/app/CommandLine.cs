@@ -84,7 +84,8 @@ namespace CSE.NextGenApp
             Option optKv = new Option<string>(new string[] { "-k", "--keyvault-name" }, "The name or URL of the Azure Keyvault")
             {
                 Argument = new Argument<string>(),
-                IsRequired = true,
+
+                // IsRequired = true,
             };
 
             optKv.AddValidator(v =>
