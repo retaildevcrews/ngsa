@@ -7,7 +7,6 @@ using System.CommandLine.Invocation;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using CSE.KeyRotation;
 using CSE.KeyVault;
 using CSE.NextGenApp.DataAccessLayer;
 using Microsoft.ApplicationInsights;
@@ -47,6 +46,8 @@ namespace CSE.NextGenApp
         /// </summary>
         public static bool IsLogLevelSet { get; set; }
 
+        public static Config Config { get; } = new Config();
+
         /// <summary>
         /// Main entry point
         ///
@@ -59,21 +60,17 @@ namespace CSE.NextGenApp
             // get k8s secrets from files
             if (Directory.Exists("secrets"))
             {
-                Console.WriteLine("\nValues from Files");
-                GetSecretFromFile("AppInsightsKey");
-                GetSecretFromFile("CosmosCollection");
-                GetSecretFromFile("CosmosDatabase");
-                GetSecretFromFile("CosmosKey");
-                GetSecretFromFile("CosmosUrl");
+                Config.AppInsightsKey = GetSecretFromFile("AppInsightsKey");
+                Config.CosmosCollection = GetSecretFromFile("CosmosCollection");
+                Config.CosmosDatabase = GetSecretFromFile("CosmosDatabase");
+                Config.CosmosKey = GetSecretFromFile("CosmosKey");
+                Config.CosmosUrl = GetSecretFromFile("CosmosUrl");
             }
             else
             {
                 Console.WriteLine("secrets directory not found");
+                return 1;
             }
-
-            Console.WriteLine("\n\nSleeping ...");
-
-            await Task.Delay(-1).ConfigureAwait(false);
 
             // build the System.CommandLine.RootCommand
             RootCommand root = BuildRootCommand();
@@ -82,22 +79,19 @@ namespace CSE.NextGenApp
             var cmd = CombineEnvVarsWithCommandLine(args);
 
             // run the app
-            // return await root.InvokeAsync(cmd).ConfigureAwait(false);
-            return 0;
+            return await root.InvokeAsync(cmd).ConfigureAwait(false);
         }
 
-        public static void GetSecretFromFile(string key)
+        public static string GetSecretFromFile(string key)
         {
             string val = string.Empty;
-
-            Console.Write($"{key}: ");
 
             if (File.Exists($"secrets/{key}"))
             {
                 val = File.ReadAllText($"secrets/{key}").Trim();
             }
 
-            Console.WriteLine(val);
+            return val;
         }
 
         /// <summary>
@@ -192,10 +186,10 @@ namespace CSE.NextGenApp
                 // standard config builder
                 IConfigurationBuilder cfgBuilder = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", optional: false)
+                    .AddJsonFile("appsettings.json", optional: false);
 
                     // use Azure Key Vault
-                    .AddAzureKeyVault(kvUrl, kvClient, new DefaultKeyVaultSecretManager());
+                    //.AddAzureKeyVault(kvUrl, kvClient, new DefaultKeyVaultSecretManager());
 
                 // build the config
                 return cfgBuilder.Build();
@@ -219,11 +213,11 @@ namespace CSE.NextGenApp
         private static async Task<IWebHost> BuildHost(string kvUrl, AuthenticationType authType)
         {
             // create the Key Vault Client
-            KeyVaultClient kvClient = await KeyVaultHelper.GetKeyVaultClient(kvUrl, authType, Constants.CosmosDatabase).ConfigureAwait(false);
+            KeyVaultClient kvClient = null; // await KeyVaultHelper.GetKeyVaultClient(kvUrl, authType, Constants.CosmosDatabase).ConfigureAwait(false);
 
             if (kvClient == null)
             {
-                return null;
+                //return null;
             }
 
             // build the config
@@ -239,18 +233,19 @@ namespace CSE.NextGenApp
                 .ConfigureServices(services =>
                 {
                     // add the data access layer via DI
-                    services.AddDal(
-                        new Uri(config.GetValue<string>(Constants.CosmosUrl)),
-                        config.GetValue<string>(Constants.CosmosKey),
-                        config.GetValue<string>(Constants.CosmosDatabase),
-                        config.GetValue<string>(Constants.CosmosCollection));
+                    //services.AddDal(
+                    //    new Uri(config.GetValue<string>(Constants.CosmosUrl)),
+                    //    config.GetValue<string>(Constants.CosmosKey),
+                    //    config.GetValue<string>(Constants.CosmosDatabase),
+                    //    config.GetValue<string>(Constants.CosmosCollection));
+                    services.AddDal(new Uri(Config.CosmosUrl), Config.CosmosKey, Config.CosmosDatabase, Config.CosmosCollection);
 
                     // add the KeyVaultConnection via DI
-                    services.AddKeyVaultConnection(kvClient, kvUrl);
+                    //services.AddKeyVaultConnection(kvClient, kvUrl);
 
                     // add IConfigurationRoot
                     services.AddSingleton<IConfigurationRoot>(config);
-                    services.AddKeyRotation();
+                    //services.AddKeyRotation();
                     services.AddResponseCaching();
                 });
 
@@ -267,7 +262,7 @@ namespace CSE.NextGenApp
                     logger.AddFilter("Microsoft", AppLogLevel)
                     .AddFilter("System", AppLogLevel)
                     .AddFilter("Default", AppLogLevel)
-                    .AddFilter("CSE.NextGenAppPlat", AppLogLevel);
+                    .AddFilter("CSE.NextGenApp", AppLogLevel);
                 }
             });
 

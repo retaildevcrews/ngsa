@@ -149,8 +149,8 @@ namespace CSE.NextGenApp
                 LogStartup();
 
                 // verify key vault access
-                IKeyVaultConnection kvConnection = host.Services.GetService<IKeyVaultConnection>();
-                Task<Microsoft.Azure.KeyVault.Models.SecretBundle> secret = kvConnection.Client.GetSecretAsync(kvConnection.Address, Constants.CosmosDatabase);
+                // IKeyVaultConnection kvConnection = host.Services.GetService<IKeyVaultConnection>();
+                // Task<Microsoft.Azure.KeyVault.Models.SecretBundle> secret = kvConnection.Client.GetSecretAsync(kvConnection.Address, Constants.CosmosDatabase);
 
                 // start the webserver
                 Task w = host.RunAsync();

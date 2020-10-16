@@ -122,7 +122,7 @@ namespace CSE.NextGenApp
             services.AddHealthChecks().AddCosmosHealthCheck(CosmosHealthCheck.ServiceId);
 
             // add App Insights if key set
-            string appInsightsKey = Configuration.GetValue<string>(Constants.AppInsightsKey);
+            string appInsightsKey = App.Config.AppInsightsKey; // Configuration.GetValue<string>(Constants.AppInsightsKey);
 
             if (!string.IsNullOrEmpty(appInsightsKey))
             {

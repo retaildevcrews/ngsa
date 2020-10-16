@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "need to catch all exceptions")]
 [assembly: SuppressMessage("Design", "CA1054:Uri parameters should not be strings", Justification = "KeyVault SDK expects string", Scope = "namespaceanddescendants", Target = "CSE.KeyVault")]
+[assembly: SuppressMessage("Design", "CA1056:Uri parameters should not be strings", Justification = "KeyVault SDK expects string")]
 [assembly: SuppressMessage("Design", "CA1303:Do not pass literals as localized parameters", Justification = "method name for logging")]
 [assembly: SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "search string has to be lower case", Scope = "namespaceanddescendants", Target = "CSE.NextGenApp.DataAccessLayer")]
 [assembly: SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "IDispose", Scope = "type", Target = "~T:CSE.NextGenApp.App")]
