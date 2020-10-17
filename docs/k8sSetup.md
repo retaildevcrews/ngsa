@@ -1,16 +1,14 @@
-# Digital Ocean Setup
+# k8s Setup (IaaS)
 
-Setup a k8s IaaS cluster on Digital Ocean VMs
+> Setup a k8s IaaS cluster on VMs or bare metal
 
-> If you don't have a Digital Ocean account, you can use this invitation [code:](https://m.do.co/c/30537b10ba7c)
-
-- Go to the DO portal and create a droplet
+-VM Requirements
   - minimum 2 GB / 2 core for k8s controller
   - make sure to use `Ubuntu 18.04`
   - copy the setup script below and paste into the `User data` section
 - ssh into the public IP address displayed on the portal
 
-From the DO VM
+From the VM
 
 ```bash
 
@@ -30,7 +28,7 @@ sudo shutdown -r now
 # ssh back into the VM
 
 # setup k8s control plane
-sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address 172.16.1.4
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address YourIPAddress
 
 # setup your config file
 mkdir -p $HOME/.kube
@@ -65,10 +63,10 @@ sudo kubeadm reset
 
 #!/bin/sh
 
-# replace bartr with your ID
-export ME=bartr
+# replace with your ID
+export ME=YourID
 
-# comment this line for Azure
+# comment this line for Azure VMs as the UID is already created
 useradd -m -s /bin/bash ${ME}
 
 mkdir -p /home/${ME}/.ssh
