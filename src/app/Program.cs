@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using CSE.NextGenSymmetricApp.DataAccessLayer;
 using CSE.NextGenSymmetricApp.Validation;
-using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -68,7 +67,7 @@ namespace CSE.NextGenSymmetricApp
                 RootCommand root = BuildRootCommand();
                 root.Handler = CommandHandler.Create<LogLevel, bool>(RunApp);
 
-                var cmd = CombineEnvVarsWithCommandLine(args);
+                string[] cmd = CombineEnvVarsWithCommandLine(args);
 
                 // run the app
                 return await root.InvokeAsync(cmd).ConfigureAwait(false);
