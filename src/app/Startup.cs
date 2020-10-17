@@ -42,9 +42,15 @@ namespace CSE.NextGenSymmetricApp
         /// <param name="env">IWebHostEnvironment</param>
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            _ = app ?? throw new ArgumentNullException(nameof(app));
+            if (app == null)
+            {
+                throw new ArgumentNullException(nameof(app));
+            }
 
-            ServiceActivator.Configure(app.ApplicationServices);
+            if (env == null)
+            {
+                throw new ArgumentNullException(nameof(env));
+            }
 
             // log http responses to the console
             // this should be first as it "wraps" all requests

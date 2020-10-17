@@ -8,7 +8,7 @@ namespace CSE.Middleware
     /// <summary>
     /// Register swagger root middleware
     /// </summary>
-    public static class SwaggerRootExtension
+    public static class SwaggerExtension
     {
         /// <summary>
         /// aspnet middleware extension method to handle / request

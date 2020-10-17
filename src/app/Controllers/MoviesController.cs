@@ -39,7 +39,10 @@ namespace CSE.NextGenSymmetricApp.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMoviesAsync([FromQuery] MovieQueryParameters movieQueryParameters)
         {
-            _ = movieQueryParameters ?? throw new ArgumentNullException(nameof(movieQueryParameters));
+            if (movieQueryParameters == null)
+            {
+                throw new ArgumentNullException(nameof(movieQueryParameters));
+            }
 
             return await ResultHandler.Handle(
                 dal.GetMoviesAsync(movieQueryParameters), movieQueryParameters.GetMethodText(HttpContext), Constants.MoviesControllerException, logger)
@@ -54,7 +57,10 @@ namespace CSE.NextGenSymmetricApp.Controllers
         [HttpGet("{movieId}")]
         public async Task<IActionResult> GetMovieByIdAsync([FromRoute] MovieIdParameter movieIdParameter)
         {
-            _ = movieIdParameter ?? throw new ArgumentNullException(nameof(movieIdParameter));
+            if (movieIdParameter == null)
+            {
+                throw new ArgumentNullException(nameof(movieIdParameter));
+            }
 
             string method = nameof(GetMovieByIdAsync) + movieIdParameter.MovieId;
 

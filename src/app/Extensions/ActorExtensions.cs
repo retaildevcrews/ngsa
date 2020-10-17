@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
-using CSE.NextGenSymmetricApp;
 using Microsoft.AspNetCore.Http;
 
 namespace CSE.NextGenSymmetricApp.Extensions
@@ -17,8 +16,15 @@ namespace CSE.NextGenSymmetricApp.Extensions
         /// <returns>method name</returns>
         public static string GetMethodText(this ActorQueryParameters actorQueryParameters, HttpContext httpContext)
         {
-            _ = actorQueryParameters ?? throw new ArgumentNullException(nameof(actorQueryParameters));
-            _ = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
+            if (actorQueryParameters == null)
+            {
+                throw new ArgumentNullException(nameof(actorQueryParameters));
+            }
+
+            if (httpContext == null)
+            {
+                throw new ArgumentNullException(nameof(httpContext));
+            }
 
             string method = "GetActors";
 

@@ -40,7 +40,10 @@ namespace CSE.NextGenSymmetricApp.Controllers
         [HttpGet]
         public async Task<IActionResult> GetActorsAsync([FromQuery] ActorQueryParameters actorQueryParameters)
         {
-            _ = actorQueryParameters ?? throw new ArgumentNullException(nameof(actorQueryParameters));
+            if (actorQueryParameters == null)
+            {
+                throw new ArgumentNullException(nameof(actorQueryParameters));
+            }
 
             return await ResultHandler.Handle(
                     dal.GetActorsAsync(actorQueryParameters), actorQueryParameters.GetMethodText(HttpContext), Constants.ActorsControllerException, logger)
@@ -56,7 +59,10 @@ namespace CSE.NextGenSymmetricApp.Controllers
         [HttpGet("{actorId}")]
         public async Task<IActionResult> GetActorByIdAsync([FromRoute] ActorIdParameter actorIdParameter)
         {
-            _ = actorIdParameter ?? throw new ArgumentNullException(nameof(actorIdParameter));
+            if (actorIdParameter == null)
+            {
+                throw new ArgumentNullException(nameof(actorIdParameter));
+            }
 
             string method = nameof(GetActorByIdAsync) + actorIdParameter.ActorId;
 

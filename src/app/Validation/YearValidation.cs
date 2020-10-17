@@ -14,7 +14,10 @@ namespace CSE.NextGenSymmetricApp.Validation
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            _ = validationContext ?? throw new ArgumentNullException(nameof(validationContext));
+            if (validationContext == null)
+            {
+                throw new ArgumentNullException(nameof(validationContext));
+            }
 
             bool isValid = ((int)value >= StartYear && (int)value <= EndYear) || (int)value == 0;
 

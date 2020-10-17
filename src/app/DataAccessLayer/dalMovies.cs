@@ -45,7 +45,10 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
         /// <returns>List of Movies or an empty list</returns>
         public async Task<IEnumerable<Movie>> GetMoviesAsync(MovieQueryParameters movieQueryParameters)
         {
-            _ = movieQueryParameters ?? throw new ArgumentNullException(nameof(movieQueryParameters));
+            if (movieQueryParameters == null)
+            {
+                throw new ArgumentNullException(nameof(movieQueryParameters));
+            }
 
             string sql = MovieSelect;
 

@@ -8,6 +8,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using CSE.NextGenSymmetricApp.DataAccessLayer;
+using CSE.NextGenSymmetricApp.Validation;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -43,7 +44,12 @@ namespace CSE.NextGenSymmetricApp
         /// </summary>
         public static bool IsLogLevelSet { get; set; }
 
+        /// <summary>
+        /// Gets or sets the secrets from k8s volume
+        /// </summary>
         public static Secrets Secrets { get; set; }
+
+        public static ILogger<ValidationProblemDetailsResult> ValidationLogger { get; set; }
 
         /// <summary>
         /// Main entry point
@@ -132,6 +138,7 @@ namespace CSE.NextGenSymmetricApp
         {
             // get the logger service
             logger = host.Services.GetRequiredService<ILogger<App>>();
+            ValidationLogger = host.Services.GetRequiredService<ILogger<ValidationProblemDetailsResult>>();
 
             if (logger != null)
             {
@@ -228,67 +235,6 @@ namespace CSE.NextGenSymmetricApp
 
             // build the host
             return builder.Build();
-        }
-
-        /// <summary>
-        /// Check for Cosmos key rotation
-        /// Currently not used - safe to ignore fxcop warning
-        /// </summary>
-        /// <param name="ctCancel">CancellationTokenSource</param>
-        /// <returns>Only returns when ctl-c is pressed and cancellation token is cancelled</returns>
-        private static async Task RunKeyRotationCheck(CancellationTokenSource ctCancel, int checkEverySeconds)
-        {
-            string key = config[Constants.CosmosKey];
-
-            // reload Key Vault values
-            while (!ctCancel.IsCancellationRequested)
-            {
-                try
-                {
-                    await Task.Delay(checkEverySeconds * 1000, ctCancel.Token).ConfigureAwait(false);
-
-                    if (!ctCancel.IsCancellationRequested)
-                    {
-                        // reload the config from Key Vault
-                        config.Reload();
-
-                        // if the key changed
-                        if (!ctCancel.IsCancellationRequested)
-                        {
-                            // reconnect the DAL
-                            IDAL dal = host.Services.GetService<IDAL>();
-
-                            if (dal != null)
-                            {
-                                // this will only reconnect if the variables changed
-                                await dal.Reconnect(new Uri(config[Constants.CosmosUrl]), config[Constants.CosmosKey], config[Constants.CosmosDatabase], config[Constants.CosmosCollection]).ConfigureAwait(false);
-
-                                if (key != config[Constants.CosmosKey])
-                                {
-                                    key = config[Constants.CosmosKey];
-                                    Console.WriteLine("Cosmos Key Rotated");
-
-                                    // send a NewKeyLoadedMetric to App Insights
-                                    if (!string.IsNullOrEmpty(config[Constants.AppInsightsKey]))
-                                    {
-                                        TelemetryClient telemetryClient = host.Services.GetService<TelemetryClient>();
-
-                                        if (telemetryClient != null)
-                                        {
-                                            telemetryClient.TrackMetric(Constants.NewKeyLoadedMetric, 1);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                catch
-                {
-                    // continue running with existing key
-                    Console.WriteLine($"Cosmos Key Rotate Exception - using existing connection");
-                }
-            }
         }
     }
 }

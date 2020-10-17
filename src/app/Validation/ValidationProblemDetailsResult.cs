@@ -7,11 +7,9 @@ using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using CSE.NextGenSymmetricApp;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace CSE.NextGenSymmetricApp.Validation
@@ -22,13 +20,15 @@ namespace CSE.NextGenSymmetricApp.Validation
 
         public ValidationProblemDetailsResult()
         {
-            using IServiceScope serviceScope = ServiceActivator.GetScope();
-            logger = serviceScope.ServiceProvider.GetService<ILogger<ValidationProblemDetailsResult>>();
+            logger = App.ValidationLogger;
         }
 
         public Task ExecuteResultAsync(ActionContext context)
         {
-            _ = context ?? throw new ArgumentNullException(nameof(context));
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
 
             context.HttpContext.Response.ContentType = "application/problem+json";
             context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;

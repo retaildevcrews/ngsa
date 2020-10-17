@@ -48,7 +48,10 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
         /// <returns>List of Actors or an empty list</returns>
         public async Task<IEnumerable<Actor>> GetActorsAsync(ActorQueryParameters actorQueryParameters)
         {
-            _ = actorQueryParameters ?? throw new ArgumentNullException(nameof(actorQueryParameters));
+            if (actorQueryParameters == null)
+            {
+                throw new ArgumentNullException(nameof(actorQueryParameters));
+            }
 
             string sql = ActorSelect;
 

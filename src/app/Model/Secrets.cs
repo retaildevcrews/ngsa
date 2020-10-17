@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
 using System.IO;
 
 namespace CSE.NextGenSymmetricApp
@@ -22,12 +21,15 @@ namespace CSE.NextGenSymmetricApp
             // get k8s secrets from files
             if (Directory.Exists(volume))
             {
-                Secrets sec = new Secrets();
-                sec.AppInsightsKey = GetSecretFromFile(volume, "AppInsightsKey");
-                sec.CosmosCollection = GetSecretFromFile(volume, "CosmosCollection");
-                sec.CosmosDatabase = GetSecretFromFile(volume, "CosmosDatabase");
-                sec.CosmosKey = GetSecretFromFile(volume, "CosmosKey");
-                sec.CosmosUrl = GetSecretFromFile(volume, "CosmosUrl");
+                Secrets sec = new Secrets
+                {
+                    AppInsightsKey = GetSecretFromFile(volume, "AppInsightsKey"),
+                    CosmosCollection = GetSecretFromFile(volume, "CosmosCollection"),
+                    CosmosDatabase = GetSecretFromFile(volume, "CosmosDatabase"),
+                    CosmosKey = GetSecretFromFile(volume, "CosmosKey"),
+                    CosmosUrl = GetSecretFromFile(volume, "CosmosUrl"),
+                };
+
                 return sec;
             }
 

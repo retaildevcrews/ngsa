@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
-using CSE.NextGenSymmetricApp;
 using Microsoft.AspNetCore.Http;
 
 namespace CSE.NextGenSymmetricApp.Extensions
@@ -17,8 +16,15 @@ namespace CSE.NextGenSymmetricApp.Extensions
         /// <returns>method name</returns>
         public static string GetMethodText(this MovieQueryParameters movieQueryParameters, HttpContext httpContext)
         {
-            _ = movieQueryParameters ?? throw new ArgumentNullException(nameof(movieQueryParameters));
-            _ = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
+            if (movieQueryParameters == null)
+            {
+                throw new ArgumentNullException(nameof(movieQueryParameters));
+            }
+
+            if (httpContext == null)
+            {
+                throw new ArgumentNullException(nameof(httpContext));
+            }
 
             string method = "GetMovies";
 
