@@ -6,13 +6,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CSE.NextGenSymmetricApp.Validation
 {
+    /// <summary>
+    /// Paramameter validation for Year
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
     public sealed class YearValidation : ValidationAttribute
     {
         private const int StartYear = 1874;
         private static readonly int EndYear = DateTime.UtcNow.AddYears(5).Year;
 
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override System.ComponentModel.DataAnnotations.ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             if (validationContext == null)
             {
@@ -23,7 +26,7 @@ namespace CSE.NextGenSymmetricApp.Validation
 
             string errorMessage = $"The parameter '{validationContext.MemberName}' should be between {StartYear} and {EndYear}.";
 
-            return !isValid ? new ValidationResult(errorMessage) : ValidationResult.Success;
+            return !isValid ? new System.ComponentModel.DataAnnotations.ValidationResult(errorMessage) : System.ComponentModel.DataAnnotations.ValidationResult.Success;
         }
     }
 }
