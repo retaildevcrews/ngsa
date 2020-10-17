@@ -37,14 +37,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.15.0" />
-    <PackageReference Include="Microsoft.Azure.KeyVault" Version="3.0.5" />
-    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.6.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="3.1.8" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Polly" Version="7.2.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.6.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="5.6.3" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20371.2" />
@@ -55,15 +51,16 @@
   </ItemGroup>
 
   <ItemGroup>
+	  <Content Update="appsettings.json">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+
 	  <None Include="secrets\**">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	  <Content Update="ascii-art.txt">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
-	  <Content Update="appsettings.json">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
+	  <None Include="ascii-art.txt">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Include="wwwroot\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

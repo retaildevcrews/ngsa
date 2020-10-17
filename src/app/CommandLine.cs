@@ -6,9 +6,7 @@ using System.Collections.Generic;
 using System.CommandLine;
 using System.Globalization;
 using System.Threading.Tasks;
-using CSE.KeyVault;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Azure.KeyVault;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -34,23 +32,7 @@ namespace CSE.NextGenSymmetricApp
 
             List<string> cmd = new List<string>(args);
 
-            string kv = Environment.GetEnvironmentVariable(Constants.KeyVaultName);
-            string auth = Environment.GetEnvironmentVariable(Constants.AuthType);
             string logLevel = Environment.GetEnvironmentVariable(Constants.LogLevel);
-
-            // add --keyvault-name from environment
-            if (!string.IsNullOrEmpty(kv) && !cmd.Contains("--keyvault-name") && !cmd.Contains("-k"))
-            {
-                cmd.Add("--keyvault-name");
-                cmd.Add(kv);
-            }
-
-            // add --auth-type value from environment or default
-            if (!cmd.Contains("--auth-type") && !cmd.Contains("-a"))
-            {
-                cmd.Add("--auth-type");
-                cmd.Add(string.IsNullOrEmpty(auth) ? "MI" : auth);
-            }
 
             // add --log-level value from environment or default
             if (!cmd.Contains("--log-level") && !cmd.Contains("-l"))
@@ -75,34 +57,12 @@ namespace CSE.NextGenSymmetricApp
         {
             RootCommand root = new RootCommand
             {
-                Name = "ngap",
-                Description = "Next Gen App",
+                Name = "ngsa",
+                Description = "Next Gen Symmetric App",
                 TreatUnmatchedTokensAsErrors = true,
             };
 
-            // add options
-            Option optKv = new Option<string>(new string[] { "-k", "--keyvault-name" }, "The name or URL of the Azure Keyvault")
-            {
-                Argument = new Argument<string>(),
-
-                // IsRequired = true,
-            };
-
-            optKv.AddValidator(v =>
-            {
-                if (v.Tokens == null ||
-                v.Tokens.Count != 1 ||
-                !KeyVaultHelper.ValidateName(v.Tokens[0].Value))
-                {
-                    return "--keyvault-name must be 3-20 characters [a-z][0-9]";
-                }
-
-                return string.Empty;
-            });
-
             // add the options
-            root.AddOption(optKv);
-            root.AddOption(new Option<AuthenticationType>(new string[] { "-a", "--auth-type" }, "Authentication type (Release builds require MI; Debug builds support all 3 options)"));
             root.AddOption(new Option<LogLevel>(new string[] { "-l", "--log-level" }, "Log Level"));
             root.AddOption(new Option(new string[] { "-d", "--dry-run" }, "Validates configuration"));
 
@@ -112,12 +72,10 @@ namespace CSE.NextGenSymmetricApp
         /// <summary>
         /// Run the app
         /// </summary>
-        /// <param name="keyvaultName">Keyvault Name</param>
-        /// <param name="authType">Authentication Type</param>
         /// <param name="logLevel">Log Level</param>
         /// <param name="dryRun">Dry Run flag</param>
         /// <returns>status</returns>
-        public static async Task<int> RunApp(string keyvaultName, AuthenticationType authType, LogLevel logLevel, bool dryRun)
+        public static async Task<int> RunApp(LogLevel logLevel, bool dryRun)
         {
             try
             {
@@ -137,7 +95,7 @@ namespace CSE.NextGenSymmetricApp
                 // don't start the web server
                 if (dryRun)
                 {
-                    return DoDryRun(authType);
+                    return DoDryRun();
                 }
 
                 // log startup messages
@@ -180,15 +138,14 @@ namespace CSE.NextGenSymmetricApp
         /// </summary>
         /// <param name="authType">authentication type</param>
         /// <returns>0</returns>
-        private static int DoDryRun(AuthenticationType authType)
+        private static int DoDryRun()
         {
             Console.WriteLine($"Version            {Middleware.VersionExtension.Version}");
-            Console.WriteLine($"Auth Type          {authType}");
             Console.WriteLine($"Log Level          {AppLogLevel}");
-            Console.WriteLine($"Cosmos Server      {config.GetValue<string>(Constants.CosmosUrl)}");
-            Console.WriteLine($"Cosmos Key         Length({config.GetValue<string>(Constants.CosmosKey).Length})");
-            Console.WriteLine($"Cosmos Database    {config.GetValue<string>(Constants.CosmosDatabase)}");
-            Console.WriteLine($"Cosmos Collection  {config.GetValue<string>(Constants.CosmosCollection)}");
+            Console.WriteLine($"Cosmos Server      {App.Config.CosmosUrl}");
+            Console.WriteLine($"Cosmos Key         Length({App.Config.CosmosKey.Length})");
+            Console.WriteLine($"Cosmos Database    {App.Config.CosmosDatabase}");
+            Console.WriteLine($"Cosmos Collection  {App.Config.CosmosCollection}");
             Console.WriteLine($"App Insights Key   {(string.IsNullOrEmpty(config.GetValue<string>(Constants.AppInsightsKey)) ? "(not set" : "Length(" + config.GetValue<string>(Constants.AppInsightsKey).Length.ToString(CultureInfo.InvariantCulture))})");
 
             // always return 0 (success)

@@ -8,11 +8,9 @@ namespace CSE.NextGenSymmetricApp
     /// </summary>
     public sealed class Constants
     {
-        public const string SwaggerTitle = "NextGenSymmetricAppPlat";
-        public const string SwaggerPath = "/swagger/ngap.json";
+        public const string SwaggerTitle = "Next Gen Symmetric Apps";
+        public const string SwaggerPath = "/swagger.json";
 
-        public const string KeyVaultName = "KEYVAULT_NAME";
-        public const string AuthType = "AUTH_TYPE";
         public const string LogLevel = "LOG_LEVEL";
 
         public const string CosmosCollection = "CosmosCollection";
@@ -39,8 +37,5 @@ namespace CSE.NextGenSymmetricApp
 
         public const int HealthzCacheDuration = 60;
         public const int GracefulShutdownTimeout = 10;
-
-        // If cosmos key is rotatated, number of retries with new key.
-        public const int RetryCount = 1;
     }
 }

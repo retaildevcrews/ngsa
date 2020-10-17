@@ -60,7 +60,7 @@ namespace CSE.Middleware
                         try
                         {
                             // read swagger version from swagger.json
-                            using JsonDocument sw = JsonDocument.Parse(File.ReadAllText("wwwroot/swagger/ngap.json"));
+                            using JsonDocument sw = JsonDocument.Parse(File.ReadAllText("wwwroot/swagger.json"));
                             swaggerVersion = sw.RootElement.GetProperty("info").GetProperty("version").ToString();
                         }
                         catch (Exception ex)

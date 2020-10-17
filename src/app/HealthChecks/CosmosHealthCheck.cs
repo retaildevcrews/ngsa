@@ -17,8 +17,8 @@ namespace CSE.NextGenSymmetricApp
 {
     public partial class CosmosHealthCheck : IHealthCheck
     {
-        public static readonly string ServiceId = "ngap";
-        public static readonly string Description = "NGAP C# Health Check";
+        public static readonly string ServiceId = "ngsa";
+        public static readonly string Description = "NGSA Health Check";
 
         private static JsonSerializerOptions jsonOptions;
 

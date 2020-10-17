@@ -7,14 +7,11 @@ using System.CommandLine.Invocation;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using CSE.KeyVault;
 using CSE.NextGenSymmetricApp.DataAccessLayer;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Azure.KeyVault;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -74,7 +71,7 @@ namespace CSE.NextGenSymmetricApp
 
             // build the System.CommandLine.RootCommand
             RootCommand root = BuildRootCommand();
-            root.Handler = CommandHandler.Create<string, AuthenticationType, LogLevel, bool>(RunApp);
+            root.Handler = CommandHandler.Create<LogLevel, bool>(RunApp);
 
             var cmd = CombineEnvVarsWithCommandLine(args);
 
