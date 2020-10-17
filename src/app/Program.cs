@@ -130,11 +130,8 @@ namespace CSE.NextGenSymmetricApp
 
             if (logger != null)
             {
-                // get the IConfigurationRoot from DI
-                IConfigurationRoot cfg = host.Services.GetService<IConfigurationRoot>();
-
                 // log a not using app insights warning
-                if (string.IsNullOrEmpty(cfg.GetValue<string>(Constants.AppInsightsKey)))
+                if (string.IsNullOrEmpty(App.Secrets.AppInsightsKey))
                 {
                     logger.LogWarning("App Insights Key not set");
                 }

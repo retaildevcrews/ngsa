@@ -128,11 +128,9 @@ namespace CSE.NextGenSymmetricApp
             services.AddHealthChecks().AddCosmosHealthCheck(CosmosHealthCheck.ServiceId);
 
             // add App Insights if key set
-            string appInsightsKey = App.Secrets.AppInsightsKey; // Configuration.GetValue<string>(Constants.AppInsightsKey);
-
-            if (!string.IsNullOrEmpty(appInsightsKey))
+            if (!string.IsNullOrEmpty(App.Secrets.AppInsightsKey))
             {
-                services.AddApplicationInsightsTelemetry(appInsightsKey);
+                services.AddApplicationInsightsTelemetry(App.Secrets.AppInsightsKey);
             }
         }
     }
