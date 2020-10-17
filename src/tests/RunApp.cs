@@ -17,11 +17,19 @@ namespace Tests
             // test command line parser
             RootCommand root = App.BuildRootCommand();
 
+            Assert.Equal(0, root.Parse("-d").Errors.Count);
+            Assert.Equal(0, root.Parse("-l Error").Errors.Count);
+            Assert.Equal(0, root.Parse("-l None").Errors.Count);
+            Assert.Equal(0, root.Parse("--secrets-volume foo").Errors.Count);
+
             Assert.Equal(1, root.Parse("-foo").Errors.Count);
             Assert.Equal(2, root.Parse("-foo bar").Errors.Count);
 
-            args = new string[] { "--help" };
+            args = new string[] { "-l", "Warning", "--help", "-d", "--version" };
             Assert.Equal(0, await App.Main(args));
+
+            args = new string[] { "--secrets-volume", "foo" };
+            Assert.Equal(-1, await App.Main(args));
         }
     }
 }

@@ -11,7 +11,7 @@ namespace tests
     {
         protected static void ConstructorMustThrowArgumentNullException(Type type)
         {
-            _ = type ?? throw new ArgumentNullException(nameof(type));
+            Assert.NotNull(type);
 
             foreach (var constructor in type.GetConstructors())
             {
