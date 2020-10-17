@@ -1,6 +1,6 @@
-# My new repo
+# NGSA
 
-> My new repo description ...
+> Next Generation Symmetric App
 
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
