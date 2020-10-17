@@ -21,7 +21,7 @@ namespace CSE.NextGenSymmetricApp.Controllers
         private readonly IDAL dal;
 
         /// <summary>
-        ///  Constructor
+        /// Initializes a new instance of the <see cref="ActorsController"/> class.
         /// </summary>
         /// <param name="logger">log instance</param>
         /// <param name="dal">data access layer instance</param>
