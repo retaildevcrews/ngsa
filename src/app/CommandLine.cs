@@ -142,10 +142,10 @@ namespace CSE.NextGenSymmetricApp
         {
             Console.WriteLine($"Version            {Middleware.VersionExtension.Version}");
             Console.WriteLine($"Log Level          {AppLogLevel}");
-            Console.WriteLine($"Cosmos Server      {App.Config.CosmosUrl}");
-            Console.WriteLine($"Cosmos Key         Length({App.Config.CosmosKey.Length})");
-            Console.WriteLine($"Cosmos Database    {App.Config.CosmosDatabase}");
-            Console.WriteLine($"Cosmos Collection  {App.Config.CosmosCollection}");
+            Console.WriteLine($"Cosmos Server      {App.Secrets.CosmosUrl}");
+            Console.WriteLine($"Cosmos Key         Length({App.Secrets.CosmosKey.Length})");
+            Console.WriteLine($"Cosmos Database    {App.Secrets.CosmosDatabase}");
+            Console.WriteLine($"Cosmos Collection  {App.Secrets.CosmosCollection}");
             Console.WriteLine($"App Insights Key   {(string.IsNullOrEmpty(config.GetValue<string>(Constants.AppInsightsKey)) ? "(not set" : "Length(" + config.GetValue<string>(Constants.AppInsightsKey).Length.ToString(CultureInfo.InvariantCulture))})");
 
             // always return 0 (success)
