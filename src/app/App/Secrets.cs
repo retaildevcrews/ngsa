@@ -51,6 +51,7 @@ namespace CSE.NextGenSymmetricApp
             throw new Exception($"Volume '{volume}' does not exist");
         }
 
+        // basic validation of Cosmos values
         private static void ValidateSecrets(string volume, Secrets sec)
         {
             if (sec == null)
