@@ -59,25 +59,14 @@ namespace CSE.NextGenSymmetricApp
         /// <returns>IActionResult</returns>
         public static async Task<int> Main(string[] args)
         {
-            try
-            {
-                Secrets = Secrets.GetSecrets();
+            // build the System.CommandLine.RootCommand
+            RootCommand root = BuildRootCommand();
+            root.Handler = CommandHandler.Create<string, LogLevel, bool>(RunApp);
 
-                // build the System.CommandLine.RootCommand
-                RootCommand root = BuildRootCommand();
-                root.Handler = CommandHandler.Create<LogLevel, bool>(RunApp);
+            string[] cmd = CombineEnvVarsWithCommandLine(args);
 
-                string[] cmd = CombineEnvVarsWithCommandLine(args);
-
-                // run the app
-                return await root.InvokeAsync(cmd).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-
-                return -1;
-            }
+            // run the app
+            return await root.InvokeAsync(cmd).ConfigureAwait(false);
         }
 
         /// <summary>
