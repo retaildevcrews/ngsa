@@ -11,11 +11,16 @@ namespace CSE.NextGenSymmetricApp
     public class Secrets
     {
         public string AppInsightsKey { get; set; }
-        public string CosmosUrl { get; set; }
+        public string CosmosServer { get; set; }
         public string CosmosKey { get; set; }
         public string CosmosDatabase { get; set; }
         public string CosmosCollection { get; set; }
 
+        /// <summary>
+        /// Get the secrets from the k8s volume
+        /// </summary>
+        /// <param name="volume">k8s volume name</param>
+        /// <returns>Secrets or null</returns>
         public static Secrets GetSecrets(string volume = "secrets")
         {
             // get k8s secrets from files
@@ -27,7 +32,7 @@ namespace CSE.NextGenSymmetricApp
                     CosmosCollection = GetSecretFromFile(volume, "CosmosCollection"),
                     CosmosDatabase = GetSecretFromFile(volume, "CosmosDatabase"),
                     CosmosKey = GetSecretFromFile(volume, "CosmosKey"),
-                    CosmosUrl = GetSecretFromFile(volume, "CosmosUrl"),
+                    CosmosServer = GetSecretFromFile(volume, "CosmosUrl"),
                 };
 
                 return sec;
@@ -36,6 +41,7 @@ namespace CSE.NextGenSymmetricApp
             return null;
         }
 
+        // read a secret from a k8s volume
         private static string GetSecretFromFile(string volume, string key)
         {
             string val = string.Empty;

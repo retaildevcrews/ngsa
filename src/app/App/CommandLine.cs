@@ -134,7 +134,7 @@ namespace CSE.NextGenSymmetricApp
         {
             Console.WriteLine($"Version            {Middleware.VersionExtension.Version}");
             Console.WriteLine($"Log Level          {AppLogLevel}");
-            Console.WriteLine($"Cosmos Server      {App.Secrets.CosmosUrl}");
+            Console.WriteLine($"Cosmos Server      {App.Secrets.CosmosServer}");
             Console.WriteLine($"Cosmos Key         Length({App.Secrets.CosmosKey.Length})");
             Console.WriteLine($"Cosmos Database    {App.Secrets.CosmosDatabase}");
             Console.WriteLine($"Cosmos Collection  {App.Secrets.CosmosCollection}");

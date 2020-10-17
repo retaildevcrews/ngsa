@@ -233,8 +233,11 @@ dotnet_diagnostic.SA1208.severity = suggestion
 # SA1401: Fields should be private
 dotnet_diagnostic.SA1401.severity = suggestion
 
+# SA1516: Elements should be separated by a blank line
+dotnet_diagnostic.SA1516.severity = none
+
 # SA1600: Elements should be documented
-dotnet_diagnostic.SA1600.severity = suggestion
+dotnet_diagnostic.SA1600.severity = none
 
 # SA1601: Partial elements should be documented
 dotnet_diagnostic.SA1601.severity = suggestion

@@ -208,7 +208,7 @@ namespace CSE.NextGenSymmetricApp
                 .ConfigureServices(services =>
                 {
                     // add the data access layer via DI
-                    services.AddDal(new Uri(Secrets.CosmosUrl), Secrets.CosmosKey, Secrets.CosmosDatabase, Secrets.CosmosCollection);
+                    services.AddDal(new Uri(Secrets.CosmosServer), Secrets.CosmosKey, Secrets.CosmosDatabase, Secrets.CosmosCollection);
 
                     // add IConfigurationRoot
                     services.AddSingleton<IConfigurationRoot>(config);
