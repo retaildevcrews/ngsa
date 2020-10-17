@@ -43,7 +43,7 @@ namespace CSE.NextGenSymmetricApp
         /// </summary>
         public static bool IsLogLevelSet { get; set; }
 
-        public static Config Config { get; } = new Config();
+        public static Secrets Secrets { get; set; }
 
         /// <summary>
         /// Main entry point
@@ -54,41 +54,25 @@ namespace CSE.NextGenSymmetricApp
         /// <returns>IActionResult</returns>
         public static async Task<int> Main(string[] args)
         {
-            // get k8s secrets from files
-            if (Directory.Exists("secrets"))
+            try
             {
-                Config.AppInsightsKey = GetSecretFromFile("AppInsightsKey");
-                Config.CosmosCollection = GetSecretFromFile("CosmosCollection");
-                Config.CosmosDatabase = GetSecretFromFile("CosmosDatabase");
-                Config.CosmosKey = GetSecretFromFile("CosmosKey");
-                Config.CosmosUrl = GetSecretFromFile("CosmosUrl");
+                Secrets = Secrets.GetSecrets();
+
+                // build the System.CommandLine.RootCommand
+                RootCommand root = BuildRootCommand();
+                root.Handler = CommandHandler.Create<LogLevel, bool>(RunApp);
+
+                var cmd = CombineEnvVarsWithCommandLine(args);
+
+                // run the app
+                return await root.InvokeAsync(cmd).ConfigureAwait(false);
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("secrets directory not found");
-                return 1;
+                Console.WriteLine(ex);
+
+                return -1;
             }
-
-            // build the System.CommandLine.RootCommand
-            RootCommand root = BuildRootCommand();
-            root.Handler = CommandHandler.Create<LogLevel, bool>(RunApp);
-
-            var cmd = CombineEnvVarsWithCommandLine(args);
-
-            // run the app
-            return await root.InvokeAsync(cmd).ConfigureAwait(false);
-        }
-
-        public static string GetSecretFromFile(string key)
-        {
-            string val = string.Empty;
-
-            if (File.Exists($"secrets/{key}"))
-            {
-                val = File.ReadAllText($"secrets/{key}").Trim();
-            }
-
-            return val;
         }
 
         /// <summary>
@@ -218,7 +202,7 @@ namespace CSE.NextGenSymmetricApp
                 .ConfigureServices(services =>
                 {
                     // add the data access layer via DI
-                    services.AddDal(new Uri(Config.CosmosUrl), Config.CosmosKey, Config.CosmosDatabase, Config.CosmosCollection);
+                    services.AddDal(new Uri(Secrets.CosmosUrl), Secrets.CosmosKey, Secrets.CosmosDatabase, Secrets.CosmosCollection);
 
                     // add IConfigurationRoot
                     services.AddSingleton<IConfigurationRoot>(config);
