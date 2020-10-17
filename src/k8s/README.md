@@ -1,14 +1,14 @@
 # Set Secrets
 
-Set ngap secrets from Azure Key Vault into k8s
+Set ngsa secrets from Azure Key Vault into k8s
 
 ```bash
 
 # delete if necessary
-kubectl delete secret ngap-secrets
+kubectl delete secret ngsa-secrets
 
 # create from key vault
-kubectl create secret generic ngap-secrets \
+kubectl create secret generic ngsa-secrets \
   --from-literal=CosmosDatabase=$(eval az keyvault secret show --vault-name ngap --query value -o tsv --name CosmosDatabase) \
   --from-literal=CosmosCollection=$(eval az keyvault secret show --vault-name ngap --query value -o tsv --name CosmosCollection) \
   --from-literal=CosmosKey=$(eval az keyvault secret show --vault-name ngap --query value -o tsv --name CosmosKey) \
@@ -16,15 +16,15 @@ kubectl create secret generic ngap-secrets \
   --from-literal=AppInsightsKey=$(eval az keyvault secret show --vault-name ngap --query value -o tsv --name AppInsightsKey)
 
 # display the secrets
-k get secret ngap-secrets -o jsonpath='{.data}'
+k get secret ngsa-secrets -o jsonpath='{.data}'
 
 ```
 
-Deploy ngap-csharp
+Deploy ngsa
 
 ```bash
 
-k apply -f ngap.yml
+k apply -f ngsa.yml
 
 ```
 
@@ -34,10 +34,10 @@ Check results
 
 k get pods
 
-k logs ngap
+k logs ngsa
 
 # forward the port
-k port-forward pod/ngap 8080:4120 &
+k port-forward pod/ngsa 8080:4120 &
 
 http localhost:8080/version
 
