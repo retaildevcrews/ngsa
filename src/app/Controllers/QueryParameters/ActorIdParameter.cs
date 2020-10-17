@@ -6,7 +6,7 @@ using CSE.NextGenSymmetricApp.Validation;
 namespace CSE.NextGenSymmetricApp
 {
     /// <summary>
-    /// Actor ID query string validation class
+    /// Actor ID URI validation class
     /// </summary>
     public sealed class ActorIdParameter
     {

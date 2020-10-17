@@ -6,6 +6,9 @@ using CSE.NextGenSymmetricApp.Validation;
 
 namespace CSE.NextGenSymmetricApp
 {
+    /// <summary>
+    /// Query sting parameters for Movies controller
+    /// </summary>
     public sealed class MovieQueryParameters : QueryParameters
     {
         [IdValidation(startingCharacters: "nm", minimumCharacters: 7, maximumCharacters: 11, true)]

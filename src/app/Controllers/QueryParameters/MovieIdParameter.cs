@@ -6,7 +6,7 @@ using CSE.NextGenSymmetricApp.Validation;
 namespace CSE.NextGenSymmetricApp
 {
     /// <summary>
-    /// Movie ID query string validation class
+    /// Movie ID URI validation class
     /// </summary>
     public sealed class MovieIdParameter
     {
