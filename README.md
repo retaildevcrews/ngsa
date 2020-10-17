@@ -1,6 +1,6 @@
 # NGSA
 
-> Next Generation Symmetric App
+> Next Generation Symmetric Apps
 
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
