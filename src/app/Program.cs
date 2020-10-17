@@ -48,7 +48,7 @@ namespace CSE.NextGenSymmetricApp
         /// </summary>
         public static Secrets Secrets { get; set; }
 
-        public static ILogger<ValidationProblemDetailsResult> ValidationLogger { get; set; }
+        public static ILogger<ValidationResult> ValidationLogger { get; set; }
 
         /// <summary>
         /// Main entry point
@@ -137,7 +137,7 @@ namespace CSE.NextGenSymmetricApp
         {
             // get the logger service
             logger = host.Services.GetRequiredService<ILogger<App>>();
-            ValidationLogger = host.Services.GetRequiredService<ILogger<ValidationProblemDetailsResult>>();
+            ValidationLogger = host.Services.GetRequiredService<ILogger<ValidationResult>>();
 
             if (logger != null)
             {
