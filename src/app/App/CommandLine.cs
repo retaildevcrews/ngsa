@@ -62,8 +62,9 @@ namespace CSE.NextGenSymmetricApp
             };
 
             // add the options
+            root.AddOption(new Option<string>(new string[] { "--secrets-volume" }, () => "secrets", "Secrets Volume Path"));
             root.AddOption(new Option<LogLevel>(new string[] { "-l", "--log-level" }, "Log Level"));
-            root.AddOption(new Option(new string[] { "-d", "--dry-run" }, "Validates configuration"));
+            root.AddOption(new Option<bool>(new string[] { "-d", "--dry-run" }, "Validates configuration"));
 
             return root;
         }
@@ -71,13 +72,16 @@ namespace CSE.NextGenSymmetricApp
         /// <summary>
         /// Run the app
         /// </summary>
+        /// <param name="secretsVolume">k8s Secrets Volume Path</param>
         /// <param name="logLevel">Log Level</param>
         /// <param name="dryRun">Dry Run flag</param>
         /// <returns>status</returns>
-        public static async Task<int> RunApp(LogLevel logLevel, bool dryRun)
+        public static async Task<int> RunApp(string secretsVolume, LogLevel logLevel, bool dryRun)
         {
             try
             {
+                Secrets = Secrets.GetSecrets(secretsVolume);
+
                 // setup ctl c handler
                 ctCancel = SetupCtlCHandler();
 
@@ -118,7 +122,7 @@ namespace CSE.NextGenSymmetricApp
                 }
                 else
                 {
-                    Console.WriteLine($"{ex}\nError in Main() {ex.Message}");
+                    Console.WriteLine($"Error in Main() {ex.Message}");
                 }
 
                 return -1;
@@ -134,11 +138,12 @@ namespace CSE.NextGenSymmetricApp
         {
             Console.WriteLine($"Version            {Middleware.VersionExtension.Version}");
             Console.WriteLine($"Log Level          {AppLogLevel}");
+            Console.WriteLine($"Secrets Volume     {App.Secrets.Volume}");
             Console.WriteLine($"Cosmos Server      {App.Secrets.CosmosServer}");
-            Console.WriteLine($"Cosmos Key         Length({App.Secrets.CosmosKey.Length})");
             Console.WriteLine($"Cosmos Database    {App.Secrets.CosmosDatabase}");
             Console.WriteLine($"Cosmos Collection  {App.Secrets.CosmosCollection}");
-            Console.WriteLine($"App Insights Key   {(string.IsNullOrEmpty(config.GetValue<string>(Constants.AppInsightsKey)) ? "(not set" : "Length(" + config.GetValue<string>(Constants.AppInsightsKey).Length.ToString(CultureInfo.InvariantCulture))})");
+            Console.WriteLine($"Cosmos Key         Length({App.Secrets.CosmosKey.Length})");
+            Console.WriteLine($"App Insights Key   Length({App.Secrets.AppInsightsKey.Length})");
 
             // always return 0 (success)
             return 0;
