@@ -11,16 +11,6 @@ namespace CSE.NextGenSymmetricApp
         public const string SwaggerTitle = "Next Gen Symmetric Apps";
         public const string SwaggerPath = "/swagger.json";
 
-        public const string LogLevel = "LOG_LEVEL";
-
-        public const string CosmosCollection = "CosmosCollection";
-        public const string CosmosDatabase = "CosmosDatabase";
-        public const string CosmosKey = "CosmosKey";
-        public const string CosmosUrl = "CosmosUrl";
-
-        public const string AppInsightsKey = "AppInsightsKey";
-        public const string NewKeyLoadedMetric = "newKeyLoaded";
-
         // if port is changed, also update value in the Dockerfiles
         public const string Port = "4120";
 

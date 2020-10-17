@@ -31,11 +31,11 @@ namespace CSE.NextGenSymmetricApp
 
             List<string> cmd = new List<string>(args);
 
-            string logLevel = Environment.GetEnvironmentVariable(Constants.LogLevel);
-
             // add --log-level value from environment or default
             if (!cmd.Contains("--log-level") && !cmd.Contains("-l"))
             {
+                string logLevel = Environment.GetEnvironmentVariable("LOG_LEVEL");
+
                 cmd.Add("--log-level");
                 cmd.Add(string.IsNullOrEmpty(logLevel) ? "Warning" : logLevel);
                 App.IsLogLevelSet = !string.IsNullOrEmpty(logLevel);
