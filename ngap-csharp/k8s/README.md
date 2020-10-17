@@ -36,4 +36,9 @@ k get pods
 
 k logs ngap
 
+# forward the port
+k port-forward pod/ngap 8080:4120 &
+
+http localhost:8080/version
+
 ```
