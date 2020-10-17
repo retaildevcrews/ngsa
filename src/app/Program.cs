@@ -96,7 +96,7 @@ namespace CSE.NextGenSymmetricApp
         /// </summary>
         private static void DisplayAsciiArt()
         {
-            const string file = "ascii-art.txt";
+            const string file = "App/ascii-art.txt";
 
             if (File.Exists(file))
             {

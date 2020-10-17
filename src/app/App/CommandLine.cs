@@ -100,18 +100,11 @@ namespace CSE.NextGenSymmetricApp
                 // log startup messages
                 LogStartup();
 
-                // verify key vault access
-                // IKeyVaultConnection kvConnection = host.Services.GetService<IKeyVaultConnection>();
-                // Task<Microsoft.Azure.KeyVault.Models.SecretBundle> secret = kvConnection.Client.GetSecretAsync(kvConnection.Address, Constants.CosmosDatabase);
-
                 // start the webserver
                 Task w = host.RunAsync();
 
                 // this doesn't return except on ctl-c
                 await w.ConfigureAwait(false);
-
-                // use this line instead if you want to re-read the Cosmos connection info on a timer
-                // await RunKeyRotationCheck(ctCancel, Constants.KeyVaultChangeCheckSeconds).ConfigureAwait(false);
 
                 // if not cancelled, app exit -1
                 return ctCancel.IsCancellationRequested ? 0 : -1;
