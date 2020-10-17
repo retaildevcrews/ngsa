@@ -3,8 +3,10 @@
 
 namespace CSE.NextGenSymmetricApp
 {
+    /// <summary>
+    /// Query sting parameters for Actors controller
+    /// </summary>
     public sealed class ActorQueryParameters : QueryParameters
     {
-        // for future expansion
     }
 }

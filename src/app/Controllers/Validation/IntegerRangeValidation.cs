@@ -5,6 +5,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CSE.NextGenSymmetricApp.Validation
 {
+    /// <summary>
+    /// Paramameter validation for integer ranges
+    /// </summary>
     public class IntegerRangeValidation : ValidationAttribute
     {
         private readonly int minValue;
@@ -16,18 +19,18 @@ namespace CSE.NextGenSymmetricApp.Validation
             this.maxValue = maxValue;
         }
 
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override System.ComponentModel.DataAnnotations.ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             if (validationContext == null)
             {
-                return ValidationResult.Success;
+                return System.ComponentModel.DataAnnotations.ValidationResult.Success;
             }
 
             string errorMessage = $"The parameter '{validationContext.MemberName}' should be between {minValue} and {maxValue}.";
 
             bool isValid = (int)value >= minValue && (int)value <= maxValue;
 
-            return isValid ? ValidationResult.Success : new ValidationResult(errorMessage);
+            return isValid ? System.ComponentModel.DataAnnotations.ValidationResult.Success : new System.ComponentModel.DataAnnotations.ValidationResult(errorMessage);
         }
     }
 }

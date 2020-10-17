@@ -24,8 +24,6 @@ namespace CSE.NextGenSymmetricApp
         // if port is changed, also update value in the Dockerfiles
         public const string Port = "4120";
 
-        public const int KeyVaultChangeCheckSeconds = 30;
-
         public const string ActorsControllerException = "ActorsControllerException";
         public const string GenresControllerException = "GenresControllerException";
         public const string HealthzControllerException = "HealthzControllerException";

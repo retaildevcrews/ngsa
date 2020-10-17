@@ -6,6 +6,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CSE.NextGenSymmetricApp.Validation
 {
+    /// <summary>
+    /// Paramameter validation for Movie ID and Actor ID
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
     public sealed class IdValidation : ValidationAttribute
     {
@@ -22,18 +25,18 @@ namespace CSE.NextGenSymmetricApp.Validation
             this.allowNulls = allowNulls;
         }
 
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override System.ComponentModel.DataAnnotations.ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             if (validationContext == null || (allowNulls && value == null))
             {
-                return ValidationResult.Success;
+                return System.ComponentModel.DataAnnotations.ValidationResult.Success;
             }
 
             string errorMessage = $"The parameter '{validationContext.MemberName}' should start with '{startingCharacters}' and be between {minimumCharacters} and {maximumCharacters} characters in total";
 
             if (!allowNulls && value == null)
             {
-                return new ValidationResult(errorMessage);
+                return new System.ComponentModel.DataAnnotations.ValidationResult(errorMessage);
             }
 
             // cast value to string
@@ -47,7 +50,7 @@ namespace CSE.NextGenSymmetricApp.Validation
                           !int.TryParse(id.Substring(2), out int val) ||
                           val <= 0;
 
-            return isInvalid ? new ValidationResult(errorMessage) : ValidationResult.Success;
+            return isInvalid ? new System.ComponentModel.DataAnnotations.ValidationResult(errorMessage) : System.ComponentModel.DataAnnotations.ValidationResult.Success;
         }
     }
 }

@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using CSE.NextGenSymmetricApp.DataAccessLayer;
 using CSE.NextGenSymmetricApp.Validation;
-using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -49,7 +48,7 @@ namespace CSE.NextGenSymmetricApp
         /// </summary>
         public static Secrets Secrets { get; set; }
 
-        public static ILogger<ValidationProblemDetailsResult> ValidationLogger { get; set; }
+        public static ILogger<ValidationResult> ValidationLogger { get; set; }
 
         /// <summary>
         /// Main entry point
@@ -68,7 +67,7 @@ namespace CSE.NextGenSymmetricApp
                 RootCommand root = BuildRootCommand();
                 root.Handler = CommandHandler.Create<LogLevel, bool>(RunApp);
 
-                var cmd = CombineEnvVarsWithCommandLine(args);
+                string[] cmd = CombineEnvVarsWithCommandLine(args);
 
                 // run the app
                 return await root.InvokeAsync(cmd).ConfigureAwait(false);
@@ -97,7 +96,7 @@ namespace CSE.NextGenSymmetricApp
         /// </summary>
         private static void DisplayAsciiArt()
         {
-            const string file = "ascii-art.txt";
+            const string file = "App/ascii-art.txt";
 
             if (File.Exists(file))
             {
@@ -138,7 +137,7 @@ namespace CSE.NextGenSymmetricApp
         {
             // get the logger service
             logger = host.Services.GetRequiredService<ILogger<App>>();
-            ValidationLogger = host.Services.GetRequiredService<ILogger<ValidationProblemDetailsResult>>();
+            ValidationLogger = host.Services.GetRequiredService<ILogger<ValidationResult>>();
 
             if (logger != null)
             {

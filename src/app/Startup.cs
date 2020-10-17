@@ -113,7 +113,7 @@ namespace CSE.NextGenSymmetricApp
             services.AddControllers()
                 .ConfigureApiBehaviorOptions(o =>
                 {
-                    o.InvalidModelStateResponseFactory = ctx => new ValidationProblemDetailsResult();
+                    o.InvalidModelStateResponseFactory = ctx => new ValidationResult();
                 })
                 .AddJsonOptions(options =>
                 {

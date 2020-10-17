@@ -10,18 +10,17 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 
 namespace CSE.NextGenSymmetricApp.Validation
 {
-    public class ValidationProblemDetailsResult : IActionResult
+    /// <summary>
+    /// Validation Result class
+    /// </summary>
+    public class ValidationResult : IActionResult
     {
-        private readonly ILogger logger;
-
-        public ValidationProblemDetailsResult()
-        {
-            logger = App.ValidationLogger;
-        }
+        private readonly ILogger logger = App.ValidationLogger;
 
         public Task ExecuteResultAsync(ActionContext context)
         {
@@ -45,17 +44,19 @@ namespace CSE.NextGenSymmetricApp.Validation
         private static string WriteJsonOutput(ActionContext context, ILogger logger)
         {
             // create problem details response
-            ValidationProblemDetails problemDetails = new ValidationProblemDetails(
-                type: FormatProblemType(context),
-                title: "Parameter validation error",
-                detail: "One or more invalid parameters were specified.",
-                status: (int)HttpStatusCode.BadRequest,
-                instance: context.HttpContext.Request.GetEncodedPathAndQuery());
+            ValidationDetail problemDetails = new ValidationDetail
+            {
+                Type = FormatProblemType(context),
+                Title = "Parameter validation error",
+                Detail = "One or more invalid parameters were specified.",
+                Status = (int)HttpStatusCode.BadRequest,
+                Instance = context.HttpContext.Request.GetEncodedPathAndQuery(),
+            };
 
             // collect all errors for iterative string/json representation
-            System.Collections.Generic.KeyValuePair<string, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateEntry>[] validationErrors = context.ModelState.Where(m => m.Value.Errors.Count > 0).ToArray();
+            System.Collections.Generic.KeyValuePair<string, ModelStateEntry>[] validationErrors = context.ModelState.Where(m => m.Value.Errors.Count > 0).ToArray();
 
-            foreach (System.Collections.Generic.KeyValuePair<string, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateEntry> validationError in validationErrors)
+            foreach (System.Collections.Generic.KeyValuePair<string, ModelStateEntry> validationError in validationErrors)
             {
                 // skip empty validation error
                 if (string.IsNullOrEmpty(validationError.Key))
@@ -64,7 +65,7 @@ namespace CSE.NextGenSymmetricApp.Validation
                 }
 
                 // log each validation error in the collection
-                logger.LogWarning($"InvalidParameter|{context.HttpContext.Request.Path}|{validationError.Value.Errors[0].ErrorMessage}");
+                logger.LogInformation($"InvalidParameter|{context.HttpContext.Request.Path}|{validationError.Value.Errors[0].ErrorMessage}");
 
                 // add error object to problemDetails
                 problemDetails.ValidationErrors.Add(CreateValidationError(validationError.Key));
@@ -143,7 +144,7 @@ namespace CSE.NextGenSymmetricApp.Validation
         /// <param name="context">ActionContext</param>
         private static string FormatProblemType(ActionContext context)
         {
-            const string baseUri = "https://github.com/retaildevcrews/helium/blob/main/docs/ParameterValidation.md";
+            const string baseUri = "https://github.com/retaildevcrews/ngsa/blob/main/docs/ParameterValidation.md";
 
             string instance = context.HttpContext.Request.GetEncodedPathAndQuery();
 
