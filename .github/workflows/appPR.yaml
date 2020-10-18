@@ -56,6 +56,9 @@ jobs:
           echo '${{ secrets.CosmosUrl }}' > src/app/secrets/CosmosUrl
           echo '${{ secrets.CosmosKey }}' > src/app/secrets/CosmosKey
           echo "::set-env name=COSMOS_SET::true"
+          pwd
+          cat src/app/secrets/foo
+          cat src/app/secrets/CosmosUrl
         fi
 
     - name: PR Closed
