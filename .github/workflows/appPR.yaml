@@ -37,6 +37,7 @@ jobs:
       # These are used in if: conditions
       DOCKER_SET: false
       COSMOS_SET: false
+      BUILD: true
 
     steps:
     - uses: actions/checkout@v2
@@ -51,8 +52,9 @@ jobs:
         
         if [[ "${{ secrets.CosmosUrl }}" != "" && "${{ secrets.CosmosKey }}" != "" ]];
         then
-          echo ${{ secrets.CosmosUrl }} > src/app/secrets/CosmosUrl
-          echo ${{ secrets.CosmosKey }} > src/app/secrets/CosmosKey
+          echo 'foo' > src/app/secrets/foo
+          echo '${{ secrets.CosmosUrl }}' > src/app/secrets/CosmosUrl
+          echo '${{ secrets.CosmosKey }}' > src/app/secrets/CosmosKey
           echo "::set-env name=COSMOS_SET::true"
         fi
 
@@ -77,9 +79,9 @@ jobs:
         # Do not build on PR Merged
         
         # Skip remaining steps
-        echo "::set-env name=AZURE_SET::false"
+        echo "::set-env name=COSMOS_SET::false"
         echo "::set-env name=DOCKER_SET::false"
-        echo "::set-env name=ACR_SET::false"
+        echo "::set-env name=BUILD::false"
 
     - name: Docker Login
       if: ${{ env.DOCKER_SET == 'true' }}
@@ -88,12 +90,14 @@ jobs:
         echo "${{ secrets.DOCKER_PAT }}" | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
 
     - name: Docker Pull Test
+      if: ${{ env.BUILD == 'true' }}
       run: |
         # Pull the latest image if needed
         # This doesn't have to be a separate step, but makes the output easier to read and debug
         docker pull mcr.microsoft.com/dotnet/core/sdk:3.1
 
     - name: Docker Build Test
+      if: ${{ env.BUILD == 'true' }}
       run: |
         # build test image
         docker build . -t test --target test
@@ -139,11 +143,13 @@ jobs:
 #        docker logs hcs
 
     - name: Docker Pull Release
+      if: ${{ env.BUILD == 'true' }}
       run: |
         # Pull the latest image if needed
         docker pull mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine
 
     - name: Docker Build Release
+      if: ${{ env.BUILD == 'true' }}
       run: |
         # build image
         if [[ "${{ github.ref }}" == "refs/tags/"* ]]
