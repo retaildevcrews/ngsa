@@ -52,13 +52,9 @@ jobs:
         
         if [[ "${{ secrets.CosmosUrl }}" != "" && "${{ secrets.CosmosKey }}" != "" ]];
         then
-          echo 'foo' > src/app/secrets/foo
           echo '${{ secrets.CosmosUrl }}' > src/app/secrets/CosmosUrl
           echo '${{ secrets.CosmosKey }}' > src/app/secrets/CosmosKey
           echo "::set-env name=COSMOS_SET::true"
-          pwd
-          cat src/app/secrets/foo
-          cat src/app/secrets/CosmosUrl
         fi
 
     - name: PR Closed
@@ -114,36 +110,34 @@ jobs:
       if: ${{ env.COSMOS_SET == 'true' }}
       run: |
         # run the app
-        cat src/app/secrets/DockerUrl
+        docker run -d --name hcs -p 4120:4120 --env KEYVAULT_NAME=$KEYVAULT_NAME --env AUTH_TYPE=CLI -v ~/.azure:/root/.azure test
         
-#        docker run -d --name hcs -p 4120:4120 --env KEYVAULT_NAME=$KEYVAULT_NAME --env AUTH_TYPE=CLI -v ~/.azure:/root/.azure test
-        
-#        echo "Waiting for web server to start and run initial tests ..."
-#        sleep 25
+        echo "Waiting for web server to start and run initial tests ..."
+        sleep 25
 
 #    - name: Run WebV
-#      if: ${{ env.COSMOS_SET == 'true' }}
-#      run: |
+      if: ${{ env.COSMOS_SET == 'true' }}
+      run: |
         # run web validation test
         # fail on any validation errors
-#        cd TestFiles
-#        webv -s localhost:4120 --max-errors 0 -f e2e.json
-#        cd ..
+        cd TestFiles
+        webv -s localhost:4120 --max-errors 0 -f baseline.json
+        cd ..
 
-#    - name: Display coverage results
-#      if: ${{ env.COSMOS_SET == 'true' }}
-#      run: |
+    - name: Display coverage results
+      if: ${{ env.COSMOS_SET == 'true' }}
+      run: |
         # wait for helium to shutdown
-#        sleep 15
+        sleep 15
 
         # display the results
-#        docker logs hcs | tail -n 24
+        docker logs hcs | tail -n 24
 
-#    - name: Display full test results
-#      if: ${{ env.COSMOS_SET == 'true' }}
-#      run: |
+    - name: Display full test results
+      if: ${{ env.COSMOS_SET == 'true' }}
+      run: |
         # display the results
-#        docker logs hcs
+        docker logs hcs
 
     - name: Docker Pull Release
       if: ${{ env.BUILD == 'true' }}
