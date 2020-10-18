@@ -36,6 +36,7 @@ jobs:
 
       # These are used in if: conditions
       DOCKER_SET: false
+      COSMOS_SET: false
 
     steps:
     - uses: actions/checkout@v2
@@ -48,6 +49,13 @@ jobs:
           echo "::set-env name=DOCKER_SET::true"
         fi
         
+        if [[ "${{ secrets.CosmosUrl }}" != "" && "${{ secrets.CosmosKey }}" != "" ]];
+        then
+          echo ${{ secrets.CosmosUrl }} > src/app/secrets/CosmosUrl
+          echo ${{ secrets.CosmosKey }} > src/app/secrets/CosmosKey
+          echo "::set-env name=COSMOS_SET::true"
+        fi
+
     - name: PR Closed
       if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && ! github.event.pull_request.merged }}
 
@@ -90,22 +98,24 @@ jobs:
         # build test image
         docker build . -t test --target test
 
-#    - name: Install WebV
-#      if: ${{ env.AZURE_SET == 'true' }}
-#      run: |
-#        dotnet tool install -g webvalidate
+    - name: Install WebV
+      if: ${{ env.COSMOS_SET == 'true' }}
+      run: |
+        dotnet tool install -g webvalidate
 
-#    - name: Start helium container
-#      if: ${{ env.AZURE_SET == 'true' }}
-#      run: |
+    - name: Start helium container
+      if: ${{ env.COSMOS_SET == 'true' }}
+      run: |
         # run the app
+        echo src/app/secrets/DockerUrl
+        
 #        docker run -d --name hcs -p 4120:4120 --env KEYVAULT_NAME=$KEYVAULT_NAME --env AUTH_TYPE=CLI -v ~/.azure:/root/.azure test
         
 #        echo "Waiting for web server to start and run initial tests ..."
 #        sleep 25
 
 #    - name: Run WebV
-#      if: ${{ env.AZURE_SET == 'true' }}
+#      if: ${{ env.COSMOS_SET == 'true' }}
 #      run: |
         # run web validation test
         # fail on any validation errors
@@ -114,7 +124,7 @@ jobs:
 #        cd ..
 
 #    - name: Display coverage results
-#      if: ${{ env.AZURE_SET == 'true' }}
+#      if: ${{ env.COSMOS_SET == 'true' }}
 #      run: |
         # wait for helium to shutdown
 #        sleep 15
@@ -122,9 +132,8 @@ jobs:
         # display the results
 #        docker logs hcs | tail -n 24
 
-
 #    - name: Display full test results
-#      if: ${{ env.AZURE_SET == 'true' }}
+#      if: ${{ env.COSMOS_SET == 'true' }}
 #      run: |
         # display the results
 #        docker logs hcs
