@@ -124,6 +124,12 @@ jobs:
         webv -s localhost:4120 --max-errors 1 -f baseline.json
         cd ..
 
+    - name: Display failed docker logs
+      if: ${{ failure() }}
+      run: |
+        # display the results
+        docker logs ngsa
+
     - name: Display coverage results
       if: ${{ env.COSMOS_SET == 'true' }}
       run: |
