@@ -137,7 +137,7 @@ jobs:
         sleep 15
 
         # display the results
-        docker logs ngsa | tail -n 24
+        docker logs ngsa | tail -n 15
 
     - name: Display full test results
       if: ${{ env.COSMOS_SET == 'true' }}
