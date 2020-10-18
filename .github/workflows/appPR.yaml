@@ -115,7 +115,7 @@ jobs:
         echo "Waiting for web server to start and run initial tests ..."
         sleep 25
 
-#    - name: Run WebV
+    - name: Run WebV
       if: ${{ env.COSMOS_SET == 'true' }}
       run: |
         # run web validation test
