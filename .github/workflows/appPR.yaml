@@ -107,7 +107,7 @@ jobs:
       if: ${{ env.COSMOS_SET == 'true' }}
       run: |
         # run the app
-        echo src/app/secrets/DockerUrl
+        cat src/app/secrets/DockerUrl
         
 #        docker run -d --name hcs -p 4120:4120 --env KEYVAULT_NAME=$KEYVAULT_NAME --env AUTH_TYPE=CLI -v ~/.azure:/root/.azure test
         
