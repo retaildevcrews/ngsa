@@ -1,3 +1,5 @@
 #!/bin/sh
 
+export RUN_TEST_COVERAGE=true
+
 dotnet test /p:CollectCoverage=true /p:CoverletOutput="./TestResults/" $CONFIGURATION

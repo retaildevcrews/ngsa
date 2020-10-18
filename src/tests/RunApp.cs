@@ -31,10 +31,12 @@ namespace Tests
             args = new string[] { "--secrets-volume", "foo" };
             Assert.Equal(-1, await App.Main(args));
 
-            Console.WriteLine("Starting web server");
-            App.Main(Array.Empty<string>()).Wait(20000);
-            Console.WriteLine("Web server stopped");
-
+            if (!string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
+            {
+                Console.WriteLine("Starting web server");
+                App.Main(Array.Empty<string>()).Wait(20000);
+                Console.WriteLine("Web server stopped");
+            }
         }
     }
 }
