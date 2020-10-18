@@ -122,6 +122,7 @@ jobs:
         # display the results
 #        docker logs hcs | tail -n 24
 
+
 #    - name: Display full test results
 #      if: ${{ env.AZURE_SET == 'true' }}
 #      run: |
