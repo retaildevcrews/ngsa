@@ -1,5 +1,10 @@
 # Engineering Practices
 
+## Success Criteria
+
+  - Team agreed that our testing criteria is Linux
+    - Best effort to make sure it works on Windows and Mac, but not required
+
 ## Definition of Done
 
 - Code changes reviewed & signed off
