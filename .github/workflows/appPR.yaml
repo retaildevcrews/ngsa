@@ -47,14 +47,14 @@ jobs:
         # check that all Docker secrets are set
         if [[ "${{ secrets.DOCKER_PAT }}" != "" && "${{ secrets.DOCKER_REPO }}" != "" && "${{ secrets.DOCKER_USER }}" != "" ]];
         then
-          echo "::set-env name=DOCKER_SET::true"
+          echo "DOCKER_SET=true" >> $GITHUB_ENV
         fi
         
         if [[ "${{ secrets.CosmosUrl }}" != "" && "${{ secrets.CosmosKey }}" != "" ]];
         then
           echo '${{ secrets.CosmosUrl }}' > src/app/secrets/CosmosUrl
           echo '${{ secrets.CosmosKey }}' > src/app/secrets/CosmosKey
-          echo "::set-env name=COSMOS_SET::true"
+          echo "COSMOS_SET=true" >> $GITHUB_ENV
         fi
 
     - name: PR Closed
@@ -78,9 +78,9 @@ jobs:
         # Do not build on PR Merged
         
         # Skip remaining steps
-        echo "::set-env name=COSMOS_SET::false"
-        echo "::set-env name=DOCKER_SET::false"
-        echo "::set-env name=BUILD::false"
+        echo "DOCKER_SET=false" >> $GITHUB_ENV
+        echo "COSMOS_SET=false" >> $GITHUB_ENV
+        echo "BUILD_SET=false" >> $GITHUB_ENV
 
     - name: Docker Login
       if: ${{ env.DOCKER_SET == 'true' }}
