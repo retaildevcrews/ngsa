@@ -80,7 +80,7 @@ jobs:
         # Skip remaining steps
         echo "DOCKER_SET=false" >> $GITHUB_ENV
         echo "COSMOS_SET=false" >> $GITHUB_ENV
-        echo "BUILD_SET=false" >> $GITHUB_ENV
+        echo "BUILD=false" >> $GITHUB_ENV
 
     - name: Docker Login
       if: ${{ env.DOCKER_SET == 'true' }}
