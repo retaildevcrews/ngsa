@@ -101,10 +101,10 @@ We pledge to follow the [Microsoft Open Source Code of Conduct](https://opensour
 - User Story Board will be used to track User Story progress.
 - Kanban Board will be used to track project progress
   - Board columns:
-    * Triage: All net-new issues/bugs/features need to be created as an issue; things to discuss/notes can be added as a "note" 
-    * Backlog: Has been refined, triaged, and prioritized.
-    * 
-    * Sprint Backlog:  Issues that have been committed for the current sprint.
+    * Triage: All net-new tasks/bugs/features/stories need to be created as an "issue"; things to discuss/notes can be added as a "note" 
+    * Backlog: Stories that have been refined, triaged, and prioritized.
+    * Sprint Goals: Stories that have been committed for the current sprint.
+    * Sprint Backlog:  Tasks that have been committed for the current sprint.
     * **In Progress**: A development team member owns the story or bug and begins work.
     * **PR Submitted/In Review**: The owner of the story or bug determines the item meets our Definition of Done and has created a Pull Request. The item will stay in this status through the PR process -- including addressing requested feedback or fixing issues found.
     * **Closed**: The Pull Request/Task has completed, and the work has been committed to the `main` branch of the project repository.
@@ -123,11 +123,11 @@ We pledge to follow the [Microsoft Open Source Code of Conduct](https://opensour
 
 |  | When | Length | Participants | Purpose |
 |------|------|--------|--------------|---------|
-| **Standup** | Monday, Tuesday, Wednesday  @ 10:00AM CST | 10 minutes | Development Team, Scrum Master, Product Owner | Those with committed work answer: What did I do yesterday? What will I do today? Is there anything in my way? |
-| **Triage** | Monday, Tuesday, Wednesday @ 10:10AM CST | 10 minutes | Development Team, Scrum Master, Product Owner| Review an net-new issues for prioritization and discussion |
-| **Review** | Thursday @ 9:30AM CST | 20 minutes | Development Team, Scrum Master, Product Owner | Demonstrate the work we did this week. Show and tell time. |
-| **Retrospective** | Thursday @ 9:50AM CST  | 20 minutes | Development Team, Scrum Master, Product Owner | Reflect as a team on how we're doing -- what's working well for us, and what could we do better? |
-| **Planning** | Thursday @ 9:50AM CST | 20 minutes | Scrum Master, Product Owner, Development Team | Commit to work for the next sprint. |
+| **Standup** | Monday, Tuesday, Thursday  @ 4:30PM CST | 10 minutes | Development Team, Scrum Master, Product Owner | Those with committed work answer: What did I do yesterday? What will I do today? Is there anything in my way? |
+| **Triage** | Monday, Tuesday, Thursday  @ 4:40PM CST | 10 minutes | Development Team, Scrum Master, Product Owner| Review an net-new issues for prioritization and discussion |
+| **Review** | Wednesday @ 4:00PM CST | 30 minutes | Development Team, Scrum Master, Product Owner | Demonstrate the work we did this week. Show and tell time. |
+| **Retrospective** | Wednesday @ 4:30PM  | 30 minutes | Development Team, Scrum Master, Product Owner | Reflect as a team on how we're doing -- what's working well for us, and what could we do better? |
+| **Planning** | Wednesday @ 5:00PM | 30 minutes | Scrum Master, Product Owner, Development Team | Commit to work for the next sprint. |
 
 ## How we code together
 
