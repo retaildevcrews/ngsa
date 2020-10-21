@@ -142,9 +142,9 @@ We pledge to follow the [Microsoft Open Source Code of Conduct](https://opensour
 
 ### Versioning & Tagging
 
-* Deliverable does require versioning since we do anticipate supporting multiple releases side-by-side.
-* Symetic versioning will be used to track deployments.
-* We will tag as needed to identify milestones along main branch.
+* Code requires versioning to support side-by-side releases.
+* Semantic versioning will be used (ex.: 0.5.0-MMdd-hhmm).
+* We will tag as needed to identify releases along main branch.
 
 ### Reviews
 
