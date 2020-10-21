@@ -60,6 +60,7 @@ namespace CSE.NextGenSymmetricApp
             };
 
             // add the options
+            root.AddOption(new Option<bool>(new string[] { "--in-memory" }, "Use in-memory database"));
             root.AddOption(new Option<string>(new string[] { "--secrets-volume" }, () => "secrets", "Secrets Volume Path"));
             root.AddOption(new Option<LogLevel>(new string[] { "-l", "--log-level" }, "Log Level"));
             root.AddOption(new Option<bool>(new string[] { "-d", "--dry-run" }, "Validates configuration"));
@@ -73,12 +74,28 @@ namespace CSE.NextGenSymmetricApp
         /// <param name="secretsVolume">k8s Secrets Volume Path</param>
         /// <param name="logLevel">Log Level</param>
         /// <param name="dryRun">Dry Run flag</param>
+        /// <param name="inMemory">Use in-memory DB</param>
         /// <returns>status</returns>
-        public static async Task<int> RunApp(string secretsVolume, LogLevel logLevel, bool dryRun)
+        public static async Task<int> RunApp(string secretsVolume, LogLevel logLevel, bool dryRun, bool inMemory)
         {
             try
             {
-                Secrets = Secrets.GetSecretsFromVolume(secretsVolume);
+                if (inMemory)
+                {
+                    Secrets = new Secrets
+                    {
+                        UseInMemoryDb = true,
+                        AppInsightsKey = string.Empty,
+                        CosmosCollection = "movies",
+                        CosmosDatabase = "imdb",
+                        CosmosKey = "in-memory",
+                        CosmosServer = "in-memory",
+                    };
+                }
+                else
+                {
+                    Secrets = Secrets.GetSecretsFromVolume(secretsVolume);
+                }
 
                 // setup ctl c handler
                 ctCancel = SetupCtlCHandler();
@@ -137,6 +154,7 @@ namespace CSE.NextGenSymmetricApp
             Console.WriteLine($"Version            {Middleware.VersionExtension.Version}");
             Console.WriteLine($"Log Level          {AppLogLevel}");
             Console.WriteLine($"Secrets Volume     {App.Secrets.Volume}");
+            Console.WriteLine($"Use in memory DB   {App.Secrets.UseInMemoryDb}");
             Console.WriteLine($"Cosmos Server      {App.Secrets.CosmosServer}");
             Console.WriteLine($"Cosmos Database    {App.Secrets.CosmosDatabase}");
             Console.WriteLine($"Cosmos Collection  {App.Secrets.CosmosCollection}");
