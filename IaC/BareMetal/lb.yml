@@ -32,3 +32,31 @@ spec:
     hostPath:
       path: /home/nginx/certbot
       type: Directory
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+  namespace: default
+spec:
+  clusterIP:
+  externalTrafficPolicy: Cluster
+  ports:
+  - nodePort:
+    name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  - nodePort:
+    name: https
+    port: 443
+    protocol: TCP
+    targetPort: 443
+  selector:
+    app: nginx
+  sessionAffinity: None
+  type: LoadBalancer
