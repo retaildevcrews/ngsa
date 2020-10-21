@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ngsa
+  labels:
+    app: ngsa
+spec:
+  clusterIP:
+  ports:
+  - port: 4120
+    protocol: TCP
+    targetPort: 4120
+  selector:
+    app: ngsa
+  sessionAffinity: None
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2020-10-21T20:58:33Z"
+  labels:
+    app: nginx
+  name: nginx
+  namespace: default
+spec:
+  clusterIP:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  - name: https
+    port: 443
+    protocol: TCP
+    targetPort: 443
+  selector:
+    app: nginx
+  sessionAffinity: None
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: nginx
+  name: nginx-lb
+  namespace: default
+spec:
+  clusterIP:
+  externalTrafficPolicy: Cluster
+  ports:
+  - nodePort:
+    name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  - nodePort:
+    name: https
+    port: 443
+    protocol: TCP
+    targetPort: 443
+  selector:
+    app: nginx
+  sessionAffinity: None
+  type: LoadBalancer
