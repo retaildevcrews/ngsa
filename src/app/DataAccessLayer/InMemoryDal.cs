@@ -171,7 +171,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
 
                         actorId = actorId.Trim().ToLowerInvariant();
 
-                        foreach (var a in m.Roles)
+                        foreach (Role a in m.Roles)
                         {
                             if (a.ActorId == actorId)
                             {
