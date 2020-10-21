@@ -29,7 +29,7 @@ We pledge to follow the [Microsoft Open Source Code of Conduct](https://opensour
 * Our sprint work items will follow the hierarchy:  --
   * Epic
       * Story
-        * Task
+         * Task
       * Bug
         * Task
 - We will track Risk work items outside of the hierarchy so that we may easily manage them independently; however, we may choose to relate them to other work items.
@@ -37,9 +37,9 @@ We pledge to follow the [Microsoft Open Source Code of Conduct](https://opensour
 |  | Sizing | Definition |
 |--|--------|------------|
 | **Epic** | Up to the lifetime of the project | Business initiative for a stakeholder to accomplish |
-| **Story** | Completable within a milestone | Consists of multiple tasks |
+| **Story** | Completable within a sprint | Consists of multiple tasks |
 | **Bug** | Completable within a sprint | Production blocking bugs are prioritized |
-| **Task** | Completable within a sprint | Optionally defined by the story owner to help track work that must be completed to consider a story done |
+| **Task** | Completable within a week | Optionally defined by the story owner to help track work that must be completed to consider a story done |
 | **Risk** | N/A | Something that the team would like to shine light on to ensure actions can be taken to mitigate effects on the project |
 
 #### User Story Guidelines
@@ -48,7 +48,8 @@ We pledge to follow the [Microsoft Open Source Code of Conduct](https://opensour
 
 ##### User Story Guideline
 
-   As *[Role]* I can *[Feature/Function]* so that *[Goal/Business Value]*.
+  Leveraging the 5 W's (who, what, when, where, why)
+  
 ##### Acceptance Criteria/Tests
 
    User can *[select/operate] [Feature/Function]* so that *[output]* is *[visible/complete/etc.]*  
@@ -88,9 +89,9 @@ We pledge to follow the [Microsoft Open Source Code of Conduct](https://opensour
 #### Definition of Done
 
 - Acceptance Criteria are satisfied
-- Appropriate [Pull Request template(s)](https://github.com/retaildevcrews/ServicePrincipal/blob/main/.github/PULL_REQUEST_TEMPLATE.md) satisfied
-- [Pull Request](https://github.com/retaildevcrews/ServicePrincipal/projects/1) approved and completed
-- [DoD Review & Release](https://github.com/retaildevcrews/ServicePrincipal/projects/1?card_filter_query=label%3Arelease) checklist satisfied and completed
+- Appropriate [Pull Request template(s)](https://github.com/retaildevcrews/ngsa/blob/main/.github/PULL_REQUEST_TEMPLATE.md) satisfied
+- [Pull Request](https://github.com/retaildevcrews/ngsa/projects/2) approved and completed
+- [DoD Review & Release](https://github.com/retaildevcrews/ngsa/projects/2?card_filter_query=label%3ARelease) checklist satisfied and completed
 - Demonstration recorded and available to customer (when applicable)
 
 ### Backlogs and (Dash)boards
@@ -100,25 +101,24 @@ We pledge to follow the [Microsoft Open Source Code of Conduct](https://opensour
 - User Story Board will be used to track User Story progress.
 - Kanban Board will be used to track project progress
   - Board columns:
-    * **Triage**: All net-new issues/bugs/features need to be created as an issue; things to discuss/notes can be added as a "note" 
-    * **Backlog**: Has been refined, triaged, and prioritized.
-    * **Sprint Backlog**:  Issues that have been committed for the current sprint.
+    * Triage: All net-new issues/bugs/features need to be created as an issue; things to discuss/notes can be added as a "note" 
+    * Backlog: Has been refined, triaged, and prioritized.
+    * 
+    * Sprint Backlog:  Issues that have been committed for the current sprint.
     * **In Progress**: A development team member owns the story or bug and begins work.
     * **PR Submitted/In Review**: The owner of the story or bug determines the item meets our Definition of Done and has created a Pull Request. The item will stay in this status through the PR process -- including addressing requested feedback or fixing issues found.
     * **Closed**: The Pull Request/Task has completed, and the work has been committed to the `main` branch of the project repository.
-  * Story Board styles:
-    * We will style stories or bugs that have been committed to the current sprint so that they may be easily identified from the story board.
-    * We will style stories or bugs that were committed to the previous sprint but carried over so that we may focus on completing the items as soon as possible to reduce impact on the current sprint.
+ 
 
 ### Estimating
 
-* We will estimate Tasks with size tagging to help gauge how much we work we commit to within a sprint.
-* We will use SizeS, SizeM, SizeL for our estimation -- with one SizeS being less than 2 days, SizeM being 2-3 days, and SizeL being 4-5 days.
+* We will estimate User Stories with size tagging to help gauge how much we work we commit to within a sprint.
+* We will use T-shirts sizing for our estimation -- with XS <1 day, Small is 1-2 days, Medium is 2-3 days, Large is 4-5 days, and XL > week, needs decomposed.
 
 
 ### Ceremonies
 
-* Our sprints will be one week and run from Monday to Friday with Review, Retrospective, and Planning occurring back-to-back.
+* Our sprints will be two weeks and run from Thursday - Wednesday with Review, Retrospective, and Planning occurring back-to-back.
 * We will use an assigned Scrum Master versus rotating the role among the team.
 
 |  | When | Length | Participants | Purpose |
@@ -137,32 +137,31 @@ We pledge to follow the [Microsoft Open Source Code of Conduct](https://opensour
   * It will be locked, requiring a PR to make commits.
   * It will be shippable at any time.
 * Branches will be used for story or bug-fix work.
-  * Naming convention will include using either the `feature/` or `bugfix/` foldering prefix to a short description of the story or bug (e.g., `feature/create-working-agreement` or `bugfix/deploy-script-error-on-box`). Avoid using the work item IDs in your branch names.
-  * If multiple developers have commits for the same story, they should share the story branch versus creating user-specific branches in order to deliver a single unit of value upon PR completion.
+  * Naming convention will include alias with a short description of the story or bug (e.g., `dsturgell-create-working-agreement` or `jofultz-deploy-script-error-on-box`)
   * Commits should always have a short but descriptive message explaining what is changing.
 
 ### Versioning & Tagging
 
-* Deliverable does not require versioning since we do not anticipate supporting multiple releases side-by-side.
-* Build numbers will be used to help us track deployments versus versions.
+* Deliverable does require versioning since we do anticipate supporting multiple releases side-by-side.
+* Symetic versioning will be used to track deployments.
 * We will tag as needed to identify milestones along main branch.
 
 ### Reviews
 
-* While Pull Requests will be required as an official form of review for any work done, informal ad-hoc code reviews or design reviews are encouraged.
-* Designs that may impact other areas or assumptions should be informally reviewed with a larger audience (preferably including the project leads) for visibility to the proposed changes and feedback.
+* While Pull Requests will be required as an official form of review for any work done, ad-hoc code reviews or design reviews are encouraged.
+* Designs that may impact other areas or assumptions should be reviewed with a larger audience (preferably including the project leads) for visibility to the proposed changes and feedback.
 
 ### Pull Requests
 
-* PRs should capture all of the work required to deliver a story or bug fix. Prefer a single PR to close a story over multiple PRs that deliver incomplete value.
+* PRs should be small in nature; ideally should close one or more tasks. 
 * PRs should contain complete descriptions that follow the template and describe the scope of the work and how it meets the acceptance criteria if not obvious.
-* A branch policy that requires the PR is tied to a user story or bug is in place.
-* A branch policy that requires one approver to complete a PR is in place. Add the entire team (using a group) to the PR for review, but explicitly call out the approvers as named reviewers. Ask for committed approvers early (consider asking at assignment), and as a committed approver attempt to complete within a day of assignment. If you don't feel you are a qualified approver, comment on that, remove the explicit reviewer assignment to yourself and try to find another approver to replace you.
+* A branch policy that requires the PR is tied to a task or bug is in place.
+* A branch policy that requires one approver to complete a PR is in place. Explicitly call out the approvers as named reviewers. Ask for committed approvers early (consider asking at assignment), and as a committed approver attempt to complete within 12hours of assignment. If you don't feel you are a qualified approver, comment on that, remove the explicit reviewer assignment to yourself and try to find another approver to replace you.
 * A branch policy that requires a successful and unexpired merge build before completion is in place.
 * A branch policy that requires all PR comments to be resolved is in place.
 * Linters must pass before completion. (Note: not all file types will require linting.)
 * Tests must pass before completion.
-* PRs will utilize a squash merge into master upon completion ensuring a linear commit history with a single consolidated commit per PR.
+* PRs will utilize a squash merge into main upon completion ensuring a linear commit history with a single consolidated commit per PR.
 * Branches will be deleted after PR completion -- missed functionality should be captured as a new bugfix or story.
 
 ### Pairing
