@@ -19,3 +19,22 @@ spec:
     secret:
       secretName: ngsa-secrets
       defaultMode: 444
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ngsa
+  labels:
+    app: ngsa
+spec:
+  clusterIP:
+  ports:
+  - port: 4120
+    protocol: TCP
+    targetPort: 4120
+  selector:
+    app: ngsa
+  sessionAffinity: None
+  type: ClusterIP
