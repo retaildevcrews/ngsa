@@ -92,20 +92,27 @@ sed -e "s/{PIP}/${PIP}/g" metalLB.yml | k apply -f -
 
 ```bash
 
-# create the pod
+# create the pod and Cluster IP
+# Choose one
+
+# use Cosmos DB
 k apply -f ngsa.yml
+
+# use in-memory DB
+k apply -f in-memory.yml
 
 # retry until you get the startup message
 k logs ngsa
 
 # create load balancer
-k expose pod ngsa --type=LoadBalancer --port 80 --target-port 4120
+k apply -f lb.yml
 
 # check status
 # wait for external IP to be visible
 k get svc
 
 # test the LB
-http ${PIP}/version
+# will return an https redirect
+http ${PIP}
 
 ```
