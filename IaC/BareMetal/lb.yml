@@ -22,15 +22,15 @@ spec:
   volumes:
   - name: www
     hostPath:
-      path: /home/nginx/www
+      path: /etc/ngsa/www
       type: Directory
   - name: conf
     hostPath:
-      path: /home/nginx/conf.d
+      path: /etc/ngsa/conf.d
       type: Directory
   - name: certbot
     hostPath:
-      path: /home/nginx/certbot
+      path: /etc/ngsa/certbot
       type: Directory
 
 ---
