@@ -163,9 +163,10 @@ apt-get install -y azure-cli
 
 echo "install dotnet" > /home/${ME}/status
 apt-get install -y dotnet-sdk-3.1
+dotnet tool install -g webvalidate
 
-echo "install go" > /home/${ME}/status
-apt-get install -y golang-go
+# echo "install go" > /home/${ME}/status
+# apt-get install -y golang-go
 
 systemctl enable docker
 
