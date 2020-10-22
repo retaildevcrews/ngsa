@@ -42,7 +42,7 @@ sudo shutdown -r now
 
 ########################################
 # replace with your ID
-export ME=YourID
+export ME=ngsa
 ########################################
 
 # comment this line for Azure VMs as the UID is already created
@@ -82,7 +82,7 @@ echo "" >> .bashrc
 echo "export GO111MODULE=on" >> .bashrc
 echo "alias k='kubectl'" >> .bashrc
 echo "alias ipconfig='ip -4 a show eth0 | grep inet'" >> .bashrc
-echo 'export PATH="$PATH:$HOME/go/bin"' >> .bashrc
+echo 'export PATH="$PATH:$HOME/.dotnet/tools:$HOME/go/bin"' >> .bashrc
 
 # create .profile
 cat <<'EOF' > .profile
@@ -146,25 +146,27 @@ add-apt-repository ppa:longsleep/golang-backports -y
 
 apt-get update
 
-echo "install 1" > /home/${ME}/status
+echo "install apt" > /home/${ME}/status
 apt-get install -y apt-utils dialog apt-transport-https ca-certificates
 
-echo "install 2" > /home/${ME}/status
+echo "install utils" > /home/${ME}/status
 apt-get install -y curl git wget nano jq zip unzip httpie dnsutils
 
-echo "install 3" > /home/${ME}/status
+echo "install libs" > /home/${ME}/status
 apt-get install -y software-properties-common libssl-dev libffi-dev python-dev build-essential lsb-release gnupg-agent
 
-echo "install 4" > /home/${ME}/status
+echo "install docker" > /home/${ME}/status
 apt-get install -y docker-ce docker-ce-cli containerd.io kubectl kubelet kubeadm kubernetes-cni
 
-echo "install 5" > /home/${ME}/status
+echo "install az" > /home/${ME}/status
 apt-get install -y azure-cli
 
-# optional
-# echo "install 6" > /home/${ME}/status
+echo "install dotnet" > /home/${ME}/status
+apt-get install -y dotnet-sdk-3.1
+dotnet tool install -g webvalidate
+
+# echo "install go" > /home/${ME}/status
 # apt-get install -y golang-go
-# apt-get install -y dotnet-sdk-3.1
 
 systemctl enable docker
 

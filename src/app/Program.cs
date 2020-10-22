@@ -61,7 +61,7 @@ namespace CSE.NextGenSymmetricApp
         {
             // build the System.CommandLine.RootCommand
             RootCommand root = BuildRootCommand();
-            root.Handler = CommandHandler.Create<string, LogLevel, bool>(RunApp);
+            root.Handler = CommandHandler.Create<string, LogLevel, bool, bool>(RunApp);
 
             string[] cmd = CombineEnvVarsWithCommandLine(args);
 
@@ -177,8 +177,7 @@ namespace CSE.NextGenSymmetricApp
         /// <summary>
         /// Build the web host
         /// </summary>
-        /// <param name="kvUrl">URL of the Key Vault</param>
-        /// <param name="authType">MI, CLI, VS</param>
+        /// <param name="useInMemory">Use in memory DB flag</param>
         /// <returns>Web Host ready to run</returns>
         private static IWebHost BuildHost()
         {
@@ -194,7 +193,14 @@ namespace CSE.NextGenSymmetricApp
                 .ConfigureServices(services =>
                 {
                     // add the data access layer via DI
-                    services.AddDal(new Uri(Secrets.CosmosServer), Secrets.CosmosKey, Secrets.CosmosDatabase, Secrets.CosmosCollection);
+                    if (App.Secrets.UseInMemoryDb)
+                    {
+                        services.AddInMemoryDal();
+                    }
+                    else
+                    {
+                        services.AddDal(new Uri(Secrets.CosmosServer), Secrets.CosmosKey, Secrets.CosmosDatabase, Secrets.CosmosCollection);
+                    }
 
                     // add IConfigurationRoot
                     services.AddSingleton<IConfigurationRoot>(config);

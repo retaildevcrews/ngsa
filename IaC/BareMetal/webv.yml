@@ -9,4 +9,4 @@ spec:
   - name: webv
     image: retaildevcrew/webvalidate:beta
     imagePullPolicy: Always
-    args: ["-s", "http://ngsa2.cse.ms", "-u", "https://raw.githubusercontent.com/retaildevcrews/helium/main/TestFiles/", "-f", "benchmark.json", "-r", "-l", "1000"]
+    args: ["-s", "http://ngsa", "-u", "https://raw.githubusercontent.com/retaildevcrews/helium/main/TestFiles/", "-f", "benchmark.json", "-r", "-l", "1000"]

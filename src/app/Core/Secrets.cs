@@ -11,6 +11,7 @@ namespace CSE.NextGenSymmetricApp
     /// </summary>
     public class Secrets
     {
+        public bool UseInMemoryDb { get; set; }
         public string Volume { get; set; }
         public string AppInsightsKey { get; set; }
         public string CosmosServer { get; set; }
