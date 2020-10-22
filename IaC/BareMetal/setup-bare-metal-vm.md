@@ -82,7 +82,7 @@ echo "" >> .bashrc
 echo "export GO111MODULE=on" >> .bashrc
 echo "alias k='kubectl'" >> .bashrc
 echo "alias ipconfig='ip -4 a show eth0 | grep inet'" >> .bashrc
-echo 'export PATH="$PATH:$HOME/go/bin"' >> .bashrc
+echo 'export PATH="$PATH:$HOME/.dotnet/tools:$HOME/go/bin"' >> .bashrc
 
 # create .profile
 cat <<'EOF' > .profile
