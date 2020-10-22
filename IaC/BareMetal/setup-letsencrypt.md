@@ -8,29 +8,30 @@ We mount these files as volumes in the nginx pod via `lb.yml`
 
 ``` bash
 
+##############
+# change these values
+export MY_DOMAIN=ngsabm.cse.ms
+
 # create a directory
 # if you change this, you'll have to change in the commands below
 #   AND the yml files
 
 sudo mkdir -p /etc/ngsa
-sudo chown -R bartr:bartr /etc/ngsa
-cd /etc/ngsa
-
-mkdir -p conf.d
-
-# change ngsabm.cse.ms to your domain
-# TODO - make an env var for dev experience
-
-mkdir -p certbot/live/ngsabm.cse.ms
 mkdir -p www/certbot
+mkdir -p conf.d
+mkdir -p certbot/live/${MY_DOMAIN}
+
+# take ownership
+sudo chown -R ${SUDO_USER}:${SUDO_USER} /etc/ngsa
 
 # get the certbot files
-cd  certbot
+cd /etc/ngsa/certbot
 curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf > options-ssl-nginx.conf
 curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams.pem > ssl-dhparams.pem
 
 # create a dummy cert so that nginx will run
-cd live/ngsabm.cse.ms
+cd live/${MY_DOMAIN}
+
 openssl req -x509 -nodes -newkey rsa:1024 -days 1 \
 -keyout './privkey.pem' \
 -out './fullchain.pem' \
@@ -38,37 +39,52 @@ openssl req -x509 -nodes -newkey rsa:1024 -days 1 \
 
 cd /etc/ngsa
 
-# create an app config for ngninx
-# TODO - use cat EOF for dev experience
-nano conf.d/app.conf
-
+# create an app config for nginx
+cat > conf.d/ngsa.conf <<EOF
 server {
     listen 80;
-    server_name ngsabm.cse.ms;
+    server_name ${MY_DOMAIN};
+    root /var/www;
+
     location / {
-        return 301 https://$host$request_uri;
+        return 301 https://\$host\$request_uri;
     }
-    location /.well-known/acme-challenge/ {
-        root /var/www/certbot;
+
+    # handle requests
+    location / {
+        try_files \$uri @server;
+        sendfile off;
+        proxy_no_cache 1;
+        proxy_cache_bypass 1;
+        add_header Last-Modified \$date_gmt;
+        add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+        if_modified_since off;
+    }
+
+    location @server {
+        proxy_pass http://ngsa:4120;
+        proxy_buffering off;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
     }
 }
 
 server {
     listen 443 ssl;
-    server_name ngsabm.cse.ms;
+    server_name {MY_DOMAIN};
 
     location / {
         proxy_pass http://ngsa:4120
     }
 }
 
-ssl_certificate /etc/letsencrypt/live/ngsabm.cse.ms/fullchain.pem;
-ssl_certificate_key /etc/letsencrypt/live/ngsabm.cse.ms/privkey.pem;
-
 include /etc/letsencrypt/options-ssl-nginx.conf;
 ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
-# EOF
+ssl_certificate /etc/letsencrypt/live/${MY_DOMAIN}/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/${MY_DOMAIN}/privkey.pem;
+
+EOF
 
 # create a network
 docker network create ngsa
@@ -93,7 +109,7 @@ http localhost
 docker logs nginx
 
 # remove the dummy certs
-rm certbot/live/ngsabm.cse.ms/*.pem
+rm certbot/live/${MY_DOMAIN}/*.pem
 
 # run certbot
 docker run -it --rm \
@@ -102,10 +118,10 @@ docker run -it --rm \
 --entrypoint sh certbot/certbot
 
 # test cert creation
-# once it's working, remove the --dry-run param
-# you WILL get locked out of letsencrypt if you run too many times on the same sub-domain
 
-# TODO - change email to env var
+##############################
+# Change to your email address
+# and domain
 certbot certonly --webroot -w /var/www/certbot \
 --email bartr@outlook.com \
 -d ngsabm.cse.ms \
@@ -114,16 +130,31 @@ certbot certonly --webroot -w /var/www/certbot \
 --force-renewal \
 --dry-run
 
-# exit the container
+# once it's working, remove the --dry-run param
+# you WILL get locked out of letsencrypt if you run too many times on the same sub-domain
 
-# delete the containers
+##############################
+# Change to your email address
+# and domain
+certbot certonly --webroot -w /var/www/certbot \
+--email bartr@outlook.com \
+-d ngsabm.cse.ms \
+--rsa-key-size 4096 \
+--agree-tos \
+--force-renewal
+
+# exit the container
+exit
+
+# docker clean up
 docker rm -f nginx
 docker rm -f ngsa
+docker delete network ngsa
 
 # take ownership
-sudo chown -R bartr:bartr .
+sudo chown -R ${SUDO_USER}:${SUDO_USER} .
 
 # you now have nginx configured with letsencrypt cert
-# you can deploy lb.yaml and test
+# you can deploy lb.yml and test
 
 ```
