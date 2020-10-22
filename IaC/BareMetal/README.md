@@ -4,7 +4,7 @@
 
 ## Create VM
 
-Create your VM per instructions in [BareMetalSetup](BareMetalSetup.md)
+Create your VM per instructions in [Bare Metal Setup](setup-bare-metal-vm.md)
 
 ## setup k8s
 
