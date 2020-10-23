@@ -41,30 +41,30 @@ spec:
                   fieldPath: metadata.name
           ports:
             - name: http
-              containerPort: 4120
+              containerPort: {{ .Values.app.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /healthz
               port: http
-            initialDelaySeconds: 120  
-            failureThreshold: 1
-            periodSeconds: 10
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}  
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}  
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}  
           readinessProbe:
             httpGet:
               path: /healthz
               port: http
-            failureThreshold: 1
-            periodSeconds: 10
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }} 
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }} 
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          volumeMounts: #TODO set these in Values file
+          volumeMounts:
             - name: secrets
               mountPath: "/app/secrets"
       volumes: 
         - name: secrets
           secret:
-            secretName: ngsa-secrets
+            secretName: {{ include "ngsa.fullname" . }}-secrets
             defaultMode: 444      
       {{- with .Values.nodeSelector }}
       nodeSelector:

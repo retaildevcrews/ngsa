@@ -16,6 +16,16 @@ fullnameOverride: ""
 
 app:
   args: [""]
+  port: 4120
+
+livenessProbe:
+  initialDelaySeconds: 120
+  failureThreshold: 1
+  periodSeconds: 10
+
+readinessProbe:
+  failureThreshold: 1
+  periodSeconds: 10
 
 serviceAccount:
   # Specifies whether a service account should be created

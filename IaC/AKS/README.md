@@ -320,7 +320,7 @@ helm install keda kedacore/keda -n keda
 
 ```bash
 
-kubectl create secret generic ngsa-secrets \
+kubectl create secret generic ngsa-aks-secrets \
   --from-literal=CosmosDatabase=$Imdb_DB \
   --from-literal=CosmosCollection=$Imdb_Col \
   --from-literal=CosmosKey=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryReadonlyMasterKey -o tsv) \
