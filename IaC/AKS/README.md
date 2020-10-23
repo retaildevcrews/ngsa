@@ -1,7 +1,7 @@
 # Deployment Walk Through
 
 ## Background
-TBD
+The following instructions allow the deployment of NGSA application in AKS with Istio and Keda.
 
 ### Azure Components in Use
 
