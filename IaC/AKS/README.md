@@ -72,10 +72,10 @@ This walkthrough will create resource groups, a Cosmos DB instance, and an Azure
 # do not include punctuation - only use a-z and 0-9
 # must be at least 5 characters long
 # must start with a-z (only lowercase)
-export He_Name=[your unique name]
+export Ngsa_Name=[your unique name]
 
-### if true, change He_Name
-az cosmosdb check-name-exists -n ${He_Name}
+### if true, change Ngsa_Name
+az cosmosdb check-name-exists -n ${Ngsa_Name}
 
 ```
 
@@ -92,25 +92,22 @@ az cosmosdb check-name-exists -n ${He_Name}
 ```bash
 
 # set location
-export He_Location=westus2
-
-# set the subscription
-export He_Sub='az account show --query id -o tsv'
+export Ngsa_Location=westus2
 
 # resource group names
-export Imdb_Name=$He_Name
-export He_App_RG=${He_Name}-rg-app
+export Imdb_Name=$Ngsa_Name
+export Ngsa_App_RG=${Ngsa_Name}-rg-app
 export Imdb_RG=${Imdb_Name}-rg-cosmos
 
 # export Cosmos DB env vars
 # these will be explained in the Cosmos DB setup step
-export Imdb_Location=$He_Location
+export Imdb_Location=$Ngsa_Location
 export Imdb_DB=imdb
 export Imdb_Col=movies
 export Imdb_RW_Key='az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryMasterKey -o tsv'
 
 # create the resource groups
-az group create -n $He_App_RG -l $He_Location
+az group create -n $Ngsa_App_RG -l $Ngsa_Location
 az group create -n $Imdb_RG -l $Imdb_Location
 
 ```
@@ -138,7 +135,7 @@ az feature register --name AIWorkspacePreview --namespace microsoft.insights
 az provider register -n microsoft.insights
 
 # Create App Insights
-az monitor app-insights component create -g $He_App_RG -l $He_Location -a $He_Name -o table
+az monitor app-insights component create -g $Ngsa_App_RG -l $Ngsa_Location -a $Ngsa_Name -o table
 
 ```
 
@@ -148,7 +145,7 @@ Set local variables to use in AKS deployment
 
 ```bash
 
-export He_AKS_Name="${He_Name}-aks"
+export Ngsa_AKS_Name="${Ngsa_Name}-aks"
 
 ```
 
@@ -156,7 +153,7 @@ Determine the latest version of Kubernetes supported by AKS. It is recommended t
 
 ```bash
 
-az aks get-versions -l $He_Location -o table
+az aks get-versions -l $Ngsa_Location -o table
 
 export He_K8S_VER=1.18.8
 
@@ -172,9 +169,9 @@ Create and connect to the AKS cluster.
 #    role assignment for ACR. Are you an Owner on this subscription?
 
 # this step usually takes 2-4 minutes
-az aks create --name $He_AKS_Name --resource-group $He_App_RG --location $He_Location --enable-cluster-autoscaler --min-count 3 --max-count 6 --node-count 3 --kubernetes-version $He_K8S_VER --no-ssh-key
+az aks create --name $Ngsa_AKS_Name --resource-group $Ngsa_App_RG --location $Ngsa_Location --enable-cluster-autoscaler --min-count 3 --max-count 6 --node-count 3 --kubernetes-version $He_K8S_VER --no-ssh-key
 
-az aks get-credentials -n $He_AKS_Name -g $He_App_RG
+az aks get-credentials -n $Ngsa_AKS_Name -g $Ngsa_App_RG
 
 kubectl get nodes
 
@@ -301,7 +298,7 @@ Get the public IP of the Istio Ingress Gateway and set the application endpoint.
 ```bash
 
 export INGRESS_PIP=$(kubectl --namespace istio-system  get svc -l istio=ingressgateway -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}')
-export He_App_Endpoint=http://${INGRESS_PIP}.nip.io
+export Ngsa_App_Endpoint=http://${INGRESS_PIP}.nip.io
 
 ```
 
@@ -325,7 +322,7 @@ kubectl create secret generic ngsa-aks-secrets \
   --from-literal=CosmosCollection=$Imdb_Col \
   --from-literal=CosmosKey=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryReadonlyMasterKey -o tsv) \
   --from-literal=CosmosUrl=https://${Imdb_Name}.documents.azure.com:443/ \
-  --from-literal=AppInsightsKey=$(az monitor app-insights component show -g $He_App_RG -a $He_Name --query instrumentationKey -o tsv)
+  --from-literal=AppInsightsKey=$(az monitor app-insights component show -g $Ngsa_App_RG -a $Ngsa_Name --query instrumentationKey -o tsv)
 
 ```
 
@@ -344,6 +341,7 @@ cd $REPO_ROOT/IaC/AKS/cluster/charts
 ```
 
 ```bash
+
 # Before installing the chart, ensure <INGRESS_PIP> is updated in your Values.yaml file with the value of $INGRESS_PIP
 
 # Install NGSA using the upstream ngsa image from Dockerhub
@@ -354,7 +352,7 @@ helm install ngsa-aks ngsa/
 # check the version endpoint
 # you may get a timeout error, if so, just retry
 
-http ${He_App_Endpoint}/version
+http ${Ngsa_App_Endpoint}/version
 
 ```
 
