@@ -294,3 +294,6 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+
+# Files generated during multi-cluster spike walkthrough
+spikes/istio-multicluster/istio-*-cluster.yaml
