@@ -7,7 +7,10 @@ TBD
 
 - Azure Kubernetes Service
   - Istio ServiceMesh
+  - Keda
   - Prometheus
+  - Kiali
+  - Grafana 
 - Azure Cosmos DB
 - Application Insights
 
@@ -59,7 +62,7 @@ az account set -s {subscription name or Id}
 
 ```
 
-This walkthrough will create resource groups, a Cosmos DB instance, and a Azure Kubernetes Service (AKS) cluster.
+This walkthrough will create resource groups, a Cosmos DB instance, and an Azure Kubernetes Service (AKS) cluster.
 
 #### Choose a unique DNS name
 
@@ -73,10 +76,6 @@ export He_Name=[your unique name]
 
 ### if true, change He_Name
 az cosmosdb check-name-exists -n ${He_Name}
-
-### if nslookup doesn't fail to resolve, change He_Name
-nslookup ${He_Name}.vault.azure.net
-nslookup ${He_Name}.azurecr.io
 
 ```
 
@@ -126,9 +125,6 @@ az group create -n $Imdb_RG -l $Imdb_Location
   > You can safely start with the Create Cosmos DB step
   >
   > The initial steps were completed above
-
-Save the Cosmos DB config to Key Vault
-
 
 #### Create Azure Monitor
 
@@ -329,7 +325,7 @@ kubectl create secret generic ngsa-secrets \
   --from-literal=CosmosCollection=$Imdb_Col \
   --from-literal=CosmosKey=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryReadonlyMasterKey -o tsv) \
   --from-literal=CosmosUrl=https://${Imdb_Name}.documents.azure.com:443/ \
-  --from-literal=AppInsightsKey=$(eval az monitor app-insights component show -g $He_App_RG -a $He_Name --query instrumentationKey -o tsv)
+  --from-literal=AppInsightsKey=$(az monitor app-insights component show -g $He_App_RG -a $He_Name --query instrumentationKey -o tsv)
 
 ```
 
@@ -348,6 +344,8 @@ cd $REPO_ROOT/IaC/AKS/cluster/charts
 ```
 
 ```bash
+# Before installing the chart, ensure <INGRESS_PIP> is updated in your Values.yaml file with the value of $INGRESS_PIP
+
 # Install NGSA using the upstream ngsa image from Dockerhub
 helm install ngsa-aks ngsa/
 
