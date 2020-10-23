@@ -155,7 +155,7 @@ Determine the latest version of Kubernetes supported by AKS. It is recommended t
 
 az aks get-versions -l $Ngsa_Location -o table
 
-export He_K8S_VER=1.18.8
+export Ngsa_K8S_VER=1.18.8
 
 ```
 
@@ -169,7 +169,7 @@ Create and connect to the AKS cluster.
 #    role assignment for ACR. Are you an Owner on this subscription?
 
 # this step usually takes 2-4 minutes
-az aks create --name $Ngsa_AKS_Name --resource-group $Ngsa_App_RG --location $Ngsa_Location --enable-cluster-autoscaler --min-count 3 --max-count 6 --node-count 3 --kubernetes-version $He_K8S_VER --no-ssh-key
+az aks create --name $Ngsa_AKS_Name --resource-group $Ngsa_App_RG --location $Ngsa_Location --enable-cluster-autoscaler --min-count 3 --max-count 6 --node-count 3 --kubernetes-version $Ngsa_K8S_VER --no-ssh-key
 
 az aks get-credentials -n $Ngsa_AKS_Name -g $Ngsa_App_RG
 
@@ -330,7 +330,7 @@ kubectl create secret generic ngsa-aks-secrets \
 
 ## Deploy NGSA with Helm
 
-An helm chart is included for the reference application ([NGSA](https://github.com/retaildevcrews/ngsa))
+A helm chart is included for the reference application ([NGSA](https://github.com/retaildevcrews/ngsa))
 
 Install the Helm Chart located in the cloned directory
 
@@ -340,12 +340,41 @@ cd $REPO_ROOT/IaC/AKS/cluster/charts
 
 ```
 
+
+A file called helm-config.yaml with the following contents that needs be to edited to fit the environment being deployed in. The file looks like this
+
+```yaml
+
+# Default values for NGSA.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+    repository: retaildevcrew
+    name: ngsa
+    tag: "beta"
+ingress:
+    hosts:
+        - %%INGRESS_PIP%%.nip.io # Replace the IP address with the external IP of the Istio ingress gateway (value of $INGRESS_PIP or run kubectl get svc istio-ingressgateway -n istio-system to see the correct IP)
+    paths: 
+        - /
+
+```
+
+
+Replace the values in the file surrounded by `%%` with the proper environment variables
+
 ```bash
 
-# Before installing the chart, ensure <INGRESS_PIP> is updated in your Values.yaml file with the value of $INGRESS_PIP
+sed -i "s/%%INGRESS_PIP%%/${INGRESS_PIP}/g" helm-config.yaml \
+
+```
+
+
+```bash
+
 
 # Install NGSA using the upstream ngsa image from Dockerhub
-helm install ngsa-aks ngsa/
+helm install ngsa-aks ngsa -f ./ngsa/helm-config.yaml
 
 # the application generally takes about 2-4 minutes to be ready
 
