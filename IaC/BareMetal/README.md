@@ -29,6 +29,12 @@ sudo kubeadm reset -f
 
 ```bash
 
+# make sure you're in the ngsa/IaC/BareMetal directory
+
+# make sure PIP is set correctly
+echo $PIP
+
+# install k8s controller
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address $PIP
 
 # setup your config file
@@ -44,35 +50,7 @@ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documen
 # this let you run a "one node" cluster for `development`
 k taint nodes --all node-role.kubernetes.io/master-
 
-```
-
-## Set ngsa secrets
-
-```bash
-
-# delete if necessary - you can safely ignore the not exists error
-kubectl delete secret ngsa-secrets
-
-# create from key vault
-kubectl create secret generic ngsa-secrets \
-  --from-literal=CosmosDatabase=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name CosmosDatabase) \
-  --from-literal=CosmosCollection=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name CosmosCollection) \
-  --from-literal=CosmosKey=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name CosmosKey) \
-  --from-literal=CosmosUrl=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name CosmosUrl) \
-  --from-literal=AppInsightsKey=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name AppInsightsKey)
-
-# display the secrets
-kubectl get secret ngsa-secrets -o jsonpath='{.data}'
-
-```
-
-## Install metal load balancer
-
-> Bare metal clusters do not have a load balancer service by default
-
-```bash
-
-# patch kube-proxy
+# patch kube-proxy for metal LB
 kubectl get configmap kube-proxy -n kube-system -o yaml | \
 sed -e "s/strictARP: false/strictARP: true/" | \
 sed -e 's/mode: ""/mode: "ipvs"/' | \
@@ -88,11 +66,33 @@ sed -e "s/{PIP}/${PIP}/g" metalLB.yml | k apply -f -
 
 ```
 
+## Set ngsa secrets
+
+> this is not required if you only run `in-memory.yml`
+
+```bash
+
+# delete if necessary - you can safely ignore the not exists error
+kubectl delete secret ngsa-secrets
+
+# create from key vault
+kubectl create secret generic ngsa-secrets \
+  --from-literal=CosmosDatabase=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name CosmosDatabase) \
+  --from-literal=CosmosCollection=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name CosmosCollection) \
+  --from-literal=CosmosKey=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name CosmosKey) \
+  --from-literal=CosmosUrl=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name CosmosUrl) \
+  --from-literal=AppInsightsKey=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name AppInsightsKey)
+
+# display the secrets (base 64 encoded)
+kubectl get secret ngsa-secrets -o jsonpath='{.data}'
+
+```
+
 ## Deploy ngsa
 
 ```bash
 
-# create the pod and Cluster IP
+# create the pod and Cluster IP service
 # Choose one
 
 # use Cosmos DB
@@ -104,7 +104,20 @@ k apply -f in-memory.yml
 # retry until you get the startup message
 k logs ngsa
 
+# to test without SSL
+k expose service ngsa --type=LoadBalancer --port=80 --target-port=4120 --name ngsa-lb
+
+# make sure the public IP is exposed
+k get all
+
+# test the public IP
+curl $PIP/version
+
+# delete test service
+k delete svc ngsa-lb
+
 # create load balancer
+# this requires SSL to be setup correctly
 k apply -f lb.yml
 
 # check status
