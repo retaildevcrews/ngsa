@@ -1,0 +1,88 @@
+# cloud-config
+# multipass only supports yaml for cloud-config (not bash script)
+groups:
+  - docker
+
+#users:
+  - default
+
+# commands to run at first boot
+# these commands run before write_files
+# if this takes too long, multipass will timeout, so don't add long running task
+# do not use the /tmp directory due to race condition
+runcmd:
+  - mkdir -p /etc/docker
+  - mkdir -p /etc/systemd/system/docker.service.d
+  - cp /usr/share/zoneinfo/America/Chicago /etc/localtime
+  - apt-get update
+  - apt-get install -y apt-utils dialog apt-transport-https ca-certificates lsb-release curl git wget nano
+
+write_files:
+# base 64 encoded daemon.json
+# required for metal LB
+- encoding: b64
+  path: /etc/docker/daemon.json
+  content: |
+    ew0KICAiZXhlYy1vcHRzIjogWyJuYXRpdmUuY2dyb3VwZHJpdmVyPXN5c3RlbWQi
+    XSwNCiAgImxvZy1kcml2ZXIiOiAianNvbi1maWxlIiwNCiAgImxvZy1vcHRzIjog
+    ew0KICAgICJtYXgtc2l6ZSI6ICIxMDBtIg0KICB9LA0KICAic3RvcmFnZS1kcml2
+    ZXIiOiAib3ZlcmxheTIiDQp9DQo=
+
+# base 64 encoded k8s.sh
+# do not write to /home/ubuntu or the user won't get created correctly
+# make sure to not encode on Windows or the script won't run due to CRLF
+- encoding: b64
+  path: /home/setup.sh
+  permissions: '0775'
+  content: |
+    IyEvYmluL2Jhc2gKCiMgZGVmYXVsdCB1c2VyIGZvciBtdWx0aXBhc3MKZXhwb3J0IE1FPXVidW50
+    dQoKIyBtYWtlIHNvbWUgZGlyZWN0b3JpZXMKbWtkaXIgLXAgL2hvbWUvJHtNRX0vYmluCm1rZGly
+    IC1wIC9ob21lLyR7TUV9Ly5sb2NhbC9iaW4KbWtkaXIgLXAgL2hvbWUvJHtNRX0vZ28vc3JjCm1r
+    ZGlyIC1wIC9ob21lLyR7TUV9L2dvL2Jpbgpta2RpciAtcCAvaG9tZS8ke01FfS9nby9wa2cKCiMg
+    c2V0IHRoZSBwZXJtaXNzaW9ucyBvbiAuc3NoCmNobW9kIDcwMCAvaG9tZS8ke01FfS8uc3NoCmNo
+    bW9kIDYwMCAvaG9tZS8ke01FfS8uc3NoLyoKCnN1ZG8gZ3Bhc3N3ZCAtYSAke01FfSBzdWRvCgpj
+    ZCAvaG9tZS8ke01FfQoKIyBjbG9uZSB0aGlzIHJlcG8KZ2l0IGNsb25lIGh0dHBzOi8vZ2l0aHVi
+    LmNvbS9yZXRhaWxkZXZjcmV3cy9uZ3NhCgojIGNsb25lIG9oIG15IGJhc2ggYW5kIGNvcHkgLmJh
+    c2hyYwpnaXQgY2xvbmUgLS1kZXB0aD0xIGh0dHBzOi8vZ2l0aHViLmNvbS9vaG15YmFzaC9vaC1t
+    eS1iYXNoLmdpdCAub2gtbXktYmFzaApjcCAub2gtbXktYmFzaC90ZW1wbGF0ZXMvYmFzaHJjLm9z
+    aC10ZW1wbGF0ZSAuYmFzaHJjCgojIGFkZCB0byAuYmFzaHJjCmVjaG8gIiIgPj4gLmJhc2hyYwpl
+    Y2hvICdleHBvcnQgUEFUSD0iJFBBVEg6JEhPTUUvLmRvdG5ldC90b29sczokSE9NRS9nby9iaW4i
+    JyA+PiAuYmFzaHJjCgojIG9wdGlvbmFsIGJ1dCBoZWxwZnVsCmVjaG8gIiIgPj4gLmJhc2hyYwpl
+    Y2hvICJleHBvcnQgR08xMTFNT0RVTEU9b24iID4+IC5iYXNocmMKZWNobyAiYWxpYXMgaz0na3Vi
+    ZWN0bCciID4+IC5iYXNocmMKZWNobyAiYWxpYXMgaXBjb25maWc9J2lwIC00IGEgc2hvdyBldGgw
+    IHwgZ3JlcCBpbmV0IHwgc2VkIFwicy9pbmV0Ly9nXCIgfCBzZWQgXCJzLyAvL2dcIiB8IGN1dCAt
+    ZCAnLycgLWYgMSciID4+IC5iYXNocmMKZWNobyAnZXhwb3J0IFBJUD0kKGlwY29uZmlnKScgPj4g
+    LmJhc2hyYwplY2hvICdlY2hvICRQSVAnID4+IC5iYXNocmMKCiMgdXBkYXRlIGFuZCBpbnN0YWxs
+    IHV0aWxpdGllcwphcHQtZ2V0IHVwZGF0ZQphcHQtZ2V0IGluc3RhbGwgLXkgYXB0LXV0aWxzIGRp
+    YWxvZyBhcHQtdHJhbnNwb3J0LWh0dHBzIGNhLWNlcnRpZmljYXRlcyBsc2ItcmVsZWFzZSBjdXJs
+    IGdpdCB3Z2V0IG5hbm8KYXB0LWdldCBpbnN0YWxsIC15IHNvZnR3YXJlLXByb3BlcnRpZXMtY29t
+    bW9uIGxpYnNzbC1kZXYgbGliZmZpLWRldiBweXRob24tZGV2IGJ1aWxkLWVzc2VudGlhbCBnbnVw
+    Zy1hZ2VudAphcHQtZ2V0IGluc3RhbGwgLXkgY3VybCBnaXQgd2dldCBuYW5vIGpxIHppcCB1bnpp
+    cCBodHRwaWUgZG5zdXRpbHMKCiMgYWRkIERvY2tlciByZXBvCmN1cmwgLWZzU0wgaHR0cHM6Ly9k
+    b3dubG9hZC5kb2NrZXIuY29tL2xpbnV4L3VidW50dS9ncGcgfCBhcHQta2V5IGFkZCAtCmFkZC1h
+    cHQtcmVwb3NpdG9yeSAiZGViIFthcmNoPWFtZDY0XSBodHRwczovL2Rvd25sb2FkLmRvY2tlci5j
+    b20vbGludXgvdWJ1bnR1ICQobHNiX3JlbGVhc2UgLWNzKSBzdGFibGUiCgojIGFkZCBkb3RuZXQg
+    cmVwbwplY2hvICJkZWIgW2FyY2g9YW1kNjRdIGh0dHBzOi8vcGFja2FnZXMubWljcm9zb2Z0LmNv
+    bS9yZXBvcy9taWNyb3NvZnQtdWJ1bnR1LSQobHNiX3JlbGVhc2UgLWNzKS1wcm9kICQobHNiX3Jl
+    bGVhc2UgLWNzKSBtYWluIiA+IC9ldGMvYXB0L3NvdXJjZXMubGlzdC5kL2RvdG5ldGRldi5saXN0
+    CgojIGFkZCBBenVyZSBDTEkgcmVwbwpjdXJsIC1zTCBodHRwczovL3BhY2thZ2VzLm1pY3Jvc29m
+    dC5jb20va2V5cy9taWNyb3NvZnQuYXNjIHwgZ3BnIC0tZGVhcm1vciA+IC9ldGMvYXB0L3RydXN0
+    ZWQuZ3BnLmQvbWljcm9zb2Z0LmFzYy5ncGcKZWNobyAiZGViIFthcmNoPWFtZDY0XSBodHRwczov
+    L3BhY2thZ2VzLm1pY3Jvc29mdC5jb20vcmVwb3MvYXp1cmUtY2xpLyAkKGxzYl9yZWxlYXNlIC1j
+    cykgbWFpbiIgPiAvZXRjL2FwdC9zb3VyY2VzLmxpc3QuZC9henVyZS1jbGkubGlzdAoKIyBhZGQg
+    a3ViZW5ldGVzIHJlcG8KY3VybCAtcyBodHRwczovL3BhY2thZ2VzLmNsb3VkLmdvb2dsZS5jb20v
+    YXB0L2RvYy9hcHQta2V5LmdwZyB8IGFwdC1rZXkgYWRkIC0KZWNobyAiZGViIGh0dHBzOi8vYXB0
+    Lmt1YmVybmV0ZXMuaW8vIGt1YmVybmV0ZXMteGVuaWFsIG1haW4iID4gL2V0Yy9hcHQvc291cmNl
+    cy5saXN0LmQva3ViZXJuZXRlcy5saXN0CgojIGFkZCBnbyByZXBvCmFkZC1hcHQtcmVwb3NpdG9y
+    eSBwcGE6bG9uZ3NsZWVwL2dvbGFuZy1iYWNrcG9ydHMgLXkKCiMgdXBkYXRlIHNvdXJjZXMKYXB0
+    LWdldCB1cGRhdGUKCiMgaW5zdGFsbCBkb2NrZXIgYW5kIGs4cwphcHQtZ2V0IGluc3RhbGwgLXkg
+    ZG9ja2VyLWNlIGRvY2tlci1jZS1jbGkgY29udGFpbmVyZC5pbyBrdWJlY3RsIGt1YmVsZXQga3Vi
+    ZWFkbSBrdWJlcm5ldGVzLWNuaQoKIyBpbnN0YWxsIGF6dXJlIGNsaSBhbmQgZG90bmV0CmFwdC1n
+    ZXQgaW5zdGFsbCAteSBhenVyZS1jbGkgZG90bmV0LXNkay0zLjEKCiMgc3RhcnQgZG9ja2VyIHNl
+    cnZpY2UgYXQgYm9vdApzeXN0ZW1jdGwgZW5hYmxlIGRvY2tlcgoKIyBwdWxsIHRoZSBpbWFnZXMK
+    a3ViZWFkbSBjb25maWcgaW1hZ2VzIHB1bGwKCiMgdXBkYXRlIC8gdXBncmFkZQphcHQtZ2V0IHVw
+    ZGF0ZQphcHQtZ2V0IGF1dG9yZW1vdmUgLXkKYXB0LWdldCB1cGdyYWRlIC15CgojIHRha2Ugb3du
+    ZXJzaGlwIG9mIGhvbWUgZGlyZWN0b3J5CmNob3duIC1SICAke01FfToke01FfSAvaG9tZS8ke01F
+    fQoKIyBkaXNwbGF5IHRoZSBJUCBhZGRyZXNzIGZvciBjb252ZW5pZW5jZQppcCAtNCBhIHNob3cg
+    ZXRoMCB8IGdyZXAgaW5ldCB8IHNlZCAicy9pbmV0Ly9nIiB8IHNlZCAicy8gLy9nIiB8IGN1dCAt
+    ZCAnLycgLWYgMQo=
