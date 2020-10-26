@@ -9,7 +9,7 @@ image:
   name: ngsa
   tag: beta
   pullPolicy: Always
-  
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
@@ -57,11 +57,15 @@ ingress:
   enabled: true
   hosts:
     - <INGRESS_PIP>.nip.io
-  
+
   paths:
     - /
-  
+
   tls: {}
+
+cert:
+  name: ngsa-cert
+  issuer: letsencrypt-staging
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

@@ -236,6 +236,7 @@ Add the required helm repositories
 
 helm repo add stable https://kubernetes-charts.storage.googleapis.com
 helm repo add kedacore https://kedacore.github.io/charts
+helm repo add jetstack https://charts.jetstack.io
 helm repo update
 
 ```
@@ -289,20 +290,20 @@ You should see the following components:
 - `grafana` - analytics and monitoring dashboard addon
 - `kiali` - service mesh dashboard addon
 
-Enable automatic sidecar injection in the default namespace:
+Enable automatic sidecar injection in the ngsa namespace:
 
 ```bash
 
-kubectl label namespace default istio-injection=enabled
+kubectl create namespace ngsa
+kubectl label namespace ngsa istio-injection=enabled
 
 ```
 
-Get the public IP of the Istio Ingress Gateway and set the application endpoint.
+Get the public IP of the Istio Ingress Gateway.
 
 ```bash
 
 export INGRESS_PIP=$(kubectl --namespace istio-system  get svc -l istio=ingressgateway -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}')
-export Ngsa_App_Endpoint=http://${INGRESS_PIP}.nip.io
 
 ```
 
@@ -330,6 +331,49 @@ kubectl create secret generic ngsa-aks-secrets \
 
 ```
 
+## Setup SSL/DNS
+
+### DNS Setup
+
+Assuming that you have a DNS service instantiated, create a A record to point your domain to your AKS cluster's IP `INGRESS_PIP`.
+
+For example, in Azure:
+
+```bash
+
+az network dns record-set a add-record -g <dns zone resource group> -z <dns zone name> -n $Ngsa_Name -a $INGRESS_PIP --ttl <TTL seconds>
+
+```
+
+Set the application endpoint
+
+```bash
+
+export Ngsa_App_Endpoint=replaceWithDNSHostname
+
+```
+
+### Install Cert-Manager
+
+```bash
+
+cd $REPO_ROOT/IaC/AKS/cluster/manifests/cert-manager
+
+kubectl create ns cert-manager
+helm install cert-manager jetstack/cert-manager \
+  -n cert-manager \
+  --version v1.0.3 \
+  --set installCRDs=true
+
+# Set email to register with Let's Encrypt
+export Ngsa_Email=replaceWithYourEmail
+
+# Create a staging and production ClusterIssuer for cert-manager
+# Use the staging ClusterIssuer for testing. Once ready, use the production resource.
+envsubst < clusterissuer.yaml | kubectl apply -f -
+
+```
+
 ## Deploy NGSA with Helm
 
 A helm chart is included for the reference application ([NGSA](https://github.com/retaildevcrews/ngsa))
@@ -348,7 +392,7 @@ image:
 
 ingress:
   hosts:
-    - %%INGRESS_PIP%%.nip.io # Replace the IP address with the external IP of the Istio ingress gateway (value of $INGRESS_PIP or run kubectl get svc istio-ingressgateway -n istio-system to see the correct IP)
+    - %%APP_ENDPOINT%%
   paths:
     - /
 
@@ -362,23 +406,32 @@ Replace the values in the file surrounded by `%%` with the proper environment va
 ```bash
 
 cd $REPO_ROOT/IaC/AKS/cluster/charts/ngsa
-sed -i "s/%%INGRESS_PIP%%/${INGRESS_PIP}/g" helm-config.yaml
+
+sed -i "s/%%APP_ENDPOINT%%/${Ngsa_App_Endpoint}/g" helm-config.yaml
 
 ```
 
-Install the Helm Chart located in the cloned directory
+This file can now be given to the the helm install as an override to the default values.
 
 ```bash
 
-cd $REPO_ROOT/IaC/AKS/cluster/charts
-
 # Install NGSA using the upstream ngsa image from Dockerhub
-helm install ngsa-aks ngsa -f ./ngsa/helm-config.yaml
+helm install ngsa-aks ngsa -f ./ngsa/helm-config.yaml -n ngsa --set cert.issuer=letsencrypt-staging
 
 # check the version endpoint
 # you may get a timeout error, if so, just retry
 
 http ${Ngsa_App_Endpoint}/version
+
+# TODO:
+#   notes about testing letsencrypt staging cert.
+#   The response should include "CN = Fake LE Intermediate X1" cert at the top.
+openssl s_client -showcerts -servername $Ngsa_App_Endpoint -connect $Ngsa_App_Endpoint:443 < /dev/null
+
+# TODO:
+#   notes about updating the certificate resource to get real certs from letsencrypt prod.
+#   will try to use helm to do an update. will need to set "cert.issuer" to "letsencrypt-prod"
+helm upgrade ngsa-aks ngsa -f ./ngsa/helm-config.yaml  -n ngsa  --set cert.issuer=letsencrypt-prod
 
 ```
 
@@ -399,7 +452,7 @@ TODO
 
 ## Smoke Tests
 
-Deploy Web Validate to drive consistent traffic to the App Service for monitoring and alerting.
+Deploy Web Validate to drive consistent traffic to the AKS cluster for monitoring.
 
 ```bash
 

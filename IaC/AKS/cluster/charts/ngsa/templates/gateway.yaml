@@ -14,7 +14,18 @@ spec:
     tls:
       {{- toYaml . | nindent 6 }}
     {{- end }}
-    hosts: 
+    hosts:
+    {{- range .Values.ingress.hosts }}
+      - {{ . | quote }}
+    {{- end }}
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: {{ .Values.cert.name }}
+    hosts:
     {{- range .Values.ingress.hosts }}
       - {{ . | quote }}
     {{- end }}

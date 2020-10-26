@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1alpha3
+kind: Certificate
+metadata:
+  labels:
+    name: {{ .Values.cert.name }}
+  name: {{ .Values.cert.name }}
+  namespace: istio-system #TODO lookup best practice multi-namespaces for helm
+spec:
+  dnsNames:
+  {{- range .Values.ingress.hosts }}
+    - {{ . | quote }}
+  {{- end }}
+  issuerRef:
+    kind: ClusterIssuer
+    name: {{ .Values.cert.issuer }}
+  secretName: {{ .Values.cert.name }}
