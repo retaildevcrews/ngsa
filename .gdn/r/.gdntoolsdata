@@ -14,6 +14,32 @@
       "properties": {
         "toolInfoId": "credscan>>0>>202010240032"
       }
+    },
+    {
+      "tool": {
+        "driver": {
+          "name": "credscan",
+          "fullName": "Credential Scanner"
+        }
+      },
+      "results": [],
+      "columnKind": "utf16CodeUnits",
+      "properties": {
+        "toolInfoId": "credscan>>0>>202010240049"
+      }
+    },
+    {
+      "tool": {
+        "driver": {
+          "name": "credscan",
+          "fullName": "Credential Scanner"
+        }
+      },
+      "results": [],
+      "columnKind": "utf16CodeUnits",
+      "properties": {
+        "toolInfoId": "credscan>>0>>202010251114"
+      }
     }
   ]
 }
