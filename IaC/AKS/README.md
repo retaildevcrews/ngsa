@@ -323,6 +323,7 @@ helm install keda kedacore/keda -n keda
 ```bash
 
 kubectl create secret generic ngsa-aks-secrets \
+  --namespace ngsa \
   --from-literal=CosmosDatabase=$Imdb_DB \
   --from-literal=CosmosCollection=$Imdb_Col \
   --from-literal=CosmosKey=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryReadonlyMasterKey -o tsv) \
@@ -335,7 +336,7 @@ kubectl create secret generic ngsa-aks-secrets \
 
 ### DNS Setup
 
-Assuming that you have a DNS service instantiated, create a A record to point your domain to your AKS cluster's IP `INGRESS_PIP`.
+Assuming that you have a domain name, and permissions to update DNS records for your domain, create an A record to point your domain to `INGRESS_PIP`.
 
 For example, in Azure:
 
@@ -415,23 +416,33 @@ This file can now be given to the the helm install as an override to the default
 
 ```bash
 
+cd $REPO_ROOT/IaC/AKS/cluster/charts/
+
 # Install NGSA using the upstream ngsa image from Dockerhub
-helm install ngsa-aks ngsa -f ./ngsa/helm-config.yaml -n ngsa --set cert.issuer=letsencrypt-staging
+# Start by using the "letsencrypt-staging" ClusterIssuer to get test certs from the Let's Encrypt staging environment.
+helm install ngsa-aks ngsa -f ./ngsa/helm-config.yaml --namespace ngsa --set cert.issuer=letsencrypt-staging
 
 # check the version endpoint
 # you may get a timeout error, if so, just retry
 
 http ${Ngsa_App_Endpoint}/version
 
-# TODO:
-#   notes about testing letsencrypt staging cert.
-#   The response should include "CN = Fake LE Intermediate X1" cert at the top.
-openssl s_client -showcerts -servername $Ngsa_App_Endpoint -connect $Ngsa_App_Endpoint:443 < /dev/null
+```
 
-# TODO:
-#   notes about updating the certificate resource to get real certs from letsencrypt prod.
-#   will try to use helm to do an update. will need to set "cert.issuer" to "letsencrypt-prod"
-helm upgrade ngsa-aks ngsa -f ./ngsa/helm-config.yaml  -n ngsa  --set cert.issuer=letsencrypt-prod
+Check that the test certificates have been issued. You can check in the browser by going to https://your-domain, or use openssl. With the test certificates, it is expected that you get a privacy error in the browser.
+
+```bash
+
+# Use openssl to view your test certificate. The response should include "CN = Fake LE Intermediate X1" at the top.
+openssl s_client -servername $Ngsa_App_Endpoint -connect $Ngsa_App_Endpoint:443 < /dev/null | grep "CN = Fake LE Intermediate X1"
+
+```
+
+After verifying that the test certs were issued, update the deployment to use the "letsencrypt-prod" ClusterIssuer to get valid certs from the Let's Encrypt production environment.
+
+```bash
+
+helm upgrade ngsa-aks ngsa -f ./ngsa/helm-config.yaml  --namespace ngsa  --set cert.issuer=letsencrypt-prod
 
 ```
 
@@ -475,10 +486,11 @@ Alternatively, you can deploy the smokers to AKS as cronjobs.
 
 cd $REPO_ROOT/IaC/AKS/cluster/charts
 
-helm install ngsa-smoker smoker --set ingressURL=$Ngsa_App_Endpoint
+kubectl create namespace ngsa-smoker
+helm install ngsa-smoker smoker --namespace ngsa-smoker --set ingressURL=$Ngsa_App_Endpoint
 
 # Verify the cron jobs are installed
-kubectl get cronjobs
+kubectl get cronjobs --namespace ngsa-smoker
 
 ```
 
