@@ -1,23 +1,25 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: {{  include "smoker.fullname" . }}1
+  name: {{  include "smoker.fullname" . }}
   annotations:
     fluxcd.io/ignore: 'true'
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 spec:
   schedule: '*/20 * * * *'
-  successfulJobsHistoryLimit: 2
+  successfulJobsHistoryLimit: {{ .Values.jobHistoryLimit }}
   jobTemplate:
     spec:
+      completions: {{ .Values.jobReplicaCount }}
+      parallelism: {{ .Values.jobReplicaCount }}
       template:
         metadata:
           annotations:
             sidecar.istio.io/inject: "false"
         spec:
           containers:
-            - name: smoker1
+            - name: smoker
               image: retaildevcrew/webvalidate:beta
               imagePullPolicy: Always
               args:

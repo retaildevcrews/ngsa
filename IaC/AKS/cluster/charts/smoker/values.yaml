@@ -1,1 +1,3 @@
 ingressURL: http://<IP_OF_INGRESS>.nip.io
+jobReplicaCount: 3
+jobHistoryLimit: 2

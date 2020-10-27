@@ -424,7 +424,7 @@ cd $REPO_ROOT/IaC/AKS/cluster/charts
 
 helm install ngsa-smoker smoker --set ingressURL=$Ngsa_App_Endpoint
 
-# Verify the cron jobs are in the cluster
+# Verify the cron jobs are installed
 kubectl get cronjobs
 
 ```
