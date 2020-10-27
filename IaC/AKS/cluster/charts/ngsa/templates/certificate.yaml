@@ -4,7 +4,7 @@ metadata:
   labels:
     name: {{ .Values.cert.name }}
   name: {{ .Values.cert.name }}
-  namespace: istio-system #TODO lookup best practice multi-namespaces for helm
+  namespace: {{ .Values.cert.namespace }}
 spec:
   dnsNames:
   {{- range .Values.ingress.hosts }}

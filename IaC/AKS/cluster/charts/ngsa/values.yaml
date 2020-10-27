@@ -66,6 +66,7 @@ ingress:
 cert:
   name: ngsa-cert
   issuer: letsencrypt-staging
+  namespace: istio-system
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
