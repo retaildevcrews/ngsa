@@ -4,7 +4,7 @@
 			"pattern": "https://github.com/\\["
 		},
 		{
-			"pattern": "https://Ngsa-app-endpoint\\["
+			"pattern": "https://Ngsa-app-endpoint"
 		}
 	]
 }
