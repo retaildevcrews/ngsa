@@ -16,7 +16,7 @@ export logKey='az monitor log-analytics workspace get-shared-keys -g $NGSA_SMOKE
 WEBV_SLEEP=1000
 for l in 'westus2' 'eastus2' 'westeurope' 'japaneast'
 do
-  # az container delete -y  -g $NGSA_SMOKER_RG --query name -o tsv -n $NGSA_NAME-webv-${l}
+  az container delete -y  -g $NGSA_SMOKER_RG --query name -o tsv -n $NGSA_NAME-webv-${l}
 
   az container create --subscription bartr-wcnp -g $NGSA_SMOKER_RG --image retaildevcrew/webvalidate:beta -o tsv --query name \
   -n $NGSA_NAME-webv-${l} -l ${l} \
