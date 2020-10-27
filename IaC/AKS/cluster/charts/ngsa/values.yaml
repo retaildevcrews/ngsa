@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: retaildevcrew
   name: ngsa
-  tag: "beta"
+  tag: beta
   pullPolicy: Always
   
 imagePullSecrets: []
@@ -15,7 +15,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 app:
-  args: [""]
+  args: []
   port: 4120
 
 livenessProbe:
@@ -76,7 +76,7 @@ resources: {}
   #   memory: 128Mi
 
 autoscaling:
-  enabled: false
+  enabled: true
   minReplicas: 1
   maxReplicas: 10
   metricName: requests_per_second

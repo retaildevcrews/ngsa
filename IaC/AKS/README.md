@@ -1,6 +1,7 @@
 # Deployment Walk Through
 
 ## Background
+
 The following instructions allow the deployment of NGSA application in AKS with Istio and Keda.
 
 ### Azure Components in Use
@@ -10,7 +11,7 @@ The following instructions allow the deployment of NGSA application in AKS with 
   - Keda
   - Prometheus
   - Kiali
-  - Grafana 
+  - Grafana
 - Azure Cosmos DB
 - Application Insights
 
@@ -85,9 +86,10 @@ az cosmosdb check-name-exists -n ${Ngsa_Name}
 >
 > If you use an existing resource group, please make sure to apply resource locks to avoid accidentally deleting resources
 
-- You will create 2 resource groups
-  - One for AKS, and Azure Monitor
+- You will create 3 resource groups
+  - One for AKS and Azure Monitor
   - One for Cosmos DB
+  - One for Smoker Test instances
 
 ```bash
 
@@ -97,6 +99,7 @@ export Ngsa_Location=westus2
 # resource group names
 export Imdb_Name=$Ngsa_Name
 export Ngsa_App_RG=${Ngsa_Name}-rg-app
+export Ngsa_Smoker_RG=${Ngsa_Name}-rg-smoker
 export Imdb_RG=${Imdb_Name}-rg-cosmos
 
 # export Cosmos DB env vars
@@ -108,6 +111,7 @@ export Imdb_RW_Key='az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query prim
 
 # create the resource groups
 az group create -n $Ngsa_App_RG -l $Ngsa_Location
+az group create -n $Ngsa_Smoker_RG -l $Ngsa_Location
 az group create -n $Imdb_RG -l $Imdb_Location
 
 ```
@@ -231,7 +235,7 @@ Add the required helm repositories
 ```bash
 
 helm repo add stable https://kubernetes-charts.storage.googleapis.com
-helm repo add kedacore https://kedacore.github.io/charts  
+helm repo add kedacore https://kedacore.github.io/charts
 helm repo update
 
 ```
@@ -326,20 +330,9 @@ kubectl create secret generic ngsa-aks-secrets \
 
 ```
 
-
-
 ## Deploy NGSA with Helm
 
 A helm chart is included for the reference application ([NGSA](https://github.com/retaildevcrews/ngsa))
-
-Install the Helm Chart located in the cloned directory
-
-```bash
-
-cd $REPO_ROOT/IaC/AKS/cluster/charts
-
-```
-
 
 A file called helm-config.yaml with the following contents that needs be to edited to fit the environment being deployed in. The file looks like this
 
@@ -349,36 +342,38 @@ A file called helm-config.yaml with the following contents that needs be to edit
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 image:
-    repository: retaildevcrew
-    name: ngsa
-    tag: "beta"
+  repository: retaildevcrew
+  name: ngsa
+  tag: beta
+
 ingress:
-    hosts:
-        - %%INGRESS_PIP%%.nip.io # Replace the IP address with the external IP of the Istio ingress gateway (value of $INGRESS_PIP or run kubectl get svc istio-ingressgateway -n istio-system to see the correct IP)
-    paths: 
-        - /
+  hosts:
+    - %%INGRESS_PIP%%.nip.io # Replace the IP address with the external IP of the Istio ingress gateway (value of $INGRESS_PIP or run kubectl get svc istio-ingressgateway -n istio-system to see the correct IP)
+  paths:
+    - /
+
 app:
-    args: [""]
+  args: []
 
 ```
-
 
 Replace the values in the file surrounded by `%%` with the proper environment variables
 
 ```bash
 
-sed -i "s/%%INGRESS_PIP%%/${INGRESS_PIP}/g" helm-config.yaml \
+cd $REPO_ROOT/IaC/AKS/cluster/charts/ngsa
+sed -i "s/%%INGRESS_PIP%%/${INGRESS_PIP}/g" helm-config.yaml
 
 ```
 
+Install the Helm Chart located in the cloned directory
 
 ```bash
 
+cd $REPO_ROOT/IaC/AKS/cluster/charts
 
 # Install NGSA using the upstream ngsa image from Dockerhub
 helm install ngsa-aks ngsa -f ./ngsa/helm-config.yaml
-
-# the application generally takes about 2-4 minutes to be ready
 
 # check the version endpoint
 # you may get a timeout error, if so, just retry
@@ -391,12 +386,47 @@ Run the Validation Test
 
 > For more information on the validation test tool, see [Web Validate](https://github.com/retaildevcrews/webvalidate)
 
+```bash
+
+# run the tests in a container
+docker run -it --rm retaildevcrew/webvalidate --server $Ngsa_App_Endpoint --base-url https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/ --files baseline.json
+
+```
 
 ## Observability
 
 TODO
 
+## Smoke Tests
 
-## Smoke Test
+Deploy Web Validate to drive consistent traffic to the App Service for monitoring and alerting.
 
-TODO
+```bash
+
+# Add Log Analytics extension
+az extension add -n log-analytics
+
+# create Log Analytics for the webv clients
+az monitor log-analytics workspace create -g $Ngsa_Smoker_RG -l $Ngsa_Location -n $Ngsa_Name -o table
+
+cd $REPO_ROOT/IaC/scripts
+
+# Run the shell script to install smoker instances with ACI
+./smokers.sh -n $Ngsa_Name -r $Ngsa_Smoker_RG -s $Ngsa_App_Endpoint
+
+```
+
+Alternatively, you can deploy the smokers to AKS as cronjobs.
+
+```bash
+
+cd $REPO_ROOT/IaC/AKS/cluster/charts
+
+helm install ngsa-smoker smoker --set ingressURL=$Ngsa_App_Endpoint
+
+# Verify the cron jobs are installed
+kubectl get cronjobs
+
+```
+
+The cronjobs are set to run for 7.5 minutes every 20 minutes.
