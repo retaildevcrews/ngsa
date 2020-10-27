@@ -278,7 +278,7 @@ Validate the Istio installation
 
 ```bash
 
-kubectl get all -n istio-system
+kubectl get all --namespace istio-system
 
 ```
 
@@ -314,7 +314,7 @@ KEDA autoscales the NGSA pods by assessing metrics for incoming requests, which 
 ```bash
 
 kubectl create ns keda
-helm install keda kedacore/keda -n keda
+helm install keda kedacore/keda --namespace keda
 
 ```
 
@@ -362,7 +362,7 @@ cd $REPO_ROOT/IaC/AKS/cluster/manifests/cert-manager
 
 kubectl create ns cert-manager
 helm install cert-manager jetstack/cert-manager \
-  -n cert-manager \
+  --namespace cert-manager \
   --version v1.0.3 \
   --set installCRDs=true
 
@@ -429,7 +429,7 @@ http ${Ngsa_App_Endpoint}/version
 
 ```
 
-Check that the test certificates have been issued. You can check in the browser by going to https://your-domain, or use openssl. With the test certificates, it is expected that you get a privacy error in the browser.
+Check that the test certificates have been issued. You can check in the browser by going to <https://$Ngsa_App_Endpoint>, or use openssl. With the test certificates, it is expected that you get a privacy error in the browser.
 
 ```bash
 
@@ -442,7 +442,7 @@ After verifying that the test certs were issued, update the deployment to use th
 
 ```bash
 
-helm upgrade ngsa-aks ngsa -f ./ngsa/helm-config.yaml  --namespace ngsa  --set cert.issuer=letsencrypt-prod
+helm upgrade ngsa-aks ngsa -f ./ngsa/helm-config.yaml  --namespace ngsa --set cert.issuer=letsencrypt-prod
 
 ```
 
