@@ -409,30 +409,24 @@ az extension add -n log-analytics
 # create Log Analytics for the webv clients
 az monitor log-analytics workspace create -g $Ngsa_Smoker_RG -l $Ngsa_Location -n $Ngsa_Name -o table
 
-# retrieve the Log Analytics values using eval $Ngsa_LogAnalytics_*
-export Ngsa_LogAnalytics_Id='az monitor log-analytics workspace show -g $Ngsa_Smoker_RG -n $Ngsa_Name --query customerId -o tsv'
-export Ngsa_LogAnalytics_Key='az monitor log-analytics workspace get-shared-keys -g $Ngsa_Smoker_RG -n $Ngsa_Name --query primarySharedKey -o tsv'
+cd $REPO_ROOT/IaC/scripts
 
-# create Azure Container Instance running webv
-az container create -g $Ngsa_Smoker_RG --image retaildevcrew/webvalidate:latest -o tsv --query name \
--n ${Ngsa_Name}-webv-${Ngsa_Location} -l $Ngsa_Location \
---log-analytics-workspace $(eval $Ngsa_LogAnalytics_Id) --log-analytics-workspace-key $(eval $Ngsa_LogAnalytics_Key) \
---command-line "dotnet ../webvalidate.dll --tag $Ngsa_Location -l 1000 -s $Ngsa_App_Endpoint -u https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/ -f benchmark.json -r --json-log"
-
-# create in additional regions (optional)
-az container create -g $Ngsa_Smoker_RG --image retaildevcrew/webvalidate:latest -o tsv --query name \
--n ${Ngsa_Name}-webv-eastus2 -l eastus2 \
---log-analytics-workspace $(eval $Ngsa_LogAnalytics_Id) --log-analytics-workspace-key $(eval $Ngsa_LogAnalytics_Key) \
---command-line "dotnet ../webvalidate.dll --tag eastus2 -l 10000 -s $Ngsa_App_Endpoint -u https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/ -f benchmark.json -r --json-log"
-
-az container create -g $Ngsa_Smoker_RG --image retaildevcrew/webvalidate:latest -o tsv --query name \
--n ${Ngsa_Name}-webv-westeurope -l westeurope \
---log-analytics-workspace $(eval $Ngsa_LogAnalytics_Id) --log-analytics-workspace-key $(eval $Ngsa_LogAnalytics_Key) \
---command-line "dotnet ../webvalidate.dll --tag westeurope -l 10000 -s $Ngsa_App_Endpoint -u https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/ -f benchmark.json -r --json-log"
-
-az container create -g $Ngsa_Smoker_RG --image retaildevcrew/webvalidate:latest -o tsv --query name \
--n ${Ngsa_Name}-webv-japaneast -l japaneast \
---log-analytics-workspace $(eval $Ngsa_LogAnalytics_Id) --log-analytics-workspace-key $(eval $Ngsa_LogAnalytics_Key) \
---command-line "dotnet ../webvalidate.dll --tag japaneast -l 10000 -s $Ngsa_App_Endpoint -u https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/ -f benchmark.json -r --json-log"
+# Run the shell script to install smoker instances with ACI
+./smokers.sh -n $Ngsa_Name -r $Ngsa_Smoker_RG -s $Ngsa_App_Endpoint
 
 ```
+
+Alternatively, you can deploy the smokers to AKS as cronjobs.
+
+```bash
+
+cd $REPO_ROOT/IaC/AKS/cluster/charts
+
+helm install ngsa-smoker smoker --set ingressURL=$Ngsa_App_Endpoint
+
+# Verify the cron jobs are in the cluster
+kubectl get cronjobs
+
+```
+
+The cronjobs are set to run for 7.5 minutes every 20 minutes.
