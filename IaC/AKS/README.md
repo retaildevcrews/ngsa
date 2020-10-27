@@ -429,7 +429,7 @@ http ${Ngsa_App_Endpoint}/version
 
 ```
 
-Check that the test certificates have been issued. You can check in the browser by going to <https://$Ngsa_App_Endpoint>, or use openssl. With the test certificates, it is expected that you get a privacy error in the browser.
+Check that the test certificates have been issued. You can check in the browser by going to <https://Ngsa-app-endpoint>, or use openssl. With the test certificates, it is expected that you get a privacy error in the browser.
 
 ```bash
 
