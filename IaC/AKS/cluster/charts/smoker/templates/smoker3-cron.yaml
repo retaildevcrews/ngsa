@@ -28,8 +28,11 @@ spec:
                 - '-f'
                 - 'benchmark.json'
                 - '-r'
+                - '--summary-minutes'
+                - '5'
                 - '--duration'
                 - '450'
                 - '-l'
-                - '10'
+                - '100'
+                - '--json-log'
           restartPolicy: OnFailure
