@@ -58,15 +58,13 @@ Add a secret to the service principal `$Ngsa_AKS_Name`
 - Goto Azure Active Directory --> App Registration
 - Search for `$Ngsa_AKS_Name` --> Goto `$Ngsa_AKS_Name`
 - Goto Certificates and Secrets --> New Client Secret
-- Note the SP Secret
-- Note the App ID (from Overview)
-- Note the Tenant ID (from Overview)
+- *Note the SP Secret, App ID (from Overview) and the Tenant ID (from Overview)*
 
 #### Add API Key to App Insights
 For App Insights access, an API Key needs to be created.
 - Goto  `$Ngsa_App_RG` resource group -->  `$Ngsa_Name` App Insights
 - Under "API Access", create a new API Key with "Read Telemetry" access
-- Note the API-Key
+- *Note the API-Key*
 
 ### Adding required permissions/secrets from Azure Cli
 **It is recommended to use the Azure Portal**.
@@ -90,13 +88,24 @@ az ad sp credential reset --name $(az ad sp list --display-name "${Ngsa_AKS_Name
 #  "tenant":"XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
 #}
 ```
-Note the appId, password (client secret) and tenant
+*Note the appId, password (client secret) and tenant*
 
 #### Add API Key to App Insights
 ```bash
 az monitor app-insights api-key create --api-key grafana-access --read-properties ReadTelemetry --write-properties "" -g ${Ngsa_App_RG} --app ${Ngsa_Name}
-# Note the "apiKey"
+# Sample output
+#{
+#  "apiKey": "API-KEY",
+#  "createdDate": "Wed, 28 Oct 2020 16:42:18 GMT",
+#  ....
+#  "name": "grafana-access",
+#  "resourceGroup": "NAME-OF-RESOURCE-GROUP"
+#}
+az monitor app-insights component show -g ${Ngsa_App_RG} --query '[].appId'
+# Sample output:
+# [ "eedbf8f0-4a82-4644-9194-bbdf433b9354" ] --> This is the insights appId
 ```
+*Note the "apiKey" and the insights appId*
 
 ## Add Azure Monitor Source in Grafana
 Get access to Grafana dashboard with the following command:
@@ -114,6 +123,15 @@ az monitor app-insights component show -g kushalngsa-rg-app --query '[].appId' -
 Goto a browser to access grafana and perform the following steps:
 - Goto Configuration --> Data Sources
 - "Add data source" --> Select Azure Monitor
+- Inside Azure Monitor Source
+  - Under Azure Monitor Details
+    - Put in Directory (Tenant) ID, Application (Client) ID (service principal `$Ngsa_AKS_Name` ID) and client secret from [this step](#add-client-secret-in-the-service-principal)
+    - Cick on "Load Subscription" --> After loading, select proper subscription from drop-down
+  - Under Application Insights
+    - Put in "API Key" and "Applicaiton ID" from [this step](#add-api-key-to-app-insights)
+  - Click "Save & Test"
+- Click on "Explore" from Grafana side bar
+- Try out different metrics and services
 
 # Resources
 - [IaC-AKS readme - Deployment with Istio Servicemesh][1]
