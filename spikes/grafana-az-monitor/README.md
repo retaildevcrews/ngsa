@@ -31,7 +31,7 @@ For example, if `Ngsa_Name=foobar`, then two resource group names will be: `foob
 Execute into the Grafana pod.
 ```bash
 # Assuming deafult istio namespace "istio-system"
-kubectl exec -it -n istio-system $(k get pods -n istio-system -l app=grafana -o jsonpath='{.items[0].metadata.name}') -- bash
+kubectl exec -it -n istio-system $(kubectl get pods -n istio-system -l app=grafana -o jsonpath='{.items[0].metadata.name}') -- bash
 ```
 
 If the above command errors out, then try the following
