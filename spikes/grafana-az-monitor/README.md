@@ -117,21 +117,15 @@ Get access to Grafana dashboard with the following command:
 istioctl dashboard grafana
 ```
 
-In another terminal, get information on SP and App Insights:
-```bash
-# Get Directory(Tenant) ID, Application (Client) ID (our service principal)
-# Get App-Insights AppID
-az monitor app-insights component show -g kushalngsa-rg-app --query '[].appId' -o tsv
-```
 Goto a browser to access grafana and perform the following steps:
 - Goto Configuration --> Data Sources
-- "Add data source" --> Select Azure Monitor
-- Inside Azure Monitor Source
+- "Add data source" --> Select "Azure Monitor"
+- Inside "Azure Monitor" Source
   - Under Azure Monitor Details
     - Put in Directory (Tenant) ID, Application (Client) ID (service principal `$Ngsa_AKS_Name` ID) and client secret from [this step](#add-client-secret-in-the-service-principal)
-    - Cick on "Load Subscription" --> After loading, select proper subscription from drop-down
+    - Click on "Load Subscription" --> After loading, select proper subscription from drop-down
   - Under Application Insights
-    - Put in "API Key" and "Applicaiton ID" from [this step](#add-api-key-to-app-insights)
+    - Put in "API Key" and "Application ID" from [this step](#add-api-key-to-app-insights)
   - Click "Save & Test"
 - Click on "Explore" from Grafana side bar
 - Try out different metrics and services
@@ -139,7 +133,6 @@ Goto a browser to access grafana and perform the following steps:
 # Resources
 - [IaC-AKS readme - Deployment with Istio Servicemesh][1]
 - [Azure Built-in Roles][2]
-
 
 [1]: https://github.com/retaildevcrews/ngsa/tree/main/IaC/AKS
 [2]: https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
