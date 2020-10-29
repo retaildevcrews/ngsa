@@ -51,9 +51,9 @@ grafana-cli plugins install grafana-azure-monitor-datasource
 ### Adding required permissions/secrets from Azure Portal
 A new service principal can be created for Grafana access but this guide will reuse the `$Ngsa_AKS_Name` service principal.
 
-#### Add SP to cosmos resoruce group
+#### Add SP to cosmos resource group
 Add `$Ngsa_AKS_Name` SP to the cosmos resource group `$Imdb_RG`:
-- Goto resource group `$Imdb_RG` --> Access Control (IAM) --> Role Assignments
+- Go to resource group `$Imdb_RG` --> Access Control (IAM) --> Role Assignments
 - Add the service principal `$Ngsa_AKS_Name` as "Reader"
 
 #### Add client secret in the service principal
@@ -72,7 +72,7 @@ For App Insights access, an API Key needs to be created.
 ### Adding required permissions/secrets from Azure Cli
 **It is recommended to use the Azure Portal**.
 
-#### Add SP to Cosmos resoruce group
+#### Add SP to Cosmos resource group
 ```bash
 # Add ${Ngsa_AKS_Name} SP as "Reader" in ${Imdb_RG} resource group
 az role assignment create --assignee $(az ad sp list --display-name "${Ngsa_AKS_Name}" --query "[].objectId" -o tsv) --role "Reader" --resource-group "${Imdb_RG}"
