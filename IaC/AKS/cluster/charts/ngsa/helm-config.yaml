@@ -4,11 +4,14 @@
 image:
     repository: retaildevcrew
     name: ngsa
-    tag: "beta"
-ingress:
+    tag: beta
+  
+  ingress:
     hosts:
-        - %%INGRESS_PIP%%.nip.io # Replace the IP address with the external IP of the Istio ingress gateway (value of $INGRESS_PIP or run kubectl get svc istio-ingressgateway -n istio-system to see the correct IP)
+      - %%INGRESS_PIP%%.nip.io # Replace the IP address with the external IP of the Istio ingress gateway (value of $INGRESS_PIP or run kubectl get svc istio-ingressgateway -n istio-system to see the correct IP)
     paths: 
-        - /
-app:
-    args: [""]
+      - /
+  
+  app:
+    args: []
+  
