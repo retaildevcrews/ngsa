@@ -55,8 +55,7 @@ Examples:
 - [Kubernetes recommended Label][3]
 - [Kubernetes label syntax and charset][4]
 
-
-[1]: https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging
+[1]: https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging#recommended-resource-type-prefixes
 [2]: https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules
 [3]: https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/
 [4]: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#syntax-and-character-set
