@@ -1,10 +1,13 @@
 # Adding Azure Monitor source in Grafana
 
-Following instructions allow adding Azure Monitor plugin as a source and create custom Grafana dashboards in an existing Istio setup
+The following instructions allow adding Azure Monitor plugin as a source and create custom Grafana dashboards in an existing Istio setup.
+
+*Warning:*  These instructions will install the AZ Monitor plugin manually inside the grafana pod. This is only intended for spike purposes and should not be used in a production environment. If the pod were to be deleted, the Grafana deployment will spin a new pod and the existing configuration will be lost. Use at your own risk.
 
 ## Prerequisites
 - An AKS-Istio cluster following the [IaC-AKS readme][1]
 - Permission to add a service principal to a resource group in Azure Portal/CLI
+
 
 ## Setup
 
