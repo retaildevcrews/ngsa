@@ -14,6 +14,7 @@ The following instructions allow the deployment of NGSA application in AKS with 
   - Grafana
 - Azure Cosmos DB
 - Application Insights
+- DNS Zone
 
 ### Prerequisites
 
@@ -26,6 +27,13 @@ The following instructions allow the deployment of NGSA application in AKS with 
 - Visual Studio Code (optional) ([download](https://code.visualstudio.com/download))
 - kubectl (install by using `sudo az aks install-cli`)
 - Helm v3 ([Install Instructions](https://helm.sh/docs/intro/install/))
+
+### DNS, SSL/TLS Prerequisites
+
+ A domain name and SSL/TLS certificates are required for HTTPS access over the internet.
+
+- Registered domain with permissions to update nameservers
+- Azure subscription with permissions to create a DNS Zone
 
 ### Setup
 
@@ -75,6 +83,13 @@ This walkthrough will create resource groups, a Cosmos DB instance, and an Azure
 # must start with a-z (only lowercase)
 export Ngsa_Name=[your unique name]
 
+# Set email to register with Let's Encrypt
+export Ngsa_Email=[your email address]
+
+# Set your registered domain name.
+# example: export Ngsa_Domain_Name=cse.ms
+export Ngsa_Domain_Name=[your domain name]
+
 ### if true, change Ngsa_Name
 az cosmosdb check-name-exists -n ${Ngsa_Name}
 
@@ -95,6 +110,9 @@ az cosmosdb check-name-exists -n ${Ngsa_Name}
 
 # set location
 export Ngsa_Location=westus2
+
+# set application endpoint
+export Ngsa_App_Endpoint="$Ngsa_Name.$Ngsa_Domain_Name"
 
 # resource group names
 export Imdb_Name=$Ngsa_Name
@@ -334,23 +352,38 @@ kubectl create secret generic ngsa-aks-secrets \
 
 ## Setup SSL/DNS
 
+> Note: A registered domain name is required for this section.
+
 ### DNS Setup
 
-Assuming that you have a domain name, and permissions to update DNS records for your domain, create an A record to point your domain to `INGRESS_PIP`.
+Create a DNS A record mapping your domain to the Istio ingress gateway IP address.
 
-For example, in Azure:
-
-```bash
-
-az network dns record-set a add-record -g <dns zone resource group> -z <dns zone name> -n $Ngsa_Name -a $INGRESS_PIP --ttl <TTL seconds>
-
-```
-
-Set the application endpoint
+This is a setup using Azure DNS. In this setup, update your domain to use Azure DNS Zone nameservers.
 
 ```bash
 
-export Ngsa_App_Endpoint=replaceWithDNSHostname
+# example: export Ngsa_DNS_RG=dns-rg
+export Ngsa_DNS_RG=[dns resource group name]
+
+# Check if DNS resource group exists
+az group exists -n $Ngsa_DNS_RG
+
+# Create DNS resource group if it does not exist
+az group create -n $Ngsa_DNS_RG -l $Ngsa_Location
+
+# Check if DNS Zone exists
+az network dns zone show --name $Ngsa_Domain_Name -g $Ngsa_DNS_RG -o table
+
+# Create the DNS Zone if it does not exist.
+az network dns zone create -g $Ngsa_DNS_RG -n $Ngsa_Domain_Name
+
+# Add DNS A record for the Istio ingress gateway.
+az network dns record-set a add-record -g $Ngsa_DNS_RG -z $Ngsa_Domain_Name -n $Ngsa_Name -a $INGRESS_PIP
+
+# Show the Azure nameservers for your DNS Zone.
+az network dns zone show -n $Ngsa_Domain_Name -g $Ngsa_DNS_RG --query nameServers -o tsv
+
+# Update your domain to use the result entries for nameservers.
 
 ```
 
@@ -360,14 +393,14 @@ export Ngsa_App_Endpoint=replaceWithDNSHostname
 
 cd $REPO_ROOT/IaC/AKS/cluster/manifests/cert-manager
 
+export CERT_MANAGER_VERSION=1.0.3
+
 kubectl create ns cert-manager
+
 helm install cert-manager jetstack/cert-manager \
   --namespace cert-manager \
-  --version v1.0.3 \
+  --version "v${CERT_MANAGER_VERSION}" \
   --set installCRDs=true
-
-# Set email to register with Let's Encrypt
-export Ngsa_Email=replaceWithYourEmail
 
 # Create a staging and production ClusterIssuer for cert-manager
 # Use the staging ClusterIssuer for testing. Once ready, use the production resource.
@@ -429,11 +462,14 @@ http ${Ngsa_App_Endpoint}/version
 
 ```
 
-Check that the test certificates have been issued. You can check in the browser by going to <https://Ngsa-app-endpoint>, or use openssl. With the test certificates, it is expected that you get a privacy error in the browser.
+Check that the test certificates have been issued. You can check in the browser, or use openssl. With the test certificates, it is expected that you get a privacy error in the browser.
 
 ```bash
 
-# Use openssl to view your test certificate. The response should include "CN = Fake LE Intermediate X1" at the top.
+# Option 1: Open this link in your browser. You should see a privacy error if the test certificates have been successfully issued.
+echo "https://$Ngsa_App_Endpoint"
+
+# Option 2: Use openssl to view your test certificate. The response should include "CN = Fake LE Intermediate X1" at the top.
 openssl s_client -servername $Ngsa_App_Endpoint -connect $Ngsa_App_Endpoint:443 < /dev/null | grep "CN = Fake LE Intermediate X1"
 
 ```
