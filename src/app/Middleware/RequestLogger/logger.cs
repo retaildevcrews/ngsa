@@ -2,12 +2,16 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
+using Azure.Core;
 using CSE.NextGenSymmetricApp.Model;
 using Microsoft.AspNetCore.Http;
+using Microsoft.CorrelationVector;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 namespace CSE.Middleware
 {
@@ -17,6 +21,7 @@ namespace CSE.Middleware
     public class Logger
     {
         private const string IpHeader = "X-Client-IP";
+        private const string CVHeader = "X-Correlation-Vector";
 
         // next action to Invoke
         private readonly RequestDelegate next;
@@ -47,12 +52,33 @@ namespace CSE.Middleware
         /// <returns>Task (void)</returns>
         public async Task Invoke(HttpContext context)
         {
-            // set start time
-            DateTime dtStart = DateTime.Now;
-
             if (context == null)
             {
                 return;
+            }
+
+            // set start time
+            DateTime dtStart = DateTime.Now;
+
+            CorrelationVector cv;
+
+            if (context.Request.Headers.ContainsKey(CVHeader))
+            {
+                try
+                {
+                    // extend the correlation vector
+                    cv = CorrelationVector.Extend(context.Request.Headers[CVHeader].ToString());
+                }
+                catch
+                {
+                    // create a new correlation vector
+                    cv = new CorrelationVector();
+                }
+            }
+            else
+            {
+                // create a new correlation vector
+                cv = new CorrelationVector();
             }
 
             // Invoke next handler
@@ -79,7 +105,7 @@ namespace CSE.Middleware
             // write the results to the console
             if (ShouldLogRequest(context.Response))
             {
-                Console.WriteLine($"{DateTime.UtcNow:s}Z\t{context.Response.StatusCode}\t{duration,6:0}\t{context.Request.Headers[IpHeader]}\t{GetPathAndQuerystring(context.Request)}");
+                Console.WriteLine($"{DateTime.UtcNow:s}Z\t{context.Response.StatusCode}\t{duration,6:0}\t{context.Request.Headers[IpHeader]}\t{GetPathAndQuerystring(context.Request)}\t{cv.Value}");
             }
         }
 
