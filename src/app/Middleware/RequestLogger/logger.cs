@@ -99,11 +99,15 @@ namespace CSE.Middleware
                 return;
             }
 
-            // write the results to the console
-            if (ShouldLogRequest(context.Response))
+            string clientIp = context.Connection.RemoteIpAddress.ToString().Replace("::ffff:", string.Empty, StringComparison.OrdinalIgnoreCase);
+
+            if (context.Request.Headers.ContainsKey(IpHeader))
             {
-                Console.WriteLine($"{DateTime.UtcNow:s}Z\t{context.Response.StatusCode}\t{duration,6:0}\t{context.Request.Headers[IpHeader]}\t{GetPathAndQuerystring(context.Request)}\t{cv.Value}");
+                clientIp = context.Request.Headers[IpHeader];
             }
+
+            // write the results to the console
+            Console.WriteLine($"{DateTime.UtcNow:s}Z {context.Response.StatusCode} {duration,6:0} {context.Request.Headers["Host"]} {clientIp} {cv.Value} {context.Request.Headers["User-Agent"]} {context.Request.Method} {GetPathAndQuerystring(context.Request)}");
         }
 
         /// <summary>
@@ -167,46 +171,6 @@ namespace CSE.Middleware
         private static string GetPathAndQuerystring(HttpRequest request)
         {
             return request?.Path.ToString() + request?.QueryString.ToString();
-        }
-
-        /// <summary>
-        /// Check log level to determine if request should be logged
-        /// </summary>
-        /// <param name="response">HttpResponse</param>
-        /// <returns>bool</returns>
-        private bool ShouldLogRequest(HttpResponse response)
-        {
-            // check for logging by response level
-            if (response.StatusCode < 300)
-            {
-                if (!options.Log2xx)
-                {
-                    return false;
-                }
-            }
-            else if (response.StatusCode < 400)
-            {
-                if (!options.Log3xx)
-                {
-                    return false;
-                }
-            }
-            else if (response.StatusCode < 500)
-            {
-                if (!options.Log4xx)
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                if (!options.Log5xx)
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
     }
 }
