@@ -22,10 +22,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
 
     public class InMemoryDal : IDAL
     {
-        public static List<Actor> Actors { get; set; }
-        public static List<Movie> Movies { get; set; }
-        public static List<string> Genres { get; set; }
-
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "use List<> for performance")]
         public InMemoryDal()
         {
             JsonSerializerSettings settings = new JsonSerializerSettings
@@ -103,6 +100,10 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
 
             Genres.Sort();
         }
+
+        public static List<Actor> Actors { get; set; }
+        public static List<Movie> Movies { get; set; }
+        public static List<string> Genres { get; set; }
 
         public async Task<Actor> GetActorAsync(string actorId)
         {
@@ -277,6 +278,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
     /// Extension to allow services.AddInMemoryDal()
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "simplicity")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1204:Static elements should appear before instance elements", Justification = "code readability")]
     public static class InMemoryDataAccessLayerExtension
     {
         public static IServiceCollection AddInMemoryDal(this IServiceCollection services)

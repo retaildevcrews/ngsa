@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Threading.Tasks;
 using CSE.NextGenSymmetricApp.Model;
 using Microsoft.AspNetCore.Http;
+using Microsoft.CorrelationVector;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 
@@ -17,6 +18,7 @@ namespace CSE.Middleware
     public class Logger
     {
         private const string IpHeader = "X-Client-IP";
+        private const string CVHeader = "X-Correlation-Vector";
 
         // next action to Invoke
         private readonly RequestDelegate next;
@@ -47,12 +49,33 @@ namespace CSE.Middleware
         /// <returns>Task (void)</returns>
         public async Task Invoke(HttpContext context)
         {
-            // set start time
-            DateTime dtStart = DateTime.Now;
-
             if (context == null)
             {
                 return;
+            }
+
+            // set start time
+            DateTime dtStart = DateTime.Now;
+
+            CorrelationVector cv;
+
+            if (context.Request.Headers.ContainsKey(CVHeader))
+            {
+                try
+                {
+                    // extend the correlation vector
+                    cv = CorrelationVector.Extend(context.Request.Headers[CVHeader].ToString());
+                }
+                catch
+                {
+                    // create a new correlation vector
+                    cv = new CorrelationVector();
+                }
+            }
+            else
+            {
+                // create a new correlation vector
+                cv = new CorrelationVector();
             }
 
             // Invoke next handler
@@ -76,11 +99,15 @@ namespace CSE.Middleware
                 return;
             }
 
-            // write the results to the console
-            if (ShouldLogRequest(context.Response))
+            string clientIp = context.Connection.RemoteIpAddress.ToString().Replace("::ffff:", string.Empty, StringComparison.OrdinalIgnoreCase);
+
+            if (context.Request.Headers.ContainsKey(IpHeader))
             {
-                Console.WriteLine($"{DateTime.UtcNow:s}Z\t{context.Response.StatusCode}\t{duration,6:0}\t{context.Request.Headers[IpHeader]}\t{GetPathAndQuerystring(context.Request)}");
+                clientIp = context.Request.Headers[IpHeader];
             }
+
+            // write the results to the console
+            Console.WriteLine($"{DateTime.UtcNow:s}Z {context.Response.StatusCode} {duration,6:0} {context.Request.Headers["Host"]} {clientIp} {cv.Value} {context.Request.Headers["User-Agent"]} {context.Request.Method} {GetPathAndQuerystring(context.Request)}");
         }
 
         /// <summary>
@@ -144,46 +171,6 @@ namespace CSE.Middleware
         private static string GetPathAndQuerystring(HttpRequest request)
         {
             return request?.Path.ToString() + request?.QueryString.ToString();
-        }
-
-        /// <summary>
-        /// Check log level to determine if request should be logged
-        /// </summary>
-        /// <param name="response">HttpResponse</param>
-        /// <returns>bool</returns>
-        private bool ShouldLogRequest(HttpResponse response)
-        {
-            // check for logging by response level
-            if (response.StatusCode < 300)
-            {
-                if (!options.Log2xx)
-                {
-                    return false;
-                }
-            }
-            else if (response.StatusCode < 400)
-            {
-                if (!options.Log3xx)
-                {
-                    return false;
-                }
-            }
-            else if (response.StatusCode < 500)
-            {
-                if (!options.Log4xx)
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                if (!options.Log5xx)
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
     }
 }
