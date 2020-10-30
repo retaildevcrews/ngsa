@@ -14,6 +14,7 @@ The following instructions allow the deployment of NGSA application in AKS with 
   - Grafana
 - Azure Cosmos DB
 - Application Insights
+- DNS Zone
 
 ### Prerequisites
 
@@ -26,6 +27,13 @@ The following instructions allow the deployment of NGSA application in AKS with 
 - Visual Studio Code (optional) ([download](https://code.visualstudio.com/download))
 - kubectl (install by using `sudo az aks install-cli`)
 - Helm v3 ([Install Instructions](https://helm.sh/docs/intro/install/))
+
+### DNS, SSL/TLS Prerequisites
+
+ A domain name and SSL/TLS certificates are required for HTTPS access over the internet.
+
+- Registered domain with permissions to update nameservers
+- Azure subscription with permissions to create a DNS Zone
 
 ### Setup
 
@@ -75,6 +83,13 @@ This walkthrough will create resource groups, a Cosmos DB instance, and an Azure
 # must start with a-z (only lowercase)
 export Ngsa_Name=[your unique name]
 
+# Set email to register with Let's Encrypt
+export Ngsa_Email=[your email address]
+
+# Set your registered domain name.
+# example: export Ngsa_Domain_Name=cse.ms
+export Ngsa_Domain_Name=[your domain name]
+
 ### if true, change Ngsa_Name
 az cosmosdb check-name-exists -n ${Ngsa_Name}
 
@@ -95,6 +110,9 @@ az cosmosdb check-name-exists -n ${Ngsa_Name}
 
 # set location
 export Ngsa_Location=westus2
+
+# set application endpoint
+export Ngsa_App_Endpoint="$Ngsa_Name.$Ngsa_Domain_Name"
 
 # resource group names
 export Imdb_Name=$Ngsa_Name
@@ -236,6 +254,7 @@ Add the required helm repositories
 
 helm repo add stable https://kubernetes-charts.storage.googleapis.com
 helm repo add kedacore https://kedacore.github.io/charts
+helm repo add jetstack https://charts.jetstack.io
 helm repo update
 
 ```
@@ -277,7 +296,7 @@ Validate the Istio installation
 
 ```bash
 
-kubectl get all -n istio-system
+kubectl get all --namespace istio-system
 
 ```
 
@@ -289,20 +308,20 @@ You should see the following components:
 - `grafana` - analytics and monitoring dashboard addon
 - `kiali` - service mesh dashboard addon
 
-Enable automatic sidecar injection in the default namespace:
+Enable automatic sidecar injection in the ngsa namespace:
 
 ```bash
 
-kubectl label namespace default istio-injection=enabled
+kubectl create namespace ngsa
+kubectl label namespace ngsa istio-injection=enabled
 
 ```
 
-Get the public IP of the Istio Ingress Gateway and set the application endpoint.
+Get the public IP of the Istio Ingress Gateway.
 
 ```bash
 
 export INGRESS_PIP=$(kubectl --namespace istio-system  get svc -l istio=ingressgateway -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}')
-export Ngsa_App_Endpoint=http://${INGRESS_PIP}.nip.io
 
 ```
 
@@ -313,7 +332,7 @@ KEDA autoscales the NGSA pods by assessing metrics for incoming requests, which 
 ```bash
 
 kubectl create ns keda
-helm install keda kedacore/keda -n keda
+helm install keda kedacore/keda --namespace keda
 
 ```
 
@@ -322,11 +341,70 @@ helm install keda kedacore/keda -n keda
 ```bash
 
 kubectl create secret generic ngsa-aks-secrets \
+  --namespace ngsa \
   --from-literal=CosmosDatabase=$Imdb_DB \
   --from-literal=CosmosCollection=$Imdb_Col \
   --from-literal=CosmosKey=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryReadonlyMasterKey -o tsv) \
   --from-literal=CosmosUrl=https://${Imdb_Name}.documents.azure.com:443/ \
   --from-literal=AppInsightsKey=$(az monitor app-insights component show -g $Ngsa_App_RG -a $Ngsa_Name --query instrumentationKey -o tsv)
+
+```
+
+## Setup SSL/DNS
+
+> Note: A registered domain name is required for this section.
+
+### DNS Setup
+
+Create a DNS A record mapping your domain to the Istio ingress gateway IP address.
+
+This is a setup using Azure DNS. In this setup, update your domain to use Azure DNS Zone nameservers.
+
+```bash
+
+# example: export Ngsa_DNS_RG=dns-rg
+export Ngsa_DNS_RG=[dns resource group name]
+
+# Check if DNS resource group exists
+az group exists -n $Ngsa_DNS_RG
+
+# Create DNS resource group if it does not exist
+az group create -n $Ngsa_DNS_RG -l $Ngsa_Location
+
+# Check if DNS Zone exists
+az network dns zone show --name $Ngsa_Domain_Name -g $Ngsa_DNS_RG -o table
+
+# Create the DNS Zone if it does not exist.
+az network dns zone create -g $Ngsa_DNS_RG -n $Ngsa_Domain_Name
+
+# Add DNS A record for the Istio ingress gateway.
+az network dns record-set a add-record -g $Ngsa_DNS_RG -z $Ngsa_Domain_Name -n $Ngsa_Name -a $INGRESS_PIP
+
+# Show the Azure nameservers for your DNS Zone.
+az network dns zone show -n $Ngsa_Domain_Name -g $Ngsa_DNS_RG --query nameServers -o tsv
+
+# Update your domain to use the result entries for nameservers.
+
+```
+
+### Install Cert-Manager
+
+```bash
+
+cd $REPO_ROOT/IaC/AKS/cluster/manifests/cert-manager
+
+export CERT_MANAGER_VERSION=1.0.3
+
+kubectl create ns cert-manager
+
+helm install cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --version "v${CERT_MANAGER_VERSION}" \
+  --set installCRDs=true
+
+# Create a staging and production ClusterIssuer for cert-manager
+# Use the staging ClusterIssuer for testing. Once ready, use the production resource.
+envsubst < clusterissuer.yaml | kubectl apply -f -
 
 ```
 
@@ -348,7 +426,7 @@ image:
 
 ingress:
   hosts:
-    - %%INGRESS_PIP%%.nip.io # Replace the IP address with the external IP of the Istio ingress gateway (value of $INGRESS_PIP or run kubectl get svc istio-ingressgateway -n istio-system to see the correct IP)
+    - %%APP_ENDPOINT%%
   paths:
     - /
 
@@ -362,23 +440,45 @@ Replace the values in the file surrounded by `%%` with the proper environment va
 ```bash
 
 cd $REPO_ROOT/IaC/AKS/cluster/charts/ngsa
-sed -i "s/%%INGRESS_PIP%%/${INGRESS_PIP}/g" helm-config.yaml
+
+sed -i "s/%%APP_ENDPOINT%%/${Ngsa_App_Endpoint}/g" helm-config.yaml
 
 ```
 
-Install the Helm Chart located in the cloned directory
+This file can now be given to the the helm install as an override to the default values.
 
 ```bash
 
-cd $REPO_ROOT/IaC/AKS/cluster/charts
+cd $REPO_ROOT/IaC/AKS/cluster/charts/
 
 # Install NGSA using the upstream ngsa image from Dockerhub
-helm install ngsa-aks ngsa -f ./ngsa/helm-config.yaml
+# Start by using the "letsencrypt-staging" ClusterIssuer to get test certs from the Let's Encrypt staging environment.
+helm install ngsa-aks ngsa -f ./ngsa/helm-config.yaml --namespace ngsa --set cert.issuer=letsencrypt-staging
 
 # check the version endpoint
 # you may get a timeout error, if so, just retry
 
 http ${Ngsa_App_Endpoint}/version
+
+```
+
+Check that the test certificates have been issued. You can check in the browser, or use openssl. With the test certificates, it is expected that you get a privacy error in the browser.
+
+```bash
+
+# Option 1: Open this link in your browser. You should see a privacy error if the test certificates have been successfully issued.
+echo "https://$Ngsa_App_Endpoint"
+
+# Option 2: Use openssl to view your test certificate. The response should include "CN = Fake LE Intermediate X1" at the top.
+openssl s_client -servername $Ngsa_App_Endpoint -connect $Ngsa_App_Endpoint:443 < /dev/null | grep "CN = Fake LE Intermediate X1"
+
+```
+
+After verifying that the test certs were issued, update the deployment to use the "letsencrypt-prod" ClusterIssuer to get valid certs from the Let's Encrypt production environment.
+
+```bash
+
+helm upgrade ngsa-aks ngsa -f ./ngsa/helm-config.yaml  --namespace ngsa --set cert.issuer=letsencrypt-prod
 
 ```
 
@@ -399,7 +499,7 @@ TODO
 
 ## Smoke Tests
 
-Deploy Web Validate to drive consistent traffic to the App Service for monitoring and alerting.
+Deploy Web Validate to drive consistent traffic to the AKS cluster for monitoring.
 
 ```bash
 
@@ -422,10 +522,11 @@ Alternatively, you can deploy the smokers to AKS as cronjobs.
 
 cd $REPO_ROOT/IaC/AKS/cluster/charts
 
-helm install ngsa-smoker smoker --set ingressURL=$Ngsa_App_Endpoint
+kubectl create namespace ngsa-smoker
+helm install ngsa-smoker smoker --namespace ngsa-smoker --set ingressURL=$Ngsa_App_Endpoint
 
 # Verify the cron jobs are installed
-kubectl get cronjobs
+kubectl get cronjobs --namespace ngsa-smoker
 
 ```
 
