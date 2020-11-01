@@ -72,6 +72,9 @@ sed -e "s/{PIP}/${PIP}/g" metalLB.yml | k apply -f -
 
 ```bash
 
+# add az cli extension
+az extension add --name log-analytics
+
 # delete if necessary - you can safely ignore the not exists error
 kubectl delete secret ngsa-secrets
 
@@ -81,7 +84,9 @@ kubectl create secret generic ngsa-secrets \
   --from-literal=CosmosCollection=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name CosmosCollection) \
   --from-literal=CosmosKey=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name CosmosKey) \
   --from-literal=CosmosUrl=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name CosmosUrl) \
-  --from-literal=AppInsightsKey=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name AppInsightsKey)
+  --from-literal=AppInsightsKey=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name AppInsightsKey) \
+  --from-literal=WorkspaceId=$(eval az monitor log-analytics workspace show --query customerId -o tsv -g ngsa-rg-webv -n ngsa) \
+  --from-literal=SharedKey=$(eval az monitor log-analytics workspace get-shared-keys --query primarySharedKey -o tsv -g ngsa-rg-webv -n ngsa)
 
 # display the secrets (base 64 encoded)
 kubectl get secret ngsa-secrets -o jsonpath='{.data}'
