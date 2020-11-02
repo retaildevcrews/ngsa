@@ -5,6 +5,7 @@ metadata:
   labels:
     app: ngsa
 spec:
+  serviceAccountName: k8s-admin
   containers:
   - name: ngsa
     imagePullPolicy: Always
@@ -13,6 +14,41 @@ spec:
     ports:
     - containerPort: 4120
 
+  - name: logagent
+    imagePullPolicy: Always
+    image: retaildevcrew/logagent:beta
+    env:
+    - name: WorkspaceId
+      valueFrom:
+        secretKeyRef:
+          name: ngsa-secrets
+          key: WorkspaceId
+    - name: SharedKey
+      valueFrom:
+        secretKeyRef:
+          name: ngsa-secrets
+          key: SharedKey
+    - name: LogName
+      valueFrom:
+        configMapKeyRef:
+          name: ngsa-config
+          key: LogName
+    - name: NodeName
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
+    - name: PodName
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.name
+    - name: PodNamespace
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.namespace
+    - name: PodIP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
 ---
 
 apiVersion: v1
