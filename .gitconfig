@@ -1,0 +1,8 @@
+[core]
+  whitespace = blank-at-eol,blank-at-eof,space-before-tab
+  eol = lf
+  autocrlf = input
+[pull]
+        rebase = false
+[init]
+        defaultBranch = main
