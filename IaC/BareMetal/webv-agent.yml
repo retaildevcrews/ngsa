@@ -29,7 +29,10 @@ spec:
           name: ngsa-secrets
           key: SharedKey
     - name: LogName
-      value: bartrsc
+      valueFrom:
+        configMapKeyRef:
+          name: webv-config
+          value: LogName
     - name: NodeName
       valueFrom:
         fieldRef:
