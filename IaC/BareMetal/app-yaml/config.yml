@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: ngsa-config
 data:
-  LogName: "testa"
+  LogName: "testb"
 
 ---
 apiVersion: v1
@@ -11,4 +11,6 @@ kind: ConfigMap
 metadata:
   name: webv-config
 data:
-  LogName: "testa"
+  LogName: "testb"
+  Region: "West"
+  Zone: "DO-SF3"
