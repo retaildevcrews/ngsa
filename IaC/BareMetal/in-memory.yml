@@ -7,6 +7,7 @@ metadata:
 spec:
   containers:
   - name: ngsa
+    imagePullPolicy: Always
     image: retaildevcrew/ngsa:beta
     args: [ "--in-memory" ]
     ports:
