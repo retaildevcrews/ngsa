@@ -17,9 +17,6 @@ spec:
   - name: logagent
     imagePullPolicy: Always
     image: retaildevcrew/logagent:beta
-    ports:
-    - name: app
-      containerPort: 3000
     env:
     - name: WorkspaceId
       valueFrom:
