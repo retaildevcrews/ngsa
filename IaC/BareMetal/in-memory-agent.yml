@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ngsa
+  labels:
+    app: ngsa
+spec:
+  containers:
+  - name: ngsa
+    image: retaildevcrew/ngsa:beta
+    args: [ "--in-memory" ]
+    ports:
+    - containerPort: 4120
+
+  - name: logagent
+    imagePullPolicy: Always
+    image: retaildevcrew/logagent:beta
+    env:
+    - name: WorkspaceId
+      valueFrom:
+        secretKeyRef:
+          name: ngsa-secrets
+          key: WorkspaceId
+    - name: SharedKey
+      valueFrom:
+        secretKeyRef:
+          name: ngsa-secrets
+          key: SharedKey
+    - name: LogName
+      value: bartrngsa
+    - name: NodeName
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
+    - name: PodName
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.name
+    - name: PodNamespace
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.namespace
+    - name: PodIP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ngsa
+  labels:
+    app: ngsa
+spec:
+  clusterIP:
+  ports:
+  - port: 4120
+    protocol: TCP
+    targetPort: 4120
+  selector:
+    app: ngsa
+  sessionAffinity: None
+  type: ClusterIP
