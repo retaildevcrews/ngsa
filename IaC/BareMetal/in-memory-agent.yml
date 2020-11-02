@@ -32,7 +32,7 @@ spec:
       valueFrom:
         configMapKeyRef:
           name: ngsa-config
-          value: LogName
+          key: LogName
     - name: NodeName
       valueFrom:
         fieldRef:
