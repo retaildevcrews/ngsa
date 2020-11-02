@@ -100,7 +100,7 @@ namespace CSE.NextGenSymmetricApp
                     // set the Cosmos server name for logging
                     CosmosName = Secrets.CosmosServer.Replace("https://", string.Empty, StringComparison.OrdinalIgnoreCase).Replace("http://", string.Empty, StringComparison.OrdinalIgnoreCase);
 
-                    int ndx = CosmosName.IndexOf('/', StringComparison.OrdinalIgnoreCase);
+                    int ndx = CosmosName.IndexOf('.', StringComparison.OrdinalIgnoreCase);
 
                     if (ndx > 0)
                     {
