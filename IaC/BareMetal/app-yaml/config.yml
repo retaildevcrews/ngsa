@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ngsa-config
+data:
+  LogName: "testa"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: webv-config
+data:
+  LogName: "testa"
