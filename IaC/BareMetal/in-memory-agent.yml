@@ -5,6 +5,7 @@ metadata:
   labels:
     app: ngsa
 spec:
+  serviceAccountName: k8s-admin
   containers:
   - name: ngsa
     image: retaildevcrew/ngsa:beta
