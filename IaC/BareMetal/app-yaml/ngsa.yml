@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: ngsa
+  name: ngsa-cosmos
   labels:
-    app: ngsa
+    app: ngsa-cosmos
 
 spec:
   serviceAccountName: k8s-admin
   containers:
-  - name: ngsa
+  - name: app
     imagePullPolicy: Always
     image: retaildevcrew/ngsa:beta
 
@@ -19,7 +19,7 @@ spec:
     - name: secrets
       mountPath: "/app/secrets"
 
-  - name: logagent
+  - name: log
     imagePullPolicy: Always
     image: retaildevcrew/logagent:beta
 
@@ -39,6 +39,16 @@ spec:
         configMapKeyRef:
           name: ngsa-config
           key: LogName
+    - name: Zone
+      valueFrom:
+        configMapKeyRef:
+          name: webv-config
+          key: Zone
+    - name: Region
+      valueFrom:
+        configMapKeyRef:
+          name: webv-config
+          key: Region
     - name: NodeName
       valueFrom:
         fieldRef:
@@ -67,16 +77,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ngsa
+  name: ngsa-cosmos
   labels:
-    app: ngsa
+    app: ngsa-cosmos
 
 spec:
   sessionAffinity: None
   type: ClusterIP
 
   selector:
-    app: ngsa
+    app: ngsa-cosmos
 
   clusterIP:
 
