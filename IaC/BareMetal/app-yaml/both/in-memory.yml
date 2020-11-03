@@ -33,6 +33,16 @@ spec:
         configMapKeyRef:
           name: ngsa-config
           key: LogName
+    - name: Zone
+      valueFrom:
+        configMapKeyRef:
+          name: webv-config
+          key: Zone
+    - name: Region
+      valueFrom:
+        configMapKeyRef:
+          name: webv-config
+          key: Region
     - name: NodeName
       valueFrom:
         fieldRef:

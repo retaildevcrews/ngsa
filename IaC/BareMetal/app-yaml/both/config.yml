@@ -3,14 +3,6 @@ kind: ConfigMap
 metadata:
   name: ngsa-config
 data:
-  LogName: "anflinch"
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: webv-config
-data:
-  LogName: "anflinch"
+  LogName: "baseline"
   Region: "West"
   Zone: "DO-SF3"
