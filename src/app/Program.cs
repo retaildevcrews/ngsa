@@ -23,6 +23,7 @@ namespace CSE.NextGenSymmetricApp
     public sealed partial class App
     {
         public static string CosmosName { get; set; } = string.Empty;
+        public static string CosmosQueryId { get; set; } = string.Empty;
 
         // ILogger instance
         private static ILogger<App> logger;
