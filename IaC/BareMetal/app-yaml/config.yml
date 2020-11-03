@@ -3,6 +3,6 @@ kind: ConfigMap
 metadata:
   name: ngsa-config
 data:
-  LogName: "baseline"
+  LogName: "benchmarkoneh"
   Region: "West"
   Zone: "DO-SF3"
