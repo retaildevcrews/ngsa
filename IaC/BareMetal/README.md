@@ -91,6 +91,11 @@ kubectl create secret generic ngsa-secrets \
 # display the secrets (base 64 encoded)
 kubectl get secret ngsa-secrets -o jsonpath='{.data}'
 
+# if you need to update a secret
+kubectl create secret generic ngsa-secrets \
+  --from-literal=foo=bar \
+  --dry-run=client -o yaml | kubectl apply -f -
+
 ```
 
 ## Deploy ngsa
