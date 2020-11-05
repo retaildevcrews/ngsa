@@ -1,4 +1,4 @@
-name: Docker Build
+name: NGSA Build
 
 on:
   pull_request:
@@ -7,18 +7,16 @@ on:
       - main
 
     paths:
-    - 'src/**'
-    - 'Dockerfile'
-    - '.github/workflows/appPR.yaml'
+    - 'src/ngsa/**'
+    - '.github/workflows/ngsa.yaml'
 
   push:
     branches:
       - main
 
     paths:
-    - 'src/**'
-    - 'Dockerfile'
-    - '.github/workflows/appPR.yaml'
+    - 'src/ngsa/**'
+    - '.github/workflows/ngsa.yaml'
 
     tags:
       - v*
@@ -99,7 +97,7 @@ jobs:
       if: ${{ env.BUILD == 'true' }}
       run: |
         # build test image
-        docker build . -t test --target test
+        docker build . -t test -f src/ngsa/Dockerfile --target test
 
     - name: Install WebV
       if: ${{ env.COSMOS_SET == 'true' }}
@@ -157,9 +155,9 @@ jobs:
         # build image
         if [[ "${{ github.ref }}" == "refs/tags/"* ]]
         then
-          docker build . -t image --build-arg TAG=true
+          docker build . -t image -f src/ngsa/Dockerfile --build-arg TAG=true
         else
-          docker build . -t image
+          docker build . -t image -f src/ngsa/Dockerfile
         fi
         
     - name: Docker Tag and Push
