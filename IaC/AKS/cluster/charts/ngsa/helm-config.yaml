@@ -8,7 +8,7 @@ image:
   
 ingress:
   hosts:
-    - %%APP_ENDPOINT%%
+    - ngsa-pre.cse.ms
   paths: 
     - /
 

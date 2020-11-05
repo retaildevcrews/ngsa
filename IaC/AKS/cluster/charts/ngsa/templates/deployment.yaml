@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: {{ include "ngsa.fullname" . }}
   labels:
+    app.kubernetes.io/component: app
     {{- include "ngsa.labels" . | nindent 4 }}
 spec:
 {{- if not .Values.autoscaling.enabled }}
@@ -18,7 +19,8 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       labels:
-        {{- include "ngsa.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: app
+        {{- include "ngsa.labels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -47,25 +49,25 @@ spec:
             httpGet:
               path: /healthz
               port: http
-            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}  
-            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}  
-            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}  
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           readinessProbe:
             httpGet:
               path: /healthz
               port: http
-            failureThreshold: {{ .Values.readinessProbe.failureThreshold }} 
-            periodSeconds: {{ .Values.readinessProbe.periodSeconds }} 
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: secrets
               mountPath: "/app/secrets"
-      volumes: 
+      volumes:
         - name: secrets
           secret:
             secretName: {{ include "ngsa.fullname" . }}-secrets
-            defaultMode: 444      
+            defaultMode: 444
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

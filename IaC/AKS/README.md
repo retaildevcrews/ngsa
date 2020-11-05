@@ -82,6 +82,15 @@ This walkthrough will create resource groups, a Cosmos DB instance, and an Azure
 # must be at least 5 characters long
 # must start with a-z (only lowercase)
 export Ngsa_Name=[your unique name]
+# examples: pre, test, stage, prod, and dev
+export Ngsa_Env=[your environment name]
+
+# TODO: IDEA:
+#   Update ngsa_name var to be combination of other env vars.
+#   The setup below should make the rest of the instructions similar to what it was originally.
+#   - ngsa_app_name = ngsa
+#   - ngsa_env = pre
+#   - ngsa_name = $ngsa_app_name-$ngsa_env
 
 # Set email to register with Let's Encrypt
 export Ngsa_Email=[your email address]
@@ -91,7 +100,7 @@ export Ngsa_Email=[your email address]
 export Ngsa_Domain_Name=[your domain name]
 
 ### if true, change Ngsa_Name
-az cosmosdb check-name-exists -n ${Ngsa_Name}
+az cosmosdb check-name-exists -n "${Ngsa_Name}-${Ngsa_Env}-cosmos"
 
 ```
 
@@ -112,13 +121,13 @@ az cosmosdb check-name-exists -n ${Ngsa_Name}
 export Ngsa_Location=westus2
 
 # set application endpoint
-export Ngsa_App_Endpoint="$Ngsa_Name.$Ngsa_Domain_Name"
+export Ngsa_App_Endpoint="${Ngsa_Name}-${Ngsa_Env}.${Ngsa_Domain_Name}"
 
 # resource group names
-export Imdb_Name=$Ngsa_Name
-export Ngsa_App_RG=${Ngsa_Name}-rg-app
-export Ngsa_Smoker_RG=${Ngsa_Name}-rg-smoker
-export Imdb_RG=${Imdb_Name}-rg-cosmos
+export Imdb_Name="${Ngsa_Name}-${Ngsa_Env}-cosmos"
+export Ngsa_App_RG="${Ngsa_Name}-app-${Ngsa_Env}-rg"
+export Ngsa_Smoker_RG="${Ngsa_Name}-smoker-${Ngsa_Env}-rg"
+export Imdb_RG="${Ngsa_Name}-cosmos-${Ngsa_Env}-rg"
 
 # export Cosmos DB env vars
 # these will be explained in the Cosmos DB setup step
@@ -157,7 +166,10 @@ az feature register --name AIWorkspacePreview --namespace microsoft.insights
 az provider register -n microsoft.insights
 
 # Create App Insights
-az monitor app-insights component create -g $Ngsa_App_RG -l $Ngsa_Location -a $Ngsa_Name -o table
+
+export Ngsa_App_Insights_Name="${Ngsa_Name}-${Ngsa_Env}-appi"
+
+az monitor app-insights component create -g $Ngsa_App_RG -l $Ngsa_Location -a $Ngsa_App_Insights_Name -o table
 
 ```
 
@@ -167,7 +179,7 @@ Set local variables to use in AKS deployment
 
 ```bash
 
-export Ngsa_AKS_Name="${Ngsa_Name}-aks"
+export Ngsa_AKS_Name="${Ngsa_Name}-${Ngsa_Env}-aks"
 
 ```
 
@@ -312,8 +324,9 @@ Enable automatic sidecar injection in the ngsa namespace:
 
 ```bash
 
-kubectl create namespace ngsa
-kubectl label namespace ngsa istio-injection=enabled
+# TODO: need to document teamname prefix for k8s namespace
+kubectl create namespace rdc-ngsa
+kubectl label namespace rdc-ngsa istio-injection=enabled
 
 ```
 
@@ -341,12 +354,12 @@ helm install keda kedacore/keda --namespace keda
 ```bash
 
 kubectl create secret generic ngsa-aks-secrets \
-  --namespace ngsa \
+  --namespace rdc-ngsa \
   --from-literal=CosmosDatabase=$Imdb_DB \
   --from-literal=CosmosCollection=$Imdb_Col \
   --from-literal=CosmosKey=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryReadonlyMasterKey -o tsv) \
   --from-literal=CosmosUrl=https://${Imdb_Name}.documents.azure.com:443/ \
-  --from-literal=AppInsightsKey=$(az monitor app-insights component show -g $Ngsa_App_RG -a $Ngsa_Name --query instrumentationKey -o tsv)
+  --from-literal=AppInsightsKey=$(az monitor app-insights component show -g $Ngsa_App_RG -a $Ngsa_App_Insights_Name --query instrumentationKey -o tsv)
 
 ```
 
@@ -368,17 +381,17 @@ export Ngsa_DNS_RG=[dns resource group name]
 # Check if DNS resource group exists
 az group exists -n $Ngsa_DNS_RG
 
-# Create DNS resource group if it does not exist
+# If false, create DNS resource group
 az group create -n $Ngsa_DNS_RG -l $Ngsa_Location
 
 # Check if DNS Zone exists
 az network dns zone show --name $Ngsa_Domain_Name -g $Ngsa_DNS_RG -o table
 
-# Create the DNS Zone if it does not exist.
+# If not found, create the DNS Zone.
 az network dns zone create -g $Ngsa_DNS_RG -n $Ngsa_Domain_Name
 
 # Add DNS A record for the Istio ingress gateway.
-az network dns record-set a add-record -g $Ngsa_DNS_RG -z $Ngsa_Domain_Name -n $Ngsa_Name -a $INGRESS_PIP
+az network dns record-set a add-record -g $Ngsa_DNS_RG -z $Ngsa_Domain_Name -n "${Ngsa_Name}-${Ngsa_Env}" -a $INGRESS_PIP
 
 # Show the Azure nameservers for your DNS Zone.
 az network dns zone show -n $Ngsa_Domain_Name -g $Ngsa_DNS_RG --query nameServers -o tsv
@@ -453,7 +466,7 @@ cd $REPO_ROOT/IaC/AKS/cluster/charts/
 
 # Install NGSA using the upstream ngsa image from Dockerhub
 # Start by using the "letsencrypt-staging" ClusterIssuer to get test certs from the Let's Encrypt staging environment.
-helm install ngsa-aks ngsa -f ./ngsa/helm-config.yaml --namespace ngsa --set cert.issuer=letsencrypt-staging
+helm install ngsa-aks ngsa -f ./ngsa/helm-config.yaml --namespace rdc-ngsa --set cert.issuer=letsencrypt-staging
 
 # check the version endpoint
 # you may get a timeout error, if so, just retry
@@ -463,6 +476,8 @@ http ${Ngsa_App_Endpoint}/version
 ```
 
 Check that the test certificates have been issued. You can check in the browser, or use openssl. With the test certificates, it is expected that you get a privacy error in the browser.
+
+TODO: add variable for https app endpoint.
 
 ```bash
 
@@ -478,7 +493,7 @@ After verifying that the test certs were issued, update the deployment to use th
 
 ```bash
 
-helm upgrade ngsa-aks ngsa -f ./ngsa/helm-config.yaml  --namespace ngsa --set cert.issuer=letsencrypt-prod
+helm upgrade ngsa-aks ngsa -f ./ngsa/helm-config.yaml  --namespace rdc-ngsa --set cert.issuer=letsencrypt-prod
 
 ```
 
@@ -489,7 +504,7 @@ Run the Validation Test
 ```bash
 
 # run the tests in a container
-docker run -it --rm retaildevcrew/webvalidate --server $Ngsa_App_Endpoint --base-url https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/ --files baseline.json
+docker run -it --rm retaildevcrew/webvalidate --server "https://$Ngsa_App_Endpoint" --base-url https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/ --files baseline.json
 
 ```
 
