@@ -8,6 +8,8 @@ AppInsightsKey
 
 dotFiles/.**
 
+IaC/AKS/cluster/charts/ngsa/helm-config.yaml
+
 # User-specific files
 *.suo
 *.user

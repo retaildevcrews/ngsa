@@ -1,0 +1,302 @@
+diff --git a/.gitignore b/.gitignore
+index 1f3cbbb..5433537 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -8,6 +8,8 @@ AppInsightsKey
+ 
+ dotFiles/.**
+ 
++IaC/AKS/cluster/charts/ngsa/helm-config.yaml
++
+ # User-specific files
+ *.suo
+ *.user
+diff --git a/IaC/AKS/README.md b/IaC/AKS/README.md
+index 8ef2d21..0f22e79 100644
+--- a/IaC/AKS/README.md
++++ b/IaC/AKS/README.md
+@@ -81,16 +81,12 @@ This walkthrough will create resource groups, a Cosmos DB instance, and an Azure
+ # do not include punctuation - only use a-z and 0-9
+ # must be at least 5 characters long
+ # must start with a-z (only lowercase)
+-export Ngsa_Name=[your unique name]
++export Ngsa_Base_Name=[your unique name]
+ # examples: pre, test, stage, prod, and dev
+ export Ngsa_Env=[your environment name]
+ 
+-# TODO: IDEA:
+-#   Update ngsa_name var to be combination of other env vars.
+-#   The setup below should make the rest of the instructions similar to what it was originally.
+-#   - ngsa_app_name = ngsa
+-#   - ngsa_env = pre
+-#   - ngsa_name = $ngsa_app_name-$ngsa_env
++# Set main resource name
++export Ngsa_Name="${Ngsa_Base_Name}-${Ngsa_Env}"
+ 
+ # Set email to register with Let's Encrypt
+ export Ngsa_Email=[your email address]
+@@ -100,7 +96,7 @@ export Ngsa_Email=[your email address]
+ export Ngsa_Domain_Name=[your domain name]
+ 
+ ### if true, change Ngsa_Name
+-az cosmosdb check-name-exists -n "${Ngsa_Name}-${Ngsa_Env}-cosmos"
++az cosmosdb check-name-exists -n "${Ngsa_Name}-cosmos"
+ 
+ ```
+ 
+@@ -121,13 +117,13 @@ az cosmosdb check-name-exists -n "${Ngsa_Name}-${Ngsa_Env}-cosmos"
+ export Ngsa_Location=westus2
+ 
+ # set application endpoint
+-export Ngsa_App_Endpoint="${Ngsa_Name}-${Ngsa_Env}.${Ngsa_Domain_Name}"
++export Ngsa_App_Endpoint="${Ngsa_Name}.${Ngsa_Domain_Name}"
+ 
+ # resource group names
+-export Imdb_Name="${Ngsa_Name}-${Ngsa_Env}-cosmos"
+-export Ngsa_App_RG="${Ngsa_Name}-app-${Ngsa_Env}-rg"
+-export Ngsa_Smoker_RG="${Ngsa_Name}-smoker-${Ngsa_Env}-rg"
+-export Imdb_RG="${Ngsa_Name}-cosmos-${Ngsa_Env}-rg"
++export Imdb_Name="${Ngsa_Name}-cosmos"
++export Ngsa_App_RG="${Ngsa_Name}-app-rg"
++export Ngsa_Smoker_RG="${Ngsa_Name}-smoker-rg"
++export Imdb_RG="${Ngsa_Name}-cosmos-rg"
+ 
+ # export Cosmos DB env vars
+ # these will be explained in the Cosmos DB setup step
+@@ -167,7 +163,7 @@ az provider register -n microsoft.insights
+ 
+ # Create App Insights
+ 
+-export Ngsa_App_Insights_Name="${Ngsa_Name}-${Ngsa_Env}-appi"
++export Ngsa_App_Insights_Name="${Ngsa_Name}-appi"
+ 
+ az monitor app-insights component create -g $Ngsa_App_RG -l $Ngsa_Location -a $Ngsa_App_Insights_Name -o table
+ 
+@@ -179,7 +175,7 @@ Set local variables to use in AKS deployment
+ 
+ ```bash
+ 
+-export Ngsa_AKS_Name="${Ngsa_Name}-${Ngsa_Env}-aks"
++export Ngsa_AKS_Name="${Ngsa_Name}-aks"
+ 
+ ```
+ 
+@@ -324,9 +320,8 @@ Enable automatic sidecar injection in the ngsa namespace:
+ 
+ ```bash
+ 
+-# TODO: need to document teamname prefix for k8s namespace
+-kubectl create namespace rdc-ngsa
+-kubectl label namespace rdc-ngsa istio-injection=enabled
++kubectl create namespace ngsa
++kubectl label namespace ngsa istio-injection=enabled
+ 
+ ```
+ 
+@@ -344,8 +339,9 @@ KEDA autoscales the NGSA pods by assessing metrics for incoming requests, which
+ 
+ ```bash
+ 
+-kubectl create ns keda
+-helm install keda kedacore/keda --namespace keda
++export KEDA_VERSION=2.0.0
++kubectl create namespace keda
++helm install keda kedacore/keda --namespace keda --version $KEDA_VERSION
+ 
+ ```
+ 
+@@ -354,7 +350,7 @@ helm install keda kedacore/keda --namespace keda
+ ```bash
+ 
+ kubectl create secret generic ngsa-aks-secrets \
+-  --namespace rdc-ngsa \
++  --namespace ngsa \
+   --from-literal=CosmosDatabase=$Imdb_DB \
+   --from-literal=CosmosCollection=$Imdb_Col \
+   --from-literal=CosmosKey=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryReadonlyMasterKey -o tsv) \
+@@ -391,7 +387,7 @@ az network dns zone show --name $Ngsa_Domain_Name -g $Ngsa_DNS_RG -o table
+ az network dns zone create -g $Ngsa_DNS_RG -n $Ngsa_Domain_Name
+ 
+ # Add DNS A record for the Istio ingress gateway.
+-az network dns record-set a add-record -g $Ngsa_DNS_RG -z $Ngsa_Domain_Name -n "${Ngsa_Name}-${Ngsa_Env}" -a $INGRESS_PIP
++az network dns record-set a add-record -g $Ngsa_DNS_RG -z $Ngsa_Domain_Name -n $Ngsa_Name -a $INGRESS_PIP
+ 
+ # Show the Azure nameservers for your DNS Zone.
+ az network dns zone show -n $Ngsa_Domain_Name -g $Ngsa_DNS_RG --query nameServers -o tsv
+@@ -407,14 +403,15 @@ az network dns zone show -n $Ngsa_Domain_Name -g $Ngsa_DNS_RG --query nameServer
+ cd $REPO_ROOT/IaC/AKS/cluster/manifests/cert-manager
+ 
+ export CERT_MANAGER_VERSION=1.0.3
+-
+-kubectl create ns cert-manager
+-
++kubectl create namespace cert-manager
+ helm install cert-manager jetstack/cert-manager \
+   --namespace cert-manager \
+   --version "v${CERT_MANAGER_VERSION}" \
+   --set installCRDs=true
+ 
++# wait for the cert manager pods to be ready
++kubectl get pods -n cert-manager
++
+ # Create a staging and production ClusterIssuer for cert-manager
+ # Use the staging ClusterIssuer for testing. Once ready, use the production resource.
+ envsubst < clusterissuer.yaml | kubectl apply -f -
+@@ -423,42 +420,18 @@ envsubst < clusterissuer.yaml | kubectl apply -f -
+ 
+ ## Deploy NGSA with Helm
+ 
+-A helm chart is included for the reference application ([NGSA](https://github.com/retaildevcrews/ngsa))
+-
+-A file called helm-config.yaml with the following contents that needs be to edited to fit the environment being deployed in. The file looks like this
+-
+-```yaml
+-
+-# Default values for NGSA.
+-# This is a YAML-formatted file.
+-# Declare variables to be passed into your templates.
+-image:
+-  repository: retaildevcrew
+-  name: ngsa
+-  tag: beta
+-
+-ingress:
+-  hosts:
+-    - %%APP_ENDPOINT%%
+-  paths:
+-    - /
+-
+-app:
+-  args: []
+-
+-```
+-
+-Replace the values in the file surrounded by `%%` with the proper environment variables
++A helm chart is included for the reference application ([NGSA](https://github.com/retaildevcrews/ngsa)).
+ 
+ ```bash
+ 
+ cd $REPO_ROOT/IaC/AKS/cluster/charts/ngsa
+ 
+-sed -i "s/%%APP_ENDPOINT%%/${Ngsa_App_Endpoint}/g" helm-config.yaml
++# Use the helm-config.yaml file to configure the deployment
++envsubst < helm-config.example.yaml > helm-config.yaml
+ 
+ ```
+ 
+-This file can now be given to the the helm install as an override to the default values.
++The `helm-config.yaml` file can be used as an override to the default values during the helm install.
+ 
+ ```bash
+ 
+@@ -466,7 +439,7 @@ cd $REPO_ROOT/IaC/AKS/cluster/charts/
+ 
+ # Install NGSA using the upstream ngsa image from Dockerhub
+ # Start by using the "letsencrypt-staging" ClusterIssuer to get test certs from the Let's Encrypt staging environment.
+-helm install ngsa-aks ngsa -f ./ngsa/helm-config.yaml --namespace rdc-ngsa --set cert.issuer=letsencrypt-staging
++helm install ngsa-aks ngsa -f ./ngsa/helm-config.yaml --namespace ngsa --set cert.issuer=letsencrypt-staging
+ 
+ # check the version endpoint
+ # you may get a timeout error, if so, just retry
+@@ -477,12 +450,12 @@ http ${Ngsa_App_Endpoint}/version
+ 
+ Check that the test certificates have been issued. You can check in the browser, or use openssl. With the test certificates, it is expected that you get a privacy error in the browser.
+ 
+-TODO: add variable for https app endpoint.
+-
+ ```bash
+ 
++export Ngsa_Https_App_Endpoint="https://${Ngsa_App_Endpoint}"
++
+ # Option 1: Open this link in your browser. You should see a privacy error if the test certificates have been successfully issued.
+-echo "https://$Ngsa_App_Endpoint"
++echo $Ngsa_Https_App_Endpoint
+ 
+ # Option 2: Use openssl to view your test certificate. The response should include "CN = Fake LE Intermediate X1" at the top.
+ openssl s_client -servername $Ngsa_App_Endpoint -connect $Ngsa_App_Endpoint:443 < /dev/null | grep "CN = Fake LE Intermediate X1"
+@@ -493,7 +466,7 @@ After verifying that the test certs were issued, update the deployment to use th
+ 
+ ```bash
+ 
+-helm upgrade ngsa-aks ngsa -f ./ngsa/helm-config.yaml  --namespace rdc-ngsa --set cert.issuer=letsencrypt-prod
++helm upgrade ngsa-aks ngsa -f ./ngsa/helm-config.yaml  --namespace ngsa --set cert.issuer=letsencrypt-prod
+ 
+ ```
+ 
+@@ -504,7 +477,7 @@ Run the Validation Test
+ ```bash
+ 
+ # run the tests in a container
+-docker run -it --rm retaildevcrew/webvalidate --server "https://$Ngsa_App_Endpoint" --base-url https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/ --files baseline.json
++docker run -it --rm retaildevcrew/webvalidate --server $Ngsa_Https_App_Endpoint --base-url https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/ --files baseline.json
+ 
+ ```
+ 
+@@ -527,18 +500,18 @@ az monitor log-analytics workspace create -g $Ngsa_Smoker_RG -l $Ngsa_Location -
+ cd $REPO_ROOT/IaC/scripts
+ 
+ # Run the shell script to install smoker instances with ACI
+-./smokers.sh -n $Ngsa_Name -r $Ngsa_Smoker_RG -s $Ngsa_App_Endpoint
++./smokers.sh -n $Ngsa_Name -r $Ngsa_Smoker_RG -s $Ngsa_Https_App_Endpoint
+ 
+ ```
+ 
+-Alternatively, you can deploy the smokers to AKS as cronjobs.
++Alternatively, you can deploy the smokers inside the AKS cluster as cronjobs.
+ 
+ ```bash
+ 
+ cd $REPO_ROOT/IaC/AKS/cluster/charts
+ 
+ kubectl create namespace ngsa-smoker
+-helm install ngsa-smoker smoker --namespace ngsa-smoker --set ingressURL=$Ngsa_App_Endpoint
++helm install ngsa-smoker smoker --namespace ngsa-smoker --set ingressURL=$Ngsa_Https_App_Endpoint
+ 
+ # Verify the cron jobs are installed
+ kubectl get cronjobs --namespace ngsa-smoker
+diff --git a/IaC/AKS/cluster/charts/ngsa/templates/scaledobject.yaml b/IaC/AKS/cluster/charts/ngsa/templates/scaledobject.yaml
+index 1be54b8..14c0fb4 100644
+--- a/IaC/AKS/cluster/charts/ngsa/templates/scaledobject.yaml
++++ b/IaC/AKS/cluster/charts/ngsa/templates/scaledobject.yaml
+@@ -1,14 +1,11 @@
+ {{- if .Values.autoscaling.enabled -}}
+-apiVersion: keda.k8s.io/v1alpha1
++apiVersion: keda.sh/v1alpha1
+ kind: ScaledObject
+ metadata:
+   name: {{ include "ngsa.fullname" . }}-scaledobject
+-  namespace: default
+-  labels:
+-    deploymentName: {{ include "ngsa.fullname" . }}
+ spec:
+   scaleTargetRef:
+-    deploymentName: {{ include "ngsa.fullname" . }}
++    name: {{ include "ngsa.fullname" . }}
+   pollingInterval: {{ .Values.autoscaling.pollingInterval }}
+   minReplicaCount: {{ .Values.autoscaling.minReplicas }}
+   maxReplicaCount: {{ .Values.autoscaling.maxReplicas }}
+diff --git a/IaC/scripts/smokers.sh b/IaC/scripts/smokers.sh
+index 76bb483..573c6b3 100755
+--- a/IaC/scripts/smokers.sh
++++ b/IaC/scripts/smokers.sh
+@@ -16,16 +16,15 @@ export logKey='az monitor log-analytics workspace get-shared-keys -g $NGSA_SMOKE
+ WEBV_SLEEP=1000
+ for l in 'westus2' 'eastus2' 'westeurope' 'japaneast'
+ do
+-  az container delete -y  -g $NGSA_SMOKER_RG --query name -o tsv -n $NGSA_NAME-webv-${l}
++  if az container show -g $NGSA_SMOKER_RG -n $NGSA_NAME-webv-${l} > /dev/null 2>&1; then
++    az container delete -y -g $NGSA_SMOKER_RG --query name -o tsv -n $NGSA_NAME-webv-${l}
++  fi
+ 
+-  az container create --subscription bartr-wcnp -g $NGSA_SMOKER_RG --image retaildevcrew/webvalidate:beta -o tsv --query name \
++  az container create -g $NGSA_SMOKER_RG --image retaildevcrew/webvalidate:beta -o tsv --query name \
+   -n $NGSA_NAME-webv-${l} -l ${l} \
+   --log-analytics-workspace $(eval $logId) --log-analytics-workspace-key $(eval $logKey) \
+   --command-line "dotnet ../webvalidate.dll --tag ${l} -l ${WEBV_SLEEP} -s $NGSA_ENDPOINT -u https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/ -f benchmark.json -r --summary-minutes 5 --json-log"
+ 
+   # order matters!
+   WEBV_SLEEP=10000
+-
+-  az container logs -g $NGSA_SMOKER_RG -n $NGSA_NAME-webv-${l}
+ done
+-
