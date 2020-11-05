@@ -42,12 +42,12 @@ spec:
     - name: Zone
       valueFrom:
         configMapKeyRef:
-          name: webv-config
+          name: ngsa-config
           key: Zone
     - name: Region
       valueFrom:
         configMapKeyRef:
-          name: webv-config
+          name: ngsa-config
           key: Region
     - name: NodeName
       valueFrom:

@@ -23,16 +23,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ngsa-cosmos
+  name: ngsa
   labels:
-    app: ngsa-cosmos
+    app: ngsa
 
 spec:
   sessionAffinity: None
   type: ClusterIP
 
   selector:
-    app: ngsa-cosmos
+    app: ngsa
 
   clusterIP:
 
