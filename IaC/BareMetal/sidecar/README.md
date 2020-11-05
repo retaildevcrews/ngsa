@@ -51,8 +51,17 @@ kubectl apply -f baseline.yml
 # check local logs and log analytics
 kubectl delete -f baseline.yml
 
+# setup load balancer for ngsa-cosmos endpoint
+# curl endpoint
+curl https://ngsa-central.cse.ms/version
+curl https://ngsa-east.cse.ms/version
+curl https://ngsa-west.cse.ms/version
+
+# after all 3 public endpoints are up and running
+### this will fail if the public endpoints aren't up
+### depending on final DNS naming, may need to update webv.yml
+
 # deploy webv
-####  need to add the 3 public endpoints to webv.yml
 kubectl apply -f webv.yml
 
 # check local logs and log analytics
