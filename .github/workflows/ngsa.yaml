@@ -50,8 +50,8 @@ jobs:
         
         if [[ "${{ secrets.CosmosUrl }}" != "" && "${{ secrets.CosmosKey }}" != "" ]];
         then
-          echo '${{ secrets.CosmosUrl }}' > src/app/secrets/CosmosUrl
-          echo '${{ secrets.CosmosKey }}' > src/app/secrets/CosmosKey
+          echo '${{ secrets.CosmosUrl }}' > src/ngsa/app/secrets/CosmosUrl
+          echo '${{ secrets.CosmosKey }}' > src/ngsa/app/secrets/CosmosKey
           echo "COSMOS_SET=true" >> $GITHUB_ENV
         fi
 
