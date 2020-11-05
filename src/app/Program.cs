@@ -11,6 +11,7 @@ using CSE.NextGenSymmetricApp.DataAccessLayer;
 using CSE.NextGenSymmetricApp.Validation;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -24,6 +25,8 @@ namespace CSE.NextGenSymmetricApp
     {
         public static string CosmosName { get; set; } = string.Empty;
         public static string CosmosQueryId { get; set; } = string.Empty;
+        public static string Region { get; set; } = string.Empty;
+        public static string Zone { get; set; } = string.Empty;
 
         // ILogger instance
         private static ILogger<App> logger;

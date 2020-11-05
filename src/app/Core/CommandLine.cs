@@ -81,6 +81,9 @@ namespace CSE.NextGenSymmetricApp
         {
             try
             {
+                Region = Environment.GetEnvironmentVariable("Region");
+                Zone = Environment.GetEnvironmentVariable("Zone");
+
                 if (inMemory)
                 {
                     Secrets = new Secrets
