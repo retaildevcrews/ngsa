@@ -10,7 +10,7 @@ RUN apt-get update && \
     apt-get install -y kubectl kubeadm
 
 ### copy the source and tests
-COPY src/logagent /src
+COPY src/log-agent /src
 
 WORKDIR /src
 

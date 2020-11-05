@@ -7,16 +7,16 @@ on:
       - main
 
     paths:
-    - 'src/logagent/**'
-    - '.github/workflows/logagent.yaml'
+    - 'src/log-agent/**'
+    - '.github/workflows/log-agent.yaml'
 
   push:
     branches:
       - main
 
     paths:
-    - 'src/logagent/**'
-    - '.github/workflows/logagent.yaml'
+    - 'src/log-agent/**'
+    - '.github/workflows/log-agent.yaml'
 
     tags:
       - v*
@@ -96,9 +96,9 @@ jobs:
         # build image
         if [[ "${{ github.ref }}" == "refs/tags/"* ]]
         then
-          docker build . -t image -f src/logagent/Dockerfile --build-arg TAG=true
+          docker build . -t image -f src/log-agent/Dockerfile --build-arg TAG=true
         else
-          docker build . -t image -f src/logagent/Dockerfile
+          docker build . -t image -f src/log-agent/Dockerfile
         fi
         
     - name: Docker Tag and Push
