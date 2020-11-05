@@ -4,6 +4,7 @@
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
+using CSE.NextGenSymmetricApp;
 using CSE.NextGenSymmetricApp.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.CorrelationVector;
@@ -107,7 +108,7 @@ namespace CSE.Middleware
             }
 
             // write the results to the console
-            Console.WriteLine($"{DateTime.UtcNow:s}Z {context.Response.StatusCode} {duration,6:0} {context.Request.Headers["Host"]} {clientIp} {cv.Value} {context.Request.Headers["User-Agent"]} {context.Request.Method} {GetPathAndQuerystring(context.Request)}");
+            Console.WriteLine($"{DateTime.UtcNow:o}Z\t{context.Response.StatusCode}\t{Math.Round(duration, 1)}\t{context.Request.Method}\t{GetPathAndQuerystring(context.Request)}\t{cv.Value}\t{context.Request.Headers["Host"]}\t{clientIp}\t{App.CosmosName}\t{App.CosmosQueryId}\t{context.Request.Headers["User-Agent"]}\t{App.Region}\t{App.Zone}");
         }
 
         /// <summary>

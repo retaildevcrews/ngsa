@@ -91,3 +91,13 @@ Engineering Playbook [Definition of Done](https://github.com/microsoft/code-with
 ### Burn Down
 
 > During the final sprint of the milestone, create a burn down column for issues pivotal to achieve goals
+
+### Instant Ubuntu VMs
+
+> A mini-cloud on your Mac or Windows workstation.
+
+multipass is *really* cool!
+
+https://multipass.run/
+
+setup instructions are in the repo

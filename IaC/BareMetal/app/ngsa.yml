@@ -4,21 +4,19 @@ metadata:
   name: ngsa
   labels:
     app: ngsa
+
 spec:
   containers:
-  - name: ngsa
+  - name: app
+    imagePullPolicy: Always
     image: retaildevcrew/ngsa:beta
+
     ports:
     - containerPort: 4120
+
     volumeMounts:
     - name: secrets
       mountPath: "/app/secrets"
-    imagePullPolicy: Always
-  volumes:
-  - name: secrets
-    secret:
-      secretName: ngsa-secrets
-      defaultMode: 444
 
 ---
 
@@ -28,13 +26,17 @@ metadata:
   name: ngsa
   labels:
     app: ngsa
+
 spec:
+  sessionAffinity: None
+  type: ClusterIP
+
+  selector:
+    app: ngsa
+
   clusterIP:
+
   ports:
   - port: 4120
     protocol: TCP
     targetPort: 4120
-  selector:
-    app: ngsa
-  sessionAffinity: None
-  type: ClusterIP

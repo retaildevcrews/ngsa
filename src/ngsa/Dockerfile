@@ -9,7 +9,7 @@ ARG TAG=false
 EXPOSE 4120
 
 ### copy the source and tests
-COPY src /src
+COPY src/ngsa /src
 
 WORKDIR /src/app
 

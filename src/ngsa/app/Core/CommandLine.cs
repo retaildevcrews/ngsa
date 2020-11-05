@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.CommandLine;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 
 namespace CSE.NextGenSymmetricApp
@@ -80,6 +81,9 @@ namespace CSE.NextGenSymmetricApp
         {
             try
             {
+                Region = Environment.GetEnvironmentVariable("Region");
+                Zone = Environment.GetEnvironmentVariable("Zone");
+
                 if (inMemory)
                 {
                     Secrets = new Secrets
@@ -95,6 +99,19 @@ namespace CSE.NextGenSymmetricApp
                 else
                 {
                     Secrets = Secrets.GetSecretsFromVolume(secretsVolume);
+
+                    // set the Cosmos server name for logging
+                    CosmosName = Secrets.CosmosServer.Replace("https://", string.Empty, StringComparison.OrdinalIgnoreCase).Replace("http://", string.Empty, StringComparison.OrdinalIgnoreCase);
+
+                    // todo - get this from cosmos query
+                    CosmosQueryId = "notImplemented";
+
+                    int ndx = CosmosName.IndexOf('.', StringComparison.OrdinalIgnoreCase);
+
+                    if (ndx > 0)
+                    {
+                        CosmosName = CosmosName.Remove(ndx);
+                    }
                 }
 
                 // setup ctl c handler
