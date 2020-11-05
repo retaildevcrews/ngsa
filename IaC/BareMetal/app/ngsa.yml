@@ -6,7 +6,6 @@ metadata:
     app: ngsa
 
 spec:
-  serviceAccountName: k8s-admin
   containers:
   - name: app
     imagePullPolicy: Always

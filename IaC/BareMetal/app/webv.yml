@@ -7,7 +7,6 @@ metadata:
     app: webv
 
 spec:
-  serviceAccountName: k8s-admin
   containers:
   - name: app
     image: retaildevcrew/webvalidate:beta
