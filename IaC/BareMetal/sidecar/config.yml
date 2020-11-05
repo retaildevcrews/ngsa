@@ -3,6 +3,6 @@ kind: ConfigMap
 metadata:
   name: ngsa-config
 data:
-  LogName: "aksb"
+  LogName: "ngsa"
   Region: "West"
   Zone: "AZ-WestUs2"
