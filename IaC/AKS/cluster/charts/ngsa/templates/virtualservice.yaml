@@ -3,14 +3,15 @@ kind: VirtualService
 metadata:
   name: {{ include "ngsa.fullname" . }}
 spec:
-  hosts: 
+  hosts:
   {{- range .Values.ingress.hosts }}
-    - {{ . | quote }}
+    - {{ . }}
   {{- end }}
+    - {{ include "ngsa.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
   gateways:
   - {{ include "ngsa.fullname" . }}-gateway
   http:
-  - match: 
+  - match:
     {{- range .Values.ingress.paths }}
       - uri:
           prefix: {{ . }}
@@ -19,4 +20,4 @@ spec:
     - destination:
         port:
           number: {{ .Values.service.port }}
-        host: {{ include "ngsa.fullname" . }}
+        host: {{ include "ngsa.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local

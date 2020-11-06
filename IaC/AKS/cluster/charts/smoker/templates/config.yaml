@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{  include "smoker.fullname" . }}-config
+data:
+  LogName: {{ .Values.logName }}
+  Region: {{ .Values.region }}
+  Zone: {{ .Values.zone }}
