@@ -6,19 +6,19 @@
 >> A preferred name can be regexed by `[a-z]([-a-z0-9]*[a-z0-9])?`
 
 ## Azure resource names
-Azure resources consists of four parts: `( project-short-form )-[ identifier ]-( environment-type )-[ suffix ]`
+Azure resources consists of four parts: `( project-short-form )-[ environment-type ]-( identifier )-[ suffix ]`
   - Mandatory: `(project-short-form)`.
-  - Mandatory: `(environment-type)` - usage env.
+  - Mandatory: `[environment-type]` - usage env.
     - Possible val: `pre`, `test`, `stage`, `prod`, and `dev` [?]
       - `pre` is pre-production
-  - Optional: `[identifier]` - refers to descriptive label.
+  - Optional: `(identifier)` - refers to descriptive label.
   - Best effort to fit based on specific resource naming constraints.
   - Each part will be separated by a hyphen `-`.
-  - Azure resource suffixes can be found [here][1].
+  - Azure resource [suffix] can be found [here][1].
   - Examples:
-    - `ngsa-grafana-dev-kv`
-    - `ngsa-istio-pre-cosmos`
-    - `ngsa-grafana-prod-appi`
+    - `ngsa-dev-grafana-kv`
+    - `ngsa-pre-istio-cosmos`
+    - `ngsa-prod-grafana-appi`
 
 ## Kubernetes Labels
 Labels are key/value pairs. Valid label keys have two segments: an optional *prefix* and *name*, separated by a slash (/) (e.g `helm.sh/chart`).
