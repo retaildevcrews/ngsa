@@ -288,11 +288,11 @@ namespace LogAgent
                 nl.Category = "SearchMovies";
                 nl.Quartile = nl.Duration > 400 ? 4 : nl.Duration > 200 ? 3 : nl.Duration > 100 ? 2 : 1;
 
-                if (nl.Path.Contains("genres=", StringComparison.OrdinalIgnoreCase))
+                if (nl.Path.Contains("genre=", StringComparison.OrdinalIgnoreCase))
                 {
                     nl.Category = nl.Path.Contains("pagesize=10", StringComparison.OrdinalIgnoreCase) ? "Genre10" : "Genre100";
                 }
-                else if (nl.Path.Contains("ratings=", StringComparison.OrdinalIgnoreCase))
+                else if (nl.Path.Contains("rating=", StringComparison.OrdinalIgnoreCase))
                 {
                     nl.Category = nl.Path.Contains("pagesize=10", StringComparison.OrdinalIgnoreCase) ? "Rating10" : "Rating100";
                 }
