@@ -254,6 +254,10 @@ namespace LogAgent
         {
             nl.PodType = string.IsNullOrEmpty(nl.CosmosName) ? "ngsa-memory" : "ngsa-cosmos";
 
+            // ignore anything unknown
+            nl.Category = "Ignore";
+            nl.Quartile = 1;
+
             if (nl.Path.StartsWith("/api/actors/", StringComparison.OrdinalIgnoreCase))
             {
                 nl.Category = "DirectRead";
@@ -283,6 +287,19 @@ namespace LogAgent
             {
                 nl.Category = "SearchMovies";
                 nl.Quartile = nl.Duration > 400 ? 4 : nl.Duration > 200 ? 3 : nl.Duration > 100 ? 2 : 1;
+
+                if (nl.Path.Contains("genres=", StringComparison.OrdinalIgnoreCase))
+                {
+                    nl.Category = nl.Path.Contains("pagesize=10", StringComparison.OrdinalIgnoreCase) ? "Genre10" : "Genre100";
+                }
+                else if (nl.Path.Contains("ratings=", StringComparison.OrdinalIgnoreCase))
+                {
+                    nl.Category = nl.Path.Contains("pagesize=10", StringComparison.OrdinalIgnoreCase) ? "Rating10" : "Rating100";
+                }
+                else if (nl.Path.Contains("year=", StringComparison.OrdinalIgnoreCase))
+                {
+                    nl.Category = nl.Path.Contains("pagesize=10", StringComparison.OrdinalIgnoreCase) ? "Year10" : "Year100";
+                }
             }
             else if (nl.Path.StartsWith("/api/movies", StringComparison.OrdinalIgnoreCase))
             {
@@ -303,11 +320,6 @@ namespace LogAgent
             {
                 nl.Category = "Healthz";
                 nl.Quartile = nl.Duration > 1600 ? 4 : nl.Duration > 800 ? 3 : nl.Duration > 400 ? 2 : 1;
-            }
-            else
-            {
-                nl.Category = "Static";
-                nl.Quartile = nl.Duration > 160 ? 4 : nl.Duration > 80 ? 3 : nl.Duration > 40 ? 2 : 1;
             }
         }
     }
