@@ -135,7 +135,7 @@ namespace CSE.Middleware
                     string log = string.Empty;
 
                     // build the log message
-                    log += string.Format(CultureInfo.InvariantCulture, $"{IetfCheck.ToIetfStatus(hcr.Status)}\t{duration,6:2}\t{context.Request.Headers[IpHeader]}\t{GetPathAndQuerystring(context.Request)}\n");
+                    log += string.Format(CultureInfo.InvariantCulture, $"{IetfCheck.ToIetfStatus(hcr.Status)}\t{Math.Round(duration, 2)}\t{context.Request.Headers[IpHeader]}\t{GetPathAndQuerystring(context.Request)}\n");
 
                     // add each not healthy check to the log message
                     foreach (object d in hcr.Data.Values)
