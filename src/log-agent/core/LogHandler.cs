@@ -256,38 +256,35 @@ namespace LogAgent
 
             // ignore anything unknown
             nl.Category = "Ignore";
-            nl.Quartile = 1;
+            nl.Quartile = 0;
 
             if (nl.Path.StartsWith("/api/actors/", StringComparison.OrdinalIgnoreCase))
             {
-                nl.Category = "DirectRead";
+                nl.Category = "DirectReadActor";
                 nl.Quartile = nl.Duration > 160 ? 4 : nl.Duration > 80 ? 3 : nl.Duration > 40 ? 2 : 1;
             }
-            else if (nl.Path.StartsWith("/api/actors?", StringComparison.OrdinalIgnoreCase))
-            {
-                nl.Category = "Ignore";
-                nl.Quartile = nl.Duration > 400 ? 4 : nl.Duration > 200 ? 3 : nl.Duration > 100 ? 2 : 1;
-            }
-            else if (nl.Path.StartsWith("/api/actors", StringComparison.OrdinalIgnoreCase))
-            {
-                nl.Category = "Ignore";
-                nl.Quartile = nl.Duration > 160 ? 4 : nl.Duration > 80 ? 3 : nl.Duration > 40 ? 2 : 1;
-            }
-            else if (nl.Path.StartsWith("/api/genres", StringComparison.OrdinalIgnoreCase))
-            {
-                nl.Category = "Ignore";
-                nl.Quartile = nl.Duration > 160 ? 4 : nl.Duration > 80 ? 3 : nl.Duration > 40 ? 2 : 1;
-            }
+            //else if (nl.Path.StartsWith("/api/actors?", StringComparison.OrdinalIgnoreCase))
+            //{
+            //    nl.Category = "Ignore";
+            //    nl.Quartile = nl.Duration > 400 ? 4 : nl.Duration > 200 ? 3 : nl.Duration > 100 ? 2 : 1;
+            //}
+            //else if (nl.Path.StartsWith("/api/actors", StringComparison.OrdinalIgnoreCase))
+            //{
+            //    nl.Category = "Ignore";
+            //    nl.Quartile = nl.Duration > 160 ? 4 : nl.Duration > 80 ? 3 : nl.Duration > 40 ? 2 : 1;
+            //}
+            //else if (nl.Path.StartsWith("/api/genres", StringComparison.OrdinalIgnoreCase))
+            //{
+            //    nl.Category = "Ignore";
+            //    nl.Quartile = nl.Duration > 160 ? 4 : nl.Duration > 80 ? 3 : nl.Duration > 40 ? 2 : 1;
+            //}
             else if (nl.Path.StartsWith("/api/movies/", StringComparison.OrdinalIgnoreCase))
             {
-                nl.Category = "DirectRead";
+                nl.Category = "DirectReadMovie";
                 nl.Quartile = nl.Duration > 160 ? 4 : nl.Duration > 80 ? 3 : nl.Duration > 40 ? 2 : 1;
             }
             else if (nl.Path.StartsWith("/api/movies?", StringComparison.OrdinalIgnoreCase))
             {
-                nl.Category = "Ignore";
-                nl.Quartile = nl.Duration > 400 ? 4 : nl.Duration > 200 ? 3 : nl.Duration > 100 ? 2 : 1;
-
                 if (nl.Path.Contains("genre=", StringComparison.OrdinalIgnoreCase))
                 {
                     nl.Category = nl.Path.Contains("pagesize=10", StringComparison.OrdinalIgnoreCase) ? "Genre10" : "Genre100";
@@ -301,26 +298,26 @@ namespace LogAgent
                     nl.Category = nl.Path.Contains("pagesize=10", StringComparison.OrdinalIgnoreCase) ? "Year10" : "Year100";
                 }
             }
-            else if (nl.Path.StartsWith("/api/movies", StringComparison.OrdinalIgnoreCase))
-            {
-                nl.Category = "Ignore";
-                nl.Quartile = nl.Duration > 160 ? 4 : nl.Duration > 80 ? 3 : nl.Duration > 40 ? 2 : 1;
-            }
-            else if (nl.Path.StartsWith("/api/featured", StringComparison.OrdinalIgnoreCase))
-            {
-                nl.Category = "Ignore";
-                nl.Quartile = nl.Duration > 400 ? 4 : nl.Duration > 200 ? 3 : nl.Duration > 100 ? 2 : 1;
-            }
-            else if (nl.Path.StartsWith("/api", StringComparison.OrdinalIgnoreCase))
-            {
-                nl.Category = "Ignore";
-                nl.Quartile = nl.Duration > 160 ? 4 : nl.Duration > 80 ? 3 : nl.Duration > 40 ? 2 : 1;
-            }
-            else if (nl.Path.StartsWith("/healthz", StringComparison.OrdinalIgnoreCase))
-            {
-                nl.Category = "Ignore";
-                nl.Quartile = nl.Duration > 1600 ? 4 : nl.Duration > 800 ? 3 : nl.Duration > 400 ? 2 : 1;
-            }
+            //else if (nl.Path.StartsWith("/api/movies", StringComparison.OrdinalIgnoreCase))
+            //{
+            //    nl.Category = "Ignore";
+            //    nl.Quartile = nl.Duration > 160 ? 4 : nl.Duration > 80 ? 3 : nl.Duration > 40 ? 2 : 1;
+            //}
+            //else if (nl.Path.StartsWith("/api/featured", StringComparison.OrdinalIgnoreCase))
+            //{
+            //    nl.Category = "Ignore";
+            //    nl.Quartile = nl.Duration > 400 ? 4 : nl.Duration > 200 ? 3 : nl.Duration > 100 ? 2 : 1;
+            //}
+            //else if (nl.Path.StartsWith("/api", StringComparison.OrdinalIgnoreCase))
+            //{
+            //    nl.Category = "Ignore";
+            //    nl.Quartile = nl.Duration > 160 ? 4 : nl.Duration > 80 ? 3 : nl.Duration > 40 ? 2 : 1;
+            //}
+            //else if (nl.Path.StartsWith("/healthz", StringComparison.OrdinalIgnoreCase))
+            //{
+            //    nl.Category = "Ignore";
+            //    nl.Quartile = nl.Duration > 1600 ? 4 : nl.Duration > 800 ? 3 : nl.Duration > 400 ? 2 : 1;
+            //}
         }
     }
 }
