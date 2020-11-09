@@ -85,7 +85,8 @@ namespace LogAgent
 
                             ngsaLog = CreateLogItem(logline);
 
-                            if (ngsaLog != null)
+                            // add to list
+                            if (ngsaLog != null && ngsaLog.Category != "Ignore")
                             {
                                 ngsaList.Add(ngsaLog);
                             }
