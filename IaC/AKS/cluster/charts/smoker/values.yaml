@@ -1,3 +1,7 @@
-ingressURL: http://<IP_OF_INGRESS>.nip.io
-jobReplicaCount: 3
-jobHistoryLimit: 2
+ingressURLs:
+  - http://<IP_OF_INGRESS>.nip.io
+replicaCount: 1
+log:
+  name: "ngsa"
+  region: ""
+  zone: ""

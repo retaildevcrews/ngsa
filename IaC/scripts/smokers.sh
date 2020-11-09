@@ -16,16 +16,15 @@ export logKey='az monitor log-analytics workspace get-shared-keys -g $NGSA_SMOKE
 WEBV_SLEEP=1000
 for l in 'westus2' 'eastus2' 'westeurope' 'japaneast'
 do
-  az container delete -y  -g $NGSA_SMOKER_RG --query name -o tsv -n $NGSA_NAME-webv-${l}
+  if az container show -g $NGSA_SMOKER_RG -n $NGSA_NAME-webv-${l} > /dev/null 2>&1; then
+    az container delete -y -g $NGSA_SMOKER_RG --query name -o tsv -n $NGSA_NAME-webv-${l}
+  fi
 
-  az container create --subscription bartr-wcnp -g $NGSA_SMOKER_RG --image retaildevcrew/webvalidate:beta -o tsv --query name \
+  az container create -g $NGSA_SMOKER_RG --image retaildevcrew/webvalidate:beta -o tsv --query name \
   -n $NGSA_NAME-webv-${l} -l ${l} \
   --log-analytics-workspace $(eval $logId) --log-analytics-workspace-key $(eval $logKey) \
   --command-line "dotnet ../webvalidate.dll --tag ${l} -l ${WEBV_SLEEP} -s $NGSA_ENDPOINT -u https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/ -f benchmark.json -r --summary-minutes 5 --json-log"
 
   # order matters!
   WEBV_SLEEP=10000
-
-  az container logs -g $NGSA_SMOKER_RG -n $NGSA_NAME-webv-${l}
 done
-
