@@ -261,7 +261,7 @@ namespace LogAgent
 
             if (nl.Path.StartsWith("/api/actors/", StringComparison.OrdinalIgnoreCase))
             {
-                nl.Category = "DirectReadActor";
+                nl.Category = "DirectRead";
                 nl.Quartile = nl.Duration > 160 ? 4 : nl.Duration > 80 ? 3 : nl.Duration > 40 ? 2 : 1;
             }
             //else if (nl.Path.StartsWith("/api/actors?", StringComparison.OrdinalIgnoreCase))
@@ -281,7 +281,7 @@ namespace LogAgent
             //}
             else if (nl.Path.StartsWith("/api/movies/", StringComparison.OrdinalIgnoreCase))
             {
-                nl.Category = "DirectReadMovie";
+                nl.Category = "DirectRead";
                 nl.Quartile = nl.Duration > 160 ? 4 : nl.Duration > 80 ? 3 : nl.Duration > 40 ? 2 : 1;
             }
             else if (nl.Path.StartsWith("/api/movies?", StringComparison.OrdinalIgnoreCase))
