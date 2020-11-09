@@ -1,10 +1,5 @@
 {
-  "default":{"category":"default","quartiles":[100,200,400]},
   "DirectRead":{"category":"DirectRead","quartiles":[40,80,120]},
-  "Healthz":{"category":"Healthz","quartiles":[400,800,1600]},
-  "PagedRead":{"category":"PagedRead","quartiles":[40,80,160]},
-  "SearchActors":{"category":"SearchActors","quartiles":[100,200,400]},
-  "SearchMovies":{"category":"SearchMovies","quartiles":[100,200,400]},
   "Genre100":{"category":"Genre100","quartiles":[100,200,400]},
   "Genre10":{"category":"Genre10","quartiles":[100,200,400]},
   "Rating100":{"category":"Rating100","quartiles":[100,200,400]},
@@ -14,4 +9,3 @@
   "Ignore":{"category":"Ignore","quartiles":[400,800,1600]},
   "Static":{"category":"Static","quartiles":[40,80,160]}
 }
-
