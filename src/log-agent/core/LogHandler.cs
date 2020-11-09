@@ -265,17 +265,17 @@ namespace LogAgent
             }
             else if (nl.Path.StartsWith("/api/actors?", StringComparison.OrdinalIgnoreCase))
             {
-                nl.Category = "SearchActors";
+                nl.Category = "Ignore";
                 nl.Quartile = nl.Duration > 400 ? 4 : nl.Duration > 200 ? 3 : nl.Duration > 100 ? 2 : 1;
             }
             else if (nl.Path.StartsWith("/api/actors", StringComparison.OrdinalIgnoreCase))
             {
-                nl.Category = "PagedRead";
+                nl.Category = "Ignore";
                 nl.Quartile = nl.Duration > 160 ? 4 : nl.Duration > 80 ? 3 : nl.Duration > 40 ? 2 : 1;
             }
             else if (nl.Path.StartsWith("/api/genres", StringComparison.OrdinalIgnoreCase))
             {
-                nl.Category = "PagedRead";
+                nl.Category = "Ignore";
                 nl.Quartile = nl.Duration > 160 ? 4 : nl.Duration > 80 ? 3 : nl.Duration > 40 ? 2 : 1;
             }
             else if (nl.Path.StartsWith("/api/movies/", StringComparison.OrdinalIgnoreCase))
@@ -285,7 +285,7 @@ namespace LogAgent
             }
             else if (nl.Path.StartsWith("/api/movies?", StringComparison.OrdinalIgnoreCase))
             {
-                nl.Category = "SearchMovies";
+                nl.Category = "Ignore";
                 nl.Quartile = nl.Duration > 400 ? 4 : nl.Duration > 200 ? 3 : nl.Duration > 100 ? 2 : 1;
 
                 if (nl.Path.Contains("genre=", StringComparison.OrdinalIgnoreCase))
@@ -303,22 +303,22 @@ namespace LogAgent
             }
             else if (nl.Path.StartsWith("/api/movies", StringComparison.OrdinalIgnoreCase))
             {
-                nl.Category = "PagedRead";
+                nl.Category = "Ignore";
                 nl.Quartile = nl.Duration > 160 ? 4 : nl.Duration > 80 ? 3 : nl.Duration > 40 ? 2 : 1;
             }
             else if (nl.Path.StartsWith("/api/featured", StringComparison.OrdinalIgnoreCase))
             {
-                nl.Category = "SearchMovies";
+                nl.Category = "Ignore";
                 nl.Quartile = nl.Duration > 400 ? 4 : nl.Duration > 200 ? 3 : nl.Duration > 100 ? 2 : 1;
             }
             else if (nl.Path.StartsWith("/api", StringComparison.OrdinalIgnoreCase))
             {
-                nl.Category = "PagedRead";
+                nl.Category = "Ignore";
                 nl.Quartile = nl.Duration > 160 ? 4 : nl.Duration > 80 ? 3 : nl.Duration > 40 ? 2 : 1;
             }
             else if (nl.Path.StartsWith("/healthz", StringComparison.OrdinalIgnoreCase))
             {
-                nl.Category = "Healthz";
+                nl.Category = "Ignore";
                 nl.Quartile = nl.Duration > 1600 ? 4 : nl.Duration > 800 ? 3 : nl.Duration > 400 ? 2 : 1;
             }
         }
