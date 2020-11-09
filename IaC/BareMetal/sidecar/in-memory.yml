@@ -27,7 +27,7 @@ spec:
 
   - name: log
     imagePullPolicy: Always
-    image: retaildevcrew/logagent:new
+    image: retaildevcrew/logagent:beta
     env:
     - name: WorkspaceId
       valueFrom:
