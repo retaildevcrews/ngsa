@@ -30,7 +30,7 @@ jobs:
       # copy the config value to environment variables
       # do not copy the actual secrets!
 
-      DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
+      DOCKER_REPO: retaildevcrew/ngsa
 
       # These are used in if: conditions
       DOCKER_SET: false
