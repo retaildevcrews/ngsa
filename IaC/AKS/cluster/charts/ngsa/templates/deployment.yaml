@@ -26,11 +26,11 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "ngsa.serviceAccountName" . }}
+      serviceAccountName: k8s-admin
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: app
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
@@ -63,6 +63,51 @@ spec:
           volumeMounts:
             - name: secrets
               mountPath: "/app/secrets"
+        - name: log
+          imagePullPolicy: Always
+          image: retaildevcrew/logagent:beta
+          env:
+          - name: WorkspaceId
+            valueFrom:
+              secretKeyRef:
+                name: {{  include "ngsa.fullname" . }}-secrets
+                key: WorkspaceId
+          - name: SharedKey
+            valueFrom:
+              secretKeyRef:
+                name: {{  include "ngsa.fullname" . }}-secrets
+                key: SharedKey
+          - name: LogName
+            valueFrom:
+              configMapKeyRef:
+                name: {{  include "ngsa.fullname" . }}-config
+                key: LogName
+          - name: Zone
+            valueFrom:
+              configMapKeyRef:
+                name: {{  include "ngsa.fullname" . }}-config
+                key: Zone
+          - name: Region
+            valueFrom:
+              configMapKeyRef:
+                name: {{  include "ngsa.fullname" . }}-config
+                key: Region
+          - name: NodeName
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: PodName
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: PodNamespace
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: PodIP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
       volumes:
         - name: secrets
           secret:

@@ -1,6 +1,7 @@
 ingressURLs:
   - http://<IP_OF_INGRESS>.nip.io
 replicaCount: 1
-logName: ""
-region: ""
-zone: ""
+log:
+  name: "ngsa"
+  region: ""
+  zone: ""
