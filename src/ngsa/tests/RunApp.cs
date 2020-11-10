@@ -14,8 +14,6 @@ namespace Tests
         {
             string[] args;
 
-Console.WriteLine("RunApp");
-
             // test command line parser
             RootCommand root = App.BuildRootCommand();
 
@@ -35,10 +33,8 @@ Console.WriteLine("RunApp");
 
             if (!string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
-                args = new string[] { "--in-memory" };
-
                 Console.WriteLine("Starting web server");
-                App.Main(args).Wait(20000);
+                App.Main(Array.Empty<string>()).Wait(20000);
                 Console.WriteLine("Web server stopped");
             }
         }
