@@ -2,6 +2,41 @@
 
 > This will setup a single node k8s cluster
 
+## Create IMDb Cosmos DB
+
+Create IMDb Cosmos DB and load sample data per instructions [here](https://github.com/retaildevcrews/imdb)
+
+```bash
+
+# these variables are set during IMDb setup and used below
+
+#export Imdb_Name=YourCosmosName
+#export Imdb_DB=imdb
+#export Imdb_Col=movies
+#export Imdb_RG=$Imdb_Name-rg-cosmos
+#export Imdb_Location="centralus"
+#export Imdb_DB="imdb"
+#export Imdb_Col="movies"
+
+```
+
+## setup Log Analytics
+
+```bash
+
+# add az cli extension
+az extension add --name log-analytics
+
+# set environment variables
+export Ngsa_Log_RG=$Imdb_Name-rg-logs
+export Ngsa_Log_Name=$Imdb_Name
+
+az group create -n $Ngsa_Log_RG -l $Imdb_Location
+
+az monitor log-analytics workspace create -g $Ngsa_Log_RG -n $Ngsa_Log_Name -l $Imdb_Location
+
+```
+
 ## Create VM
 
 Create your VM per instructions in [Bare Metal Setup](setup-bare-metal-vm.md)
@@ -72,22 +107,18 @@ sed -e "s/{PIP}/${PIP}/g" metalLB.yml | k apply -f -
 
 ```bash
 
-# add az cli extension
-az extension add --name log-analytics
-
 # delete if necessary - you can safely ignore the not exists error
 kubectl delete secret ngsa-secrets
 
 # create from key vault
 kubectl create secret generic ngsa-secrets \
-  --from-literal=CosmosDatabase=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name CosmosDatabase) \
-  --from-literal=CosmosCollection=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name CosmosCollection) \
-  --from-literal=CosmosKey=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name CosmosKey) \
-  --from-literal=CosmosUrl=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name CosmosUrl) \
-  --from-literal=AppInsightsKey=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name AppInsightsKey) \
-  --from-literal=WorkspaceId=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name WorkspaceId) \
-  --from-literal=SharedKey=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name SharedKey)
-
+  --from-literal=CosmosDatabase=$Imdb_DB \
+  --from-literal=CosmosCollection=$Imdb_Col \
+  --from-literal=CosmosKey=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryReadonlyMasterKey -o tsv) \
+  --from-literal=CosmosUrl=https://${Imdb_Name}.documents.azure.com:443/ \
+  --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_RG -n $Ngsa_Log_Name --query customerId -o tsv) \
+  --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_RG -n $Ngsa_Log_Name --query primarySharedKey -o tsv)
+  
 # display the secrets (base 64 encoded)
 kubectl get secret ngsa-secrets -o jsonpath='{.data}'
 
@@ -112,7 +143,7 @@ k apply -f ngsa.yml
 k apply -f in-memory.yml
 
 # retry until you get the startup message
-k logs ngsa
+k logs ngsa -c app
 
 # to test without SSL
 k expose service ngsa --type=LoadBalancer --port=80 --target-port=4120 --name ngsa-lb
