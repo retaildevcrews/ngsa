@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.CommandLine;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 
 namespace CSE.NextGenSymmetricApp

@@ -12,6 +12,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
+/// <summary>
+/// This is NOT production code
+/// This code is used to support performance testing only
+/// </summary>
 namespace CSE.NextGenSymmetricApp.DataAccessLayer
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "log params")]
@@ -20,9 +24,9 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2234:Pass system uri objects instead of strings", Justification = "Cosmos")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA1822:does not access instance data", Justification = "simplicity")]
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "use List<> for performance")]
     public class InMemoryDal : IDAL
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "use List<> for performance")]
         public InMemoryDal()
         {
             JsonSerializerSettings settings = new JsonSerializerSettings
@@ -61,6 +65,11 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
                 }
             });
 
+            foreach (Actor a in Actors)
+            {
+                ActorsIndex.Add(a.ActorId, a);
+            }
+
             Movies = JsonConvert.DeserializeObject<List<Movie>>(client.GetStringAsync("movies.json").Result, settings);
             Movies.Sort((x, y) =>
             {
@@ -89,8 +98,33 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
                 }
             });
 
-            List<dynamic> list = JsonConvert.DeserializeObject<List<dynamic>>(client.GetStringAsync("genres.json").Result, settings);
+            string ge;
 
+            foreach (Movie m in Movies)
+            {
+                MoviesIndex.Add(m.MovieId, m);
+
+                if (!YearIndex.ContainsKey(m.Year))
+                {
+                    YearIndex.Add(m.Year, new List<Movie>());
+                }
+
+                YearIndex[m.Year].Add(m);
+
+                foreach (string g in m.Genres)
+                {
+                    ge = g.ToLowerInvariant().Trim();
+
+                    if (!GenreIndex.ContainsKey(ge))
+                    {
+                        GenreIndex.Add(ge, new List<Movie>());
+                    }
+
+                    GenreIndex[ge].Add(m);
+                }
+            }
+
+            List<dynamic> list = JsonConvert.DeserializeObject<List<dynamic>>(client.GetStringAsync("genres.json").Result, settings);
             Genres = new List<string>();
 
             foreach (dynamic g in list)
@@ -104,23 +138,32 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
         public static List<Actor> Actors { get; set; }
         public static List<Movie> Movies { get; set; }
         public static List<string> Genres { get; set; }
+        public static Dictionary<string, Actor> ActorsIndex { get; set; } = new Dictionary<string, Actor>();
+        public static Dictionary<string, Movie> MoviesIndex { get; set; } = new Dictionary<string, Movie>();
+        public static Dictionary<int, List<Movie>> YearIndex { get; set; } = new Dictionary<int, List<Movie>>();
+        public static Dictionary<string, List<Movie>> GenreIndex { get; set; } = new Dictionary<string, List<Movie>>();
 
         public async Task<Actor> GetActorAsync(string actorId)
         {
             return await Task.Run(() =>
             {
-                Actor.ComputePartitionKey(actorId);
-
-                foreach (Actor a in Actors)
+                if (ActorsIndex.ContainsKey(actorId))
                 {
-                    if (a.ActorId == actorId)
-                    {
-                        return a;
-                    }
+                    return ActorsIndex[actorId];
                 }
 
                 throw new CosmosException("Not Found", System.Net.HttpStatusCode.NotFound, 404, string.Empty, 0);
             }).ConfigureAwait(false);
+        }
+
+        public Task<IEnumerable<Actor>> GetActorsAsync(ActorQueryParameters actorQueryParameters)
+        {
+            if (actorQueryParameters == null)
+            {
+                return GetActorsAsync(string.Empty, 0, 100);
+            }
+
+            return GetActorsAsync(actorQueryParameters.Q, actorQueryParameters.GetOffset(), actorQueryParameters.PageSize);
         }
 
         public Task<IEnumerable<Actor>> GetActorsAsync(string q, int offset = 0, int limit = 100)
@@ -151,57 +194,12 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             return Task<IEnumerable<Actor>>.Factory.StartNew(() => { return res; });
         }
 
-        public Task<IEnumerable<Movie>> GetMoviesAsync(string q, string genre, int year = 0, double rating = 0.0, string actorId = "", int offset = 0, int limit = 100)
+        public Task<List<string>> GetFeaturedMovieListAsync()
         {
-            List<Movie> res = new List<Movie>();
-            int skip = 0;
-            bool add = false;
-
-            foreach (Movie m in Movies)
+            return Task<List<string>>.Factory.StartNew(() =>
             {
-                if ((string.IsNullOrEmpty(q) || m.TextSearch.Contains(q, StringComparison.OrdinalIgnoreCase)) &&
-                    (string.IsNullOrEmpty(genre) || m.Genres.Contains(genre, StringComparer.OrdinalIgnoreCase)) &&
-                    (year < 1 || m.Year == year) &&
-                    (rating <= 0 || m.Rating >= rating))
-                {
-                    add = true;
-
-                    if (!string.IsNullOrEmpty(actorId))
-                    {
-                        add = false;
-
-                        actorId = actorId.Trim().ToLowerInvariant();
-
-                        foreach (Role a in m.Roles)
-                        {
-                            if (a.ActorId == actorId)
-                            {
-                                add = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (add)
-                    {
-                        if (skip >= offset)
-                        {
-                            res.Add(m);
-
-                            if (res.Count >= limit)
-                            {
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            skip++;
-                        }
-                    }
-                }
-            }
-
-            return Task<IEnumerable<Movie>>.Factory.StartNew(() => { return res; });
+                return new List<string> { "tt0133093", "tt0120737", "tt0167260", "tt0167261", "tt0372784", "tt0172495", "tt0317705" };
+            });
         }
 
         public Task<IEnumerable<string>> GetGenresAsync()
@@ -213,58 +211,127 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
         {
             return await Task.Run(() =>
             {
-                Movie.ComputePartitionKey(movieId);
-
-                foreach (Movie m in Movies)
+                if (MoviesIndex.ContainsKey(movieId))
                 {
-                    if (m.MovieId == movieId)
-                    {
-                        return m;
-                    }
+                    return MoviesIndex[movieId];
                 }
 
                 throw new CosmosException("Not Found", System.Net.HttpStatusCode.NotFound, 404, string.Empty, 0);
-            })
-                .ConfigureAwait(false);
+            }).ConfigureAwait(false);
         }
 
-        public Task<IEnumerable<Movie>> GetMoviesAsync(int offset = 0, int limit = 100)
+        public Task<IEnumerable<Movie>> GetMoviesAsync(MovieQueryParameters movieQueryParameters)
         {
-            return GetMoviesAsync(string.Empty, string.Empty, offset: offset, limit: limit);
-        }
-
-        public Task<List<string>> GetFeaturedMovieListAsync()
-        {
-            return Task<List<string>>.Factory.StartNew(() =>
+            if (movieQueryParameters == null)
             {
-                return new List<string> { "tt0133093", "tt0120737", "tt0167260", "tt0167261", "tt0372784", "tt0172495", "tt0317705" };
-            });
+                return GetMoviesAsync(string.Empty, string.Empty, offset: 0, limit: 100);
+            }
+
+            return GetMoviesAsync(movieQueryParameters.Q, movieQueryParameters.Genre, movieQueryParameters.Year, movieQueryParameters.Rating, movieQueryParameters.ActorId, movieQueryParameters.GetOffset(), movieQueryParameters.PageSize);
+        }
+
+        public Task<IEnumerable<Movie>> GetMoviesAsync(string q, string genre, int year = 0, double rating = 0.0, string actorId = "", int offset = 0, int limit = 100)
+        {
+            List<Movie> res = new List<Movie>();
+            int skip = 0;
+            bool add = false;
+
+            if ((year > 0 || !string.IsNullOrWhiteSpace(genre)) &&
+                !(year > 0 && !string.IsNullOrWhiteSpace(genre)) &&
+                string.IsNullOrWhiteSpace(q) &&
+                rating == 0 &&
+                string.IsNullOrWhiteSpace(actorId) &&
+                offset == 0)
+            {
+                if (year > 0)
+                {
+                    if (YearIndex.ContainsKey(year))
+                    {
+                        foreach (Movie m in YearIndex[year])
+                        {
+                            res.Add(m);
+
+                            if (res.Count >= limit)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+                else if (!string.IsNullOrWhiteSpace(genre))
+                {
+                    genre = genre.ToLowerInvariant().Trim();
+
+                    if (GenreIndex.ContainsKey(genre))
+                    {
+                        foreach (Movie m in GenreIndex[genre])
+                        {
+                            if (res.Count < limit)
+                            {
+                                res.Add(m);
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (Movie m in Movies)
+                {
+                    if ((string.IsNullOrWhiteSpace(q) || m.TextSearch.Contains(q, StringComparison.OrdinalIgnoreCase)) &&
+                        (string.IsNullOrWhiteSpace(genre) || m.Genres.Contains(genre, StringComparer.OrdinalIgnoreCase)) &&
+                        (year < 1 || m.Year == year) &&
+                        (rating <= 0 || m.Rating >= rating))
+                    {
+                        add = true;
+
+                        if (!string.IsNullOrWhiteSpace(actorId))
+                        {
+                            add = false;
+
+                            actorId = actorId.Trim().ToLowerInvariant();
+
+                            foreach (Role a in m.Roles)
+                            {
+                                if (a.ActorId == actorId)
+                                {
+                                    add = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (add)
+                        {
+                            if (skip >= offset)
+                            {
+                                res.Add(m);
+
+                                if (res.Count >= limit)
+                                {
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                skip++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return Task<IEnumerable<Movie>>.Factory.StartNew(() => { return res; });
         }
 
         public Task Reconnect(Uri cosmosUrl, string cosmosKey, string cosmosDatabase, string cosmosCollection, bool force = false)
         {
             // do nothing
             return Task.CompletedTask;
-        }
-
-        public Task<IEnumerable<Actor>> GetActorsAsync(ActorQueryParameters qp)
-        {
-            if (qp == null)
-            {
-                return GetActorsAsync(string.Empty, 0, 100);
-            }
-
-            return GetActorsAsync(qp.Q, qp.GetOffset(), qp.PageSize);
-        }
-
-        public Task<IEnumerable<Movie>> GetMoviesAsync(MovieQueryParameters qp)
-        {
-            if (qp == null)
-            {
-                return GetMoviesAsync(string.Empty, string.Empty, offset: 0, limit: 100);
-            }
-
-            return GetMoviesAsync(qp.Q, qp.Genre, qp.Year, qp.Rating, qp.ActorId, qp.GetOffset(), qp.PageSize);
         }
     }
 
@@ -278,7 +345,6 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
     /// Extension to allow services.AddInMemoryDal()
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "simplicity")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1204:Static elements should appear before instance elements", Justification = "code readability")]
     public static class InMemoryDataAccessLayerExtension
     {
         public static IServiceCollection AddInMemoryDal(this IServiceCollection services)

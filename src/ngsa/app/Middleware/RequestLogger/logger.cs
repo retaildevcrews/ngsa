@@ -108,7 +108,7 @@ namespace CSE.Middleware
             }
 
             // write the results to the console
-            Console.WriteLine($"{DateTime.UtcNow:o}Z\t{context.Response.StatusCode}\t{Math.Round(duration, 1)}\t{context.Request.Method}\t{GetPathAndQuerystring(context.Request)}\t{cv.Value}\t{context.Request.Headers["Host"]}\t{clientIp}\t{App.CosmosName}\t{App.CosmosQueryId}\t{context.Request.Headers["User-Agent"]}\t{App.Region}\t{App.Zone}");
+            Console.WriteLine($"{DateTime.UtcNow:o}Z\t{context.Response.StatusCode}\t{Math.Round(duration, 2)}\t{context.Request.Method}\t{GetPathAndQuerystring(context.Request)}\t{cv.Value}\t{context.Request.Headers["Host"]}\t{clientIp}\t{App.CosmosName}\t{App.CosmosQueryId}\t{context.Request.Headers["User-Agent"]}\t{App.Region}\t{App.Zone}");
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace CSE.Middleware
                     string log = string.Empty;
 
                     // build the log message
-                    log += string.Format(CultureInfo.InvariantCulture, $"{IetfCheck.ToIetfStatus(hcr.Status)}\t{duration,6:0}\t{context.Request.Headers[IpHeader]}\t{GetPathAndQuerystring(context.Request)}\n");
+                    log += string.Format(CultureInfo.InvariantCulture, $"{IetfCheck.ToIetfStatus(hcr.Status)}\t{Math.Round(duration, 2)}\t{context.Request.Headers[IpHeader]}\t{GetPathAndQuerystring(context.Request)}\n");
 
                     // add each not healthy check to the log message
                     foreach (object d in hcr.Data.Values)
