@@ -12,7 +12,7 @@ spec:
   - name: app
     image: retaildevcrew/webvalidate:beta
     imagePullPolicy: Always
-    args: ["-v", "-r", "-s", "http://ngsa-memory:4120", "http://ngsa-cosmos:4120", "-u", "https://raw.githubusercontent.com/retaildevcrews/ngsa/webv/TestFiles/", "-f", "new-bench.json", "-l", "1000"]
+    args: ["-v", "-r", "-s", "http://ngsa-memory:4120", "http://ngsa-cosmos:4120", "-u", "https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/", "-f", "benchmark.json", "-l", "1000"]
 
   - name: log
     imagePullPolicy: Always
