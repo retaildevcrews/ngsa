@@ -30,7 +30,11 @@ namespace merge
             {
                 if (line.Contains("/api/actors/nm") || line.Contains("/api/movies/tt"))
                 {
-                    ln = line.Substring(0, line.IndexOf(",\"validation")) + "},";
+                    ln = line;
+                    if (ln.Contains(",\"validation"))
+                    {
+                        ln = ln.Substring(0, line.IndexOf(",\"validation")) + "},";
+                    }
                     Console.WriteLine(ln);
                 }
                 else
