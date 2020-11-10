@@ -94,3 +94,8 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+log:
+  name: "ngsa"
+  region: ""
+  zone: ""

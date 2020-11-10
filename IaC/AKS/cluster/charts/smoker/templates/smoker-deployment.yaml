@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{  include "smoker.fullname" . }}
+  labels:
+    app.kubernetes.io/component: smoker
+    {{- include "smoker.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "smoker.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: smoker
+        {{- include "smoker.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: k8s-admin
+      containers:
+        - name: app
+          image: retaildevcrew/webvalidate:beta
+          imagePullPolicy: Always
+          args:
+            - '-s'
+            {{- range .Values.ingressURLs }}
+            - {{ . | quote }}
+            {{- end }}
+            - '-u'
+            - 'https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/'
+            - '-f'
+            - 'benchmark.json'
+            - '-r'
+            - '-l'
+            - '1000'
+            - '-v'
+        - name: log
+          imagePullPolicy: Always
+          image: retaildevcrew/logagent:beta
+          env:
+          - name: WorkspaceId
+            valueFrom:
+              secretKeyRef:
+                name: {{  include "smoker.fullname" . }}-secrets
+                key: WorkspaceId
+          - name: SharedKey
+            valueFrom:
+              secretKeyRef:
+                name: {{  include "smoker.fullname" . }}-secrets
+                key: SharedKey
+          - name: LogName
+            valueFrom:
+              configMapKeyRef:
+                name: {{  include "smoker.fullname" . }}-config
+                key: LogName
+          - name: Zone
+            valueFrom:
+              configMapKeyRef:
+                name: {{  include "smoker.fullname" . }}-config
+                key: Zone
+          - name: Region
+            valueFrom:
+              configMapKeyRef:
+                name: {{  include "smoker.fullname" . }}-config
+                key: Region
+          - name: NodeName
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: PodName
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: PodNamespace
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: PodIP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP

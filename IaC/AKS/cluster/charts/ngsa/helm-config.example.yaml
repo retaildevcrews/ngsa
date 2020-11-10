@@ -5,12 +5,20 @@ image:
   repository: retaildevcrew
   name: ngsa
   tag: beta
-  
+
 ingress:
   hosts:
-    - %%APP_ENDPOINT%%
-  paths: 
+    - ${Ngsa_App_Endpoint}
+  paths:
     - /
 
 app:
   args: []
+
+log:
+  name: "ngsa"
+  region: ""
+  zone: ""
+
+cert:
+  name: ngsa-cert

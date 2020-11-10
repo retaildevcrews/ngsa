@@ -81,7 +81,12 @@ This walkthrough will create resource groups, a Cosmos DB instance, and an Azure
 # do not include punctuation - only use a-z and 0-9
 # must be at least 5 characters long
 # must start with a-z (only lowercase)
-export Ngsa_Name=[your unique name]
+export Ngsa_Base_Name=[your unique name]
+# examples: pre, test, stage, prod, and dev
+export Ngsa_Env=[your environment name]
+
+# Set main resource name
+export Ngsa_Name="${Ngsa_Base_Name}-${Ngsa_Env}"
 
 # Set email to register with Let's Encrypt
 export Ngsa_Email=[your email address]
@@ -91,7 +96,7 @@ export Ngsa_Email=[your email address]
 export Ngsa_Domain_Name=[your domain name]
 
 ### if true, change Ngsa_Name
-az cosmosdb check-name-exists -n ${Ngsa_Name}
+az cosmosdb check-name-exists -n "${Ngsa_Name}-cosmos"
 
 ```
 
@@ -104,7 +109,7 @@ az cosmosdb check-name-exists -n ${Ngsa_Name}
 - You will create 3 resource groups
   - One for AKS and Azure Monitor
   - One for Cosmos DB
-  - One for Smoker Test instances
+  - One for Log Analytics
 
 ```bash
 
@@ -112,13 +117,13 @@ az cosmosdb check-name-exists -n ${Ngsa_Name}
 export Ngsa_Location=westus2
 
 # set application endpoint
-export Ngsa_App_Endpoint="$Ngsa_Name.$Ngsa_Domain_Name"
+export Ngsa_App_Endpoint="${Ngsa_Name}.${Ngsa_Domain_Name}"
 
 # resource group names
-export Imdb_Name=$Ngsa_Name
-export Ngsa_App_RG=${Ngsa_Name}-rg-app
-export Ngsa_Smoker_RG=${Ngsa_Name}-rg-smoker
-export Imdb_RG=${Imdb_Name}-rg-cosmos
+export Imdb_Name="${Ngsa_Name}-cosmos"
+export Ngsa_App_RG="${Ngsa_Name}-app-rg"
+export Ngsa_Log_Analytics_RG="${Ngsa_Name}-log-rg"
+export Imdb_RG="${Ngsa_Name}-cosmos-rg"
 
 # export Cosmos DB env vars
 # these will be explained in the Cosmos DB setup step
@@ -129,7 +134,7 @@ export Imdb_RW_Key='az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query prim
 
 # create the resource groups
 az group create -n $Ngsa_App_RG -l $Ngsa_Location
-az group create -n $Ngsa_Smoker_RG -l $Ngsa_Location
+az group create -n $Ngsa_Log_Analytics_RG -l $Ngsa_Location
 az group create -n $Imdb_RG -l $Imdb_Location
 
 ```
@@ -145,19 +150,19 @@ az group create -n $Imdb_RG -l $Imdb_Location
   >
   > The initial steps were completed above
 
-#### Create Azure Monitor
+#### Create Log Analytics
 
-> The Application Insights extension is in preview and needs to be added to the CLI
+Add log analytics extension.
 
 ```bash
 
-# Add App Insights extension
-az extension add -n application-insights
-az feature register --name AIWorkspacePreview --namespace microsoft.insights
-az provider register -n microsoft.insights
+export Ngsa_Log_Analytics_Name="${Ngsa_Name}-log"
 
-# Create App Insights
-az monitor app-insights component create -g $Ngsa_App_RG -l $Ngsa_Location -a $Ngsa_Name -o table
+# Add Log Analytics extension
+az extension add -n log-analytics
+
+# create Log Analytics for the webv clients
+az monitor log-analytics workspace create -g $Ngsa_Log_Analytics_RG -l $Ngsa_Location -n $Ngsa_Log_Analytics_Name -o table
 
 ```
 
@@ -285,7 +290,7 @@ Install the Istio Operator and Components on AKS
 ```bash
 
 istioctl operator init
-kubectl create ns istio-system
+kubectl create namespace istio-system
 kubectl apply -f $REPO_ROOT/IaC/AKS/cluster/manifests/istio/istio.aks.yaml
 
 # the istio resources will take about a minute to be installed
@@ -331,8 +336,9 @@ KEDA autoscales the NGSA pods by assessing metrics for incoming requests, which 
 
 ```bash
 
-kubectl create ns keda
-helm install keda kedacore/keda --namespace keda
+export KEDA_VERSION=2.0.0
+kubectl create namespace keda
+helm install keda kedacore/keda --namespace keda --version $KEDA_VERSION
 
 ```
 
@@ -346,7 +352,8 @@ kubectl create secret generic ngsa-aks-secrets \
   --from-literal=CosmosCollection=$Imdb_Col \
   --from-literal=CosmosKey=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryReadonlyMasterKey -o tsv) \
   --from-literal=CosmosUrl=https://${Imdb_Name}.documents.azure.com:443/ \
-  --from-literal=AppInsightsKey=$(az monitor app-insights component show -g $Ngsa_App_RG -a $Ngsa_Name --query instrumentationKey -o tsv)
+  --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query customerId -o tsv) \
+  --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query primarySharedKey -o tsv)
 
 ```
 
@@ -368,13 +375,13 @@ export Ngsa_DNS_RG=[dns resource group name]
 # Check if DNS resource group exists
 az group exists -n $Ngsa_DNS_RG
 
-# Create DNS resource group if it does not exist
+# If false, create DNS resource group
 az group create -n $Ngsa_DNS_RG -l $Ngsa_Location
 
 # Check if DNS Zone exists
 az network dns zone show --name $Ngsa_Domain_Name -g $Ngsa_DNS_RG -o table
 
-# Create the DNS Zone if it does not exist.
+# If not found, create the DNS Zone.
 az network dns zone create -g $Ngsa_DNS_RG -n $Ngsa_Domain_Name
 
 # Add DNS A record for the Istio ingress gateway.
@@ -394,13 +401,14 @@ az network dns zone show -n $Ngsa_Domain_Name -g $Ngsa_DNS_RG --query nameServer
 cd $REPO_ROOT/IaC/AKS/cluster/manifests/cert-manager
 
 export CERT_MANAGER_VERSION=1.0.3
-
-kubectl create ns cert-manager
-
+kubectl create namespace cert-manager
 helm install cert-manager jetstack/cert-manager \
   --namespace cert-manager \
   --version "v${CERT_MANAGER_VERSION}" \
   --set installCRDs=true
+
+# wait for the cert manager pods to be ready
+kubectl get pods --namespace cert-manager
 
 # Create a staging and production ClusterIssuer for cert-manager
 # Use the staging ClusterIssuer for testing. Once ready, use the production resource.
@@ -410,42 +418,18 @@ envsubst < clusterissuer.yaml | kubectl apply -f -
 
 ## Deploy NGSA with Helm
 
-A helm chart is included for the reference application ([NGSA](https://github.com/retaildevcrews/ngsa))
-
-A file called helm-config.yaml with the following contents that needs be to edited to fit the environment being deployed in. The file looks like this
-
-```yaml
-
-# Default values for NGSA.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-image:
-  repository: retaildevcrew
-  name: ngsa
-  tag: beta
-
-ingress:
-  hosts:
-    - %%APP_ENDPOINT%%
-  paths:
-    - /
-
-app:
-  args: []
-
-```
-
-Replace the values in the file surrounded by `%%` with the proper environment variables
+A helm chart is included for the reference application ([NGSA](https://github.com/retaildevcrews/ngsa)).
 
 ```bash
 
 cd $REPO_ROOT/IaC/AKS/cluster/charts/ngsa
 
-sed -i "s/%%APP_ENDPOINT%%/${Ngsa_App_Endpoint}/g" helm-config.yaml
+# Use the helm-config.yaml file to configure the deployment
+envsubst < helm-config.example.yaml > helm-config.yaml
 
 ```
 
-This file can now be given to the the helm install as an override to the default values.
+The `helm-config.yaml` file can be used as an override to the default values during the helm install.
 
 ```bash
 
@@ -462,15 +446,14 @@ http ${Ngsa_App_Endpoint}/version
 
 ```
 
-Check that the test certificates have been issued. You can check in the browser, or use openssl. With the test certificates, it is expected that you get a privacy error in the browser.
+Check that the test certificates have been issued. You can check in the browser, or use curl. With the test certificates, it is expected that you get a privacy error.
 
 ```bash
 
-# Option 1: Open this link in your browser. You should see a privacy error if the test certificates have been successfully issued.
-echo "https://$Ngsa_App_Endpoint"
+export Ngsa_Https_App_Endpoint="https://${Ngsa_App_Endpoint}"
 
-# Option 2: Use openssl to view your test certificate. The response should include "CN = Fake LE Intermediate X1" at the top.
-openssl s_client -servername $Ngsa_App_Endpoint -connect $Ngsa_App_Endpoint:443 < /dev/null | grep "CN = Fake LE Intermediate X1"
+# Curl the https endpoint. You should see a certificate problem. This is expected with the staging certificates from Let's Encrypt.
+curl $Ngsa_Https_App_Endpoint
 
 ```
 
@@ -489,7 +472,7 @@ Run the Validation Test
 ```bash
 
 # run the tests in a container
-docker run -it --rm retaildevcrew/webvalidate --server $Ngsa_App_Endpoint --base-url https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/ --files baseline.json
+docker run -it --rm retaildevcrew/webvalidate --server $Ngsa_Https_App_Endpoint --base-url https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/ --files baseline.json
 
 ```
 
@@ -503,31 +486,17 @@ Deploy Web Validate to drive consistent traffic to the AKS cluster for monitorin
 
 ```bash
 
-# Add Log Analytics extension
-az extension add -n log-analytics
-
-# create Log Analytics for the webv clients
-az monitor log-analytics workspace create -g $Ngsa_Smoker_RG -l $Ngsa_Location -n $Ngsa_Name -o table
-
-cd $REPO_ROOT/IaC/scripts
-
-# Run the shell script to install smoker instances with ACI
-./smokers.sh -n $Ngsa_Name -r $Ngsa_Smoker_RG -s $Ngsa_App_Endpoint
-
-```
-
-Alternatively, you can deploy the smokers to AKS as cronjobs.
-
-```bash
-
 cd $REPO_ROOT/IaC/AKS/cluster/charts
 
 kubectl create namespace ngsa-smoker
-helm install ngsa-smoker smoker --namespace ngsa-smoker --set ingressURL=$Ngsa_App_Endpoint
+kubectl create secret generic ngsa-smoker-secrets \
+  --namespace ngsa-smoker \
+  --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query customerId -o tsv) \
+  --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query primarySharedKey -o tsv)
 
-# Verify the cron jobs are installed
-kubectl get cronjobs --namespace ngsa-smoker
+helm install ngsa-smoker smoker --namespace ngsa-smoker --set ingressURL=$Ngsa_Https_App_Endpoint
+
+# Verify the pods are running
+kubectl get pods --namespace ngsa-smoker
 
 ```
-
-The cronjobs are set to run for 7.5 minutes every 20 minutes.
