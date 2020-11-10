@@ -259,6 +259,7 @@ namespace LogAgent
             nl.Category = "Ignore";
             nl.Quartile = 0;
 
+            // TODO - use a configmap
             if (nl.Path.StartsWith("/api/actors/", StringComparison.OrdinalIgnoreCase))
             {
                 nl.Category = "DirectRead";

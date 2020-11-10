@@ -14,6 +14,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
+/// <summary>
+/// This is NOT production code
+/// This code is used to support performance testing only
+/// </summary>
 namespace CSE.NextGenSymmetricApp.DataAccessLayer
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "log params")]
@@ -141,10 +145,6 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
         public static Dictionary<int, List<Movie>> YearIndex { get; set; } = new Dictionary<int, List<Movie>>();
         public static Dictionary<string, List<Movie>> GenreIndex { get; set; } = new Dictionary<string, List<Movie>>();
 
-        //public static SortedList<int, List<Movie>> YearIndex { get; set; } = new SortedList<int, List<Movie>>();
-        //public static SortedList<string, List<Movie>> GenreIndex { get; set; } = new SortedList<string, List<Movie>>();
-        //public List<Movie> RatingIndex { get; set; } = new List<Movie>();
-
         public async Task<Actor> GetActorAsync(string actorId)
         {
             return await Task.Run(() =>
@@ -238,11 +238,11 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             int skip = 0;
             bool add = false;
 
-            if ((year > 0 || !string.IsNullOrEmpty(genre)) &&
-                !(year > 0 && !string.IsNullOrEmpty(genre)) &&
-                string.IsNullOrEmpty(q) &&
+            if ((year > 0 || !string.IsNullOrWhiteSpace(genre)) &&
+                !(year > 0 && !string.IsNullOrWhiteSpace(genre)) &&
+                string.IsNullOrWhiteSpace(q) &&
                 rating == 0 &&
-                string.IsNullOrEmpty(actorId) &&
+                string.IsNullOrWhiteSpace(actorId) &&
                 offset == 0)
             {
                 if (year > 0)
@@ -260,7 +260,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
                         }
                     }
                 }
-                else if (!string.IsNullOrEmpty(genre))
+                else if (!string.IsNullOrWhiteSpace(genre))
                 {
                     genre = genre.ToLowerInvariant().Trim();
 
@@ -284,14 +284,14 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             {
                 foreach (Movie m in Movies)
                 {
-                    if ((string.IsNullOrEmpty(q) || m.TextSearch.Contains(q, StringComparison.OrdinalIgnoreCase)) &&
-                        (string.IsNullOrEmpty(genre) || m.Genres.Contains(genre, StringComparer.OrdinalIgnoreCase)) &&
+                    if ((string.IsNullOrWhiteSpace(q) || m.TextSearch.Contains(q, StringComparison.OrdinalIgnoreCase)) &&
+                        (string.IsNullOrWhiteSpace(genre) || m.Genres.Contains(genre, StringComparer.OrdinalIgnoreCase)) &&
                         (year < 1 || m.Year == year) &&
                         (rating <= 0 || m.Rating >= rating))
                     {
                         add = true;
 
-                        if (!string.IsNullOrEmpty(actorId))
+                        if (!string.IsNullOrWhiteSpace(actorId))
                         {
                             add = false;
 
@@ -347,7 +347,6 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
     /// Extension to allow services.AddInMemoryDal()
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "simplicity")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1204:Static elements should appear before instance elements", Justification = "code readability")]
     public static class InMemoryDataAccessLayerExtension
     {
         public static IServiceCollection AddInMemoryDal(this IServiceCollection services)
