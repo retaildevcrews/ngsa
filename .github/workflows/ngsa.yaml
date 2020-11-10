@@ -34,7 +34,6 @@ jobs:
 
       # These are used in if: conditions
       DOCKER_SET: false
-      COSMOS_SET: false
       BUILD: true
 
     steps:
@@ -48,13 +47,6 @@ jobs:
           echo "DOCKER_SET=true" >> $GITHUB_ENV
         fi
         
-        if [[ "${{ secrets.CosmosUrl }}" != "" && "${{ secrets.CosmosKey }}" != "" ]];
-        then
-          echo '${{ secrets.CosmosUrl }}' > src/ngsa/app/secrets/CosmosUrl
-          echo '${{ secrets.CosmosKey }}' > src/ngsa/app/secrets/CosmosKey
-          echo "COSMOS_SET=true" >> $GITHUB_ENV
-        fi
-
     - name: PR Closed
       if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && ! github.event.pull_request.merged }}
 
@@ -77,7 +69,6 @@ jobs:
         
         # Skip remaining steps
         echo "DOCKER_SET=false" >> $GITHUB_ENV
-        echo "COSMOS_SET=false" >> $GITHUB_ENV
         echo "BUILD=false" >> $GITHUB_ENV
 
     - name: Docker Login
@@ -100,21 +91,21 @@ jobs:
         docker build . -t test -f src/ngsa/Dockerfile --target test
 
     - name: Install WebV
-      if: ${{ env.COSMOS_SET == 'true' }}
+      if: ${{ env.BUILD == 'true' }}
       run: |
         dotnet tool install -g webvalidate
 
     - name: Start helium container
-      if: ${{ env.COSMOS_SET == 'true' }}
+      if: ${{ env.BUILD == 'true' }}
       run: |
         # run the app
-        docker run -d --name ngsa -p 4120:4120 test
+        docker run -d --name ngsa -p 4120:4120 -e IN_MEMORY=true -e RUN_TEST_COVERAGE=true test
         
         echo "Waiting for web server to start and run initial tests ..."
         sleep 25
 
     - name: Run WebV
-      if: ${{ env.COSMOS_SET == 'true' }}
+      if: ${{ env.BUILD == 'true' }}
       run: |
         # run web validation test
         # fail on any validation errors
@@ -129,7 +120,7 @@ jobs:
         docker logs ngsa
 
     - name: Display coverage results
-      if: ${{ env.COSMOS_SET == 'true' }}
+      if: ${{ env.BUILD == 'true' }}
       run: |
         # wait for helium to shutdown
         sleep 15
@@ -138,7 +129,7 @@ jobs:
         docker logs ngsa | tail -n 15
 
     - name: Display full test results
-      if: ${{ env.COSMOS_SET == 'true' }}
+      if: ${{ env.BUILD == 'true' }}
       run: |
         # display the results
         docker logs ngsa
