@@ -2,7 +2,7 @@
 
 ## Dashboard Setup
 
-Replace the values in the `NGSADashboard.json` file surrounded by %% with the proper environment variables which are set in the [IaC/AKS/README.md](../IaC/AKS/README.md) walkthrough. The required variables from the walkthrough are: Ngsa_Log_Analytics_RG, Ngsa_Log_Analytics_Name, Imdb_RG, and Imdb_Name.
+Replace the values in the `NGSA_Dashboard_Template.json` file surrounded by %% with the proper environment variables which are set in the [IaC/AKS/README.md](../IaC/AKS/README.md) walkthrough. The required variables from the walkthrough are: Ngsa_Log_Analytics_RG, Ngsa_Log_Analytics_Name, Imdb_RG, and Imdb_Name.
 
 > Note, currently the implementation assumes that the custom log table in Log Anayltics is ngsa_CL.
 
@@ -24,7 +24,7 @@ sed -i "s/%%SUBSCRIPTION_GUID%%/$(eval $Ngsa_Sub)/g" NGSA_Dashboard.json
 sed -i "s/%%Imdb_RG%%/${Imdb_RG}/g" NGSA_Dashboard.json
 sed -i "s/%%Imdb_Name\%%/${Imdb_Name}/g" NGSA_Dashboard.json
 sed -i "s/%%Ngsa_Log_Analytics_RG%%/${Ngsa_Log_Analytics_RG}/g" NGSA_Dashboard.json
-sed -i "s/%Ngsa_Log_Analytics_Name%%/$Ngsa_Log_Analytics_Name}/g" NGSA_Dashboard.json
+sed -i "s/%%Ngsa_Log_Analytics_Name%%/${Ngsa_Log_Analytics_Name}/g" NGSA_Dashboard.json
 
 ```
 
@@ -132,7 +132,7 @@ ngsa_CL
 ngsa_CL
 | where PodType_s != 'webv'
 | summarize count() by bin(Date_t,1m), PodType_s, Zone_s
-| summarize avg(count_) by PodType_s, Zone_s 
+| summarize avg(count_) by PodType_s, Zone_s
 | project-rename AvgRequests=avg_count_, PodType=PodType_s, Zone=Zone_s
 | order by PodType asc
 
