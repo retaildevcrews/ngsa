@@ -21,9 +21,9 @@ cp ./docs/NGSA_Dashboard_Template.json NGSA_Dashboard.json
 
 # replace the variables in the template with the appropriate environment variables
 sed -i "s/%%SUBSCRIPTION_GUID%%/$(eval $Ngsa_Sub)/g" NGSA_Dashboard.json
-sed -i "s/%%Ngsa_Log_Analytics_RG%%/${Ngsa_Log_Analytics_RG}/g" NGSA_Dashboard.json
 sed -i "s/%%Imdb_RG%%/${Imdb_RG}/g" NGSA_Dashboard.json
 sed -i "s/%%Imdb_Name\%%/${Imdb_Name}/g" NGSA_Dashboard.json
+sed -i "s/%%Ngsa_Log_Analytics_RG%%/${Ngsa_Log_Analytics_RG}/g" NGSA_Dashboard.json
 sed -i "s/%Ngsa_Log_Analytics_Name%%/$Ngsa_Log_Analytics_Name}/g" NGSA_Dashboard.json
 
 ```
