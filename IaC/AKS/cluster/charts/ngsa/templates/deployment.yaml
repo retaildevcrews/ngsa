@@ -70,27 +70,27 @@ spec:
           - name: WorkspaceId
             valueFrom:
               secretKeyRef:
-                name: {{  include "ngsa.fullname" . }}-secrets
+                name: {{ .Values.app.secretName }}
                 key: WorkspaceId
           - name: SharedKey
             valueFrom:
               secretKeyRef:
-                name: {{  include "ngsa.fullname" . }}-secrets
+                name: {{ .Values.app.secretName }}
                 key: SharedKey
           - name: LogName
             valueFrom:
               configMapKeyRef:
-                name: {{  include "ngsa.fullname" . }}-config
+                name: {{ .Values.log.configMapName }}
                 key: LogName
           - name: Zone
             valueFrom:
               configMapKeyRef:
-                name: {{  include "ngsa.fullname" . }}-config
+                name: {{ .Values.log.configMapName }}
                 key: Zone
           - name: Region
             valueFrom:
               configMapKeyRef:
-                name: {{  include "ngsa.fullname" . }}-config
+                name: {{ .Values.log.configMapName }}
                 key: Region
           - name: NodeName
             valueFrom:
@@ -111,7 +111,7 @@ spec:
       volumes:
         - name: secrets
           secret:
-            secretName: {{ include "ngsa.fullname" . }}-secrets
+            secretName: {{ .Values.app.secretName }}
             defaultMode: 444
       {{- with .Values.nodeSelector }}
       nodeSelector:

@@ -346,7 +346,7 @@ helm install keda kedacore/keda --namespace keda --version $KEDA_VERSION
 
 ```bash
 
-kubectl create secret generic ngsa-aks-secrets \
+kubectl create secret generic ngsa-secrets \
   --namespace ngsa \
   --from-literal=CosmosDatabase=$Imdb_DB \
   --from-literal=CosmosCollection=$Imdb_Col \

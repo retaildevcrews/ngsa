@@ -1,8 +1,10 @@
+{{- if .Values.log.configMapCreate -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{  include "ngsa.fullname" . }}-config
+  name: {{ .Values.log.configMapName }}
 data:
   LogName: {{ .Values.log.name }}
   Region: {{ .Values.log.region }}
   Zone: {{ .Values.log.zone }}
+{{- end }}
