@@ -14,8 +14,10 @@ az account show
 # set the subscription id environment variable
 export Ngsa_Sub='az account show -o tsv --query id'
 
+
+# make sure you are in the root folder of the repo
 # copy the dashboard template file to a local version that will be updated with deployment-specific values
-cp NGSA_Dashboard_Template.json NGSA_Dashboard.json
+cp ./docs/NGSA_Dashboard_Template.json NGSA_Dashboard.json
 
 # replace the variables in the template with the appropriate environment variables
 sed -i "s/%%SUBSCRIPTION_GUID%%/$(eval $Ngsa_Sub)/g" NGSA_Dashboard.json
