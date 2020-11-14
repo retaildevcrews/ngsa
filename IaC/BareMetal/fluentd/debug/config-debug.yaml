@@ -97,25 +97,29 @@ data:
     </match>
 
     <match kubernetes.var.log.containers.ngsa*.log>
-      @type azure-loganalytics
-      @id azure_out_ngsa
-      customer_id 1453883a-5a1c-4e15-80d9-1eb459e9a132
-      shared_key $LOG_SHARED_KEY
-      log_type ngsai
-      localtime true
-      add_tag_field true
-      tag_field_name tag
+      @type stdout
+
+      # comment the stdout line and uncomment below to send to Log Analytics
+      #@type azure-loganalytics
+      #@id azure_out_ngsa
+      #customer_id $LOG_ID
+      #shared_key $LOG_SHARED_KEY
+      #log_type ngsai
+      #localtime true
+      #add_tag_field true
+      #tag_field_name tag
     </match>
 
     <match kubernetes.**>
-      @type azure-loganalytics
-      @id azure_out_kube
-      customer_id 1453883a-5a1c-4e15-80d9-1eb459e9a132
-      shared_key $LOG_SHARED_KEY
-      log_type kubei
-      localtime true
-      add_tag_field true
-      tag_field_name tag
+      @type null
+      #@type azure-loganalytics
+      #@id azure_out_kube
+      #customer_id $LOG_ID
+      #shared_key $LOG_SHARED_KEY
+      #log_type kubei
+      #localtime true
+      #add_tag_field true
+      #tag_field_name tag
     </match>
 
     # ignore everything else for now
