@@ -7,24 +7,22 @@ metadata:
     app: webv
 
 spec:
+  restartPolicy: Never
   containers:
   - name: webv
-
-    image: retaildevcrew/webvalidate:beta
+    image: retaildevcrew/webv:beta
     imagePullPolicy: Always
-
-    args: ["-v", "-r", "-s", "http://ngsa-memory:4120", "http://ngsa-cosmos:4120", "-u", "https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/", "-f", "benchmark.json", "-l", "1000"]
-
+    args: ["-s", "http://ngsa-memory:4120", "http://ngsa-cosmos:4120", "-u", "https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/", "-f", "baseline.json"]
     env:
-    - name: Region
-      valueFrom:
-        configMapKeyRef:
-          name: ngsa-config
-          key: Region
     - name: Zone
       valueFrom:
         configMapKeyRef:
           name: ngsa-config
           key: Zone
+    - name: Region
+      valueFrom:
+        configMapKeyRef:
+          name: ngsa-config
+          key: Region
     - name: PodType
       value: webv
