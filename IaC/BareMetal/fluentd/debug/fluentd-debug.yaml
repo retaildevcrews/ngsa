@@ -9,7 +9,7 @@ spec:
     seccompProfile:
       type: RuntimeDefault
   priorityClassName: system-node-critical
-  serviceAccountName: k8s-admin
+  serviceAccountName: fluentd
   containers:
   - name: fluentd
     imagePullPolicy: Never
