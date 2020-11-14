@@ -192,19 +192,16 @@ data:
     </filter>
 
     # send to Azure Log Analytics
-    <match kubernetes.**>
+    # this only sends webv logs
+    <match kubernetes.var.log.containers.webv*.log>
       @type azure-loganalytics
       @id azure_out_connections
-      customer_id 1453883a-5a1c-4e15-80d9-1eb459e9a132
+      customer_id $LOG_ID
       shared_key $LOG_SHARED_KEY
-      log_type webvc
-      # time_generated_field Date
-      # add_time_field false
-      # time_field_name Date
-      # azure_resource_id /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
+      log_type webv${LOG_SUFFIX}
       localtime true
-      # add_tag_field true
-      # tag_field_name tag
+      add_tag_field true
+      tag_field_name tag
     </match>
 
   system.input.conf: |-
