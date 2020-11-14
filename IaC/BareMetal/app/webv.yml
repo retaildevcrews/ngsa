@@ -8,7 +8,23 @@ metadata:
 
 spec:
   containers:
-  - name: app
+  - name: webv
+
     image: retaildevcrew/webvalidate:beta
     imagePullPolicy: Always
-    args: ["-v", "-r", "-s", "http://ngsa:4120", "-u", "https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/", "-f", "benchmark.json", "-l", "1000"]
+
+    args: ["-v", "-r", "-s", "http://ngsa-memory:4120", "http://ngsa-cosmos:4120", "-u", "https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/", "-f", "benchmark.json", "-l", "1000"]
+
+    env:
+    - name: Region
+      valueFrom:
+        configMapKeyRef:
+          name: ngsa-config
+          key: Region
+    - name: Zone
+      valueFrom:
+        configMapKeyRef:
+          name: ngsa-config
+          key: Zone
+    - name: PodType
+      value: webv
