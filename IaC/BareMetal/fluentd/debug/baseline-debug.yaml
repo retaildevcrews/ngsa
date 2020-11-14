@@ -2,16 +2,16 @@ apiVersion: v1
 kind: Pod
 
 metadata:
-  name: baseline
+  name: webv-baseline
   labels:
-    app: baseline
+    app: webv-baseline
 
 spec:
   restartPolicy: Never
   containers:
   - name: app
-    image: webv
-    imagePullPolicy: Never
+    image: retaildevcrew/loderunner:beta
+    imagePullPolicy: Always
     args: ["-s", "http://ngsa:4120", "-f", "baseline.json"]
     env:
     - name: Zone

@@ -12,8 +12,8 @@ spec:
   serviceAccountName: fluentd
   containers:
   - name: fluentd
-    imagePullPolicy: Never
-    image: fluentla
+    imagePullPolicy: Always
+    image: retaildevcrew/fluentd-azure-log-analytics:latest
     env:
     - name: FLUENTD_ARGS
       value: --no-supervisor -q

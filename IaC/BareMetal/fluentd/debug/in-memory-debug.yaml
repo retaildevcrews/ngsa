@@ -7,8 +7,8 @@ metadata:
 spec:
   containers:
   - name: app
-    imagePullPolicy: Never
-    image: ngsa
+    imagePullPolicy: Always
+    image: retaildevcrew/ngsa:beta
     args: [ "--in-memory" ]
     ports:
     - containerPort: 4120
