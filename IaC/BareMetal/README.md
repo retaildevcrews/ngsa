@@ -133,17 +133,20 @@ kubectl create secret generic ngsa-secrets \
 
 ```bash
 
-# create the pod and Cluster IP service
-# Choose one
+cd app
 
-# use Cosmos DB
-k apply -f ngsa.yml
+# create the pod and Cluster IP service
+
+#### Choose one ####
 
 # use in-memory DB
 k apply -f in-memory.yml
 
+# use Cosmos DB
+k apply -f ngsa.yml
+
 # retry until you get the startup message
-k logs ngsa -c app
+k logs ngsa
 
 # to test without SSL
 k expose service ngsa --type=LoadBalancer --port=80 --target-port=4120 --name ngsa-lb

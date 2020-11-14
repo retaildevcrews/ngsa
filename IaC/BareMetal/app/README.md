@@ -1,35 +1,12 @@
 # App Setup
 
-With log agent sidecar
-
 ```bash
 
 # add secrets
 
-# add az cli extension
-az extension add --name log-analytics
-
-# delete if necessary - you can safely ignore the not exists error
-kubectl delete secret ngsa-secrets
-
-# create from key vault
-kubectl create secret generic ngsa-secrets \
-  --from-literal=CosmosDatabase=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name CosmosDatabase) \
-  --from-literal=CosmosCollection=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name CosmosCollection) \
-  --from-literal=CosmosKey=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name CosmosKey) \
-  --from-literal=CosmosUrl=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name CosmosUrl) \
-  --from-literal=AppInsightsKey=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name AppInsightsKey) \
-  --from-literal=WorkspaceId=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name WorkspaceId) \
-  --from-literal=SharedKey=$(eval az keyvault secret show --vault-name ngsa --query value -o tsv --name SharedKey)
-
-# display the secrets (base 64 encoded)
-kubectl get secret ngsa-secrets -o jsonpath='{.data}'
-
-# add service account / role to cluster
-kubectl apply -f role.yml
+#### edit config.yml for region / zone
 
 # add configmap to cluster
-#### edit config.yml for region / zone
 kubectl apply -f config.yml
 
 # deploy ngsa-cosmos
@@ -48,7 +25,7 @@ curl 10.x.x.x:4120/version
 # run baseline test
 kubectl apply -f baseline.yml
 
-# check local logs and log analytics
+# check local logs
 kubectl delete -f baseline.yml
 
 # setup load balancer for ngsa-cosmos endpoint
