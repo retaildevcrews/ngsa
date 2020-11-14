@@ -1,0 +1,1 @@
+envsubst < config-fluentd.yaml | kubectl apply -f -
