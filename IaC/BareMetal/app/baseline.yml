@@ -2,9 +2,9 @@ apiVersion: v1
 kind: Pod
 
 metadata:
-  name: webv
+  name: baseline
   labels:
-    app: webv
+    app: baseline
 
 spec:
   restartPolicy: Never
