@@ -48,6 +48,7 @@ kubectl logs fluentd
 ./delete-fluentd
 
 # leave ngsa and baseline pods running
+# deleting a pod also deletes it's log files
 
 ```
 
@@ -58,13 +59,20 @@ kubectl logs fluentd
 # create ngsa pod (if necessary)
 kubectl apply -f in-memory.yaml
 
+# run webv with baseline.json (if necessary)
+kubectl apply -f baseline.yaml
+
+### leave both pods running
+
 # edit config-debug.yaml
 # uncomment log analytics lines
+# comment @type stdout line
 
 # update config and start fluentd
 ./apply-config
 
 # check Log Analytics for your data
+# this can take 10-15 minutes :(
 
 # delete the app
 kubectl delete -f baseline-debug.yaml
