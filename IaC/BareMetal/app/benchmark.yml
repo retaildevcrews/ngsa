@@ -2,9 +2,9 @@ apiVersion: v1
 kind: Pod
 
 metadata:
-  name: benchmark
+  name: webv-benchmark
   labels:
-    app: benchmark
+    app: webv-benchmark
 
 spec:
   serviceAccountName: k8s-admin
