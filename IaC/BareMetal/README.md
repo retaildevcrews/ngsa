@@ -63,6 +63,7 @@ sudo kubeadm reset -f
 ```bash
 
 # make sure you're in the ngsa/IaC/BareMetal directory
+cd IaC/BareMetal
 
 # make sure PIP is set correctly
 echo $PIP
@@ -129,4 +130,8 @@ kubectl create secret generic ngsa-secrets \
 
 ## Deploy ngsa
 
-Follow the deployment instructions in `app` to deploy ngsa
+Follow the deployment instructions in [app](app/README.md) to deploy ngsa
+
+## Debug fluentd
+
+Follow the deployment instructions in [fluentd/debug](fluentd/debug/README.md) to debug ngsa with fluentd and Azure Log Analytics
