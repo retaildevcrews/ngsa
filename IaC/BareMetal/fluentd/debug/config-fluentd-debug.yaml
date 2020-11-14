@@ -82,14 +82,16 @@ data:
 
     # send to Azure Log Analytics
     <match kubernetes.var.log.containers.webv*.log>
-      @type azure-loganalytics
-      @id azure_out_webv
-      customer_id $LOG_ID
-      shared_key $LOG_SHARED_KEY
-      log_type webv${LOG_SUFFIX}
-      localtime true
-      add_tag_field true
-      tag_field_name tag
+      @type stdout
+
+      #@type azure-loganalytics
+      #@id azure_out_webv
+      #customer_id $LOG_ID
+      #shared_key $LOG_SHARED_KEY
+      #log_type webv${LOG_SUFFIX}
+      #localtime true
+      #add_tag_field true
+      #tag_field_name tag
     </match>
 
     <match kubernetes.var.log.containers.ngsa*.log>
