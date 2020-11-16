@@ -21,15 +21,18 @@ data:
 
   output.conf: |
     [OUTPUT]
-        Name            stdout
-        Match           kube.var.log.containers.ngsa*.*
-
-    [OUTPUT]
         Name            azure
         Match           kube.var.log.containers.webv*.*
         Customer_ID     $LOG_ID
         Shared_Key      $LOG_SHARED_KEY
-        Log_Type        fbwebv${LOG_SUFFIX}
+        Log_Type        webvb${LOG_SUFFIX}
+
+    [OUTPUT]
+        Name            azure
+        Match           kube.var.log.containers.ngsa*.*
+        Customer_ID     $LOG_ID
+        Shared_Key      $LOG_SHARED_KEY
+        Log_Type        ngsab${LOG_SUFFIX}
 
   input-kubernetes.conf: |
     [INPUT]
@@ -43,20 +46,6 @@ data:
         Refresh_Interval  10
 
   filter-kubernetes.conf: |
-    [FILTER]
-        Name                kubernetes
-        Match               kube.var.log.containers.ngsa*.*
-        Kube_URL            https://kubernetes.default.svc:443
-        Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-        Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
-        Kube_Tag_Prefix     kube.var.log.containers.
-        Merge_Log           Off
-        Merge_Log_Trim      On
-        Keep_Log            On
-        K8S-Logging.Parser  On
-        K8S-Logging.Exclude Off
-        Annotations         Off
-
     [FILTER]
         Name                kubernetes
         Match               kube.*
