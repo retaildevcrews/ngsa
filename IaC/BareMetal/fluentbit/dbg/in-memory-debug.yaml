@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: ngsa-memory
+  name: ngsa
   labels:
-    app: ngsa-memory
+    app: ngsa
 spec:
   containers:
-  - name: ngsa
+  - name: app
     imagePullPolicy: Always
     image: retaildevcrew/ngsa:beta
     args: [ "--in-memory" ]
@@ -31,9 +31,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ngsa-memory
+  name: ngsa
   labels:
-    app: ngsa-memory
+    app: ngsa
 spec:
   clusterIP:
   ports:
@@ -41,6 +41,6 @@ spec:
     protocol: TCP
     targetPort: 4120
   selector:
-    app: ngsa-memory
+    app: ngsa
   sessionAffinity: None
   type: ClusterIP

@@ -82,6 +82,12 @@ namespace CSE.NextGenSymmetricApp
             {
                 Region = Environment.GetEnvironmentVariable("Region");
                 Zone = Environment.GetEnvironmentVariable("Zone");
+                PodType = Environment.GetEnvironmentVariable("PodType");
+
+                if (string.IsNullOrEmpty(PodType))
+                {
+                    PodType = inMemory ? "ngsa-memory" : "ngsa-cosmos";
+                }
 
                 if (inMemory)
                 {

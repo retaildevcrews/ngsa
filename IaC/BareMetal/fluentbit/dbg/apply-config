@@ -1,0 +1,4 @@
+#!/bin/bash
+
+envsubst < config-fluentbit-debug.yaml | kubectl apply -f -
+kubectl apply -f fluentbit-debug.yaml

@@ -1,38 +1,51 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: ngsa
+  name: ngsa-cosmos
   labels:
-    app: ngsa
+    app: ngsa-cosmos
 
 spec:
   containers:
-  - name: app
+  - name: ngsa
     imagePullPolicy: Always
     image: retaildevcrew/ngsa:beta
 
     ports:
     - containerPort: 4120
 
+    env:
+    - name: Zone
+      valueFrom:
+        configMapKeyRef:
+          name: ngsa-config
+          key: Zone
+    - name: Region
+      valueFrom:
+        configMapKeyRef:
+          name: ngsa-config
+          key: Region
+    - name: PodType
+      value: ngsa-cosmos
+
     volumeMounts:
     - name: secrets
       mountPath: "/app/secrets"
-
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: ngsa
+  name: ngsa-cosmos
   labels:
-    app: ngsa
+    app: ngsa-cosmos
 
 spec:
   sessionAffinity: None
   type: ClusterIP
 
   selector:
-    app: ngsa
+    app: ngsa-cosmos
 
   clusterIP:
 

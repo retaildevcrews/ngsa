@@ -1,0 +1,4 @@
+#!/bin/bash
+
+kubectl delete -f fluentd-debug.yaml
+sudo rm /var/log/containers.log.pos
