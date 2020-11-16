@@ -56,7 +56,6 @@ data:
         Merge_Log           On
         Merge_Log_Trim      On
         Keep_Log            Off
-        #Merge_Log_Key       log_processed
         K8S-Logging.Parser  On
         K8S-Logging.Exclude Off
         Annotations         Off
@@ -74,7 +73,6 @@ data:
         Time_Key    time
         Time_Format %Y-%m-%dT%H:%M:%S.%L
         Time_Keep   Off
-        # Decode_Field_As   json    log
 
     [PARSER]
         Name        syslog
