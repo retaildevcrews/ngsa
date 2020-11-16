@@ -9,6 +9,7 @@ Create IMDb Cosmos DB and load sample data per instructions [here](https://githu
 ```bash
 
 # these variables are set during IMDb setup and used below
+env | grep Imdb_
 
 #export Imdb_Name=YourCosmosName
 #export Imdb_DB=imdb
@@ -45,6 +46,10 @@ Create your VM per instructions in [Bare Metal Setup](setup-bare-metal-vm.md)
 
 ```bash
 
+# check if it's set correctly
+echo $PIP
+
+# set if necessary
 export PIP=YourPublicIPAddress
 
 ```
@@ -70,6 +75,11 @@ echo $PIP
 
 # install k8s controller
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address $PIP
+
+### WARNING ###
+# This will delete your existing kubectl configuration
+# Make sure to back up or merge manually
+###############
 
 # setup your config file
 sudo rm -rf $HOME/.kube
@@ -102,8 +112,6 @@ sed -e "s/{PIP}/${PIP}/g" metalLB.yml | k apply -f -
 
 ## Set ngsa secrets
 
-> this is not required if you only run `in-memory.yml`
-
 ```bash
 
 # delete if necessary - you can safely ignore the not exists error
@@ -134,4 +142,8 @@ Follow the deployment instructions in [app](app/README.md) to deploy ngsa
 
 ## Debug fluentd
 
-Follow the deployment instructions in [fluentd/debug](fluentd/debug/README.md) to debug ngsa with fluentd and Azure Log Analytics
+Follow the deployment instructions in [fluentd/dbg](fluentd/dbg/README.md) to debug ngsa with fluentd and Azure Log Analytics
+
+## Debug fluentbit
+
+Follow the deployment instructions in [fluentbit/dbg](fluentbit/dbg/README.md) to debug ngsa with fluent-bit and Azure Log Analytics

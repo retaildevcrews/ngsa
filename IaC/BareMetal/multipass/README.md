@@ -19,16 +19,9 @@
 # change this to your default VM name
 set MY_VM=k8s0
 
-# optional - set default VM name
-multipass set client.primary-name=%MY_VM%
-
 # run the VM
-# 2 cores; 2G memory; 10G disk
+# 2 cores; 2G memory; 10G disk; Ubuntu 18.04 LTS
 multipass launch -c 2 -d 10G -m 2G --cloud-init k8s.yaml -n %MY_VM% 18.04
-
-# unmount ~/Home directory if you created primary and don't want the mount
-multipass umount %MY_VM%
-multipass exec %MY_VM% -- rm -rf Home
 
 # ssh into the VM
 multipass shell %MY_VM%
@@ -36,8 +29,11 @@ multipass shell %MY_VM%
 # run final setup within the Ubuntu VM
 sudo ../setup.sh
 
-# reload bash
-bash
+# reload shell
+exit
+
+# ssh into the VM
+multipass shell %MY_VM%
 
 ```
 
