@@ -15,8 +15,6 @@ Create IMDb Cosmos DB and load sample data per instructions [here](https://githu
 #export Imdb_Col=movies
 #export Imdb_RG=$Imdb_Name-rg-cosmos
 #export Imdb_Location="centralus"
-#export Imdb_DB="imdb"
-#export Imdb_Col="movies"
 
 ```
 
@@ -65,6 +63,7 @@ sudo kubeadm reset -f
 ```bash
 
 # make sure you're in the ngsa/IaC/BareMetal directory
+cd IaC/BareMetal
 
 # make sure PIP is set correctly
 echo $PIP
@@ -131,42 +130,8 @@ kubectl create secret generic ngsa-secrets \
 
 ## Deploy ngsa
 
-```bash
+Follow the deployment instructions in [app](app/README.md) to deploy ngsa
 
-# create the pod and Cluster IP service
-# Choose one
+## Debug fluentd
 
-# use Cosmos DB
-k apply -f ngsa.yml
-
-# use in-memory DB
-k apply -f in-memory.yml
-
-# retry until you get the startup message
-k logs ngsa -c app
-
-# to test without SSL
-k expose service ngsa --type=LoadBalancer --port=80 --target-port=4120 --name ngsa-lb
-
-# make sure the public IP is exposed
-k get all
-
-# test the public IP
-curl $PIP/version
-
-# delete test service
-k delete svc ngsa-lb
-
-# create load balancer
-# this requires SSL to be setup correctly
-k apply -f lb.yml
-
-# check status
-# wait for external IP to be visible
-k get svc
-
-# test the LB
-# will return an https redirect
-http ${PIP}
-
-```
+Follow the deployment instructions in [fluentd/debug](fluentd/debug/README.md) to debug ngsa with fluentd and Azure Log Analytics
