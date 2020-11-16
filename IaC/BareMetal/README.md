@@ -134,4 +134,4 @@ Follow the deployment instructions in [app](app/README.md) to deploy ngsa
 
 ## Debug fluentd
 
-Follow the deployment instructions in [fluentd/debug](fluentd/debug/README.md) to debug ngsa with fluentd and Azure Log Analytics
+Follow the deployment instructions in [fluentd/dbg](fluentd/dbg/README.md) to debug ngsa with fluentd and Azure Log Analytics
