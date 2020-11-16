@@ -118,16 +118,10 @@ namespace CSE.Middleware
             }
 
             // handle healthz composite logging
+            // todo - update to log to json
             if (LogHealthzHandled(context, duration))
             {
                 return;
-            }
-
-            string clientIp = context.Connection.RemoteIpAddress.ToString();
-
-            if (context.Request.Headers.ContainsKey(IpHeader))
-            {
-                clientIp = context.Request.Headers[IpHeader].ToString();
             }
 
             Dictionary<string, object> log = new Dictionary<string, object>
@@ -138,11 +132,12 @@ namespace CSE.Middleware
                 { "Verb", context.Request.Method },
                 { "Path", context.Request.Path.ToString() },
                 { "Host", context.Request.Headers["Host"].ToString() },
-                { "ClientIP", clientIp },
+                { "ClientIP", GetClientIp(context) },
                 { "UserAgent", context.Request.Headers["User-Agent"].ToString() },
                 { "CVector", cv.Value },
                 { "CosmosName", App.CosmosName },
-                { "CosmosQueryId", App.CosmosQueryId },
+                { "CosmosQueryId", "todo" },
+                { "CosmosRUs", 1.23 },
                 { "Region", App.Region },
                 { "Zone", App.Zone },
                 { "PodType", App.PodType },
@@ -150,6 +145,21 @@ namespace CSE.Middleware
 
             // write the results to the console
             Console.WriteLine(JsonSerializer.Serialize(log));
+        }
+
+        // get the client IP address from the request / headers
+        private static string GetClientIp(HttpContext context)
+        {
+            string clientIp = context.Connection.RemoteIpAddress.ToString();
+
+            // check for the forwarded header
+            if (context.Request.Headers.ContainsKey(IpHeader))
+            {
+                clientIp = context.Request.Headers[IpHeader].ToString();
+            }
+
+            // remove IP6 local address
+            return clientIp.Replace("::ffff:", string.Empty, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
