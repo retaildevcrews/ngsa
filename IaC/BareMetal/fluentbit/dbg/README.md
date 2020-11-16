@@ -50,18 +50,6 @@ kubectl apply -f in-memory.yaml
 # set env vars
 export LOG_ID=YourWorkspaceID
 export LOG_SHARED_KEY=YourSharedKey
-export LOG_SUFFIX=a
-
-# apply the config and create fluentb pod
-./apply-la
-
-# check fluentb logs
-kubectl logs fluentb
-
-# run baseline test
-kubectl apply -f baseline.yaml
-
-### leave both pods running
 
 # this will create Log Analytics custom logs of the form:
 #  webvsuffix
@@ -71,12 +59,16 @@ kubectl apply -f baseline.yaml
 # leave unset to use webv, ngsa and kube log names
 export LOG_SUFFIX=a
 
-# edit config-debug.yaml
-# uncomment log analytics lines
-# comment @type stdout line
-
-# update config and start fluentb
+# apply the config and create fluentb pod
 ./apply-la
+
+# check fluentb logs
+kubectl logs fluentb
+
+# run baseline test
+kubectl apply -f baseline-debug.yaml
+
+### leave both pods running
 
 # check fluentb logs
 # looking for a line like:
@@ -91,7 +83,7 @@ kubectl delete -f fluentbit-debug.yaml
 kubectl delete -f in-memory-debug.yaml
 
 # delete configmaps and role (not necessary)
-kubectl delete -f config-fluentbit-debug.yaml
+kubectl delete -f la-config-debug.yaml
 kubectl delete -f role-fluentbit-debug.yaml
 kubectl delete -f zone-config-debug.yaml
 
