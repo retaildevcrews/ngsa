@@ -140,10 +140,6 @@ kubectl create secret generic ngsa-secrets \
 
 Follow the deployment instructions in [app](app/README.md) to deploy ngsa
 
-## Debug fluentd
-
-Follow the deployment instructions in [fluentd/dbg](fluentd/dbg/README.md) to debug ngsa with fluentd and Azure Log Analytics
-
 ## Debug fluentbit
 
 Follow the deployment instructions in [fluentbit/dbg](fluentbit/dbg/README.md) to debug ngsa with fluent-bit and Azure Log Analytics
