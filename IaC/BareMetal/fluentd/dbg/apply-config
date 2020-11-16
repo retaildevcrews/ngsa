@@ -2,4 +2,3 @@
 
 envsubst < config-fluentd-debug.yaml | kubectl apply -f -
 kubectl apply -f fluentd-debug.yaml
-
