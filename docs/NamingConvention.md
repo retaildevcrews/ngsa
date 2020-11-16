@@ -1,26 +1,32 @@
 # Naming Convention [Proposal]
+
 ## Common naming criteria for all resources
+
 - Max length: `1-63` chars
 - Start with lower case character, can’t end in `-` or `_` or any special char
+
 > Preferred names have all lower case
 >> A preferred name can be regexed by `[a-z]([-a-z0-9]*[a-z0-9])?`
 
 ## Azure resource names
+
 Azure resources consists of four parts: `( project-short-form )-[ environment-type ]-( identifier )-[ suffix ]`
-  - Mandatory: `(project-short-form)`.
-  - Mandatory: `[environment-type]` - usage env.
-    - Possible val: `pre`, `test`, `stage`, `prod`, and `dev` [?]
-      - `pre` is pre-production
-  - Optional: `(identifier)` - refers to descriptive label.
-  - Best effort to fit based on specific resource naming constraints.
-  - Each part will be separated by a hyphen `-`.
-  - Azure resource [suffix] can be found [here][1].
-  - Examples:
-    - `ngsa-dev-grafana-kv`
-    - `ngsa-pre-istio-cosmos`
-    - `ngsa-prod-grafana-appi`
+
+- Mandatory: `(project-short-form)`.
+- Mandatory: `[environment-type]` - usage env.
+  - Possible val: `pre`, `test`, `stage`, `prod`, and `dev` [?]
+    - `pre` is pre-production
+- Optional: `(identifier)` - refers to descriptive label.
+- Best effort to fit based on specific resource naming constraints.
+- Each part will be separated by a hyphen `-`.
+- Azure resource [suffix] can be found [here][1].
+- Examples:
+  - `ngsa-dev-grafana-kv`
+  - `ngsa-pre-istio-cosmos`
+  - `ngsa-prod-grafana-appi`
 
 ## Kubernetes Labels
+
 Labels are key/value pairs. Valid label keys have two segments: an optional *prefix* and *name*, separated by a slash (/) (e.g `helm.sh/chart`).
 
 Prefixes are optional, and ensures that recommended labels do not get mixed up with private labels.
@@ -36,20 +42,24 @@ Adhering to ["Labels recommended by kubernetes"][3], following labels are requir
 - app.kubernetes.io/component: type-of-the-component
 
 Examples:
+
 - app.kubernetes.io/name=ngsa
 - app.kubernetes.io/version=1.16.0
 - app.kubernetes.io/component=app
 - app.kubernetes.io/component=database
 
 ## Kubernetes Namespaces
+
 K8s namespace will follow the format: `[Team Name]-[Application Name]`
 
 Examples:
+
 - `rdc-ngsa`
 - `rdc-helium`
 - `team2-app2`
 
 ## Resources
+
 - [Azure resource naming and tagging convention][1]
 - [Azure resource name restrictions][2]
 - [Kubernetes recommended Label][3]

@@ -38,9 +38,9 @@ There are two kinds of metrics displayed in this dashboard: default Azure Monito
 
 The top section of the dashboard shows three metrics using built-in Cosmos DB usage data from Azure Monitor.
 
-* The total number of requests hitting the Cosmos DB instance and the Total Request Units (RUs) the resulting queries cost.
-* The total number of throttled requests (if any). This is acheived by filtering to requests with a status code of 429.
-* The provisioned throughput to help monitor that the configuration has not been unexpectedly changed.
+- The total number of requests hitting the Cosmos DB instance and the Total Request Units (RUs) the resulting queries cost.
+- The total number of throttled requests (if any). This is acheived by filtering to requests with a status code of 429.
+- The provisioned throughput to help monitor that the configuration has not been unexpectedly changed.
 
 ### Log Analytics - Query-based
 
