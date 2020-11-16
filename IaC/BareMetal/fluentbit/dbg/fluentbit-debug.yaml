@@ -10,7 +10,7 @@ spec:
         seccompProfile:
           type: RuntimeDefault
     priorityClassName: system-node-critical
-    serviceAccountName: fluentd
+    serviceAccountName: fluentbit
     terminationGracePeriodSeconds: 10
 
     containers:
