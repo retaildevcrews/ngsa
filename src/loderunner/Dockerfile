@@ -2,7 +2,7 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 
 # Copy the source
-COPY src/webv /src
+COPY src/loderunner /src
 
 ### Run the unit tests
 #WORKDIR /src/tests
@@ -38,4 +38,4 @@ WORKDIR /app/TestFiles
 # run as the webv user
 USER webv
 
-ENTRYPOINT [ "dotnet",  "../webvalidate.dll" ]
+ENTRYPOINT [ "dotnet",  "../loderunner.dll" ]
