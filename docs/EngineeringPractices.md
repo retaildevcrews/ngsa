@@ -2,8 +2,8 @@
 
 ## Success Criteria
 
-  - Team agreed that our testing criteria is Linux
-    - Best effort to make sure it works on Windows and Mac, but not required
+- Team agreed that our testing criteria is Linux
+- Best effort to make sure it works on Windows and Mac, but not required
 
 ## Definition of Done
 
@@ -98,6 +98,6 @@ Engineering Playbook [Definition of Done](https://github.com/microsoft/code-with
 
 multipass is *really* cool!
 
-https://multipass.run/
+<https://multipass.run/>
 
 setup instructions are in the repo
