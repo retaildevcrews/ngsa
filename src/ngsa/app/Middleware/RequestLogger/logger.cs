@@ -130,8 +130,26 @@ namespace CSE.Middleware
                 clientIp = context.Request.Headers[IpHeader];
             }
 
+            Dictionary<string, object> log = new Dictionary<string, object>
+            {
+                { "Date", DateTime.UtcNow },
+                { "StatusCode", context.Response.StatusCode },
+                { "Duration", duration },
+                { "Verb", context.Request.Method },
+                { "Path", context.Request.Path.ToString() },
+                { "Host", context.Request.Headers["Host"] },
+                { "ClientIP", clientIp },
+                { "UserAgent", context.Request.Headers["User-Agent"] },
+                { "CVector", cv.Value },
+                { "CosmosName", App.CosmosName },
+                { "CosmosQueryId", App.CosmosQueryId },
+                { "Region", App.Region },
+                { "Zone", App.Zone },
+                { "PodType", App.PodType },
+            };
+
             // write the results to the console
-            Console.WriteLine($"{DateTime.UtcNow:s}Z\t{context.Response.StatusCode}\t{Math.Round(duration, 2)}\t{context.Request.Method}\t{GetPathAndQuerystring(context.Request)}\t{cv.Value}\t{context.Request.Headers["Host"]}\t{clientIp}\t{App.CosmosName}\t{App.CosmosQueryId}\t{context.Request.Headers["User-Agent"]}\t{App.Region}\t{App.Zone}\t{App.PodType}");
+            Console.WriteLine(JsonSerializer.Serialize(log));
         }
 
         /// <summary>
