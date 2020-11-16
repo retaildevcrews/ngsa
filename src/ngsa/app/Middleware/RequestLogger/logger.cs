@@ -65,7 +65,7 @@ namespace CSE.Middleware
             // write trace headers
             context.Response.OnStarting(() =>
             {
-                duration = duration == 0 ? DateTime.Now.Subtract(dtStart).TotalMilliseconds : duration;
+                duration = duration == 0 ? Math.Round(DateTime.Now.Subtract(dtStart).TotalMilliseconds, 2) : duration;
 
                 Dictionary<string, object> trace = new Dictionary<string, object>
                 {
@@ -109,7 +109,7 @@ namespace CSE.Middleware
             }
 
             // compute request duration
-            duration = duration == 0 ? DateTime.Now.Subtract(dtStart).TotalMilliseconds : duration;
+            duration = duration == 0 ? Math.Round(DateTime.Now.Subtract(dtStart).TotalMilliseconds, 2) : duration;
 
             // don't log favicon.ico 404s
             if (context.Request.Path.StartsWithSegments("/favicon.ico", StringComparison.OrdinalIgnoreCase))
@@ -123,11 +123,11 @@ namespace CSE.Middleware
                 return;
             }
 
-            string clientIp = context.Connection.RemoteIpAddress.ToString().Replace("::ffff:", string.Empty, StringComparison.OrdinalIgnoreCase);
+            string clientIp = context.Connection.RemoteIpAddress.ToString();
 
             if (context.Request.Headers.ContainsKey(IpHeader))
             {
-                clientIp = context.Request.Headers[IpHeader];
+                clientIp = context.Request.Headers[IpHeader].ToString();
             }
 
             Dictionary<string, object> log = new Dictionary<string, object>
@@ -137,9 +137,9 @@ namespace CSE.Middleware
                 { "Duration", duration },
                 { "Verb", context.Request.Method },
                 { "Path", context.Request.Path.ToString() },
-                { "Host", context.Request.Headers["Host"] },
+                { "Host", context.Request.Headers["Host"].ToString() },
                 { "ClientIP", clientIp },
-                { "UserAgent", context.Request.Headers["User-Agent"] },
+                { "UserAgent", context.Request.Headers["User-Agent"].ToString() },
                 { "CVector", cv.Value },
                 { "CosmosName", App.CosmosName },
                 { "CosmosQueryId", App.CosmosQueryId },
