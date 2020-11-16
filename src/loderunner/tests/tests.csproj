@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\app\webv.csproj" />
+    <ProjectReference Include="..\app\loderunner.csproj" />
   </ItemGroup>
 
   <ItemGroup>
