@@ -12,7 +12,6 @@ We mount these files as volumes in the nginx pod via `lb.yml`
   - /etc/ngsa/www
     - nginx www root
 
-
 ## self-signed cert setup
 
 Start by setting up the self signed cert
