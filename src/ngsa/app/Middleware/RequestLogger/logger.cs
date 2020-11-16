@@ -2,7 +2,9 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Text.Json;
 using System.Threading.Tasks;
 using CSE.NextGenSymmetricApp;
 using CSE.NextGenSymmetricApp.Model;
@@ -20,6 +22,7 @@ namespace CSE.Middleware
     {
         private const string IpHeader = "X-Client-IP";
         private const string CVHeader = "X-Correlation-Vector";
+        private const string TraceHeader = "X-WebV-Trace";
 
         // next action to Invoke
         private readonly RequestDelegate next;
@@ -55,10 +58,30 @@ namespace CSE.Middleware
                 return;
             }
 
-            // set start time
-            DateTime dtStart = DateTime.Now;
-
             CorrelationVector cv;
+            DateTime dtStart = DateTime.Now;
+            double duration = 0;
+
+            // write trace headers
+            context.Response.OnStarting(() =>
+            {
+                duration = duration == 0 ? Math.Round(DateTime.Now.Subtract(dtStart).TotalMilliseconds, 2) : duration;
+
+                Dictionary<string, object> trace = new Dictionary<string, object>
+                {
+                    { "AppRegion", App.Region },
+                    { "AppZone", App.Zone },
+                    { "AppPodType", App.PodType },
+                    { "AppDuration", Math.Round(duration, 2) },
+                    { "AppCosmosName", App.CosmosName },
+                    { "AppCosmosQueryId", "todo" },
+                    { "AppCosmosRUs", 1.23 },
+                };
+
+                context.Response.Headers.Add(TraceHeader, JsonSerializer.Serialize(trace));
+
+                return Task.CompletedTask;
+            });
 
             if (context.Request.Headers.ContainsKey(CVHeader))
             {
@@ -86,7 +109,7 @@ namespace CSE.Middleware
             }
 
             // compute request duration
-            double duration = DateTime.Now.Subtract(dtStart).TotalMilliseconds;
+            duration = duration == 0 ? Math.Round(DateTime.Now.Subtract(dtStart).TotalMilliseconds, 2) : duration;
 
             // don't log favicon.ico 404s
             if (context.Request.Path.StartsWithSegments("/favicon.ico", StringComparison.OrdinalIgnoreCase))
@@ -100,15 +123,33 @@ namespace CSE.Middleware
                 return;
             }
 
-            string clientIp = context.Connection.RemoteIpAddress.ToString().Replace("::ffff:", string.Empty, StringComparison.OrdinalIgnoreCase);
+            string clientIp = context.Connection.RemoteIpAddress.ToString();
 
             if (context.Request.Headers.ContainsKey(IpHeader))
             {
-                clientIp = context.Request.Headers[IpHeader];
+                clientIp = context.Request.Headers[IpHeader].ToString();
             }
 
+            Dictionary<string, object> log = new Dictionary<string, object>
+            {
+                { "Date", DateTime.UtcNow },
+                { "StatusCode", context.Response.StatusCode },
+                { "Duration", duration },
+                { "Verb", context.Request.Method },
+                { "Path", context.Request.Path.ToString() },
+                { "Host", context.Request.Headers["Host"].ToString() },
+                { "ClientIP", clientIp },
+                { "UserAgent", context.Request.Headers["User-Agent"].ToString() },
+                { "CVector", cv.Value },
+                { "CosmosName", App.CosmosName },
+                { "CosmosQueryId", App.CosmosQueryId },
+                { "Region", App.Region },
+                { "Zone", App.Zone },
+                { "PodType", App.PodType },
+            };
+
             // write the results to the console
-            Console.WriteLine($"{DateTime.UtcNow:o}Z\t{context.Response.StatusCode}\t{Math.Round(duration, 2)}\t{context.Request.Method}\t{GetPathAndQuerystring(context.Request)}\t{cv.Value}\t{context.Request.Headers["Host"]}\t{clientIp}\t{App.CosmosName}\t{App.CosmosQueryId}\t{context.Request.Headers["User-Agent"]}\t{App.Region}\t{App.Zone}");
+            Console.WriteLine(JsonSerializer.Serialize(log));
         }
 
         /// <summary>
