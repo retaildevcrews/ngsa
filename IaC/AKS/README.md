@@ -346,7 +346,7 @@ helm install keda kedacore/keda --namespace keda --version $KEDA_VERSION
 
 ```bash
 
-kubectl create secret generic ngsa-aks-secrets \
+kubectl create secret generic ngsa-secrets \
   --namespace ngsa \
   --from-literal=CosmosDatabase=$Imdb_DB \
   --from-literal=CosmosCollection=$Imdb_Col \
@@ -486,7 +486,7 @@ Deploy Web Validate to drive consistent traffic to the AKS cluster for monitorin
 
 ```bash
 
-cd $REPO_ROOT/IaC/AKS/cluster/charts
+cd $REPO_ROOT/IaC/AKS/cluster/charts/smoker
 
 kubectl create namespace ngsa-smoker
 kubectl create secret generic ngsa-smoker-secrets \
@@ -494,7 +494,11 @@ kubectl create secret generic ngsa-smoker-secrets \
   --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query customerId -o tsv) \
   --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query primarySharedKey -o tsv)
 
-helm install ngsa-smoker smoker --namespace ngsa-smoker --set ingressURL=$Ngsa_Https_App_Endpoint
+cp helm-config.example.yaml helm-config.yaml
+
+cd $REPO_ROOT/IaC/AKS/cluster/charts
+
+helm install ngsa-smoker smoker -f ./smoker/helm-config.yaml --namespace ngsa-smoker
 
 # Verify the pods are running
 kubectl get pods --namespace ngsa-smoker

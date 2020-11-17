@@ -17,6 +17,14 @@ fullnameOverride: ""
 app:
   args: []
   port: 4120
+  secretName: ngsa-secrets
+
+log:
+  name: "ngsa"
+  region: ""
+  zone: ""
+  configMapName: "ngsa-configmap"
+  configMapCreate: true
 
 livenessProbe:
   initialDelaySeconds: 120
@@ -95,7 +103,3 @@ tolerations: []
 
 affinity: {}
 
-log:
-  name: "ngsa"
-  region: ""
-  zone: ""
