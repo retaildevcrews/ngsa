@@ -63,6 +63,7 @@ certbot certonly --webroot -w /var/www/certbot \
 
 # once it's working, remove the --dry-run param
 # you WILL get locked out of letsencrypt if you run too many times on the same sub-domain
+# just ask AK :)
 ##############################
 
 # exit the container
