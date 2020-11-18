@@ -1,6 +1,6 @@
 # Setup k8s IaaS
 
-> This will setup a single node k8s cluster
+> This will setup a single node k8s cluster for development
 
 ## Create IMDb Cosmos DB
 
@@ -9,6 +9,7 @@ Create IMDb Cosmos DB and load sample data per instructions [here](https://githu
 ```bash
 
 # these variables are set during IMDb setup and used below
+# you can set the variables to an existing Cosmos DB instance
 env | grep Imdb_
 
 #export Imdb_Name=YourCosmosName
@@ -27,6 +28,7 @@ env | grep Imdb_
 az extension add --name log-analytics
 
 # set environment variables
+# You can use an existing Log Analytics instance
 export Ngsa_Log_RG=$Imdb_Name-rg-logs
 export Ngsa_Log_Name=$Imdb_Name
 
@@ -39,6 +41,12 @@ az monitor log-analytics workspace create -g $Ngsa_Log_RG -n $Ngsa_Log_Name -l $
 ## Create VM
 
 Create your VM per instructions in [Bare Metal Setup](setup-bare-metal-vm.md)
+
+- It should work on any Ubuntu 18.04 VM
+- We've tested on
+  - Azure VMs
+  - Multipass VMs
+  - Digital Ocean VMs
 
 ## setup k8s
 
@@ -105,7 +113,7 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.4/manife
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.4/manifests/metallb.yaml
 kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
 
-# create config map
+# create metal LB config map
 sed -e "s/{PIP}/${PIP}/g" metalLB.yml | k apply -f -
 
 ```
@@ -117,7 +125,7 @@ sed -e "s/{PIP}/${PIP}/g" metalLB.yml | k apply -f -
 # delete if necessary - you can safely ignore the not exists error
 kubectl delete secret ngsa-secrets
 
-# create from key vault
+# create from Azure
 kubectl create secret generic ngsa-secrets \
   --from-literal=CosmosDatabase=$Imdb_DB \
   --from-literal=CosmosCollection=$Imdb_Col \
@@ -140,6 +148,6 @@ kubectl create secret generic ngsa-secrets \
 
 Follow the deployment instructions in [app](app/README.md) to deploy ngsa
 
-## Debug fluentbit
+## Deploy fluent bit
 
-Follow the deployment instructions in [fluentbit/dbg](fluentbit/dbg/README.md) to debug ngsa with fluent-bit and Azure Log Analytics
+Follow the deployment instructions in [fluentbit/dbg](fluentbit/dbg/README.md) to debug ngsa with fluent bit and Azure Log Analytics
