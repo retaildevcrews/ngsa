@@ -27,8 +27,24 @@ kubectl logs fluentb
 # save the cluster IP
 export ngsa=$(kubectl get service | grep ngsa | awk '{print $3}'):4120
 
+# save to .bashrc (optional but handy)
+echo "" >> ~/.bashrc
+echo "export ngsa=$(kubectl get service | grep ngsa | awk '{print $3}'):4120" >> ~/.bashrc
+
 # check the version endpoint
 curl http://$ngsa/version
+
+# check the version remotely
+
+# if you are running kubectl on the bare metal VM, use SSH to forward your port
+### from a new local terminal
+ssh -L 4120:127.0.0.1:4120 YourIP-DNS
+
+# setup port forwarding
+kubectl port-forward svc/ngsa 4120:4120
+
+# open your local browser
+http://127.0.0.1:4120/version
 
 # check the logs
 kubectl logs fluentb
