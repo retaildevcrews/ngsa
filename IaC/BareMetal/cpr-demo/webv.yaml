@@ -13,7 +13,18 @@ spec:
   - name: app
     image: retaildevcrew/webvalidate:beta
     imagePullPolicy: Always
-    args: ["-l", "100", "-r", "-v", "-s", "http://ngsa-aks.ngsamem.svc.cluster.local:4120", "http://ngsa-aks.ngsacos.svc.cluster.local:4120", "-u", "https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/", "-f", "benchmark.json"]
+    args:
+    - -l
+    - "100"
+    - -r
+    - -v
+    - -s
+    - http://ngsa-aks.ngsamem.svc.cluster.local:4120
+    - http://ngsa-aks.ngsacos.svc.cluster.local:4120
+    - -u
+    - https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/
+    - -f
+    - benchmark.json
 
   - name: log
     imagePullPolicy: Always
