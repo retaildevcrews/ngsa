@@ -25,7 +25,7 @@ namespace CSE.WebValidate
         /// Correlation Vector http header name
         /// </summary>
         public const string CVHeaderName = "X-Correlation-Vector";
-        private const string TraceHeader = "X-WebV-Trace";
+        private const string TraceHeader = "X-LodeRunner-Trace";
 
         private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
         {
@@ -528,7 +528,7 @@ namespace CSE.WebValidate
                 Timeout = new TimeSpan(0, 0, config.Timeout),
                 BaseAddress = new Uri(host),
             };
-            client.DefaultRequestHeaders.Add("User-Agent", $"webv/{Version.ShortVersion}");
+            client.DefaultRequestHeaders.Add("User-Agent", $"l8r/{Version.ShortVersion}");
 
             return client;
         }

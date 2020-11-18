@@ -22,7 +22,7 @@ namespace CSE.Middleware
     {
         private const string IpHeader = "X-Client-IP";
         private const string CVHeader = "X-Correlation-Vector";
-        private const string TraceHeader = "X-WebV-Trace";
+        private const string TraceHeader = "X-LodeRunner-Trace";
 
         // next action to Invoke
         private readonly RequestDelegate next;

@@ -17,7 +17,7 @@ namespace CSE.WebValidate
     /// </summary>
     public sealed partial class App
     {
-        public const string PodType = "webv";
+        public const string PodType = "l8r";
 
         public static string Region { get; set; } = string.Empty;
         public static string Zone { get; set; } = string.Empty;
