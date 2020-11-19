@@ -2,29 +2,42 @@ apiVersion: v1
 kind: Pod
 
 metadata:
-  name: webv-benchmark
+  name: l8r-benchmark
   labels:
-    app: webv-benchmark
+    app: l8r-benchmark
 
 spec:
   serviceAccountName: k8s-admin
-  restartPolicy: OnFailure
+  restartPolicy: Never
   containers:
   - name: app
-    image: retaildevcrew/webv:beta
+    image: retaildevcrew/loderunner:beta
     imagePullPolicy: Always
-    args: ["--duration", "3600", "-r", "-v", "-s", "http://ngsa-memory:4120", "http://ngsa-cosmos:4120", "-u", "https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/", "-f", "baseline.json"]
+    args: 
+    - --duration
+    - "3600"
+    - -l
+    - "1000"
+    - -r
+    - -s
+    - http://ngsa-memory:4120
+    - http://ngsa-cosmos:4120
+    - -f
+    - benchmark.json
+
     env:
     - name: Zone
       valueFrom:
         configMapKeyRef:
           name: ngsa-config
           key: Zone
+
     - name: Region
       valueFrom:
         configMapKeyRef:
           name: ngsa-config
           key: Region
+
     - name: PodType
-      value: webv
+      value: l8r-benchmark
 

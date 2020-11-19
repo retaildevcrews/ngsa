@@ -14,14 +14,14 @@ spec:
     imagePullPolicy: Always
 
     args: 
+    - -l
+    - "1000"
     - -r
     - -s
     - http://ngsa-memory:4120
     - http://ngsa-cosmos:4120
     - -f
     - benchmark.json
-    - -l
-    - "1000"
 
     env:
     - name: Region
