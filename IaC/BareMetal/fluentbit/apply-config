@@ -1,0 +1,4 @@
+#!/bin/bash
+
+envsubst < config.yaml | kubectl apply -f -
+kubectl apply -f fluentbit-ds.yaml
