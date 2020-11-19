@@ -1,0 +1,1839 @@
+{
+  "properties": {
+    "lenses": {
+      "0": {
+        "order": 0,
+        "parts": {
+          "0": {
+            "position": {
+              "x": 0,
+              "y": 0,
+              "colSpan": 15,
+              "rowSpan": 1
+            },
+            "metadata": {
+              "inputs": [],
+              "type": "Extension/HubsExtension/PartType/MarkdownPart",
+              "settings": {
+                "content": {
+                  "settings": {
+                    "content": "<h1 style=\"text-align: center;\">NGSA Dashboard</h1>\n",
+                    "title": "",
+                    "subtitle": "",
+                    "markdownSource": 1
+                  }
+                }
+              }
+            }
+          },
+          "1": {
+            "position": {
+              "x": 0,
+              "y": 1,
+              "colSpan": 15,
+              "rowSpan": 1
+            },
+            "metadata": {
+              "inputs": [],
+              "type": "Extension/HubsExtension/PartType/MarkdownPart",
+              "settings": {
+                "content": {
+                  "settings": {
+                    "content": "<h1 style=\"text-align: center;\">Cosmos DB Usage</h1>\n",
+                    "title": "",
+                    "subtitle": "",
+                    "markdownSource": 1
+                  }
+                }
+              }
+            }
+          },
+          "2": {
+            "position": {
+              "x": 0,
+              "y": 2,
+              "colSpan": 5,
+              "rowSpan": 3
+            },
+            "metadata": {
+              "inputs": [
+                {
+                  "name": "options",
+                  "isOptional": true
+                },
+                {
+                  "name": "sharedTimeRange",
+                  "isOptional": true
+                }
+              ],
+              "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+              "settings": {
+                "content": {
+                  "options": {
+                    "chart": {
+                      "metrics": [
+                        {
+                          "resourceMetadata": {
+                            "id": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourceGroups/%%Imdb_RG%%/providers/Microsoft.DocumentDB/databaseAccounts/%%Imdb_Name%%"
+                          },
+                          "name": "TotalRequestUnits",
+                          "aggregationType": 1,
+                          "namespace": "microsoft.documentdb/databaseaccounts",
+                          "metricVisualization": {
+                            "displayName": "Total Request Units",
+                            "resourceDisplayName": "%%Imdb_Name%%"
+                          }
+                        },
+                        {
+                          "resourceMetadata": {
+                            "id": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourceGroups/%%Imdb_RG%%/providers/Microsoft.DocumentDB/databaseAccounts/%%Imdb_Name%%"
+                          },
+                          "name": "TotalRequests",
+                          "aggregationType": 7,
+                          "namespace": "microsoft.documentdb/databaseaccounts",
+                          "metricVisualization": {
+                            "displayName": "Total Requests",
+                            "resourceDisplayName": "%%Imdb_Name%%"
+                          }
+                        }
+                      ],
+                      "title": "Cosmos DB Requests and RUs",
+                      "titleKind": 2,
+                      "visualization": {
+                        "chartType": 2,
+                        "legendVisualization": {
+                          "isVisible": true,
+                          "position": 2,
+                          "hideSubtitle": false
+                        },
+                        "axisVisualization": {
+                          "x": {
+                            "isVisible": true,
+                            "axisType": 2
+                          },
+                          "y": {
+                            "isVisible": true,
+                            "axisType": 1
+                          }
+                        },
+                        "disablePinning": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "3": {
+            "position": {
+              "x": 5,
+              "y": 2,
+              "colSpan": 5,
+              "rowSpan": 3
+            },
+            "metadata": {
+              "inputs": [
+                {
+                  "name": "options",
+                  "isOptional": true
+                },
+                {
+                  "name": "sharedTimeRange",
+                  "isOptional": true
+                }
+              ],
+              "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+              "settings": {
+                "content": {
+                  "options": {
+                    "chart": {
+                      "metrics": [
+                        {
+                          "resourceMetadata": {
+                            "id": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourceGroups/%%Imdb_RG%%/providers/Microsoft.DocumentDB/databaseAccounts/%%Imdb_Name%%"
+                          },
+                          "name": "TotalRequests",
+                          "aggregationType": 7,
+                          "namespace": "microsoft.documentdb/databaseaccounts",
+                          "metricVisualization": {
+                            "displayName": "Total Requests",
+                            "resourceDisplayName": "%%Imdb_Name%%"
+                          }
+                        }
+                      ],
+                      "title": "Cosmos DB Throttled Requests",
+                      "titleKind": 2,
+                      "visualization": {
+                        "chartType": 2,
+                        "legendVisualization": {
+                          "isVisible": true,
+                          "position": 2,
+                          "hideSubtitle": false
+                        },
+                        "axisVisualization": {
+                          "x": {
+                            "isVisible": true,
+                            "axisType": 2
+                          },
+                          "y": {
+                            "isVisible": true,
+                            "axisType": 1
+                          }
+                        },
+                        "disablePinning": true
+                      }
+                    }
+                  }
+                }
+              },
+              "filters": {
+                "StatusCode": {
+                  "model": {
+                    "operator": "equals",
+                    "values": [
+                      "429"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "4": {
+            "position": {
+              "x": 10,
+              "y": 2,
+              "colSpan": 5,
+              "rowSpan": 3
+            },
+            "metadata": {
+              "inputs": [
+                {
+                  "name": "options",
+                  "isOptional": true
+                },
+                {
+                  "name": "sharedTimeRange",
+                  "isOptional": true
+                }
+              ],
+              "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+              "settings": {
+                "content": {
+                  "options": {
+                    "chart": {
+                      "metrics": [
+                        {
+                          "resourceMetadata": {
+                            "id": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourceGroups/%%Imdb_RG%%/providers/Microsoft.DocumentDB/databaseAccounts/%%Imdb_Name%%"
+                          },
+                          "name": "ProvisionedThroughput",
+                          "aggregationType": 3,
+                          "namespace": "microsoft.documentdb/databaseaccounts",
+                          "metricVisualization": {
+                            "displayName": "Provisioned Throughput",
+                            "resourceDisplayName": "%%Imdb_Name%%"
+                          }
+                        }
+                      ],
+                      "title": "Cosmos DB Provisioned Throughput",
+                      "titleKind": 2,
+                      "visualization": {
+                        "chartType": 2,
+                        "legendVisualization": {
+                          "isVisible": true,
+                          "position": 2,
+                          "hideSubtitle": false
+                        },
+                        "axisVisualization": {
+                          "x": {
+                            "isVisible": true,
+                            "axisType": 2
+                          },
+                          "y": {
+                            "isVisible": true,
+                            "axisType": 1
+                          }
+                        },
+                        "disablePinning": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "5": {
+            "position": {
+              "x": 0,
+              "y": 5,
+              "colSpan": 15,
+              "rowSpan": 1
+            },
+            "metadata": {
+              "inputs": [],
+              "type": "Extension/HubsExtension/PartType/MarkdownPart",
+              "settings": {
+                "content": {
+                  "settings": {
+                    "content": "<h1 style=\"text-align: center;\">NGSA App Metrics</h1>\n",
+                    "title": "",
+                    "subtitle": "",
+                    "markdownSource": 1
+                  }
+                }
+              }
+            }
+          },
+          "6": {
+            "position": {
+              "x": 0,
+              "y": 6,
+              "colSpan": 5,
+              "rowSpan": 3
+            },
+            "metadata": {
+              "inputs": [
+                {
+                  "name": "ComponentId",
+                  "value": {
+                    "SubscriptionId": "%%SUBSCRIPTION_GUID%%",
+                    "ResourceGroup": "%%Ngsa_Log_Analytics_RG%%",
+                    "Name": "%%Ngsa_Log_Analytics_Name%%",
+                    "ResourceId": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourcegroups/%%Ngsa_Log_Analytics_RG%%/providers/microsoft.operationalinsights/workspaces/%%Ngsa_Log_Analytics_Name%%"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Dimensions",
+                  "isOptional": true
+                },
+                {
+                  "name": "Query",
+                  "value": "ngsa_CL\r\n| where PodType_s != 'webv'\r\n| summarize RequestSuccessRate = 100.0*countif(StatusCode_d < 400)/count() by PodType_s\r\n| project-rename PodType=PodType_s\n",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartTitle",
+                  "value": "Analytics",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartSubTitle",
+                  "value": "%%Ngsa_Log_Analytics_Name%%",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartId",
+                  "value": "865e946a-cd0b-4eb1-988a-04e9f183b3e2",
+                  "isOptional": true
+                },
+                {
+                  "name": "Version",
+                  "value": "1.0",
+                  "isOptional": true
+                },
+                {
+                  "name": "resourceTypeMode",
+                  "value": "workspace",
+                  "isOptional": true
+                },
+                {
+                  "name": "TimeRange",
+                  "value": "PT30M",
+                  "isOptional": true
+                },
+                {
+                  "name": "DashboardId",
+                  "isOptional": true
+                },
+                {
+                  "name": "ControlType",
+                  "value": "AnalyticsGrid",
+                  "isOptional": true
+                },
+                {
+                  "name": "SpecificChart",
+                  "isOptional": true
+                }
+              ],
+              "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+              "settings": {
+                "content": {
+                  "PartTitle": "% Successful Server Requests",
+                  "PartSubTitle": "%%Ngsa_Log_Analytics_Name%%",
+                  "Query": "ngsa_CL\n| where PodType_s != 'webv'\n| summarize RequestSuccessRate = 100.0*countif(StatusCode_d < 400)/count() by PodType_s\n| project-rename PodType=PodType_s\n",
+                  "GridColumnsWidth": {
+                    "PodType": "162px",
+                    "RequestSuccessRate": "162px"
+                  }
+                }
+              }
+            }
+          },
+          "7": {
+            "position": {
+              "x": 5,
+              "y": 6,
+              "colSpan": 5,
+              "rowSpan": 3
+            },
+            "metadata": {
+              "inputs": [
+                {
+                  "name": "ComponentId",
+                  "value": {
+                    "SubscriptionId": "%%SUBSCRIPTION_GUID%%",
+                    "ResourceGroup": "%%Ngsa_Log_Analytics_RG%%",
+                    "Name": "%%Ngsa_Log_Analytics_Name%%",
+                    "ResourceId": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourcegroups/%%Ngsa_Log_Analytics_RG%%/providers/microsoft.operationalinsights/workspaces/%%Ngsa_Log_Analytics_Name%%"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Dimensions",
+                  "value": {
+                    "xAxis": {
+                      "name": "Date",
+                      "type": "datetime"
+                    },
+                    "yAxis": [
+                      {
+                        "name": "RequestSuccessRate",
+                        "type": "real"
+                      }
+                    ],
+                    "splitBy": [],
+                    "aggregation": "Sum"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Query",
+                  "value": "ngsa_CL\r\n| where PodType_s == 'ngsa-cosmos'\r\n| summarize RequestSuccessRate = 100.0*countif(StatusCode_d < 400)/count() by bin(Date_t,10m)\r\n| project-rename Date=Date_t\n",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartTitle",
+                  "value": "Analytics",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartSubTitle",
+                  "value": "%%Ngsa_Log_Analytics_Name%%",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartId",
+                  "value": "09662d7c-1df7-4730-8708-48de7f32e7d2",
+                  "isOptional": true
+                },
+                {
+                  "name": "Version",
+                  "value": "1.0",
+                  "isOptional": true
+                },
+                {
+                  "name": "resourceTypeMode",
+                  "value": "workspace",
+                  "isOptional": true
+                },
+                {
+                  "name": "TimeRange",
+                  "value": "PT4H",
+                  "isOptional": true
+                },
+                {
+                  "name": "DashboardId",
+                  "isOptional": true
+                },
+                {
+                  "name": "ControlType",
+                  "value": "FrameControlChart",
+                  "isOptional": true
+                },
+                {
+                  "name": "SpecificChart",
+                  "value": "Line",
+                  "isOptional": true
+                }
+              ],
+              "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+              "settings": {
+                "content": {
+                  "PartTitle": "% Successful Server Requests",
+                  "PartSubTitle": "ngsa-cosmos"
+                }
+              }
+            }
+          },
+          "8": {
+            "position": {
+              "x": 10,
+              "y": 6,
+              "colSpan": 5,
+              "rowSpan": 3
+            },
+            "metadata": {
+              "inputs": [
+                {
+                  "name": "ComponentId",
+                  "value": {
+                    "SubscriptionId": "%%SUBSCRIPTION_GUID%%",
+                    "ResourceGroup": "%%Ngsa_Log_Analytics_RG%%",
+                    "Name": "%%Ngsa_Log_Analytics_Name%%",
+                    "ResourceId": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourcegroups/%%Ngsa_Log_Analytics_RG%%/providers/microsoft.operationalinsights/workspaces/%%Ngsa_Log_Analytics_Name%%"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Dimensions",
+                  "value": {
+                    "xAxis": {
+                      "name": "Date",
+                      "type": "datetime"
+                    },
+                    "yAxis": [
+                      {
+                        "name": "RequestSuccessRate",
+                        "type": "real"
+                      }
+                    ],
+                    "splitBy": [],
+                    "aggregation": "Sum"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Query",
+                  "value": "ngsa_CL\r\n| where PodType_s == 'ngsa-memory'\r\n| summarize RequestSuccessRate = 100.0*countif(StatusCode_d < 400)/count() by bin(Date_t,10m)\r\n| project-rename Date=Date_t\n",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartTitle",
+                  "value": "Analytics",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartSubTitle",
+                  "value": "%%Ngsa_Log_Analytics_Name%%",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartId",
+                  "value": "122d01fb-8d4a-405c-8611-1a6e7a747b17",
+                  "isOptional": true
+                },
+                {
+                  "name": "Version",
+                  "value": "1.0",
+                  "isOptional": true
+                },
+                {
+                  "name": "resourceTypeMode",
+                  "value": "workspace",
+                  "isOptional": true
+                },
+                {
+                  "name": "TimeRange",
+                  "value": "PT4H",
+                  "isOptional": true
+                },
+                {
+                  "name": "DashboardId",
+                  "isOptional": true
+                },
+                {
+                  "name": "ControlType",
+                  "value": "FrameControlChart",
+                  "isOptional": true
+                },
+                {
+                  "name": "SpecificChart",
+                  "value": "Line",
+                  "isOptional": true
+                }
+              ],
+              "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+              "settings": {
+                "content": {
+                  "PartTitle": "% Successful Server Requests",
+                  "PartSubTitle": "ngsa-memory"
+                }
+              }
+            }
+          },
+          "9": {
+            "position": {
+              "x": 0,
+              "y": 9,
+              "colSpan": 5,
+              "rowSpan": 3
+            },
+            "metadata": {
+              "inputs": [
+                {
+                  "name": "ComponentId",
+                  "value": {
+                    "SubscriptionId": "%%SUBSCRIPTION_GUID%%",
+                    "ResourceGroup": "%%Ngsa_Log_Analytics_RG%%",
+                    "Name": "%%Ngsa_Log_Analytics_Name%%",
+                    "ResourceId": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourcegroups/%%Ngsa_Log_Analytics_RG%%/providers/microsoft.operationalinsights/workspaces/%%Ngsa_Log_Analytics_Name%%"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Dimensions",
+                  "isOptional": true
+                },
+                {
+                  "name": "Query",
+                  "value": "ngsa_CL\r\n| where PodType_s != 'webv'\r\n//| where StatusCode_d > 200\r\n| summarize count() by PodType_s, tostring(toint(StatusCode_d))\r\n| project-rename PodType=PodType_s,RequestCount=count_,StatusCode=StatusCode_d\n",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartTitle",
+                  "value": "Analytics",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartSubTitle",
+                  "value": "%%Ngsa_Log_Analytics_Name%%",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartId",
+                  "value": "9e5fc854-6905-4fdb-80de-735092793bd4",
+                  "isOptional": true
+                },
+                {
+                  "name": "Version",
+                  "value": "1.0",
+                  "isOptional": true
+                },
+                {
+                  "name": "resourceTypeMode",
+                  "value": "workspace",
+                  "isOptional": true
+                },
+                {
+                  "name": "TimeRange",
+                  "value": "PT4H",
+                  "isOptional": true
+                },
+                {
+                  "name": "DashboardId",
+                  "isOptional": true
+                },
+                {
+                  "name": "ControlType",
+                  "value": "AnalyticsGrid",
+                  "isOptional": true
+                },
+                {
+                  "name": "SpecificChart",
+                  "isOptional": true
+                }
+              ],
+              "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+              "settings": {
+                "content": {
+                  "PartTitle": "Failed Server Requests",
+                  "PartSubTitle": "%%Ngsa_Log_Analytics_Name%%",
+                  "Query": "ngsa_CL\n| where PodType_s != 'webv'\n| where StatusCode_d > 200\n| summarize count() by PodType_s, tostring(toint(StatusCode_d))\n| project-rename PodType=PodType_s,RequestCount=count_,StatusCode=StatusCode_d\n",
+                  "GridColumnsWidth": {
+                    "StatusCode": "110px"
+                  }
+                }
+              }
+            }
+          },
+          "10": {
+            "position": {
+              "x": 5,
+              "y": 9,
+              "colSpan": 5,
+              "rowSpan": 3
+            },
+            "metadata": {
+              "inputs": [
+                {
+                  "name": "ComponentId",
+                  "value": {
+                    "SubscriptionId": "%%SUBSCRIPTION_GUID%%",
+                    "ResourceGroup": "%%Ngsa_Log_Analytics_RG%%",
+                    "Name": "%%Ngsa_Log_Analytics_Name%%",
+                    "ResourceId": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourcegroups/%%Ngsa_Log_Analytics_RG%%/providers/microsoft.operationalinsights/workspaces/%%Ngsa_Log_Analytics_Name%%"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Dimensions",
+                  "value": {
+                    "xAxis": {
+                      "name": "Date",
+                      "type": "datetime"
+                    },
+                    "yAxis": [
+                      {
+                        "name": "FailedRequests",
+                        "type": "long"
+                      }
+                    ],
+                    "splitBy": [
+                      {
+                        "name": "StatusCode",
+                        "type": "string"
+                      }
+                    ],
+                    "aggregation": "Sum"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Query",
+                  "value": "ngsa_CL\r\n| where PodType_s == 'ngsa-cosmos'\r\n//| where StatusCode_d > 200\r\n| summarize count() by bin(Date_t,1m), tostring(toint(StatusCode_d))\r\n| project-rename Date=Date_t,FailedRequests=count_,StatusCode=StatusCode_d\n",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartTitle",
+                  "value": "Analytics",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartSubTitle",
+                  "value": "%%Ngsa_Log_Analytics_Name%%",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartId",
+                  "value": "15040029-1578-42dc-87d6-8bf5ed5156f7",
+                  "isOptional": true
+                },
+                {
+                  "name": "Version",
+                  "value": "1.0",
+                  "isOptional": true
+                },
+                {
+                  "name": "resourceTypeMode",
+                  "value": "workspace",
+                  "isOptional": true
+                },
+                {
+                  "name": "TimeRange",
+                  "value": "PT4H",
+                  "isOptional": true
+                },
+                {
+                  "name": "DashboardId",
+                  "isOptional": true
+                },
+                {
+                  "name": "ControlType",
+                  "value": "FrameControlChart",
+                  "isOptional": true
+                },
+                {
+                  "name": "SpecificChart",
+                  "value": "Line",
+                  "isOptional": true
+                }
+              ],
+              "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+              "settings": {
+                "content": {
+                  "PartTitle": "Failed Server Requests",
+                  "PartSubTitle": "ngsa-cosmos",
+                  "Query": "ngsa_CL\n| where PodType_s == 'ngsa-cosmos'\n| where StatusCode_d > 200\n| summarize count() by bin(Date_t,1m), tostring(toint(StatusCode_d))\n| project-rename Date=Date_t,FailedRequests=count_,StatusCode=StatusCode_d\n"
+                }
+              }
+            }
+          },
+          "11": {
+            "position": {
+              "x": 10,
+              "y": 9,
+              "colSpan": 5,
+              "rowSpan": 3
+            },
+            "metadata": {
+              "inputs": [
+                {
+                  "name": "ComponentId",
+                  "value": {
+                    "SubscriptionId": "%%SUBSCRIPTION_GUID%%",
+                    "ResourceGroup": "%%Ngsa_Log_Analytics_RG%%",
+                    "Name": "%%Ngsa_Log_Analytics_Name%%",
+                    "ResourceId": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourcegroups/%%Ngsa_Log_Analytics_RG%%/providers/microsoft.operationalinsights/workspaces/%%Ngsa_Log_Analytics_Name%%"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Dimensions",
+                  "value": {
+                    "xAxis": {
+                      "name": "Date",
+                      "type": "datetime"
+                    },
+                    "yAxis": [
+                      {
+                        "name": "FailedRequests",
+                        "type": "long"
+                      }
+                    ],
+                    "splitBy": [
+                      {
+                        "name": "StatusCode",
+                        "type": "string"
+                      }
+                    ],
+                    "aggregation": "Sum"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Query",
+                  "value": "ngsa_CL\r\n| where PodType_s == 'ngsa-memory'\r\n//| where StatusCode_d > 200\r\n| summarize count() by bin(Date_t,1m), tostring(toint(StatusCode_d))\r\n| project-rename Date=Date_t,FailedRequests=count_,StatusCode=StatusCode_d\n",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartTitle",
+                  "value": "Analytics",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartSubTitle",
+                  "value": "%%Ngsa_Log_Analytics_Name%%",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartId",
+                  "value": "5e9d042c-3062-4cf1-8992-ccc7b291a0d6",
+                  "isOptional": true
+                },
+                {
+                  "name": "Version",
+                  "value": "1.0",
+                  "isOptional": true
+                },
+                {
+                  "name": "resourceTypeMode",
+                  "value": "workspace",
+                  "isOptional": true
+                },
+                {
+                  "name": "TimeRange",
+                  "value": "PT4H",
+                  "isOptional": true
+                },
+                {
+                  "name": "DashboardId",
+                  "isOptional": true
+                },
+                {
+                  "name": "ControlType",
+                  "value": "FrameControlChart",
+                  "isOptional": true
+                },
+                {
+                  "name": "SpecificChart",
+                  "value": "Line",
+                  "isOptional": true
+                }
+              ],
+              "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+              "settings": {
+                "content": {
+                  "PartTitle": "Failed Server Requests",
+                  "PartSubTitle": "ngsa-memory",
+                  "Query": "ngsa_CL\n| where PodType_s == 'ngsa-memory'\n| where StatusCode_d > 200\n| summarize count() by bin(Date_t,1m), tostring(toint(StatusCode_d))\n| project-rename Date=Date_t,FailedRequests=count_,StatusCode=StatusCode_d\n"
+                }
+              }
+            }
+          },
+          "12": {
+            "position": {
+              "x": 0,
+              "y": 12,
+              "colSpan": 5,
+              "rowSpan": 3
+            },
+            "metadata": {
+              "inputs": [
+                {
+                  "name": "ComponentId",
+                  "value": {
+                    "SubscriptionId": "%%SUBSCRIPTION_GUID%%",
+                    "ResourceGroup": "%%Ngsa_Log_Analytics_RG%%",
+                    "Name": "%%Ngsa_Log_Analytics_Name%%",
+                    "ResourceId": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourcegroups/%%Ngsa_Log_Analytics_RG%%/providers/microsoft.operationalinsights/workspaces/%%Ngsa_Log_Analytics_Name%%"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Dimensions",
+                  "isOptional": true
+                },
+                {
+                  "name": "Query",
+                  "value": "ngsa_CL\r\n| where PodType_s != 'webv'\r\n| summarize avg(Duration_d) by PodType_s\r\n| project-rename PodType=PodType_s,ResponseTime=avg_Duration_d\n",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartTitle",
+                  "value": "Analytics",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartSubTitle",
+                  "value": "%%Ngsa_Log_Analytics_Name%%",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartId",
+                  "value": "644705c0-605b-42b6-8676-9f3c51288fe1",
+                  "isOptional": true
+                },
+                {
+                  "name": "Version",
+                  "value": "1.0",
+                  "isOptional": true
+                },
+                {
+                  "name": "resourceTypeMode",
+                  "value": "workspace",
+                  "isOptional": true
+                },
+                {
+                  "name": "TimeRange",
+                  "value": "PT4H",
+                  "isOptional": true
+                },
+                {
+                  "name": "DashboardId",
+                  "isOptional": true
+                },
+                {
+                  "name": "ControlType",
+                  "value": "AnalyticsGrid",
+                  "isOptional": true
+                },
+                {
+                  "name": "SpecificChart",
+                  "isOptional": true
+                }
+              ],
+              "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+              "settings": {
+                "content": {
+                  "PartTitle": "Average Server Response Time (ms)",
+                  "PartSubTitle": "%%Ngsa_Log_Analytics_Name%%"
+                }
+              }
+            }
+          },
+          "13": {
+            "position": {
+              "x": 5,
+              "y": 12,
+              "colSpan": 5,
+              "rowSpan": 3
+            },
+            "metadata": {
+              "inputs": [
+                {
+                  "name": "ComponentId",
+                  "value": {
+                    "SubscriptionId": "%%SUBSCRIPTION_GUID%%",
+                    "ResourceGroup": "%%Ngsa_Log_Analytics_RG%%",
+                    "Name": "%%Ngsa_Log_Analytics_Name%%",
+                    "ResourceId": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourcegroups/%%Ngsa_Log_Analytics_RG%%/providers/microsoft.operationalinsights/workspaces/%%Ngsa_Log_Analytics_Name%%"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Dimensions",
+                  "value": {
+                    "xAxis": {
+                      "name": "Date",
+                      "type": "datetime"
+                    },
+                    "yAxis": [
+                      {
+                        "name": "ResponseTime",
+                        "type": "real"
+                      }
+                    ],
+                    "splitBy": [],
+                    "aggregation": "Sum"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Query",
+                  "value": "ngsa_CL\r\n| where PodType_s == 'ngsa-cosmos'\r\n| summarize avg(Duration_d) by bin(Date_t,1m)\r\n| project-rename Date=Date_t,ResponseTime=avg_Duration_d\n",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartTitle",
+                  "value": "Analytics",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartSubTitle",
+                  "value": "%%Ngsa_Log_Analytics_Name%%",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartId",
+                  "value": "20385c74-0f10-4902-a5c5-79e581383dbb",
+                  "isOptional": true
+                },
+                {
+                  "name": "Version",
+                  "value": "1.0",
+                  "isOptional": true
+                },
+                {
+                  "name": "resourceTypeMode",
+                  "value": "workspace",
+                  "isOptional": true
+                },
+                {
+                  "name": "TimeRange",
+                  "value": "PT4H",
+                  "isOptional": true
+                },
+                {
+                  "name": "DashboardId",
+                  "isOptional": true
+                },
+                {
+                  "name": "ControlType",
+                  "value": "FrameControlChart",
+                  "isOptional": true
+                },
+                {
+                  "name": "SpecificChart",
+                  "value": "Line",
+                  "isOptional": true
+                }
+              ],
+              "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+              "settings": {
+                "content": {
+                  "PartTitle": "Server Response Time (ms)",
+                  "PartSubTitle": "ngsa-cosmos"
+                }
+              }
+            }
+          },
+          "14": {
+            "position": {
+              "x": 10,
+              "y": 12,
+              "colSpan": 5,
+              "rowSpan": 3
+            },
+            "metadata": {
+              "inputs": [
+                {
+                  "name": "ComponentId",
+                  "value": {
+                    "SubscriptionId": "%%SUBSCRIPTION_GUID%%",
+                    "ResourceGroup": "%%Ngsa_Log_Analytics_RG%%",
+                    "Name": "%%Ngsa_Log_Analytics_Name%%",
+                    "ResourceId": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourcegroups/%%Ngsa_Log_Analytics_RG%%/providers/microsoft.operationalinsights/workspaces/%%Ngsa_Log_Analytics_Name%%"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Dimensions",
+                  "value": {
+                    "xAxis": {
+                      "name": "Date",
+                      "type": "datetime"
+                    },
+                    "yAxis": [
+                      {
+                        "name": "ResponseTime",
+                        "type": "real"
+                      }
+                    ],
+                    "splitBy": [],
+                    "aggregation": "Sum"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Query",
+                  "value": "ngsa_CL\r\n| where PodType_s == 'ngsa-memory'\r\n| summarize avg(Duration_d) by bin(Date_t,1m)\r\n| project-rename Date=Date_t,ResponseTime=avg_Duration_d\n",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartTitle",
+                  "value": "Analytics",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartSubTitle",
+                  "value": "%%Ngsa_Log_Analytics_Name%%",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartId",
+                  "value": "156eca44-13b0-4534-9dd1-3e181efb0fd1",
+                  "isOptional": true
+                },
+                {
+                  "name": "Version",
+                  "value": "1.0",
+                  "isOptional": true
+                },
+                {
+                  "name": "resourceTypeMode",
+                  "value": "workspace",
+                  "isOptional": true
+                },
+                {
+                  "name": "TimeRange",
+                  "value": "PT4H",
+                  "isOptional": true
+                },
+                {
+                  "name": "DashboardId",
+                  "isOptional": true
+                },
+                {
+                  "name": "ControlType",
+                  "value": "FrameControlChart",
+                  "isOptional": true
+                },
+                {
+                  "name": "SpecificChart",
+                  "value": "Line",
+                  "isOptional": true
+                }
+              ],
+              "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+              "settings": {
+                "content": {
+                  "PartTitle": "Server Response Time (ms)",
+                  "PartSubTitle": "ngsa-memory"
+                }
+              }
+            }
+          },
+          "15": {
+            "position": {
+              "x": 0,
+              "y": 15,
+              "colSpan": 5,
+              "rowSpan": 3
+            },
+            "metadata": {
+              "inputs": [
+                {
+                  "name": "ComponentId",
+                  "value": {
+                    "SubscriptionId": "%%SUBSCRIPTION_GUID%%",
+                    "ResourceGroup": "%%Ngsa_Log_Analytics_RG%%",
+                    "Name": "%%Ngsa_Log_Analytics_Name%%",
+                    "ResourceId": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourcegroups/%%Ngsa_Log_Analytics_RG%%/providers/microsoft.operationalinsights/workspaces/%%Ngsa_Log_Analytics_Name%%"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Dimensions",
+                  "isOptional": true
+                },
+                {
+                  "name": "Query",
+                  "value": "ngsa_CL\r\n| where PodType_s != 'webv'\r\n| summarize count() by bin(Date_t,1m), PodType_s, Zone_s\r\n| summarize avg(count_) by PodType_s, Zone_s\r\n| project-rename AverageServerRequests=avg_count_, PodType=PodType_s, Zone=Zone_s\n",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartTitle",
+                  "value": "Analytics",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartSubTitle",
+                  "value": "%%Ngsa_Log_Analytics_Name%%",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartId",
+                  "value": "7fcef8b7-df30-4df7-9165-59e4b14c7db1",
+                  "isOptional": true
+                },
+                {
+                  "name": "Version",
+                  "value": "1.0",
+                  "isOptional": true
+                },
+                {
+                  "name": "resourceTypeMode",
+                  "value": "workspace",
+                  "isOptional": true
+                },
+                {
+                  "name": "TimeRange",
+                  "value": "PT4H",
+                  "isOptional": true
+                },
+                {
+                  "name": "DashboardId",
+                  "isOptional": true
+                },
+                {
+                  "name": "ControlType",
+                  "value": "AnalyticsGrid",
+                  "isOptional": true
+                },
+                {
+                  "name": "SpecificChart",
+                  "isOptional": true
+                }
+              ],
+              "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+              "settings": {
+                "content": {
+                  "PartTitle": "Avg Server Requests by Zone (per min.)",
+                  "PartSubTitle": "%%Ngsa_Log_Analytics_Name%%",
+                  "Query": "ngsa_CL\n| where PodType_s != 'webv'\n| summarize count() by bin(Date_t,1m), PodType_s, Zone_s\n| summarize avg(count_) by PodType_s, Zone_s \n| project-rename AvgRequests=avg_count_, PodType=PodType_s, Zone=Zone_s\n| order by PodType asc\n",
+                  "GridColumnsWidth": {
+                    "PodType": "102px",
+                    "Zone": "130px"
+                  }
+                }
+              }
+            }
+          },
+          "16": {
+            "position": {
+              "x": 5,
+              "y": 15,
+              "colSpan": 5,
+              "rowSpan": 3
+            },
+            "metadata": {
+              "inputs": [
+                {
+                  "name": "ComponentId",
+                  "value": {
+                    "SubscriptionId": "%%SUBSCRIPTION_GUID%%",
+                    "ResourceGroup": "%%Ngsa_Log_Analytics_RG%%",
+                    "Name": "%%Ngsa_Log_Analytics_Name%%",
+                    "ResourceId": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourcegroups/%%Ngsa_Log_Analytics_RG%%/providers/microsoft.operationalinsights/workspaces/%%Ngsa_Log_Analytics_Name%%"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Dimensions",
+                  "value": {
+                    "xAxis": {
+                      "name": "Date",
+                      "type": "datetime"
+                    },
+                    "yAxis": [
+                      {
+                        "name": "ServerRequests",
+                        "type": "long"
+                      }
+                    ],
+                    "splitBy": [
+                      {
+                        "name": "Zone",
+                        "type": "string"
+                      }
+                    ],
+                    "aggregation": "Sum"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Query",
+                  "value": "ngsa_CL\r\n| where PodType_s == 'ngsa-cosmos'\r\n| summarize count() by bin(Date_t,1m), Zone_s\r\n| project-rename Date=Date_t,ServerRequests=count_, Zone=Zone_s\n",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartTitle",
+                  "value": "Analytics",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartSubTitle",
+                  "value": "%%Ngsa_Log_Analytics_Name%%",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartId",
+                  "value": "141ba94d-8514-4ec9-b84b-ad08e8140bab",
+                  "isOptional": true
+                },
+                {
+                  "name": "Version",
+                  "value": "1.0",
+                  "isOptional": true
+                },
+                {
+                  "name": "resourceTypeMode",
+                  "value": "workspace",
+                  "isOptional": true
+                },
+                {
+                  "name": "TimeRange",
+                  "value": "PT4H",
+                  "isOptional": true
+                },
+                {
+                  "name": "DashboardId",
+                  "isOptional": true
+                },
+                {
+                  "name": "ControlType",
+                  "value": "FrameControlChart",
+                  "isOptional": true
+                },
+                {
+                  "name": "SpecificChart",
+                  "value": "Line",
+                  "isOptional": true
+                }
+              ],
+              "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+              "settings": {
+                "content": {
+                  "PartTitle": "Server Requests by Zone",
+                  "PartSubTitle": "ngsa-cosmos"
+                }
+              }
+            }
+          },
+          "17": {
+            "position": {
+              "x": 10,
+              "y": 15,
+              "colSpan": 5,
+              "rowSpan": 3
+            },
+            "metadata": {
+              "inputs": [
+                {
+                  "name": "ComponentId",
+                  "value": {
+                    "SubscriptionId": "%%SUBSCRIPTION_GUID%%",
+                    "ResourceGroup": "%%Ngsa_Log_Analytics_RG%%",
+                    "Name": "%%Ngsa_Log_Analytics_Name%%",
+                    "ResourceId": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourcegroups/%%Ngsa_Log_Analytics_RG%%/providers/microsoft.operationalinsights/workspaces/%%Ngsa_Log_Analytics_Name%%"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Dimensions",
+                  "value": {
+                    "xAxis": {
+                      "name": "Date",
+                      "type": "datetime"
+                    },
+                    "yAxis": [
+                      {
+                        "name": "ServerRequests",
+                        "type": "long"
+                      }
+                    ],
+                    "splitBy": [
+                      {
+                        "name": "Zone",
+                        "type": "string"
+                      }
+                    ],
+                    "aggregation": "Sum"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Query",
+                  "value": "ngsa_CL\r\n| where PodType_s == 'ngsa-memory'\r\n| summarize count() by bin(Date_t,1m), Zone_s\r\n| project-rename Date=Date_t,ServerRequests=count_, Zone=Zone_s\n",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartTitle",
+                  "value": "Analytics",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartSubTitle",
+                  "value": "%%Ngsa_Log_Analytics_Name%%",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartId",
+                  "value": "2a49c1ad-26ff-4f76-9652-30d6991831bd",
+                  "isOptional": true
+                },
+                {
+                  "name": "Version",
+                  "value": "1.0",
+                  "isOptional": true
+                },
+                {
+                  "name": "resourceTypeMode",
+                  "value": "workspace",
+                  "isOptional": true
+                },
+                {
+                  "name": "TimeRange",
+                  "value": "PT4H",
+                  "isOptional": true
+                },
+                {
+                  "name": "DashboardId",
+                  "isOptional": true
+                },
+                {
+                  "name": "ControlType",
+                  "value": "FrameControlChart",
+                  "isOptional": true
+                },
+                {
+                  "name": "SpecificChart",
+                  "value": "Line",
+                  "isOptional": true
+                }
+              ],
+              "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+              "settings": {
+                "content": {
+                  "PartTitle": "Server Requests by Zone",
+                  "PartSubTitle": "ngsa-memory"
+                }
+              }
+            }
+          },
+          "18": {
+            "position": {
+              "x": 5,
+              "y": 18,
+              "colSpan": 5,
+              "rowSpan": 3
+            },
+            "metadata": {
+              "inputs": [
+                {
+                  "name": "ComponentId",
+                  "value": {
+                    "SubscriptionId": "%%SUBSCRIPTION_GUID%%",
+                    "ResourceGroup": "%%Ngsa_Log_Analytics_RG%%",
+                    "Name": "%%Ngsa_Log_Analytics_Name%%",
+                    "ResourceId": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourcegroups/%%Ngsa_Log_Analytics_RG%%/providers/microsoft.operationalinsights/workspaces/%%Ngsa_Log_Analytics_Name%%"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Dimensions",
+                  "isOptional": true
+                },
+                {
+                  "name": "Query",
+                  "value": "ngsa_CL\r\n| where PodType_s == 'ngsa-cosmos'\r\n//| where StatusCode_d > 200\r\n| summarize count() by tostring(toint(StatusCode_d)), Path_s\r\n| project-rename StatusCode=StatusCode_d,RequestCount=count_,Path=Path_s\n",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartTitle",
+                  "value": "Analytics",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartSubTitle",
+                  "value": "%%Ngsa_Log_Analytics_Name%%",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartId",
+                  "value": "5d0d88e9-e687-4500-913a-b4b28436e37e",
+                  "isOptional": true
+                },
+                {
+                  "name": "Version",
+                  "value": "1.0",
+                  "isOptional": true
+                },
+                {
+                  "name": "resourceTypeMode",
+                  "value": "workspace",
+                  "isOptional": true
+                },
+                {
+                  "name": "TimeRange",
+                  "value": "P1D",
+                  "isOptional": true
+                },
+                {
+                  "name": "DashboardId",
+                  "isOptional": true
+                },
+                {
+                  "name": "ControlType",
+                  "value": "AnalyticsGrid",
+                  "isOptional": true
+                },
+                {
+                  "name": "SpecificChart",
+                  "isOptional": true
+                }
+              ],
+              "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+              "settings": {
+                "content": {
+                  "PartTitle": "Failed Requests",
+                  "PartSubTitle": "ngsa-cosmos",
+                  "Query": "ngsa_CL\n| where PodType_s == 'ngsa-cosmos'\n| where StatusCode_d > 200\n| summarize count() by tostring(toint(StatusCode_d)), Path_s\n| project-rename StatusCode=StatusCode_d,RequestCount=count_,Path=Path_s\n",
+                  "GridColumnsWidth": {
+                    "StatusCode": "83px",
+                    "Path": "227px"
+                  }
+                }
+              }
+            }
+          },
+          "19": {
+            "position": {
+              "x": 10,
+              "y": 18,
+              "colSpan": 5,
+              "rowSpan": 3
+            },
+            "metadata": {
+              "inputs": [
+                {
+                  "name": "ComponentId",
+                  "value": {
+                    "SubscriptionId": "%%SUBSCRIPTION_GUID%%",
+                    "ResourceGroup": "%%Ngsa_Log_Analytics_RG%%",
+                    "Name": "%%Ngsa_Log_Analytics_Name%%",
+                    "ResourceId": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourcegroups/%%Ngsa_Log_Analytics_RG%%/providers/microsoft.operationalinsights/workspaces/%%Ngsa_Log_Analytics_Name%%"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Dimensions",
+                  "isOptional": true
+                },
+                {
+                  "name": "Query",
+                  "value": "ngsa_CL\r\n| where PodType_s == 'ngsa-memory'\r\n//| where StatusCode_d > 200\r\n| summarize count() by tostring(toint(StatusCode_d)), Path_s\r\n| project-rename StatusCode=StatusCode_d,RequestCount=count_,Path=Path_s\n",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartTitle",
+                  "value": "Analytics",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartSubTitle",
+                  "value": "%%Ngsa_Log_Analytics_Name%%",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartId",
+                  "value": "182bfb27-b491-444b-b47d-7bac74d34fb2",
+                  "isOptional": true
+                },
+                {
+                  "name": "Version",
+                  "value": "1.0",
+                  "isOptional": true
+                },
+                {
+                  "name": "resourceTypeMode",
+                  "value": "workspace",
+                  "isOptional": true
+                },
+                {
+                  "name": "TimeRange",
+                  "value": "P1D",
+                  "isOptional": true
+                },
+                {
+                  "name": "DashboardId",
+                  "isOptional": true
+                },
+                {
+                  "name": "ControlType",
+                  "value": "AnalyticsGrid",
+                  "isOptional": true
+                },
+                {
+                  "name": "SpecificChart",
+                  "isOptional": true
+                }
+              ],
+              "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+              "settings": {
+                "content": {
+                  "PartTitle": "Failed Requests",
+                  "PartSubTitle": "ngsa-memory",
+                  "Query": "ngsa_CL\n| where PodType_s == 'ngsa-memory'\n| where StatusCode_d > 200\n| summarize count() by tostring(toint(StatusCode_d)), Path_s\n| project-rename StatusCode=StatusCode_d,RequestCount=count_,Path=Path_s\n"
+                }
+              }
+            }
+          },
+          "20": {
+            "position": {
+              "x": 0,
+              "y": 21,
+              "colSpan": 15,
+              "rowSpan": 1
+            },
+            "metadata": {
+              "inputs": [],
+              "type": "Extension/HubsExtension/PartType/MarkdownPart",
+              "settings": {
+                "content": {
+                  "settings": {
+                    "content": "<h1 style=\"text-align: center;\">WebV</h1>\n\n",
+                    "title": "",
+                    "subtitle": "",
+                    "markdownSource": 1
+                  }
+                }
+              }
+            }
+          },
+          "21": {
+            "position": {
+              "x": 0,
+              "y": 22,
+              "colSpan": 8,
+              "rowSpan": 7
+            },
+            "metadata": {
+              "inputs": [
+                {
+                  "name": "ComponentId",
+                  "value": {
+                    "SubscriptionId": "%%SUBSCRIPTION_GUID%%",
+                    "ResourceGroup": "%%Ngsa_Log_Analytics_RG%%",
+                    "Name": "%%Ngsa_Log_Analytics_Name%%",
+                    "ResourceId": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourcegroups/%%Ngsa_Log_Analytics_RG%%/providers/microsoft.operationalinsights/workspaces/%%Ngsa_Log_Analytics_Name%%"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Dimensions",
+                  "isOptional": true
+                },
+                {
+                  "name": "Query",
+                  "value": "ngsa_CL\r\n| where PodType_s == 'webv'\r\n| summarize avg(Duration_d) by Server_s, Zone_s\r\n| project-rename ResponseTime=avg_Duration_d, Server=Server_s, Zone=Zone_s\r\n| order by Server\n",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartTitle",
+                  "value": "Analytics",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartSubTitle",
+                  "value": "%%Ngsa_Log_Analytics_Name%%",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartId",
+                  "value": "0e29d198-5d36-46e0-b91b-8f961483fccc",
+                  "isOptional": true
+                },
+                {
+                  "name": "Version",
+                  "value": "1.0",
+                  "isOptional": true
+                },
+                {
+                  "name": "resourceTypeMode",
+                  "value": "workspace",
+                  "isOptional": true
+                },
+                {
+                  "name": "TimeRange",
+                  "value": "PT4H",
+                  "isOptional": true
+                },
+                {
+                  "name": "DashboardId",
+                  "isOptional": true
+                },
+                {
+                  "name": "ControlType",
+                  "value": "AnalyticsGrid",
+                  "isOptional": true
+                },
+                {
+                  "name": "SpecificChart",
+                  "isOptional": true
+                }
+              ],
+              "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+              "settings": {
+                "content": {
+                  "PartTitle": "WebV Average Response Times",
+                  "PartSubTitle": "%%Ngsa_Log_Analytics_Name%%",
+                  "Query": "ngsa_CL\n| where PodType_s == 'webv'\n| summarize avg(Duration_d) by Server_s, Zone_s\n| project-rename ResponseTime=avg_Duration_d, Server=Server_s, Zone=Zone_s\n| order by Server, Zone\n",
+                  "GridColumnsWidth": {
+                    "Server": "301px",
+                    "ResponseTime": "142px"
+                  }
+                }
+              }
+            }
+          },
+          "22": {
+            "position": {
+              "x": 8,
+              "y": 22,
+              "colSpan": 7,
+              "rowSpan": 7
+            },
+            "metadata": {
+              "inputs": [
+                {
+                  "name": "ComponentId",
+                  "value": {
+                    "SubscriptionId": "%%SUBSCRIPTION_GUID%%",
+                    "ResourceGroup": "%%Ngsa_Log_Analytics_RG%%",
+                    "Name": "%%Ngsa_Log_Analytics_Name%%",
+                    "ResourceId": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourcegroups/%%Ngsa_Log_Analytics_RG%%/providers/microsoft.operationalinsights/workspaces/%%Ngsa_Log_Analytics_Name%%"
+                  },
+                  "isOptional": true
+                },
+                {
+                  "name": "Dimensions",
+                  "isOptional": true
+                },
+                {
+                  "name": "Query",
+                  "value": "ngsa_CL\r\n| where PodType_s == 'webv'\r\n| summarize countif(StatusCode_d > 200) by Server_s, Zone_s\r\n| project-rename FailureCount=countif_, Server=Server_s, Zone=Zone_s\r\n| order by Server\r\n\n",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartTitle",
+                  "value": "Analytics",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartSubTitle",
+                  "value": "%%Ngsa_Log_Analytics_Name%%",
+                  "isOptional": true
+                },
+                {
+                  "name": "PartId",
+                  "value": "102f2055-13ac-426e-873f-352d2d9e9297",
+                  "isOptional": true
+                },
+                {
+                  "name": "Version",
+                  "value": "1.0",
+                  "isOptional": true
+                },
+                {
+                  "name": "resourceTypeMode",
+                  "value": "workspace",
+                  "isOptional": true
+                },
+                {
+                  "name": "TimeRange",
+                  "value": "PT30M",
+                  "isOptional": true
+                },
+                {
+                  "name": "DashboardId",
+                  "isOptional": true
+                },
+                {
+                  "name": "ControlType",
+                  "value": "AnalyticsGrid",
+                  "isOptional": true
+                },
+                {
+                  "name": "SpecificChart",
+                  "isOptional": true
+                }
+              ],
+              "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+              "settings": {
+                "content": {
+                  "PartTitle": "WebV Failures",
+                  "PartSubTitle": "%%Ngsa_Log_Analytics_Name%%",
+                  "Query": "ngsa_CL\n| where PodType_s == 'webv'\n| summarize countif(StatusCode_d > 200) by Server_s, Zone_s\n| project-rename FailureCount=countif_, Server=Server_s, Zone=Zone_s\n| order by Server, Zone\n\n",
+                  "GridColumnsWidth": {
+                    "Server": "298px"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "metadata": {
+      "model": {
+        "timeRange": {
+          "value": {
+            "relative": {
+              "duration": 24,
+              "timeUnit": 1
+            }
+          },
+          "type": "MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"
+        },
+        "filterLocale": {
+          "value": "en-us"
+        },
+        "filters": {
+          "value": {
+            "MsPortalFx_TimeRange": {
+              "model": {
+                "format": "utc",
+                "granularity": "auto",
+                "relative": "1h"
+              },
+              "displayCache": {
+                "name": "UTC Time",
+                "value": "Past hour"
+              },
+              "filteredPartIds": [
+                "StartboardPart-MonitorChartPart-fd3e9672-6335-430d-ad21-6e9c42b3b537",
+                "StartboardPart-MonitorChartPart-fd3e9672-6335-430d-ad21-6e9c42b3b539",
+                "StartboardPart-MonitorChartPart-fd3e9672-6335-430d-ad21-6e9c42b3b53b",
+                "StartboardPart-AnalyticsPart-fd3e9672-6335-430d-ad21-6e9c42b3b53f",
+                "StartboardPart-AnalyticsPart-fd3e9672-6335-430d-ad21-6e9c42b3b541",
+                "StartboardPart-AnalyticsPart-fd3e9672-6335-430d-ad21-6e9c42b3b543",
+                "StartboardPart-AnalyticsPart-fd3e9672-6335-430d-ad21-6e9c42b3b545",
+                "StartboardPart-AnalyticsPart-fd3e9672-6335-430d-ad21-6e9c42b3b547",
+                "StartboardPart-AnalyticsPart-fd3e9672-6335-430d-ad21-6e9c42b3b549",
+                "StartboardPart-AnalyticsPart-fd3e9672-6335-430d-ad21-6e9c42b3b54b",
+                "StartboardPart-AnalyticsPart-fd3e9672-6335-430d-ad21-6e9c42b3b54d",
+                "StartboardPart-AnalyticsPart-fd3e9672-6335-430d-ad21-6e9c42b3b54f",
+                "StartboardPart-AnalyticsPart-fd3e9672-6335-430d-ad21-6e9c42b3b551",
+                "StartboardPart-AnalyticsPart-fd3e9672-6335-430d-ad21-6e9c42b3b553",
+                "StartboardPart-AnalyticsPart-fd3e9672-6335-430d-ad21-6e9c42b3b555",
+                "StartboardPart-AnalyticsPart-fd3e9672-6335-430d-ad21-6e9c42b3b557",
+                "StartboardPart-AnalyticsPart-fd3e9672-6335-430d-ad21-6e9c42b3b559",
+                "StartboardPart-AnalyticsPart-fd3e9672-6335-430d-ad21-6e9c42b3b55d",
+                "StartboardPart-AnalyticsPart-fd3e9672-6335-430d-ad21-6e9c42b3b55f"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "NGSA Dashboard",
+  "type": "Microsoft.Portal/dashboards",
+  "location": "INSERT LOCATION",
+  "tags": {
+    "hidden-title": "NGSA Dashboard"
+  },
+  "apiVersion": "2015-08-01-preview"
+}

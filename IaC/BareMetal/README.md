@@ -1,6 +1,6 @@
 # Setup k8s IaaS
 
-> This will setup a single node k8s cluster
+> This will setup a single node k8s cluster for development
 
 ## Create IMDb Cosmos DB
 
@@ -9,14 +9,14 @@ Create IMDb Cosmos DB and load sample data per instructions [here](https://githu
 ```bash
 
 # these variables are set during IMDb setup and used below
+# you can set the variables to an existing Cosmos DB instance
+env | grep Imdb_
 
 #export Imdb_Name=YourCosmosName
 #export Imdb_DB=imdb
 #export Imdb_Col=movies
 #export Imdb_RG=$Imdb_Name-rg-cosmos
 #export Imdb_Location="centralus"
-#export Imdb_DB="imdb"
-#export Imdb_Col="movies"
 
 ```
 
@@ -28,6 +28,7 @@ Create IMDb Cosmos DB and load sample data per instructions [here](https://githu
 az extension add --name log-analytics
 
 # set environment variables
+# You can use an existing Log Analytics instance
 export Ngsa_Log_RG=$Imdb_Name-rg-logs
 export Ngsa_Log_Name=$Imdb_Name
 
@@ -41,12 +42,22 @@ az monitor log-analytics workspace create -g $Ngsa_Log_RG -n $Ngsa_Log_Name -l $
 
 Create your VM per instructions in [Bare Metal Setup](setup-bare-metal-vm.md)
 
+- It should work on any Ubuntu 18.04 VM
+- We've tested on
+  - Azure VMs
+  - Multipass VMs
+  - Digital Ocean VMs
+
 ## setup k8s
 
 ### Export your public IP address
 
 ```bash
 
+# check if it's set correctly
+echo $PIP
+
+# set if necessary
 export PIP=YourPublicIPAddress
 
 ```
@@ -65,12 +76,18 @@ sudo kubeadm reset -f
 ```bash
 
 # make sure you're in the ngsa/IaC/BareMetal directory
+cd IaC/BareMetal
 
 # make sure PIP is set correctly
 echo $PIP
 
 # install k8s controller
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address $PIP
+
+### WARNING ###
+# This will delete your existing kubectl configuration
+# Make sure to back up or merge manually
+###############
 
 # setup your config file
 sudo rm -rf $HOME/.kube
@@ -96,21 +113,19 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.4/manife
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.4/manifests/metallb.yaml
 kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
 
-# create config map
+# create metal LB config map
 sed -e "s/{PIP}/${PIP}/g" metalLB.yml | k apply -f -
 
 ```
 
 ## Set ngsa secrets
 
-> this is not required if you only run `in-memory.yml`
-
 ```bash
 
 # delete if necessary - you can safely ignore the not exists error
 kubectl delete secret ngsa-secrets
 
-# create from key vault
+# create from Azure
 kubectl create secret generic ngsa-secrets \
   --from-literal=CosmosDatabase=$Imdb_DB \
   --from-literal=CosmosCollection=$Imdb_Col \
@@ -131,42 +146,8 @@ kubectl create secret generic ngsa-secrets \
 
 ## Deploy ngsa
 
-```bash
+Follow the deployment instructions in [app](app/README.md) to deploy ngsa
 
-# create the pod and Cluster IP service
-# Choose one
+## Deploy fluent bit
 
-# use Cosmos DB
-k apply -f ngsa.yml
-
-# use in-memory DB
-k apply -f in-memory.yml
-
-# retry until you get the startup message
-k logs ngsa -c app
-
-# to test without SSL
-k expose service ngsa --type=LoadBalancer --port=80 --target-port=4120 --name ngsa-lb
-
-# make sure the public IP is exposed
-k get all
-
-# test the public IP
-curl $PIP/version
-
-# delete test service
-k delete svc ngsa-lb
-
-# create load balancer
-# this requires SSL to be setup correctly
-k apply -f lb.yml
-
-# check status
-# wait for external IP to be visible
-k get svc
-
-# test the LB
-# will return an https redirect
-http ${PIP}
-
-```
+Follow the deployment instructions in [fluentbit/dbg](fluentbit/dbg/README.md) to debug ngsa with fluent bit and Azure Log Analytics

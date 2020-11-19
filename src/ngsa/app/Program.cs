@@ -26,6 +26,7 @@ namespace CSE.NextGenSymmetricApp
         public static string CosmosQueryId { get; set; } = string.Empty;
         public static string Region { get; set; } = string.Empty;
         public static string Zone { get; set; } = string.Empty;
+        public static string PodType { get; set; }
 
         // ILogger instance
         private static ILogger<App> logger;
