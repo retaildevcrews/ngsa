@@ -64,6 +64,7 @@ ingress:
   tls: {}
 
 cert:
+  enabled: true
   name: ngsa-cert
   issuer: letsencrypt-staging
   namespace: istio-system
