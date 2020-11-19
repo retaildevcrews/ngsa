@@ -23,16 +23,16 @@ data:
     [OUTPUT]
         Name            azure
         Match           kube.var.log.containers.webv*.*
-        Customer_ID     $LOG_ID
-        Shared_Key      $LOG_SHARED_KEY
-        Log_Type        webvb${LOG_SUFFIX}
+        Customer_ID     ${LOG_ID}
+        Shared_Key      ${LOG_SHARED_KEY}
+        Log_Type        webv${LOG_SUFFIX}
 
     [OUTPUT]
         Name            azure
         Match           kube.var.log.containers.ngsa*.*
-        Customer_ID     $LOG_ID
-        Shared_Key      $LOG_SHARED_KEY
-        Log_Type        ngsab${LOG_SUFFIX}
+        Customer_ID     ${LOG_ID}
+        Shared_Key      ${LOG_SHARED_KEY}
+        Log_Type        ngsa${LOG_SUFFIX}
 
   input-kubernetes.conf: |
     [INPUT]

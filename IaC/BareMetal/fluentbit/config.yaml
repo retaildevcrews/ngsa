@@ -23,15 +23,15 @@ data:
     [OUTPUT]
         Name            azure
         Match           kube.var.log.containers.webv*.*
-        Customer_ID     $LOG_ID
-        Shared_Key      $LOG_SHARED_KEY
+        Customer_ID     ${LOG_ID}
+        Shared_Key      ${LOG_SHARED_KEY}
         Log_Type        fbwebv
 
     [OUTPUT]
         Name            azure
         Match           kube.var.log.containers.ngsa*.*
-        Customer_ID     $LOG_ID
-        Shared_Key      $LOG_SHARED_KEY
+        Customer_ID     ${LOG_ID}
+        Shared_Key      ${LOG_SHARED_KEY}
         Log_Type        fbngsa
 
   input-kubernetes.conf: |

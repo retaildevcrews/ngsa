@@ -17,12 +17,9 @@ spec:
     - -l
     - "100"
     - -r
-    - -v
     - -s
     - http://ngsa-memory:4120
     - http://ngsa-cosmos:4120
-    - -u
-    - https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/
     - -f
     - benchmark.json
 
