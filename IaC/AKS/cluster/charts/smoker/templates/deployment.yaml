@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{  include "smoker.fullname" . }}
+  labels:
+    app.kubernetes.io/component: smoker
+    {{- include "smoker.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "smoker.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: smoker
+        {{- include "smoker.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: app
+          image: retaildevcrew/webvalidate:beta
+          imagePullPolicy: Always
+          args:
+            - '-s'
+            {{- range .Values.ingressURLs }}
+            - {{ . | quote }}
+            {{- end }}
+            - '-u'
+            - 'https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/'
+            - '-f'
+            - 'benchmark.json'
+            - '-r'
+            - '-l'
+            - '1000'
+            - '-v'

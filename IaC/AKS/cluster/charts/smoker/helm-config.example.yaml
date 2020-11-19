@@ -5,7 +5,3 @@
 ingressURLs:
   - http://ngsa-aks.ngsa.svc.cluster.local:4120
 
-log:
-  name: "ngsa"
-  region: ""
-  zone: ""

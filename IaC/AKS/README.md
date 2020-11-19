@@ -351,9 +351,7 @@ kubectl create secret generic ngsa-secrets \
   --from-literal=CosmosDatabase=$Imdb_DB \
   --from-literal=CosmosCollection=$Imdb_Col \
   --from-literal=CosmosKey=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryReadonlyMasterKey -o tsv) \
-  --from-literal=CosmosUrl=https://${Imdb_Name}.documents.azure.com:443/ \
-  --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query customerId -o tsv) \
-  --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query primarySharedKey -o tsv)
+  --from-literal=CosmosUrl=https://${Imdb_Name}.documents.azure.com:443/
 
 ```
 
@@ -488,19 +486,35 @@ Deploy Web Validate to drive consistent traffic to the AKS cluster for monitorin
 
 cd $REPO_ROOT/IaC/AKS/cluster/charts/smoker
 
-kubectl create namespace ngsa-smoker
-kubectl create secret generic ngsa-smoker-secrets \
-  --namespace ngsa-smoker \
-  --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query customerId -o tsv) \
-  --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query primarySharedKey -o tsv)
-
 cp helm-config.example.yaml helm-config.yaml
 
 cd $REPO_ROOT/IaC/AKS/cluster/charts
 
+kubectl create namespace ngsa-smoker
 helm install ngsa-smoker smoker -f ./smoker/helm-config.yaml --namespace ngsa-smoker
 
 # Verify the pods are running
 kubectl get pods --namespace ngsa-smoker
+
+```
+
+## Fluent Bit Log Forwarding
+
+Deploy Fluent Bit to forward application and smoker logs to the Log Analytics instance.
+
+```bash
+
+cd $REPO_ROOT/IaC/AKS/cluster/charts
+
+kubectl create namespace fluentbit
+kubectl create secret generic fluentbit-secrets \
+  --namespace fluentbit \
+  --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query customerId -o tsv) \
+  --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query primarySharedKey -o tsv)
+
+helm install fluentbit fluentbit -f ./fluentbit/helm-config.yaml --namespace fluentbit --set logSuffix=$Ngsa_Env
+
+# Verify the fluentbit pod is running
+kubectl get pod --namespace fluentbit
 
 ```

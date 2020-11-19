@@ -26,7 +26,6 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName:  {{ include "ngsa.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -63,51 +62,6 @@ spec:
           volumeMounts:
             - name: secrets
               mountPath: "/app/secrets"
-        - name: log
-          imagePullPolicy: Always
-          image: retaildevcrew/logagent:beta
-          env:
-          - name: WorkspaceId
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.app.secretName }}
-                key: WorkspaceId
-          - name: SharedKey
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.app.secretName }}
-                key: SharedKey
-          - name: LogName
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Values.log.configMapName }}
-                key: LogName
-          - name: Zone
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Values.log.configMapName }}
-                key: Zone
-          - name: Region
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Values.log.configMapName }}
-                key: Region
-          - name: NodeName
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.nodeName
-          - name: PodName
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.name
-          - name: PodNamespace
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-          - name: PodIP
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
       volumes:
         - name: secrets
           secret:
