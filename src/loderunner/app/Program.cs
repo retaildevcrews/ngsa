@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
@@ -161,6 +162,15 @@ namespace CSE.WebValidate
         {
             Console.CancelKeyPress += (sender, e) =>
             {
+                // log the shutdown event
+                Dictionary<string, object> log = new Dictionary<string, object>
+                {
+                    { "Date", DateTime.UtcNow },
+                    { "EventType", "Shutdown" },
+                };
+
+                Console.WriteLine(JsonSerializer.Serialize(log));
+
                 e.Cancel = true;
                 TokenSource.Cancel();
             };

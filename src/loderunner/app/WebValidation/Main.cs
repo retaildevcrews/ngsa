@@ -472,33 +472,23 @@ namespace CSE.WebValidate
         /// </summary>
         private static void DisplayStartupMessage(Config config)
         {
-            string msg = $"{Now}\tStarting Web Validation Test";
-            msg += $"\n\t\tVersion: {Version.AssemblyVersion}";
-            msg += $"\n\t\tHost: {string.Join(' ', config.Server)}";
-
-            if (!string.IsNullOrEmpty(config.Tag))
+            Dictionary<string, object> msg = new Dictionary<string, object>
             {
-                msg += $"\n\t\tTag: {config.Tag}";
-            }
+                { "Date", DateTime.UtcNow },
+                { "EventType", "Startup" },
+                { "Version", Version.AssemblyVersion },
+                { "Host", string.Join(' ', config.Server) },
+                { "BaseUrl", config.BaseUrl },
+                { "Files", string.Join(' ', config.Files) },
+                { "Sleep", config.Sleep },
+                { "MaxConcurrent", config.MaxConcurrent },
+                { "Duration", config.Duration },
+                { "Random", config.Random },
+                { "Verbose", config.Verbose },
+                { "Tag", config.Tag },
+            };
 
-            if (!string.IsNullOrEmpty(config.BaseUrl))
-            {
-                msg += $"\n\t\tBaseUrl: {config.BaseUrl}";
-            }
-
-            msg += $"\n\t\tFiles: {string.Join(' ', config.Files)}";
-            msg += $"\n\t\tSleep: {config.Sleep}";
-            msg += $"\n\t\tMaxConcurrent: {config.MaxConcurrent}";
-
-            if (config.Duration > 0)
-            {
-                msg += $"\n\t\tDuration: {config.Duration}";
-            }
-
-            msg += config.Random ? "\n\t\tRandom" : string.Empty;
-            msg += config.Verbose ? "\n\t\tVerbose" : string.Empty;
-
-            Console.WriteLine(msg + "\n");
+            Console.WriteLine(JsonSerializer.Serialize(msg));
         }
 
         /// <summary>
