@@ -484,11 +484,9 @@ Deploy Web Validate to drive consistent traffic to the AKS cluster for monitorin
 
 ```bash
 
-cd $REPO_ROOT/IaC/AKS/cluster/charts/smoker
-
-cp helm-config.example.yaml helm-config.yaml
-
 cd $REPO_ROOT/IaC/AKS/cluster/charts
+
+cp ./smoker/helm-config.example.yaml ./smoker/helm-config.yaml
 
 kubectl create namespace ngsa-smoker
 helm install ngsa-smoker smoker -f ./smoker/helm-config.yaml --namespace ngsa-smoker
