@@ -22,7 +22,7 @@ data:
         Match           kube.var.log.containers.l8r*.*
         Customer_ID     ${LOG_ID}
         Shared_Key      ${LOG_SHARED_KEY}
-        Log_Type        l8r
+        Log_Type        loderunner
 
     [OUTPUT]
         Name            azure

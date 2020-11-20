@@ -465,12 +465,12 @@ helm upgrade ngsa-aks ngsa -f ./ngsa/helm-config.yaml  --namespace ngsa --set ce
 
 Run the Validation Test
 
-> For more information on the validation test tool, see [Web Validate](https://github.com/retaildevcrews/webvalidate)
+> For more information on the validation test tool, see [Lode Runner](../../src/loderunner/)
 
 ```bash
 
 # run the tests in a container
-docker run -it --rm retaildevcrew/webvalidate --server $Ngsa_Https_App_Endpoint --base-url https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/ --files baseline.json
+docker run -it --rm retaildevcrew/loderunner:beta --server $Ngsa_Https_App_Endpoint --files baseline.json
 
 ```
 
@@ -480,19 +480,18 @@ TODO
 
 ## Smoke Tests
 
-Deploy Web Validate to drive consistent traffic to the AKS cluster for monitoring.
+Deploy Lode Runner to drive consistent traffic to the AKS cluster for monitoring.
 
 ```bash
 
 cd $REPO_ROOT/IaC/AKS/cluster/charts
 
-cp ./smoker/helm-config.example.yaml ./smoker/helm-config.yaml
-
-kubectl create namespace ngsa-smoker
-helm install ngsa-smoker smoker -f ./smoker/helm-config.yaml --namespace ngsa-smoker
+kubectl create namespace ngsa-l8r
+cp ./loderunner/helm-config.example.yaml ./loderunner/helm-config.yaml
+helm install l8r loderunner -f ./loderunner/helm-config.yaml --namespace ngsa-l8r
 
 # Verify the pods are running
-kubectl get pods --namespace ngsa-smoker
+kubectl get pods --namespace ngsa-l8r
 
 ```
 
@@ -510,7 +509,7 @@ kubectl create secret generic fluentbit-secrets \
   --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query customerId -o tsv) \
   --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query primarySharedKey -o tsv)
 
-helm install fluentbit fluentbit -f ./fluentbit/helm-config.yaml --namespace fluentbit
+helm install fluentbit fluentbit --namespace fluentbit
 
 # Verify the fluentbit pod is running
 kubectl get pod --namespace fluentbit

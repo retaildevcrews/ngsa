@@ -1,5 +1,5 @@
 ingressURLs:
-  - http://<IP_OF_INGRESS>.nip.io
+  - http://ngsa-aks.ngsa.svc.cluster.local:4120
 replicaCount: 1
 
 serviceAccount:
