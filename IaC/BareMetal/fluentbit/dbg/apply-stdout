@@ -1,0 +1,3 @@
+#!/bin/bash
+
+envsubst < stdout-config-debug.yaml | kubectl apply -f -
