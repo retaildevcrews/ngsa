@@ -510,7 +510,7 @@ kubectl create secret generic fluentbit-secrets \
   --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query customerId -o tsv) \
   --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query primarySharedKey -o tsv)
 
-helm install fluentbit fluentbit -f ./fluentbit/helm-config.yaml --namespace fluentbit --set logSuffix=$Ngsa_Env
+helm install fluentbit fluentbit -f ./fluentbit/helm-config.yaml --namespace fluentbit
 
 # Verify the fluentbit pod is running
 kubectl get pod --namespace fluentbit

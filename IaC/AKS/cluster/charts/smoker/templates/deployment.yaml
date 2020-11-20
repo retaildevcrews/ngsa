@@ -16,6 +16,7 @@ spec:
         app.kubernetes.io/component: smoker
         {{- include "smoker.labels" . | nindent 8 }}
     spec:
+      serviceAccountName: {{ include "smoker.serviceAccountName" . }}
       containers:
         - name: app
           image: retaildevcrew/webvalidate:beta

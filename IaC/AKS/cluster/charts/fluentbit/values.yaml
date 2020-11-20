@@ -1,7 +1,5 @@
-replicaCount: 1
 containerPort: 2020
 terminationGracePeriodSeconds: 10
-logSuffix: ""
 
 nameOverride: ""
 fullnameOverride: ""
