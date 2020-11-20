@@ -1,0 +1,3 @@
+#!/bin/bash
+
+envsubst < config-fluentbit.yaml | kubectl apply -f -
