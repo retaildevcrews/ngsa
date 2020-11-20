@@ -18,6 +18,8 @@ app:
   args: []
   port: 4120
   secretName: ngsa-secrets
+  region: ""
+  zone: ""
 
 livenessProbe:
   initialDelaySeconds: 120

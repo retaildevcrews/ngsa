@@ -21,6 +21,17 @@ spec:
         - name: l8r
           image: retaildevcrew/loderunner:beta
           imagePullPolicy: Always
+          env:
+            - name: Zone
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "loderunner.fullname" . }}-config
+                  key: Zone
+            - name: Region
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "loderunner.fullname" . }}-config
+                  key: Region
           args:
             - -s
             {{- range .Values.ingressURLs }}

@@ -41,6 +41,16 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            - name: Zone
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "ngsa.fullname" . }}-config
+                  key: Zone
+            - name: Region
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "ngsa.fullname" . }}-config
+                  key: Region
           ports:
             - name: http
               containerPort: {{ .Values.app.port }}
