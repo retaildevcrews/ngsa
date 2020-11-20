@@ -68,7 +68,23 @@ namespace CSE.WebValidate
                 DisplayAsciiArt();
             }
 
-            return await root.InvokeAsync(args).ConfigureAwait(false);
+            int ret = await root.InvokeAsync(args).ConfigureAwait(false);
+
+            if (!args.Contains("-h") &&
+                !args.Contains("--help") &&
+                !args.Contains("--version"))
+            {
+                // log the shutdown event
+                Dictionary<string, object> log = new Dictionary<string, object>
+                {
+                    { "Date", DateTime.UtcNow },
+                    { "EventType", "Shutdown" },
+                };
+
+                Console.WriteLine(JsonSerializer.Serialize(log));
+            }
+
+            return ret;
         }
 
         /// <summary>
@@ -162,15 +178,6 @@ namespace CSE.WebValidate
         {
             Console.CancelKeyPress += (sender, e) =>
             {
-                // log the shutdown event
-                Dictionary<string, object> log = new Dictionary<string, object>
-                {
-                    { "Date", DateTime.UtcNow },
-                    { "EventType", "Shutdown" },
-                };
-
-                Console.WriteLine(JsonSerializer.Serialize(log));
-
                 e.Cancel = true;
                 TokenSource.Cancel();
             };

@@ -81,6 +81,8 @@ namespace CSE.WebValidate
                 return -1;
             }
 
+            DisplayStartupMessage(config);
+
             int duration;
             PerfLog pl;
             int errorCount = 0;
