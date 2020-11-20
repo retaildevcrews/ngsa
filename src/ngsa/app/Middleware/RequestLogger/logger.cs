@@ -134,7 +134,7 @@ namespace CSE.Middleware
                 { "TTFB", ttfb },
                 { "Duration", duration },
                 { "Verb", context.Request.Method },
-                { "Path", context.Request.Path.ToString() },
+                { "Path", GetPathAndQuerystring(context.Request) },
                 { "Host", context.Request.Headers["Host"].ToString() },
                 { "ClientIP", GetClientIp(context) },
                 { "UserAgent", context.Request.Headers["User-Agent"].ToString() },
