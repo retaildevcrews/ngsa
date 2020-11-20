@@ -20,6 +20,30 @@ spec:
       ports:
         - containerPort: 2020
 
+    env:
+    - name: WorkspaceId
+      valueFrom:
+        secretKeyRef:
+          name: ngsa-secrets
+          key: WorkspaceId
+    - name: SharedKey
+      valueFrom:
+        secretKeyRef:
+          name: ngsa-secrets
+          key: SharedKey
+
+    - name: ngsaLog
+      valueFrom:
+        configMapKeyRef:
+          name: ngsa-config
+          key: ngsaLog
+
+    - name: l8rLog
+      valueFrom:
+        configMapKeyRef:
+          name: ngsa-config
+          key: l8rLog
+
       volumeMounts:
       - name: varlog
         mountPath: /var/log

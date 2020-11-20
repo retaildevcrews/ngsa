@@ -1,3 +1,0 @@
-#!/bin/bash
-
-envsubst < la-config-debug.yaml | kubectl apply -f -
