@@ -465,7 +465,7 @@ helm upgrade ngsa-aks ngsa -f ./ngsa/helm-config.yaml  --namespace ngsa --set ce
 
 Run the Validation Test
 
-> For more information on the validation test tool, see [Lode Runner](../../src/loderunner/)
+> For more information on the validation test tool, see [Lode Runner](../../src/loderunner/).
 
 ```bash
 

@@ -8,8 +8,8 @@ AppInsightsKey
 
 dotFiles/.**
 
-# User specific helm override files
-helm-config.yaml
+# User-specific helm override files
+*helm-config.yaml
 
 *NGSA_Dashboard.json
 
