@@ -338,16 +338,11 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
         }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "simplicity")]
-    public class GenreDoc
-    {
-        public string Genre { get; set; }
-    }
-
     /// <summary>
     /// Extension to allow services.AddInMemoryDal()
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "simplicity")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1204:Static elements should appear before instance elements", Justification = "simplicity")]
     public static class InMemoryDataAccessLayerExtension
     {
         public static IServiceCollection AddInMemoryDal(this IServiceCollection services)
