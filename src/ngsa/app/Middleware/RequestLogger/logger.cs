@@ -66,8 +66,8 @@ namespace CSE.Middleware
             // write trace headers
             context.Response.OnStarting(() =>
             {
-                duration = duration == 0 ? Math.Round(DateTime.Now.Subtract(dtStart).TotalMilliseconds, 2) : duration;
-                ttfb = duration;
+                ttfb = Math.Round(DateTime.Now.Subtract(dtStart).TotalMilliseconds, 2);
+                duration = ttfb;
 
                 Dictionary<string, object> trace = new Dictionary<string, object>
                 {
@@ -85,24 +85,7 @@ namespace CSE.Middleware
                 return Task.CompletedTask;
             });
 
-            if (context.Request.Headers.ContainsKey(CVHeader))
-            {
-                try
-                {
-                    // extend the correlation vector
-                    cv = CorrelationVector.Extend(context.Request.Headers[CVHeader].ToString());
-                }
-                catch
-                {
-                    // create a new correlation vector
-                    cv = new CorrelationVector();
-                }
-            }
-            else
-            {
-                // create a new correlation vector
-                cv = new CorrelationVector();
-            }
+            cv = ExtendCVector(context);
 
             // Invoke next handler
             if (next != null)
@@ -127,6 +110,39 @@ namespace CSE.Middleware
                 return;
             }
 
+            LogRequest(context, cv, ttfb, duration);
+        }
+
+        // correlation vector
+        private CorrelationVector ExtendCVector(HttpContext context)
+        {
+            CorrelationVector cv;
+
+            if (context.Request.Headers.ContainsKey(CVHeader))
+            {
+                try
+                {
+                    // extend the correlation vector
+                    cv = CorrelationVector.Extend(context.Request.Headers[CVHeader].ToString());
+                }
+                catch
+                {
+                    // create a new correlation vector
+                    cv = new CorrelationVector();
+                }
+            }
+            else
+            {
+                // create a new correlation vector
+                cv = new CorrelationVector();
+            }
+
+            return cv;
+        }
+
+        // log the request
+        private void LogRequest(HttpContext context, CorrelationVector cv, double ttfb, double duration)
+        {
             Dictionary<string, object> log = new Dictionary<string, object>
             {
                 { "Date", DateTime.UtcNow },
