@@ -52,13 +52,18 @@
 
   <ItemGroup>
 	  <Content Update="appsettings.json">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 
-	  <None Include="secrets\**">
+    <None Include="data\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+
+    <None Include="secrets\**">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	  <None Include="wwwroot\**">
+
+    <None Include="wwwroot\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
