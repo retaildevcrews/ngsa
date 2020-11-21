@@ -71,7 +71,7 @@ namespace CSE.NextGenSymmetricApp
             // differences based on dev or prod
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
             }
             else
             {
@@ -129,12 +129,6 @@ namespace CSE.NextGenSymmetricApp
 
             // add healthcheck service
             services.AddHealthChecks().AddCosmosHealthCheck(CosmosHealthCheck.ServiceId);
-
-            // add App Insights if key set
-            if (!string.IsNullOrEmpty(App.Secrets.AppInsightsKey))
-            {
-                services.AddApplicationInsightsTelemetry(App.Secrets.AppInsightsKey);
-            }
         }
     }
 }
