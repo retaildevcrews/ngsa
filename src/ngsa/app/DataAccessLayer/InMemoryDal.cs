@@ -202,9 +202,12 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             });
         }
 
-        public Task<IEnumerable<string>> GetGenresAsync()
+        public async Task<IEnumerable<string>> GetGenresAsync()
         {
-            return Task<IEnumerable<string>>.Factory.StartNew(() => { return Genres; });
+            return await Task.Run(() =>
+            {
+                return Genres.AsEnumerable<string>();
+            }).ConfigureAwait(false);
         }
 
         public async Task<Movie> GetMovieAsync(string movieId)
