@@ -114,7 +114,7 @@ namespace CSE.Middleware
         }
 
         // correlation vector
-        private CorrelationVector ExtendCVector(HttpContext context)
+        private static CorrelationVector ExtendCVector(HttpContext context)
         {
             CorrelationVector cv;
 
@@ -141,7 +141,7 @@ namespace CSE.Middleware
         }
 
         // log the request
-        private void LogRequest(HttpContext context, CorrelationVector cv, double ttfb, double duration)
+        private static void LogRequest(HttpContext context, CorrelationVector cv, double ttfb, double duration)
         {
             Dictionary<string, object> log = new Dictionary<string, object>
             {
