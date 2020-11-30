@@ -1,12 +1,9 @@
 #!/bin/bash
 ## TODO:
 ##   Put descriptive echo's in Color
-##   Separate CosmosDB resource
-##   Check Email if custom domain
-##   Cleanup script
+##   Cleanup script [sem-done]
 ## Qurey
 ##   Zone and region needed to be selected for both smoker and ngsa
-##   Smoker README up, should pass as Array
 
 # Sane prog env:
 set -o errexit -o pipefail -o noclobber # -o nounset
@@ -109,11 +106,12 @@ while (( "$#" )); do
         Ngsa_Imdb_CM_Url=$val
         shift 2
         ;;
-        
+
         -l|--location)
         Ngsa_Location=$val
         shift 2
         ;;
+
         -x|--set-k8s-context)
         set_k8s_ctx=yes
         shift
@@ -142,7 +140,6 @@ for i in az helm kubectl http docker istioctl; do
     [[ $(command -v $i) == "" ]] && echo_exit 1 "Make sure '$i' is installed and added to your \$PATH"
 done
 
-rmdirs=()
 # Check if subscription is valid and available
 if [[ ! -z ${AZ_Sub} ]]; then
     #subs_arg="--subscription ${AZ_Sub}"
@@ -151,7 +148,6 @@ if [[ ! -z ${AZ_Sub} ]]; then
     azure_cfg="$(mktemp -d)/"
     cp -r $HOME/.azure/* ${azure_cfg}
     export AZURE_CONFIG_DIR="${azure_cfg}"
-    rmdirs+=( ${AZURE_CONFIG_DIR})
     echo -e "\nAzure temp config dir: $AZURE_CONFIG_DIR"
     aze account set -s ${AZ_Sub} --output table
 else
@@ -160,9 +156,9 @@ else
 fi
 # Check if an email was provided if domain was specified 
 if [[ ! -z ${Ngsa_Domain_Name} ]]; then
-    [[ -z ${Ngsa_Email } ]] && echo_exit 1 "Provide an email '--email' for domain: $Ngsa_Domain_Name"
+    [[ -z ${Ngsa_Email} ]] && echo_exit 1 "Provide an email '--email' for domain: $Ngsa_Domain_Name"
 fi
-exit 1
+
 # Se default values if optional env is unset
 script_dir=$(dirname $0)
 REPO_ROOT=$(realpath ${script_dir}/../../)
@@ -256,16 +252,18 @@ aze monitor log-analytics workspace create \
 Ngsa_AKS_Name="${Ngsa_Name}-aks"
 [[ -z ${Ngsa_K8S_VER} ]] && Ngsa_K8S_VER=1.18.8
 [[ -z ${Ngsa_Node_Count} ]] && Ngsa_Node_Count=3
-echo -e "\nCreating the NGSA Cluster.\nK8s version: ${Ngsa_K8S_VER}\nNode Count: ${Ngsa_Node_Count}\nThis can take a while..."
+echo -e "\nCreating the NGSA Cluster."
+echo    "K8s version: ${Ngsa_K8S_VER}"
+echo    "Node Count: ${Ngsa_Node_Count}"
+echo    "This can take a while..."
 # this step usually takes 2-4 minutes
 aze aks create -n $Ngsa_AKS_Name -g $Ngsa_App_RG -l $Ngsa_Location --enable-cluster-autoscaler --min-count ${Ngsa_Node_Count} --max-count $((Ngsa_Node_Count+3)) --node-count ${Ngsa_Node_Count} --kubernetes-version $Ngsa_K8S_VER --no-ssh-key -o table ${subs_arg}
 
 # Setup a separate kubectl context if --set-k8s-context wasn't set
 if [[ -z ${set_k8s_ctx} ]];then
     k8scfg_path=$(mktemp)
-    rmdirs+=( ${k8scfg_path})
-    echo -e "-- Not setting current K8s context --\nUse: 'AZURE_CONFIG_DIR=${AZURE_CONFIG_DIR} az aks get-credentials -n $Ngsa_AKS_Name -g $Ngsa_App_RG ${subs_arg}' to set this cluster as current k8s context"
-    echo -e "\nUsing temporary kubeconfig: ${k8scfg_path}"
+    echo -e "\n-- Not setting current K8s context --"
+    echo -e "Using temporary kubeconfig: ${k8scfg_path}"
 else
     k8scfg_path=${HOME}/.kube/config
 fi
@@ -381,12 +379,13 @@ if [[ ! -z ${Ngsa_Smoke} ]];then
     kubectl create namespace ngsa-smoker
     kubectl create secret generic ngsa-smoker-secrets --namespace ngsa-smoker --from-literal=WorkspaceId=${Ngsa_Log_Analytics_Wid} --from-literal=SharedKey=${Ngsa_Log_Analytics_SharedKey}
 
-    cp helm-config.example.yaml helm-config.yaml
+    # Replace the helm-config.yaml file
+    cp -f helm-config.example.yaml helm-config.yaml
     cd $REPO_ROOT/IaC/AKS/cluster/charts
     helm install ngsa-smoker smoker -f ./smoker/helm-config.yaml --namespace ngsa-smoker --atomic
     # Verify the pods are running
     kubectl get pods --namespace ngsa-smoker
 fi
-
-echo -e "Removing temp dirs ${rmdirs[@]}"
-for rd in ${rmdirs};do rm -r ${rd}; done
+echo -e "Use: 'AZURE_CONFIG_DIR=${AZURE_CONFIG_DIR} az aks get-credentials -n $Ngsa_AKS_Name -g $Ngsa_App_RG ${subs_arg}' to set this cluster as current k8s context"
+#echo -e "Removing temp dirs ${rmdirs[@]}"
+#for rd in ${rmdirs};do rm -r ${rd}; done
