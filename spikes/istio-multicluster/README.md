@@ -2,7 +2,7 @@
 
 Example setup of an Istio service mesh with 2 AKS clusters and load balancing across both clusters. This setup will use an ingress-gateway on each cluster to direct traffic.
 
-<https://istio.io/latest/docs/setup/install/multicluster/shared/>
+<https://istio.io/v1.7/docs/setup/install/multicluster/shared/>
 
 ## Prerequisites
 
