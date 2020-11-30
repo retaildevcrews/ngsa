@@ -264,6 +264,7 @@ if [[ -z ${set_k8s_ctx} ]];then
     k8scfg_path=$(mktemp)
     echo -e "\n-- Not setting current K8s context --"
     echo -e "Using temporary kubeconfig: ${k8scfg_path}"
+    echo -e "Use: 'AZURE_CONFIG_DIR=${AZURE_CONFIG_DIR} az aks get-credentials -n $Ngsa_AKS_Name -g $Ngsa_App_RG ${subs_arg}' to set this cluster as current k8s context"
 else
     k8scfg_path=${HOME}/.kube/config
 fi
@@ -393,6 +394,5 @@ if [[ ! -z ${Ngsa_Smoke} ]];then
     # Verify the fluentbit pod is running
     kubectl get pod --namespace fluentbit
 fi
-echo -e "Use: 'AZURE_CONFIG_DIR=${AZURE_CONFIG_DIR} az aks get-credentials -n $Ngsa_AKS_Name -g $Ngsa_App_RG ${subs_arg}' to set this cluster as current k8s context"
 #echo -e "Removing temp dirs ${rmdirs[@]}"
 #for rd in ${rmdirs};do rm -r ${rd}; done
