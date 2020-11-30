@@ -1,8 +1,8 @@
 ingressURLs:
   - http://ngsa-aks.ngsa.svc.cluster.local:4120
 replicaCount: 1
-region: ""
-zone: ""
+region: "Debug"
+zone: "Debug"
 
 serviceAccount:
   # Specifies whether a service account should be created
