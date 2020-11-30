@@ -307,7 +307,7 @@ helm install keda kedacore/keda --namespace keda --version $KEDA_VERSION --atomi
 # Create Secrets for NGSA
 Ngsa_Log_Analytics_Wid=$(az monitor log-analytics workspace show -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query customerId -o tsv ${subs_arg})
 Ngsa_Log_Analytics_SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query primarySharedKey -o tsv ${subs_arg})
-kubectl create secret generic ngsa-secrets --namespace ngsa --from-literal=CosmosDatabase=$Imdb_DB --from-literal=CosmosCollection=$Imdb_Col --from-literal=CosmosKey=${Ngsa_Imdb_CM_Key} --from-literal=CosmosUrl=${Ngsa_Imdb_CM_Url} --from-literal=WorkspaceId=${Ngsa_Log_Analytics_Wid} --from-literal=SharedKey=${Ngsa_Log_Analytics_SharedKey}
+kubectl create secret generic ngsa-secrets --namespace ngsa --from-literal=CosmosDatabase=$Imdb_DB --from-literal=CosmosCollection=$Imdb_Col --from-literal=CosmosKey=${Ngsa_Imdb_CM_Key} --from-literal=CosmosUrl=${Ngsa_Imdb_CM_Url}
 
 # Setup SSL/DNS with a registered domain if available
 # If Domain name is not given, use the default one
@@ -373,18 +373,25 @@ http ${Ngsa_App_Endpoint}/version
 docker run -it --rm retaildevcrew/webvalidate --server $Ngsa_Https_App_Endpoint --base-url https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/ --files baseline.json
 ## Smoke Tests
 if [[ ! -z ${Ngsa_Smoke} ]];then
-    cd $REPO_ROOT/IaC/AKS/cluster/charts/smoker
+    cd $REPO_ROOT/IaC/AKS/cluster/charts/
 
     echo -e "\nRunning smoke tests"
-    kubectl create namespace ngsa-smoker
-    kubectl create secret generic ngsa-smoker-secrets --namespace ngsa-smoker --from-literal=WorkspaceId=${Ngsa_Log_Analytics_Wid} --from-literal=SharedKey=${Ngsa_Log_Analytics_SharedKey}
-
-    # Replace the helm-config.yaml file
-    cp -f helm-config.example.yaml helm-config.yaml
+    kubectl create namespace ngsa-l8r
+    cp -f ./loderunner/helm-config.example.yaml ./loderunner/helm-config.yaml
+    helm install l8r loderunner -f ./loderunner/helm-config.yaml --namespace ngsa-l8r --atomic
+    
+    kubectl get pods --namespace ngsa-l8r
+    # Fluent bit log forwarding
+    echo -e "\nForwarding FluentBit log to Azure Log Analytics"
     cd $REPO_ROOT/IaC/AKS/cluster/charts
-    helm install ngsa-smoker smoker -f ./smoker/helm-config.yaml --namespace ngsa-smoker --atomic
-    # Verify the pods are running
-    kubectl get pods --namespace ngsa-smoker
+
+    kubectl create namespace fluentbit
+    kubectl create secret generic fluentbit-secrets --namespace fluentbit --from-literal=WorkspaceId=${Ngsa_Log_Analytics_Wid} --from-literal=SharedKey=${Ngsa_Log_Analytics_SharedKey}
+
+    helm install fluentbit fluentbit --namespace fluentbit --atomic
+
+    # Verify the fluentbit pod is running
+    kubectl get pod --namespace fluentbit
 fi
 echo -e "Use: 'AZURE_CONFIG_DIR=${AZURE_CONFIG_DIR} az aks get-credentials -n $Ngsa_AKS_Name -g $Ngsa_App_RG ${subs_arg}' to set this cluster as current k8s context"
 #echo -e "Removing temp dirs ${rmdirs[@]}"
