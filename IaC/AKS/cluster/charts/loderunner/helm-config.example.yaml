@@ -1,11 +1,9 @@
-# Default values for the smoker.
+# Default values for the loderunner.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 ingressURLs:
   - http://ngsa-aks.ngsa.svc.cluster.local:4120
 
-log:
-  name: "ngsa"
-  region: ""
-  zone: ""
+region: ""
+zone: ""

@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{  include "loderunner.fullname" . }}
+  labels:
+    app.kubernetes.io/component: loderunner
+    {{- include "loderunner.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "loderunner.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: loderunner
+        {{- include "loderunner.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "loderunner.serviceAccountName" . }}
+      containers:
+        - name: l8r
+          image: retaildevcrew/loderunner:beta
+          imagePullPolicy: Always
+          env:
+            - name: Zone
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "loderunner.fullname" . }}-config
+                  key: Zone
+            - name: Region
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "loderunner.fullname" . }}-config
+                  key: Region
+          args:
+            - -s
+            {{- range .Values.ingressURLs }}
+            - {{ . | quote }}
+            {{- end }}
+            - -f
+            - benchmark.json
+            - -r
+            - -l
+            - '1000'
