@@ -14,8 +14,8 @@ ingress:
 
 app:
   args: []
-  region: ""
-  zone: ""
+  region: "Debug"
+  zone: "Debug"
 
 cert:
   name: ngsa-cert
