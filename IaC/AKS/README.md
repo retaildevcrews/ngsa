@@ -351,9 +351,7 @@ kubectl create secret generic ngsa-secrets \
   --from-literal=CosmosDatabase=$Imdb_DB \
   --from-literal=CosmosCollection=$Imdb_Col \
   --from-literal=CosmosKey=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryReadonlyMasterKey -o tsv) \
-  --from-literal=CosmosUrl=https://${Imdb_Name}.documents.azure.com:443/ \
-  --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query customerId -o tsv) \
-  --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query primarySharedKey -o tsv)
+  --from-literal=CosmosUrl=https://${Imdb_Name}.documents.azure.com:443/
 
 ```
 
@@ -467,12 +465,12 @@ helm upgrade ngsa-aks ngsa -f ./ngsa/helm-config.yaml  --namespace ngsa --set ce
 
 Run the Validation Test
 
-> For more information on the validation test tool, see [Web Validate](https://github.com/retaildevcrews/webvalidate)
+> For more information on the validation test tool, see [Lode Runner](../../src/loderunner/).
 
 ```bash
 
 # run the tests in a container
-docker run -it --rm retaildevcrew/webvalidate --server $Ngsa_Https_App_Endpoint --base-url https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/ --files baseline.json
+docker run -it --rm retaildevcrew/loderunner:beta --server $Ngsa_Https_App_Endpoint --files baseline.json
 
 ```
 
@@ -482,25 +480,38 @@ TODO
 
 ## Smoke Tests
 
-Deploy Web Validate to drive consistent traffic to the AKS cluster for monitoring.
+Deploy Lode Runner to drive consistent traffic to the AKS cluster for monitoring.
 
 ```bash
 
-cd $REPO_ROOT/IaC/AKS/cluster/charts/smoker
+cd $REPO_ROOT/IaC/AKS/cluster/charts
 
-kubectl create namespace ngsa-smoker
-kubectl create secret generic ngsa-smoker-secrets \
-  --namespace ngsa-smoker \
-  --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query customerId -o tsv) \
-  --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query primarySharedKey -o tsv)
+kubectl create namespace ngsa-l8r
+cp ./loderunner/helm-config.example.yaml ./loderunner/helm-config.yaml
+helm install l8r loderunner -f ./loderunner/helm-config.yaml --namespace ngsa-l8r
 
-cp helm-config.example.yaml helm-config.yaml
+# Verify the pods are running
+kubectl get pods --namespace ngsa-l8r
+
+```
+
+## Fluent Bit Log Forwarding
+
+Deploy Fluent Bit to forward application and smoker logs to the Log Analytics instance.
+
+```bash
 
 cd $REPO_ROOT/IaC/AKS/cluster/charts
 
-helm install ngsa-smoker smoker -f ./smoker/helm-config.yaml --namespace ngsa-smoker
+kubectl create namespace fluentbit
+kubectl create secret generic fluentbit-secrets \
+  --namespace fluentbit \
+  --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query customerId -o tsv) \
+  --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query primarySharedKey -o tsv)
 
-# Verify the pods are running
-kubectl get pods --namespace ngsa-smoker
+helm install fluentbit fluentbit --namespace fluentbit
+
+# Verify the fluentbit pod is running
+kubectl get pod --namespace fluentbit
 
 ```

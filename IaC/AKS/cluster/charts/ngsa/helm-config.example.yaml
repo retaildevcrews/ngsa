@@ -14,9 +14,6 @@ ingress:
 
 app:
   args: []
-
-log:
-  name: "ngsa"
   region: ""
   zone: ""
 
