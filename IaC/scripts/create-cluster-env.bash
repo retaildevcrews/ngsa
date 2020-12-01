@@ -6,7 +6,7 @@
 ##   Zone and region needed to be selected for both smoker and ngsa
 
 # Sane prog env:
-set -o errexit -o pipefail -o noclobber # -o nounset
+set -o errexit -o pipefail #-o noclobber -o nounset
 aze() { echo "executing: az $@";az "$@"; }
 dockere() { echo "executing: docker $@";docker "$@"; }
 kubectle() { echo "executing: kubectl $@";kubectl "$@"; }
@@ -31,9 +31,10 @@ Optional args:
                                     Use 'az aks get-versions -l westus2 -o table' to get supported versions
     -c | --node-count NODE_COUNT    Cluster Node Count. Default: 3
     -r | --dns-rg DNS_RG            DNS Resource group name. Default: dns-rg
-    -i | --cosmos-key COSMOS_KEY    
-    -u | --cosmos-url COSMOS_URL    In case users want to use their own CosmosDBBoth Key and URL are empty by default. 
-Optional Flag:
+    -i | --cosmos-key COSMOS_KEY    See COSMOS_URL
+    -u | --cosmos-url COSMOS_URL    In case users want to use their own CosmosDB server. 
+                                    Both Key and URL are empty by default. 
+Optional Flags:
     -x | --set-k8s-context          Sets the kubernetes context for current user in $HOME/.kube/config
     -o | --smoke-it                 Set it to true or false to enable smokers deployment. Default: false
     -h | --help                     Show the usage
@@ -139,6 +140,10 @@ fi
 for i in az helm kubectl http docker istioctl; do
     [[ $(command -v $i) == "" ]] && echo_exit 1 "Make sure '$i' is installed and added to your \$PATH"
 done
+
+# Quick-check if Docker daemon is running
+echo -e '\nChecking docker daemon'
+docker ps > /dev/null
 
 # Check if subscription is valid and available
 if [[ ! -z ${AZ_Sub} ]]; then
@@ -264,7 +269,7 @@ if [[ -z ${set_k8s_ctx} ]];then
     k8scfg_path=$(mktemp)
     echo -e "\n-- Not setting current K8s context --"
     echo -e "Using temporary kubeconfig: ${k8scfg_path}"
-    echo -e "Use: 'AZURE_CONFIG_DIR=${AZURE_CONFIG_DIR} az aks get-credentials -n $Ngsa_AKS_Name -g $Ngsa_App_RG ${subs_arg}' to set this cluster as current k8s context"
+    echo -e "\nUse the command to to set this cluster as current k8s context:\nKUBECONFIG='~/.kube/config:${k8scfg_path}' kubectl config view --flatten > k8cfg && mv ./k8cfg ~/.kube/config"
 else
     k8scfg_path=${HOME}/.kube/config
 fi
@@ -369,8 +374,10 @@ helm install ngsa-aks ngsa -f "./ngsa/helm-config.yaml" --namespace ngsa --set c
 # check the version endpoint
 # you may get a timeout error, if so, just retry
 http ${Ngsa_App_Endpoint}/version
+
 ## Running validation
 # run the tests in a container
+echo -e 'Running basic validation (local)'
 docker run -it --rm retaildevcrew/webvalidate --server $Ngsa_Https_App_Endpoint --base-url https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/ --files baseline.json
 ## Smoke Tests
 if [[ ! -z ${Ngsa_Smoke} ]];then
