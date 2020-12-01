@@ -22,5 +22,16 @@ namespace CSE.NextGenSymmetricApp
 
         [Range(minimum: 0.0, maximum: 10.0)]
         public double Rating { get; set; }
+
+        public string GetKey()
+        {
+            string key = "/api/movies";
+            key += $"/{PageNumber}/{PageSize}/{Year}/{Rating}";
+            key += $"/{(string.IsNullOrWhiteSpace(Q) ? string.Empty : Q.Trim().ToUpperInvariant())}";
+            key += $"/{(string.IsNullOrWhiteSpace(Genre) ? string.Empty : Genre.Trim().ToUpperInvariant())}";
+            key += $"/{(string.IsNullOrWhiteSpace(ActorId) ? string.Empty : ActorId.Trim().ToUpperInvariant())}";
+
+            return key;
+        }
     }
 }

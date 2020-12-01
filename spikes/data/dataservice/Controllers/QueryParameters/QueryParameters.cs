@@ -37,5 +37,11 @@ namespace CSE.NextGenSymmetricApp
         {
             return PageSize * (PageNumber > 1 ? PageNumber - 1 : 0);
         }
+
+        public string GetKey()
+        {
+            string key = $"/api/actors/{PageNumber}/{PageNumber}";
+            return $"/{(string.IsNullOrWhiteSpace(Q) ? string.Empty : Q.ToUpperInvariant().Trim())}";
+        }
     }
 }
