@@ -19,6 +19,7 @@ namespace CSE.NextGenSymmetricApp
         public const int DefaultPageSize = 100;
         public const int MaxPageSize = 1000;
         public const int MaxReqSecBeforeCache = 50;
+        public const int CacheDuration = 300;
 
         public const int GracefulShutdownTimeout = 10;
     }
