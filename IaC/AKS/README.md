@@ -544,7 +544,6 @@ Optional args:
     -u | --cosmos-url COSMOS_URL    In case users want to use their own CosmosDBBoth Key and URL are empty by default.
 Optional Flag:
     -x | --set-k8s-context          Sets the kubernetes context for current user in /home/kushal/.kube/config
-    -o | --smoke-it                 Set it to true or false to enable smokers deployment. Default: false
     -h | --help                     Show the usage
 ```
 
@@ -558,21 +557,18 @@ Example usage:
 - Create a cluster in a specific location
 
   `./create-cluster-env.bash -n basengsa -l centralus`
+- Create a cluster and set the current k8s context
+
+  `./create-cluster-env.bash --subscription "az-sub" -n basengsa --set-k8s-context`
+- Create a cluster with specific environmen type
+
+  `./create-cluster-env.bash --subscription "az-sub" -n ultrangsa -d abcd.efg --email user@email.org --env stage`
 - Create a cluster with specific domain name
 
   `./create-cluster-env.bash --subscription "az-sub" -n basengsa -d abcd.efg --email user@email.org`
 - Create a cluster with existing CosmosDB
 
   `./create-cluster-env.bash -s az-sub -n ngsatest -d abcd.ms -l centralus -i AkI=FAKE=KEY=oGk=SOME=FAKE=KEY=Zh7Iad703gWwBb0P=YET=ANOTHER=FAKE=KEY=w0Zubg== -u https://sample-cosmos-db.documents.zure.com:443/`
-- Create a cluster and run smoke at the end
-
-  `./create-cluster-env.bash --subscription "az-sub" -n basengsa --smoke-it`
 - Create a cluster with specific node count
 
-  `./create-cluster-env.bash --subscription "az-sub" -n basengsa -c 6`
-- Create a cluster and set the current k8s context
-
-  `./create-cluster-env.bash --subscription "az-sub" -n basengsa --env prod -x`
-- Create a cluster with specific environmen type
-
-  `./create-cluster-env.bash --subscription "az-sub" -n ultrangsa -d abcd.efg --email user@email.org --env stage`
+  `./create-cluster-env.bash --subscription "az-sub" -n basengsa -c 6 -x`
