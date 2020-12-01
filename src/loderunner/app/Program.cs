@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
@@ -17,7 +18,7 @@ namespace CSE.WebValidate
     /// </summary>
     public sealed partial class App
     {
-        public const string PodType = "webv";
+        public const string PodType = "l8r";
 
         public static string Region { get; set; } = string.Empty;
         public static string Zone { get; set; } = string.Empty;
@@ -67,7 +68,23 @@ namespace CSE.WebValidate
                 DisplayAsciiArt();
             }
 
-            return await root.InvokeAsync(args).ConfigureAwait(false);
+            int ret = await root.InvokeAsync(args).ConfigureAwait(false);
+
+            if (!args.Contains("-h") &&
+                !args.Contains("--help") &&
+                !args.Contains("--version"))
+            {
+                // log the shutdown event
+                Dictionary<string, object> log = new Dictionary<string, object>
+                {
+                    { "Date", DateTime.UtcNow },
+                    { "EventType", "Shutdown" },
+                };
+
+                Console.WriteLine(JsonSerializer.Serialize(log));
+            }
+
+            return ret;
         }
 
         /// <summary>

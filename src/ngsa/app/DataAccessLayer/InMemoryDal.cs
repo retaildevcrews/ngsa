@@ -3,8 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using CSE.NextGenSymmetricApp.Model;
 using Microsoft.Azure.Cosmos;
@@ -23,7 +23,6 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "key")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2234:Pass system uri objects instead of strings", Justification = "Cosmos")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA1822:does not access instance data", Justification = "simplicity")]
-
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "use List<> for performance")]
     public class InMemoryDal : IDAL
     {
@@ -34,10 +33,8 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
                 ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() },
             };
 
-            using HttpClient client = new HttpClient { BaseAddress = new Uri("https://raw.githubusercontent.com/retaildevcrews/imdb/main/data/") };
-
             // load the data from the json files
-            Actors = JsonConvert.DeserializeObject<List<Actor>>(client.GetStringAsync("actors.json").Result, settings);
+            Actors = JsonConvert.DeserializeObject<List<Actor>>(File.ReadAllText("data/actors.json"), settings);
             Actors.Sort((x, y) =>
             {
                 if (x.Name == null && y.Name == null)
@@ -70,7 +67,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
                 ActorsIndex.Add(a.ActorId, a);
             }
 
-            Movies = JsonConvert.DeserializeObject<List<Movie>>(client.GetStringAsync("movies.json").Result, settings);
+            Movies = JsonConvert.DeserializeObject<List<Movie>>(File.ReadAllText("data/movies.json"), settings);
             Movies.Sort((x, y) =>
             {
                 if (x.Title == null && y.Title == null)
@@ -124,7 +121,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
                 }
             }
 
-            List<dynamic> list = JsonConvert.DeserializeObject<List<dynamic>>(client.GetStringAsync("genres.json").Result, settings);
+            List<dynamic> list = JsonConvert.DeserializeObject<List<dynamic>>(File.ReadAllText("data/genres.json"), settings);
             Genres = new List<string>();
 
             foreach (dynamic g in list)
@@ -202,9 +199,12 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             });
         }
 
-        public Task<IEnumerable<string>> GetGenresAsync()
+        public async Task<IEnumerable<string>> GetGenresAsync()
         {
-            return Task<IEnumerable<string>>.Factory.StartNew(() => { return Genres; });
+            return await Task.Run(() =>
+            {
+                return Genres.AsEnumerable<string>();
+            }).ConfigureAwait(false);
         }
 
         public async Task<Movie> GetMovieAsync(string movieId)
@@ -335,16 +335,11 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
         }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "simplicity")]
-    public class GenreDoc
-    {
-        public string Genre { get; set; }
-    }
-
     /// <summary>
     /// Extension to allow services.AddInMemoryDal()
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "simplicity")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1204:Static elements should appear before instance elements", Justification = "simplicity")]
     public static class InMemoryDataAccessLayerExtension
     {
         public static IServiceCollection AddInMemoryDal(this IServiceCollection services)

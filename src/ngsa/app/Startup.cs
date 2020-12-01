@@ -2,11 +2,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using CSE.Middleware;
 using CSE.NextGenSymmetricApp.Validation;
 using Microsoft.AspNetCore.Builder;
@@ -71,7 +68,7 @@ namespace CSE.NextGenSymmetricApp
             // differences based on dev or prod
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
             }
             else
             {
@@ -129,12 +126,6 @@ namespace CSE.NextGenSymmetricApp
 
             // add healthcheck service
             services.AddHealthChecks().AddCosmosHealthCheck(CosmosHealthCheck.ServiceId);
-
-            // add App Insights if key set
-            if (!string.IsNullOrEmpty(App.Secrets.AppInsightsKey))
-            {
-                services.AddApplicationInsightsTelemetry(App.Secrets.AppInsightsKey);
-            }
         }
     }
 }

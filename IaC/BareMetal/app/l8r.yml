@@ -2,18 +2,26 @@ apiVersion: v1
 kind: Pod
 
 metadata:
-  name: webv
+  name: l8r
   labels:
-    app: webv
+    app: l8r
 
 spec:
   containers:
-  - name: webv
+  - name: l8r
 
-    image: retaildevcrew/webvalidate:beta
+    image: retaildevcrew/loderunner:beta
     imagePullPolicy: Always
 
-    args: ["-v", "-r", "-s", "http://ngsa-memory:4120", "http://ngsa-cosmos:4120", "-u", "https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/", "-f", "benchmark.json", "-l", "1000"]
+    args: 
+    - -l
+    - "1000"
+    - -r
+    - -s
+    - http://ngsa-memory:4120
+    - http://ngsa-cosmos:4120
+    - -f
+    - benchmark.json
 
     env:
     - name: Region
@@ -21,10 +29,12 @@ spec:
         configMapKeyRef:
           name: ngsa-config
           key: Region
+
     - name: Zone
       valueFrom:
         configMapKeyRef:
           name: ngsa-config
           key: Zone
+
     - name: PodType
-      value: webv
+      value: l8r
