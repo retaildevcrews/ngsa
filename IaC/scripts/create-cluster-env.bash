@@ -269,7 +269,7 @@ if [[ -z ${set_k8s_ctx} ]];then
     k8scfg_path=$(mktemp)
     echo -e "\n-- Not setting current K8s context --"
     echo -e "Using temporary kubeconfig: ${k8scfg_path}"
-    echo -e "\nUse the command to to set this cluster as current k8s context:\nKUBECONFIG='~/.kube/config:${k8scfg_path}' kubectl config view --flatten > k8cfg && mv ./k8cfg ~/.kube/config"
+    echo -e "\nUse the command to to set this cluster as current k8s context:\nKUBECONFIG='${k8scfg_path}:~/.kube/config' kubectl config view --flatten > k8cfg && mv ./k8cfg ~/.kube/config"
 else
     k8scfg_path=${HOME}/.kube/config
 fi
