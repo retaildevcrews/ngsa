@@ -23,7 +23,7 @@ namespace CSE.NextGenSymmetricApp
         [Range(minimum: 0.0, maximum: 10.0)]
         public double Rating { get; set; }
 
-        public string GetKey()
+        public new string GetKey()
         {
             string key = "/api/movies";
             key += $"/{PageNumber}/{PageSize}/{Year}/{Rating}";

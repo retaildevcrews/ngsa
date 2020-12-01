@@ -151,6 +151,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             {
                 return m;
             }
+
             Console.WriteLine($"cache miss {key}");
 
             string sql = "select m.id, m.partitionKey, m.movieId, m.type, m.textSearch, m.title, m.year, m.runtime, m.rating, m.votes, m.totalScore, m.genres, m.roles from m where m.id in ({0}) order by m.textSearch ASC, m.movieId ASC";
