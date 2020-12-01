@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.Caching;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
 
@@ -14,10 +15,12 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
     /// </summary>
     public partial class CosmosDal : IDAL
     {
+        private readonly CacheItemPolicy cachePolicy = new CacheItemPolicy { SlidingExpiration = TimeSpan.FromMinutes(5) };
+        private readonly MemoryCache cache = new MemoryCache("cache");
         private CosmosConfig cosmosDetails;
 
         /// <summary>
-        /// Data Access Layer Constructor
+        /// Initializes a new instance of the <see cref="CosmosDal"/> class.
         /// </summary>
         /// <param name="cosmosUrl">CosmosDB Url</param>
         /// <param name="cosmosKey">CosmosDB connection key</param>

@@ -31,11 +31,26 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
         /// <returns>Actor object</returns>
         public async Task<Actor> GetActorAsync(string actorId)
         {
+            if (string.IsNullOrWhiteSpace(actorId))
+            {
+                throw new ArgumentNullException(nameof(actorId));
+            }
+
             // get the partition key for the actor ID
             // note: if the key cannot be determined from the ID, ReadDocumentAsync cannot be used.
             // ComputePartitionKey will throw an ArgumentException if the actorId isn't valid
             // get an actor by ID
+
+            string key = $"/api/actors/{actorId.ToUpperInvariant().Trim()}";
+
+            if (cache.Contains(key) && cache.Get(key) is Actor ac)
+            {
+                return ac;
+            }
+
             Actor res = await cosmosDetails.Container.ReadItemAsync<Actor>(actorId, new PartitionKey(Actor.ComputePartitionKey(actorId))).ConfigureAwait(false);
+
+            cache.Add(new System.Runtime.Caching.CacheItem(key, res), cachePolicy);
 
             return res;
         }
@@ -53,6 +68,13 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             if (actorQueryParameters == null)
             {
                 throw new ArgumentNullException(nameof(actorQueryParameters));
+            }
+
+            string key = actorQueryParameters.GetKey();
+
+            if (cache.Contains(key) && cache.Get(key) is List<Actor> ac)
+            {
+                return ac;
             }
 
             string sql = ActorSelect;
@@ -83,7 +105,9 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
                 queryDefinition.WithParameter("@q", actorQueryParameters.Q);
             }
 
-            IEnumerable<Actor> res = await InternalCosmosDBSqlQuery<Actor>(queryDefinition).ConfigureAwait(false);
+            List<Actor> res = (List<Actor>)await InternalCosmosDBSqlQuery<Actor>(queryDefinition).ConfigureAwait(false);
+
+            cache.Add(new System.Runtime.Caching.CacheItem(key, res), cachePolicy);
 
             return res;
         }
