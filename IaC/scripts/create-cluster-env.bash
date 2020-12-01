@@ -1,15 +1,8 @@
 #!/bin/bash
-## TODO:
-##   Put descriptive echo's in Color
-##   Cleanup script [sem-done]
-## Qurey
-##   Zone and region needed to be selected for both smoker and ngsa
 
 # Sane prog env:
 set -o errexit -o pipefail #-o noclobber -o nounset
 aze() { echo "executing: az $@";az "$@"; }
-dockere() { echo "executing: docker $@";docker "$@"; }
-kubectle() { echo "executing: kubectl $@";kubectl "$@"; }
 # Functions
 usage(){
     echo """
@@ -36,13 +29,8 @@ Optional args:
                                     Both Key and URL are empty by default. 
 Optional Flags:
     -x | --set-k8s-context          Sets the kubernetes context for current user in $HOME/.kube/config
-    -o | --smoke-it                 Set it to true or false to enable smokers deployment. Default: false
     -h | --help                     Show the usage
 """
-}
-echoc(){
-    c=$1;shift;b=$(tput bold);r=$(tput setaf 1);g=$(tput setaf 2);b=$(tput setaf 4);y=$(tput setaf 3);d=$(tput sgr0)
-    echo -e $(eval "echo \$${c}")"$@""${d}"
 }
 echo_exit(){
     ec=$1;shift;echo -e "\n$@" >&2
@@ -91,11 +79,6 @@ while (( "$#" )); do
         -r|--dns-rg)
         Ngsa_DNS_RG=$val
         shift 2
-        ;;
-
-        -o|--smoke-it)
-        Ngsa_Smoke=yes
-        shift
         ;;
 
         -i|--cosmos-key)
@@ -378,28 +361,27 @@ http ${Ngsa_App_Endpoint}/version
 ## Running validation
 # run the tests in a container
 echo -e 'Running basic validation (local)'
-docker run -it --rm retaildevcrew/webvalidate --server $Ngsa_Https_App_Endpoint --base-url https://raw.githubusercontent.com/retaildevcrews/ngsa/main/TestFiles/ --files baseline.json
-## Smoke Tests
-if [[ ! -z ${Ngsa_Smoke} ]];then
-    cd $REPO_ROOT/IaC/AKS/cluster/charts/
+docker run -it --rm retaildevcrew/loderunner:beta --server $Ngsa_Https_App_Endpoint --files baseline.json
 
-    echo -e "\nRunning smoke tests"
-    kubectl create namespace ngsa-l8r
-    cp -f ./loderunner/helm-config.example.yaml ./loderunner/helm-config.yaml
-    helm install l8r loderunner -f ./loderunner/helm-config.yaml --namespace ngsa-l8r --atomic
-    
-    kubectl get pods --namespace ngsa-l8r
-    # Fluent bit log forwarding
-    echo -e "\nForwarding FluentBit log to Azure Log Analytics"
-    cd $REPO_ROOT/IaC/AKS/cluster/charts
+## Loderunner
+cd $REPO_ROOT/IaC/AKS/cluster/charts/
 
-    kubectl create namespace fluentbit
-    kubectl create secret generic fluentbit-secrets --namespace fluentbit --from-literal=WorkspaceId=${Ngsa_Log_Analytics_Wid} --from-literal=SharedKey=${Ngsa_Log_Analytics_SharedKey}
+echo -e "\nStarting loderunner"
+kubectl create namespace ngsa-l8r
+cp -f ./loderunner/helm-config.example.yaml ./loderunner/helm-config.yaml
+helm install l8r loderunner -f ./loderunner/helm-config.yaml --namespace ngsa-l8r --atomic
 
-    helm install fluentbit fluentbit --namespace fluentbit --atomic
+kubectl get pods --namespace ngsa-l8r
+# Fluent bit log forwarding
+echo -e "\nForwarding FluentBit log to Azure Log Analytics"
+cd $REPO_ROOT/IaC/AKS/cluster/charts
 
-    # Verify the fluentbit pod is running
-    kubectl get pod --namespace fluentbit
-fi
+kubectl create namespace fluentbit
+kubectl create secret generic fluentbit-secrets --namespace fluentbit --from-literal=WorkspaceId=${Ngsa_Log_Analytics_Wid} --from-literal=SharedKey=${Ngsa_Log_Analytics_SharedKey}
+
+helm install fluentbit fluentbit --namespace fluentbit --atomic
+
+# Verify the fluentbit pod is running
+kubectl get pod --namespace fluentbit
 #echo -e "Removing temp dirs ${rmdirs[@]}"
 #for rd in ${rmdirs};do rm -r ${rd}; done
