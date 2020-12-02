@@ -2,9 +2,9 @@ apiVersion: v1
 kind: Pod
 
 metadata:
-  name: webv-baseline
+  name: l8r-baseline
   labels:
-    app: webv-baseline
+    app: l8r-baseline
 
 spec:
   restartPolicy: Never
@@ -12,17 +12,25 @@ spec:
   - name: app
     image: retaildevcrew/loderunner:beta
     imagePullPolicy: Always
-    args: ["-s", "http://ngsa:4120", "-f", "baseline.json"]
+
+    args: 
+    - -s
+    - http://ngsa:4120
+    - -f
+    - baseline.json
+
     env:
     - name: Zone
       valueFrom:
         configMapKeyRef:
           name: ngsa-config
           key: Zone
+
     - name: Region
       valueFrom:
         configMapKeyRef:
           name: ngsa-config
           key: Region
+
     - name: PodType
       value: webv

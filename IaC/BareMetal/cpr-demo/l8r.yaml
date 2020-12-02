@@ -2,26 +2,23 @@ apiVersion: v1
 kind: Pod
 
 metadata:
-  name: l8r-benchmark
+  name: l8r
   labels:
-    app: l8r-benchmark
+    app: l8r
 
 spec:
-  serviceAccountName: k8s-admin
-  restartPolicy: Never
+  restartPolicy: OnFailure
   containers:
-  - name: app
+  - name: l8r
     image: retaildevcrew/loderunner:beta
     imagePullPolicy: Always
-    args: 
-    - --duration
-    - "3600"
+    args:
     - -l
-    - "1000"
+    - "100"
     - -r
     - -s
-    - http://ngsa-memory:4120
-    - http://ngsa-cosmos:4120
+    - http://ngsa-aks.ngsamem.svc.cluster.local:4120
+    - http://ngsa-aks.ngsacos.svc.cluster.local:4120
     - -f
     - benchmark.json
 
@@ -39,5 +36,4 @@ spec:
           key: Region
 
     - name: PodType
-      value: l8r-benchmark
-
+      value: l8r
