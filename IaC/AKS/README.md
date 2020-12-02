@@ -27,6 +27,7 @@ The following instructions allow the deployment of NGSA application in AKS with 
 - Visual Studio Code (optional) ([download](https://code.visualstudio.com/download))
 - kubectl (install by using `sudo az aks install-cli`)
 - Helm v3 ([Install Instructions](https://helm.sh/docs/intro/install/))
+- Istioctl ([Install Instructions](https://istio.io/latest/docs/setup/getting-started/#download))
 
 ### DNS, SSL/TLS Prerequisites
 
@@ -71,7 +72,7 @@ az account set -s {subscription name or Id}
 
 ```
 
-This walkthrough will create resource groups, a Cosmos DB instance, and an Azure Kubernetes Service (AKS) cluster.
+This walkthrough will create resource groups, a Cosmos DB instance, Azure DNS entry(if specified) and an Azure Kubernetes Service (AKS) cluster. An automation script is available which can be used instead of this walkthrough. Script usage instruction is found [here](#aks-cluster-using-automated-script)
 
 #### Choose a unique DNS name
 
@@ -515,3 +516,59 @@ helm install fluentbit fluentbit --namespace fluentbit
 kubectl get pod --namespace fluentbit
 
 ```
+## AKS Cluster using automated script
+With this script a cluster can be deployed in AKS (uses the same steps above).
+The script is self-contained, meaning, it won't change the user-environment (e.g. selected Azure Subscription or ubernetes context) unless it's explicitly specified.
+It is located [here](../scripts/create-cluster-env.bash).
+Script Usage:
+```bash
+    ./create-cluster-env.bash --ngsa-prefix basename123 [Optional Args/Flags]
+    ./create-cluster-env.bash -s azure-subs -n basename123 [Optional Args/Flags]
+
+Required args:
+    -n | --ngsa-prefix BASE_NAME    This will be the NGSA prefix for all resources
+                                    Do not include punctuation - only use a-z and 0-9
+                                    must be at least 5 characters long
+                                    must start with a-z (only lowercase)
+Optional args:
+    -s | --subscription AZ_SUB      Azure Subscription Name or ID
+    -e | --env ENVIRONMENT          Environemnt Type. Default: dev (See README.md for other values)
+    -d | --domain DOMAIN_NAME       Registered Domain Name. Default: nip.io (Requires --email)
+    -m | --email EMAIL_DOMAIN       Required Email if a '--domain' is given
+    -l | --location LOCATION        Location where the resources will be created. Default: westus2
+    -k | --k8s-ver K8S_VERSION      Kubernetes version used. Default: 1.18.8
+                                    Use 'az aks get-versions -l westus2 -o table' to get supported versions
+    -c | --node-count NODE_COUNT    Cluster Node Count. Default: 3
+    -r | --dns-rg DNS_RG            DNS Resource group name. Default: dns-rg
+    -i | --cosmos-key COSMOS_KEY
+    -u | --cosmos-url COSMOS_URL    In case users want to use their own CosmosDBBoth Key and URL are empty by default.
+Optional Flag:
+    -x | --set-k8s-context          Sets the kubernetes context for current user in /home/kushal/.kube/config
+    -h | --help                     Show the usage
+```
+
+Example usage:
+- Create a cluster with selected Azure subscription
+
+  `./create-cluster-env.bash --ngsa-prefix basengsa`
+- Create a cluster with specific Azure subscription
+
+  `./create-cluster-env.bash -s azure-subscription-name -n basengsa`
+- Create a cluster in a specific location
+
+  `./create-cluster-env.bash -n basengsa -l centralus`
+- Create a cluster and set the current k8s context
+
+  `./create-cluster-env.bash --subscription "az-sub" -n basengsa --set-k8s-context`
+- Create a cluster with specific environmen type
+
+  `./create-cluster-env.bash --subscription "az-sub" -n ultrangsa -d abcd.efg --email user@email.org --env stage`
+- Create a cluster with specific domain name
+
+  `./create-cluster-env.bash --subscription "az-sub" -n basengsa -d abcd.efg --email user@email.org`
+- Create a cluster with existing CosmosDB
+
+  `./create-cluster-env.bash -s az-sub -n ngsatest -d abcd.ms -l centralus -i AkI=FAKE=KEY=oGk=SOME=FAKE=KEY=Zh7Iad703gWwBb0P=YET=ANOTHER=FAKE=KEY=w0Zubg== -u https://sample-cosmos-db.documents.zure.com:443/`
+- Create a cluster with specific node count
+
+  `./create-cluster-env.bash --subscription "az-sub" -n basengsa -c 6 -x`
