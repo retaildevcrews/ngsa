@@ -302,3 +302,12 @@ __pycache__/
 
 # Files generated during multi-cluster spike walkthrough
 spikes/istio-multicluster/istio-*-cluster.yaml
+
+# Typescript
+node_modules
+dist
+.nyc_output
+
+### OSX ###
+# General
+.DS_Store
