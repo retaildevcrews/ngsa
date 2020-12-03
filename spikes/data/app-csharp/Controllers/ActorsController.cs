@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CSE.NextGenSymmetricApp.Extensions;
 using CSE.NextGenSymmetricApp.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -44,7 +43,7 @@ namespace CSE.NextGenSymmetricApp.Controllers
                 throw new ArgumentNullException(nameof(actorQueryParameters));
             }
 
-            return await ResultHandler.Proxy<List<Actor>>(Request).ConfigureAwait(false);
+            return await DataService.Read<List<Actor>>(Request).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -64,7 +63,7 @@ namespace CSE.NextGenSymmetricApp.Controllers
             string method = nameof(GetActorByIdAsync) + actorIdParameter.ActorId;
 
             // return result
-            return await ResultHandler.Proxy<Actor>(Request).ConfigureAwait(false);
+            return await DataService.Read<Actor>(Request).ConfigureAwait(false);
         }
     }
 }

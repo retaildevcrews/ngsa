@@ -35,7 +35,7 @@ namespace CSE.NextGenSymmetricApp.Controllers
         public async Task<IActionResult> GetGenresAsync()
         {
             logger.LogInformation("GetGenresAsync");
-            return await ResultHandler.Proxy<List<string>>(Request).ConfigureAwait(false);
+            return await DataService.Read<List<string>>(Request).ConfigureAwait(false);
         }
     }
 }

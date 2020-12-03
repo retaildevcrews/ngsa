@@ -2,15 +2,12 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using CSE.NextGenSymmetricApp.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace CSE.NextGenSymmetricApp.Controllers
 {
@@ -18,7 +15,7 @@ namespace CSE.NextGenSymmetricApp.Controllers
     /// Handles query requests from the controllers
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2234:Pass system uri objects instead of strings", Justification = "have to use string - base address is set")]
-    public static class ResultHandler
+    public static class DataService
     {
         // json serialization options
         private static readonly JsonSerializerOptions Options = new JsonSerializerOptions
@@ -40,7 +37,7 @@ namespace CSE.NextGenSymmetricApp.Controllers
         /// <param name="path">path</param>
         /// <param name="queryString">query string</param>
         /// <returns>IActionResult</returns>
-        public static async Task<IActionResult> Proxy<T>(string path, string queryString = "")
+        public static async Task<IActionResult> Read<T>(string path, string queryString = "")
         {
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -56,7 +53,7 @@ namespace CSE.NextGenSymmetricApp.Controllers
 
             try
             {
-                var res = await Client.GetStringAsync(fullPath).ConfigureAwait(false);
+                string res = await Client.GetStringAsync(fullPath).ConfigureAwait(false);
 
                 T obj = System.Text.Json.JsonSerializer.Deserialize<T>(res, Options);
 
@@ -75,11 +72,11 @@ namespace CSE.NextGenSymmetricApp.Controllers
         /// <typeparam name="T">return type</typeparam>
         /// <param name="request">http request</param>
         /// <returns>IActionResult</returns>
-        public static async Task<IActionResult> Proxy<T>(HttpRequest request)
+        public static async Task<IActionResult> Read<T>(HttpRequest request)
         {
             try
             {
-                var res = await Client.GetStringAsync(request?.Path.ToString() + request?.QueryString.ToString()).ConfigureAwait(false);
+                string res = await Client.GetStringAsync(request?.Path.ToString() + request?.QueryString.ToString()).ConfigureAwait(false);
 
                 T obj = System.Text.Json.JsonSerializer.Deserialize<T>(res, Options);
 

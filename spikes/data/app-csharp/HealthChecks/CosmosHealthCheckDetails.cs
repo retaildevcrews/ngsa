@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using CSE.NextGenSymmetricApp.Controllers;
 using CSE.NextGenSymmetricApp.Model;
@@ -77,7 +76,7 @@ namespace CSE.NextGenSymmetricApp
 
             try
             {
-                _ = await ResultHandler.Proxy<List<string>>(path, string.Empty).ConfigureAwait(false);
+                _ = await DataService.Read<List<string>>(path, string.Empty).ConfigureAwait(false);
 
                 return BuildHealthzCheck(path, MaxResponseTime, null, data, name);
             }
@@ -103,7 +102,7 @@ namespace CSE.NextGenSymmetricApp
 
             try
             {
-                _ = await ResultHandler.Proxy<Movie>(path, string.Empty).ConfigureAwait(false);
+                _ = await DataService.Read<Movie>(path, string.Empty).ConfigureAwait(false);
 
                 return BuildHealthzCheck(path, MaxResponseTime / 2, null, data, name);
             }
@@ -132,7 +131,7 @@ namespace CSE.NextGenSymmetricApp
 
             try
             {
-                _ = await ResultHandler.Proxy<List<Movie>>(path, string.Empty).ConfigureAwait(false);
+                _ = await DataService.Read<List<Movie>>(path, string.Empty).ConfigureAwait(false);
 
                 return BuildHealthzCheck(path, MaxResponseTime, null, data, name);
             }
@@ -158,7 +157,7 @@ namespace CSE.NextGenSymmetricApp
 
             try
             {
-                _ = await ResultHandler.Proxy<Actor>(path, string.Empty).ConfigureAwait(false);
+                _ = await DataService.Read<Actor>(path, string.Empty).ConfigureAwait(false);
 
                 return BuildHealthzCheck(path, MaxResponseTime / 2, null, data, name);
             }
@@ -187,7 +186,7 @@ namespace CSE.NextGenSymmetricApp
 
             try
             {
-                _ = await ResultHandler.Proxy<List<Actor>>(path, string.Empty).ConfigureAwait(false);
+                _ = await DataService.Read<List<Actor>>(path, string.Empty).ConfigureAwait(false);
 
                 return BuildHealthzCheck(path, MaxResponseTime, null, data, name);
             }

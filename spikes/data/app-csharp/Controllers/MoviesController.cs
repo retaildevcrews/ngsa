@@ -42,7 +42,7 @@ namespace CSE.NextGenSymmetricApp.Controllers
                 throw new ArgumentNullException(nameof(movieQueryParameters));
             }
 
-            return await ResultHandler.Proxy<List<Movie>>(Request).ConfigureAwait(false);
+            return await DataService.Read<List<Movie>>(Request).ConfigureAwait(false);
 
             //return await ResultHandler.Handle(
             //    dal.GetMoviesAsync(movieQueryParameters), movieQueryParameters.GetMethodText(HttpContext), Constants.MoviesControllerException, logger)
@@ -64,7 +64,7 @@ namespace CSE.NextGenSymmetricApp.Controllers
 
             string method = nameof(GetMovieByIdAsync) + movieIdParameter.MovieId;
 
-            return await ResultHandler.Proxy<Movie>(Request).ConfigureAwait(false);
+            return await DataService.Read<Movie>(Request).ConfigureAwait(false);
 
             //return await ResultHandler.Handle(
             //    dal.GetMovieAsync(movieIdParameter.MovieId), method, "Movie Not Found", logger)

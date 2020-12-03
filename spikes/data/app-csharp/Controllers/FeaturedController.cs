@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using CSE.NextGenSymmetricApp.Model;
 using Microsoft.AspNetCore.Mvc;
@@ -39,7 +37,7 @@ namespace CSE.NextGenSymmetricApp.Controllers
             string method = nameof(GetFeaturedMovieAsync);
             logger.LogInformation(method);
 
-            return await ResultHandler.Proxy<Movie>(Request).ConfigureAwait(false);
+            return await DataService.Read<Movie>(Request).ConfigureAwait(false);
         }
     }
 }
