@@ -13,11 +13,12 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
     /// <summary>
     /// Data Access Layer for CosmosDB
     /// </summary>
-    public partial class CosmosDal : IDAL
+    public partial class CosmosDal : IDAL, IDisposable
     {
         private readonly CacheItemPolicy cachePolicy = new CacheItemPolicy { SlidingExpiration = TimeSpan.FromMinutes(5) };
         private readonly MemoryCache cache = new MemoryCache("cache");
         private CosmosConfig cosmosDetails;
+        private bool disposedValue;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CosmosDal"/> class.
@@ -94,6 +95,27 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
         }
 
         /// <summary>
+        /// Returnt the generic Cosmos DB results
+        /// </summary>
+        /// <typeparam name="T">generic type</typeparam>
+        /// <param name="query">Cosmos Query</param>
+        /// <returns>IEnumerable T</returns>
+        private static async Task<IEnumerable<T>> InternalCosmosDbResults<T>(FeedIterator<T> query)
+        {
+            List<T> results = new List<T>();
+
+            while (query.HasMoreResults)
+            {
+                foreach (T doc in await query.ReadNextAsync().ConfigureAwait(false))
+                {
+                    results.Add(doc);
+                }
+            }
+
+            return results;
+        }
+
+        /// <summary>
         /// Open and test the Cosmos Client / Container / Query
         /// </summary>
         /// <param name="cosmosUrl">Cosmos URL</param>
@@ -162,25 +184,29 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             return await InternalCosmosDbResults<T>(query).ConfigureAwait(false);
         }
 
-        /// <summary>
-        /// Returnt the generic Cosmos DB results
-        /// </summary>
-        /// <typeparam name="T">generic type</typeparam>
-        /// <param name="query">Cosmos Query</param>
-        /// <returns>IEnumerable T</returns>
-        private static async Task<IEnumerable<T>> InternalCosmosDbResults<T>(FeedIterator<T> query)
+        // implement IDisposable
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1202:Elements should be ordered by access", Justification = "clarity")]
+        public void Dispose()
         {
-            List<T> results = new List<T>();
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
 
-            while (query.HasMoreResults)
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
             {
-                foreach (T doc in await query.ReadNextAsync().ConfigureAwait(false))
+                if (disposing)
                 {
-                    results.Add(doc);
+                    if (cache != null)
+                    {
+                        cache.Dispose();
+                    }
                 }
-            }
 
-            return results;
+                disposedValue = true;
+            }
         }
     }
 }

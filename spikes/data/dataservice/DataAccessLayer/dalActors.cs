@@ -13,9 +13,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
     /// <summary>
     /// Data Access Layer for CosmosDB
     /// </summary>
-#pragma warning disable CA1001 // Types that own disposable fields should be disposable
     public partial class CosmosDal
-#pragma warning restore CA1001 // Types that own disposable fields should be disposable
     {
         // select template for Actors
         private const string ActorSelect = "select m.id, m.partitionKey, m.actorId, m.type, m.name, m.birthYear, m.deathYear, m.profession, m.textSearch, m.movies from m where m.type = 'Actor' ";
