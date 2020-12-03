@@ -27,16 +27,7 @@ namespace CSE.NextGenSymmetricApp.Controllers
         public MoviesController(ILogger<MoviesController> logger)
         {
             this.logger = logger;
-
-            // use the cache DAL if requests are high
-            if (CSE.Middleware.Logger.RequestsPerSecond > Constants.MaxReqSecBeforeCache)
-            {
-                dal = App.CacheDal;
-            }
-            else
-            {
-                dal = App.CosmosDal;
-            }
+            dal = App.CosmosDal;
         }
 
         /// <summary>

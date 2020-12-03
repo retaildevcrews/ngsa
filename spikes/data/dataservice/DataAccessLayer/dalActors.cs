@@ -43,7 +43,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
 
             string key = $"/api/actors/{actorId.ToUpperInvariant().Trim()}";
 
-            if (cache.Contains(key) && cache.Get(key) is Actor ac)
+            if (App.UseCache && cache.Contains(key) && cache.Get(key) is Actor ac)
             {
                 return ac;
             }
@@ -72,7 +72,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
 
             string key = actorQueryParameters.GetKey();
 
-            if (cache.Contains(key) && cache.Get(key) is List<Actor> ac)
+            if (App.UseCache && cache.Contains(key) && cache.Get(key) is List<Actor> ac)
             {
                 return ac;
             }

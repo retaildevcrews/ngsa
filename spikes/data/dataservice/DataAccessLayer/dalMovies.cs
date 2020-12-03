@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Runtime.Caching;
 using System.Threading.Tasks;
 using CSE.NextGenSymmetricApp.Model;
@@ -34,7 +33,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
 
             string key = $"/api/movies/{movieId.ToLowerInvariant().Trim()}";
 
-            if (cache.Contains(key) && cache.Get(key) is Movie mc)
+            if (App.UseCache && cache.Contains(key) && cache.Get(key) is Movie mc)
             {
                 return mc;
             }
@@ -44,7 +43,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             // ComputePartitionKey will throw an ArgumentException if the movieId isn't valid
             // get a movie by ID
 
-            Movie m = (Movie)await cosmosDetails.Container.ReadItemAsync<Movie>(movieId, new PartitionKey(Movie.ComputePartitionKey(movieId))).ConfigureAwait(false);
+            Movie m = await cosmosDetails.Container.ReadItemAsync<Movie>(movieId, new PartitionKey(Movie.ComputePartitionKey(movieId))).ConfigureAwait(false);
 
             cache.Add(new CacheItem(key, m), cachePolicy);
 
@@ -60,16 +59,12 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
 
             string key = movieQueryParameters.GetKey();
 
-            if (cache.Contains(key) && cache.Get(key) is List<Movie> m)
+            if (App.UseCache && cache.Contains(key) && cache.Get(key) is List<Movie> m)
             {
                 return m;
             }
 
-            Console.WriteLine($"cache miss {key}");
-
-            string sql = "select m.id, m.partitionKey, m.movieId, m.type, m.textSearch, m.title, m.year, m.runtime, m.rating, m.votes, m.totalScore, m.genres, m.roles from m where m.id in ({0}) order by m.textSearch ASC, m.movieId ASC";
-
-            string ids = App.CacheDal.GetMovieIds(movieQueryParameters);
+            string ids = App.SearchService.GetMovieIds(movieQueryParameters);
 
             // nothing found
             if (string.IsNullOrEmpty(ids))
@@ -77,9 +72,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
                 return new List<Movie>();
             }
 
-            sql = sql.Replace("{0}", ids, StringComparison.Ordinal);
-
-            List<Movie> movies = (List<Movie>)await InternalCosmosDBSqlQuery<Movie>(sql).ConfigureAwait(false);
+            List<Movie> movies = (List<Movie>)await InternalCosmosDBSqlQuery<Movie>(ids).ConfigureAwait(false);
 
             cache.Add(new CacheItem(key, movies), cachePolicy);
 

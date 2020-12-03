@@ -22,6 +22,8 @@ namespace CSE.NextGenSymmetricApp
     /// </summary>
     public sealed partial class App
     {
+        private static bool cache = true;
+
         // ILogger instance
         private static ILogger<App> logger;
 
@@ -34,6 +36,8 @@ namespace CSE.NextGenSymmetricApp
         private static CancellationTokenSource ctCancel;
 
         public static InMemoryDal CacheDal { get; set; }
+        public static InMemoryDal SearchService => CacheDal;
+
         public static IDAL CosmosDal { get; set; }
 
         public static string CosmosName { get; set; } = string.Empty;
@@ -41,6 +45,8 @@ namespace CSE.NextGenSymmetricApp
         public static string Region { get; set; } = string.Empty;
         public static string Zone { get; set; } = string.Empty;
         public static string PodType { get; set; }
+
+        public static bool UseCache => cache || Middleware.Logger.RequestsPerSecond > Constants.MaxReqSecBeforeCache;
 
         /// <summary>
         /// Gets or sets LogLevel

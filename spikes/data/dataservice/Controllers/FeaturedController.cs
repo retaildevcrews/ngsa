@@ -21,23 +21,14 @@ namespace CSE.NextGenSymmetricApp.Controllers
         private readonly Random rand = new Random(DateTime.Now.Millisecond);
 
         /// <summary>
-        /// Constructor
+        /// Initializes a new instance of the <see cref="FeaturedController"/> class.
         /// </summary>
         /// <param name="logger">log instance</param>
         /// <param name="dal">data access layer instance</param>
         public FeaturedController(ILogger<FeaturedController> logger)
         {
             this.logger = logger;
-
-            // use the cache DAL if requests are high
-            if (CSE.Middleware.Logger.RequestsPerSecond > Constants.MaxReqSecBeforeCache)
-            {
-                dal = App.CacheDal;
-            }
-            else
-            {
-                dal = App.CosmosDal;
-            }
+            dal = App.CosmosDal;
         }
 
         /// <summary>
@@ -46,12 +37,13 @@ namespace CSE.NextGenSymmetricApp.Controllers
         /// <response code="200">OK</response>
         /// <returns>IActionResult</returns>
         [HttpGet("movie")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Security", "CA5394:Do not use insecure randomness", Justification = "not used for security")]
         public async Task<IActionResult> GetFeaturedMovieAsync()
         {
             string method = nameof(GetFeaturedMovieAsync);
             logger.LogInformation(method);
 
-            List<string> featuredMovies = await dal.GetFeaturedMovieListAsync().ConfigureAwait(false);
+            List<string> featuredMovies = await App.CacheDal.GetFeaturedMovieListAsync().ConfigureAwait(false);
 
             if (featuredMovies != null && featuredMovies.Count > 0)
             {

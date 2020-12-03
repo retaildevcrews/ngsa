@@ -28,16 +28,7 @@ namespace CSE.NextGenSymmetricApp.Controllers
         {
             // save to local for use in handlers
             this.logger = logger;
-
-            // use the cache DAL if requests are high
-            if (CSE.Middleware.Logger.RequestsPerSecond > Constants.MaxReqSecBeforeCache)
-            {
-                dal = App.CacheDal;
-            }
-            else
-            {
-                dal = App.CosmosDal;
-            }
+            dal = App.CosmosDal;
         }
 
         /// <summary>
