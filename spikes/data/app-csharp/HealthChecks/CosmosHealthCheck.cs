@@ -8,7 +8,6 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using CSE.NextGenSymmetricApp.Model;
-using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 
@@ -24,7 +23,7 @@ namespace CSE.NextGenSymmetricApp
         private readonly ILogger logger;
 
         /// <summary>
-        /// Constructor
+        /// Initializes a new instance of the <see cref="CosmosHealthCheck"/> class.
         /// </summary>
         /// <param name="logger">ILogger</param>
         /// <param name="dal">IDAL</param>
@@ -94,15 +93,6 @@ namespace CSE.NextGenSymmetricApp
 
                 // return the result
                 return new HealthCheckResult(status, Description, data: data);
-            }
-            catch (CosmosException ce)
-            {
-                // log and return Unhealthy
-                logger.LogError($"{ce}\nCosmosException:Healthz:{ce.StatusCode}:{ce.ActivityId}:{ce.Message}");
-
-                data.Add("CosmosException", ce.Message);
-
-                return new HealthCheckResult(HealthStatus.Unhealthy, Description, ce, data);
             }
             catch (Exception ex)
             {

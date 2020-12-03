@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using CSE.NextGenSymmetricApp.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 
 namespace CSE.NextGenSymmetricApp.Controllers
