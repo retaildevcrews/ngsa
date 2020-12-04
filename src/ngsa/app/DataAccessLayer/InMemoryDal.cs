@@ -33,7 +33,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             };
 
             // load the data from the json files
-            Actors = JsonConvert.DeserializeObject<List<Actor>>(client.GetStringAsync("actors.json").Result, settings);
+            Actors = JsonConvert.DeserializeObject<List<Actor>>(File.ReadAllText("data/actors.json"), settings);
             Actors.Sort();
 
             foreach (Actor a in Actors)
@@ -41,7 +41,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
                 ActorsIndex.Add(a.ActorId, a);
             }
 
-            Movies = JsonConvert.DeserializeObject<List<Movie>>(client.GetStringAsync("movies.json").Result, settings);
+            Movies = JsonConvert.DeserializeObject<List<Movie>>(File.ReadAllText("data/movies.json"), settings);
             Movies.Sort();
 
             string ge;
