@@ -111,7 +111,7 @@ jobs:
         docker run -d --name ngsa -p 4120:4120 test
         
         echo "Waiting for web server to start and run initial tests ..."
-        sleep 10
+        sleep 20
 
     - name: Run WebV
       if: ${{ env.COSMOS_SET == 'true' }}
