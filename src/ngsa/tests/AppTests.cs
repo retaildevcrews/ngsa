@@ -2,7 +2,6 @@ using System;
 using System.CommandLine;
 using System.Threading.Tasks;
 using CSE.NextGenSymmetricApp;
-using FluentAssertions.Equivalency;
 using Xunit;
 
 namespace Tests
