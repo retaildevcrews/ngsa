@@ -40,7 +40,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             Actors.Sort(Actor.NameCompare);
 
             // Loads an O(1) dictionary for retrieving by ID
-            // Could also use a binary search of Actors to save some memory
+            // Could also use a binary search to reduce memory usage
             foreach (Actor a in Actors)
             {
                 ActorsIndex.Add(a.ActorId, a);
@@ -56,7 +56,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             foreach (Movie m in Movies)
             {
                 // Loads an O(1) dictionary for retrieving by ID
-                // Could also use a binary search of Actors to save some memory
+                // Could also use a binary search to reduce memory usage
                 MoviesIndex.Add(m.MovieId, m);
 
                 // Create a dictionary by year
