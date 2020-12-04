@@ -7,7 +7,6 @@ using System.Globalization;
 
 namespace CSE.NextGenSymmetricApp.Model
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "performance")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1036:Override methods on comparable types", Justification = "todo")]
     public class Actor : IComparable
     {
