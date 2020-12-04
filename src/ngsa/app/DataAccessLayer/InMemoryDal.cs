@@ -13,8 +13,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 /// <summary>
-/// This is NOT production code
-/// This code is used to support performance testing only
+/// This code is used to support performance testing
 /// </summary>
 namespace CSE.NextGenSymmetricApp.DataAccessLayer
 {
@@ -34,66 +33,16 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             };
 
             // load the data from the json files
-            Actors = JsonConvert.DeserializeObject<List<Actor>>(File.ReadAllText("data/actors.json"), settings);
-            Actors.Sort((x, y) =>
-            {
-                if (x.Name == null && y.Name == null)
-                {
-                    return 0;
-                }
-                else if (x.Name == null)
-                {
-                    return -1;
-                }
-                else if (y.Name == null)
-                {
-                    return 1;
-                }
-                else
-                {
-                    if (x.TextSearch == y.TextSearch)
-                    {
-                        return string.Compare(x.TextSearch + x.Id, y.TextSearch + y.Id, StringComparison.OrdinalIgnoreCase);
-                    }
-                    else
-                    {
-                        return string.Compare(x.TextSearch, y.TextSearch, StringComparison.OrdinalIgnoreCase);
-                    }
-                }
-            });
+            Actors = JsonConvert.DeserializeObject<List<Actor>>(client.GetStringAsync("actors.json").Result, settings);
+            Actors.Sort();
 
             foreach (Actor a in Actors)
             {
                 ActorsIndex.Add(a.ActorId, a);
             }
 
-            Movies = JsonConvert.DeserializeObject<List<Movie>>(File.ReadAllText("data/movies.json"), settings);
-            Movies.Sort((x, y) =>
-            {
-                if (x.Title == null && y.Title == null)
-                {
-                    return 0;
-                }
-                else if (x.Title == null)
-                {
-                    return -1;
-                }
-                else if (y.Title == null)
-                {
-                    return 1;
-                }
-                else
-                {
-                    if (x.TextSearch == y.TextSearch)
-                    {
-                        return string.Compare(x.TextSearch + x.Id, y.TextSearch + y.Id, StringComparison.OrdinalIgnoreCase);
-                    }
-                    else
-                    {
-                        return string.Compare(x.TextSearch, y.TextSearch, StringComparison.OrdinalIgnoreCase);
-                    }
-                }
-            });
+            Movies = JsonConvert.DeserializeObject<List<Movie>>(client.GetStringAsync("movies.json").Result, settings);
+            Movies.Sort();
 
             string ge;
 

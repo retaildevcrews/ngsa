@@ -1,9 +1,10 @@
 # Developer Docs
 
-- In order to run locally, you need to create 3 files in the src/app/secrets directory
+- TODO - explain why - k8s secrets are mounted
+
+- In order to run locally, you need to create 2 files in the src/app/secrets directory
   - CosmosUrl
   - CosmosKey
-  - AppInsightsKey (optional)
 
 > The file names are case sensitive and are ignored in .gitignore
 

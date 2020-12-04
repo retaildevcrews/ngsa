@@ -7,7 +7,9 @@ using System.Globalization;
 
 namespace CSE.NextGenSymmetricApp.Model
 {
-    public class Movie
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "performance")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1036:Override methods on comparable types", Justification = "TODO")]
+    public class Movie : IComparable
     {
         public string Id { get; set; }
         public string PartitionKey { get; set; }
@@ -44,6 +46,23 @@ namespace CSE.NextGenSymmetricApp.Model
             }
 
             throw new ArgumentException("Invalid Partition Key");
+        }
+
+        public int CompareTo(object obj)
+        {
+            int result = 1;
+
+            if (obj is Movie y)
+            {
+                result = string.Compare(this.Title, y.Title, StringComparison.OrdinalIgnoreCase);
+
+                if (result == 0)
+                {
+                    return string.Compare(this.Id, y.Id, StringComparison.OrdinalIgnoreCase);
+                }
+            }
+
+            return result;
         }
     }
 }
