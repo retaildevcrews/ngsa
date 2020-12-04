@@ -54,11 +54,11 @@ namespace CSE.NextGenSymmetricApp.Model
 
             if (obj is Movie y)
             {
-                result = string.Compare(this.Title, y.Title, StringComparison.OrdinalIgnoreCase);
+                result = string.Compare(Title, y.Title, StringComparison.OrdinalIgnoreCase);
 
                 if (result == 0)
                 {
-                    return string.Compare(this.Id, y.Id, StringComparison.OrdinalIgnoreCase);
+                    return string.Compare(Id, y.Id, StringComparison.OrdinalIgnoreCase);
                 }
             }
 

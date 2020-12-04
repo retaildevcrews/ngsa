@@ -49,7 +49,7 @@ namespace CSE.NextGenSymmetricApp.Model
         {
             if (obj is Actor y)
             {
-                return string.Compare(this.Name, y.Name, StringComparison.OrdinalIgnoreCase);
+                return string.Compare(Name, y.Name, StringComparison.OrdinalIgnoreCase);
             }
 
             return 1;
