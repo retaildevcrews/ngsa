@@ -3,12 +3,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace CSE.NextGenSymmetricApp.Model
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1036:Override methods on comparable types", Justification = "TODO")]
-    public class Movie : IComparable
+    public class Movie
     {
         public string Id { get; set; }
         public string PartitionKey { get; set; }
@@ -47,18 +48,15 @@ namespace CSE.NextGenSymmetricApp.Model
             throw new ArgumentException("Invalid Partition Key");
         }
 
-        public int CompareTo(object obj)
+        public static int TitleCompare(Movie x, Movie y)
         {
-            int result = 1;
+            int result;
 
-            if (obj is Movie y)
+            result = string.Compare(x?.Title, y?.Title, StringComparison.OrdinalIgnoreCase);
+
+            if (result == 0)
             {
-                result = string.Compare(Title, y.Title, StringComparison.OrdinalIgnoreCase);
-
-                if (result == 0)
-                {
-                    return string.Compare(Id, y.Id, StringComparison.OrdinalIgnoreCase);
-                }
+                return string.Compare(y.Id, y.Id, StringComparison.OrdinalIgnoreCase);
             }
 
             return result;

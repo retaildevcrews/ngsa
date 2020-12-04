@@ -7,8 +7,7 @@ using System.Globalization;
 
 namespace CSE.NextGenSymmetricApp.Model
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1036:Override methods on comparable types", Justification = "todo")]
-    public class Actor : IComparable
+    public class Actor
     {
         public string Id { get; set; }
         public string ActorId { get; set; }
@@ -44,14 +43,9 @@ namespace CSE.NextGenSymmetricApp.Model
             throw new ArgumentException("Invalid Partition Key");
         }
 
-        public int CompareTo(object obj)
+        public static int NameCompare(Actor x, Actor y)
         {
-            if (obj is Actor y)
-            {
-                return string.Compare(Name, y.Name, StringComparison.OrdinalIgnoreCase);
-            }
-
-            return 1;
+            return string.Compare(x?.Name, y?.Name, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
