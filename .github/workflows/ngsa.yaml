@@ -111,9 +111,10 @@ jobs:
         docker run -d --name ngsa -p 4120:4120 test
         
         echo "Waiting for web server to start ..."
+        sleep 10
 
-        # wait up to 20 seconds for web server to start
-        wait_time=0
+        # wait up to 30 seconds for web server to start
+        wait_time=10
 
         while true
         do
@@ -122,13 +123,13 @@ jobs:
             break
           fi
 
-          if [ $wait_time -gt 20 ] ; then
+          if [ $wait_time -gt 30 ] ; then
             echo "timeout waiting for web server to start"
             exit 1
           fi
 
           # sleep and try again
-          sleep 1
+          sleep 2
           wait_period=$(($wait_time+1))
         done
 
