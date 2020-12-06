@@ -42,5 +42,10 @@ namespace CSE.NextGenSymmetricApp.Model
 
             throw new ArgumentException("Invalid Partition Key");
         }
+
+        public static int NameCompare(Actor x, Actor y)
+        {
+            return string.Compare(x?.Name, y?.Name, StringComparison.OrdinalIgnoreCase);
+        }
     }
 }
