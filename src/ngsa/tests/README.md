@@ -1,30 +1,6 @@
-# Developer Docs
+# Test Docs
 
-- TODO - explain why - k8s secrets are mounted
-
-- In order to run locally, you need to create 2 files in the src/app/secrets directory
-  - CosmosUrl
-  - CosmosKey
-
-> The file names are case sensitive and are ignored in .gitignore
-
-## Run locally
-
-```bash
-
-# from src/app
-dotnet run
-
-```
-
-## Run tests
-
-```bash
-
-# from src/tests
-dotnet test
-
-```
+- TODO - Add Details about how this works in ci-cd
 
 - You can run a complete end-to-end test using webv
   - You must create your secrets first

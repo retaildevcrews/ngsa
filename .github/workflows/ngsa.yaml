@@ -110,8 +110,28 @@ jobs:
         # run the app
         docker run -d --name ngsa -p 4120:4120 test
         
-        echo "Waiting for web server to start and run initial tests ..."
-        sleep 25
+        echo "Waiting for web server to start ..."
+        sleep 10
+
+        # wait up to 30 seconds for web server to start
+        wait_time=10
+
+        while true
+        do
+          if curl localhost:4120/version ; then
+            echo "web server is running"
+            break
+          fi
+
+          if [ $wait_time -gt 30 ] ; then
+            echo "timeout waiting for web server to start"
+            exit 1
+          fi
+
+          # sleep and try again
+          sleep 2
+          wait_period=$(($wait_time+1))
+        done
 
     - name: Run WebV
       if: ${{ env.COSMOS_SET == 'true' }}
