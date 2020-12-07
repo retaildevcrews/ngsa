@@ -15,16 +15,22 @@ using Newtonsoft.Json.Serialization;
 
 /// <summary>
 /// This code is used to support performance testing
+///
+/// This loads the IMDb data into memory which removes the roundtrip to Cosmos
+/// This provides higher performance and less variability which allows us to establish
+/// baseline performance metrics
 /// </summary>
 namespace CSE.NextGenSymmetricApp.DataAccessLayer
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "log params")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "json serialization")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "key")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2234:Pass system uri objects instead of strings", Justification = "Cosmos")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA1822:does not access instance data", Justification = "simplicity")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "log params aren't localized")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "json serialization requires read/write")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "key is lower case")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2234:Pass system uri objects instead of strings", Justification = "Cosmos requirement")]
     public class InMemoryDal : IDAL
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InMemoryDal"/> class.
+        /// </summary>
         public InMemoryDal()
         {
             JsonSerializerSettings settings = new JsonSerializerSettings
@@ -32,7 +38,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
                 ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() },
             };
 
-            // load the data from the json files
+            // load the data from the json file
             Actors = JsonConvert.DeserializeObject<List<Actor>>(File.ReadAllText("data/actors.json"), settings);
 
             // sort by Name
@@ -45,6 +51,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
                 ActorsIndex.Add(a.ActorId, a);
             }
 
+            // load the data from the json file
             Movies = JsonConvert.DeserializeObject<List<Movie>>(File.ReadAllText("data/movies.json"), settings);
 
             // sort by Title
@@ -58,15 +65,15 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
                 // Could also use a binary search to reduce memory usage
                 MoviesIndex.Add(m.MovieId, m);
 
+                // Add to by year dictionary
                 if (!YearIndex.ContainsKey(m.Year))
                 {
                     YearIndex.Add(m.Year, new List<Movie>());
                 }
 
-                // Create a dictionary by year
                 YearIndex[m.Year].Add(m);
 
-                // Create a dictionary by Genre
+                // Add to by Genre dictionary
                 foreach (string g in m.Genres)
                 {
                     ge = g.ToLowerInvariant().Trim();
@@ -80,11 +87,10 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
                 }
             }
 
+            // load the data from the json file
             List<dynamic> list = JsonConvert.DeserializeObject<List<dynamic>>(File.ReadAllText("data/genres.json"), settings);
 
             // Convert Genre object to List<string> per API spec
-            Genres = new List<string>();
-
             foreach (dynamic g in list)
             {
                 Genres.Add(g["genre"].Value);
@@ -95,7 +101,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
 
         public static List<Actor> Actors { get; set; }
         public static List<Movie> Movies { get; set; }
-        public static List<string> Genres { get; set; }
+        public static List<string> Genres { get; set; } = new List<string>();
 
         // O(1) dictionary for retrieving by ID
         public static Dictionary<string, Actor> ActorsIndex { get; set; } = new Dictionary<string, Actor>();
