@@ -36,7 +36,7 @@ export class NGSAServer {
             // routes
             app.get("/swagger/*", restify.plugins.serveStatic({
                 directory: __dirname + "/..",
-                default: "ngsa.json",
+                default: "swagger.json",
             }));
 
             app.get("/", (req, res) => {

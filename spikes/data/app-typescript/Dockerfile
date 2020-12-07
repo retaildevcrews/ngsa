@@ -23,6 +23,6 @@ USER ngsa
 COPY --from=base /app/package.json .
 COPY --from=base /app/prod_node_modules ./node_modules
 COPY --from=base /app/dist ./dist
-COPY --from=base /app/swagger/ngsa.json ./swagger/ngsa.json
+COPY --from=base /app/swagger/swagger.json ./swagger/swagger.json
 
 ENTRYPOINT ["/usr/local/bin/npm", "start"]
