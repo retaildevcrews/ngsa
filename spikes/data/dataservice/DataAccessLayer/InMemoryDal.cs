@@ -8,12 +8,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using CSE.NextGenSymmetricApp.Model;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.DependencyInjection;
+
+// TODO - convert to system.text.json?
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 /// <summary>
-/// This is NOT production code
-/// This code is used to support performance testing only
+/// This code is used to support performance testing
 /// </summary>
 namespace CSE.NextGenSymmetricApp.DataAccessLayer
 {
@@ -22,7 +24,6 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "key")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2234:Pass system uri objects instead of strings", Justification = "Cosmos")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA1822:does not access instance data", Justification = "simplicity")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "use List<> for performance")]
     public class InMemoryDal : IDAL
     {
         public InMemoryDal()
@@ -34,70 +35,28 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
 
             // load the data from the json files
             Actors = JsonConvert.DeserializeObject<List<Actor>>(File.ReadAllText("data/actors.json"), settings);
-            Actors.Sort((x, y) =>
-            {
-                if (x.Name == null && y.Name == null)
-                {
-                    return 0;
-                }
-                else if (x.Name == null)
-                {
-                    return -1;
-                }
-                else if (y.Name == null)
-                {
-                    return 1;
-                }
-                else
-                {
-                    if (x.TextSearch == y.TextSearch)
-                    {
-                        return string.Compare(x.TextSearch + x.Id, y.TextSearch + y.Id, StringComparison.OrdinalIgnoreCase);
-                    }
-                    else
-                    {
-                        return string.Compare(x.TextSearch, y.TextSearch, StringComparison.OrdinalIgnoreCase);
-                    }
-                }
-            });
 
+            // sort by Name
+            Actors.Sort(Actor.NameCompare);
+
+            // Loads an O(1) dictionary for retrieving by ID
+            // Could also use a binary search to reduce memory usage
             foreach (Actor a in Actors)
             {
                 ActorsIndex.Add(a.ActorId, a);
             }
 
             Movies = JsonConvert.DeserializeObject<List<Movie>>(File.ReadAllText("data/movies.json"), settings);
-            Movies.Sort((x, y) =>
-            {
-                if (x.Title == null && y.Title == null)
-                {
-                    return 0;
-                }
-                else if (x.Title == null)
-                {
-                    return -1;
-                }
-                else if (y.Title == null)
-                {
-                    return 1;
-                }
-                else
-                {
-                    if (x.TextSearch == y.TextSearch)
-                    {
-                        return string.Compare(x.TextSearch + x.Id, y.TextSearch + y.Id, StringComparison.OrdinalIgnoreCase);
-                    }
-                    else
-                    {
-                        return string.Compare(x.TextSearch, y.TextSearch, StringComparison.OrdinalIgnoreCase);
-                    }
-                }
-            });
+
+            // sort by Title
+            Movies.Sort(Movie.TitleCompare);
 
             string ge;
 
             foreach (Movie m in Movies)
             {
+                // Loads an O(1) dictionary for retrieving by ID
+                // Could also use a binary search to reduce memory usage
                 MoviesIndex.Add(m.MovieId, m);
 
                 if (!YearIndex.ContainsKey(m.Year))
@@ -105,8 +64,10 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
                     YearIndex.Add(m.Year, new List<Movie>());
                 }
 
+                // Create a dictionary by year
                 YearIndex[m.Year].Add(m);
 
+                // Create a dictionary by Genre
                 foreach (string g in m.Genres)
                 {
                     ge = g.ToLowerInvariant().Trim();
@@ -121,6 +82,8 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             }
 
             List<dynamic> list = JsonConvert.DeserializeObject<List<dynamic>>(File.ReadAllText("data/genres.json"), settings);
+
+            // Convert Genre object to List<string> per API spec
             Genres = new List<string>();
 
             foreach (dynamic g in list)
@@ -134,16 +97,30 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
         public static List<Actor> Actors { get; set; }
         public static List<Movie> Movies { get; set; }
         public static List<string> Genres { get; set; }
+
+        // O(1) dictionary for retrieving by ID
         public static Dictionary<string, Actor> ActorsIndex { get; set; } = new Dictionary<string, Actor>();
         public static Dictionary<string, Movie> MoviesIndex { get; set; } = new Dictionary<string, Movie>();
         public static Dictionary<int, List<Movie>> YearIndex { get; set; } = new Dictionary<int, List<Movie>>();
+
+        // List subsets to improve search speed
         public static Dictionary<string, List<Movie>> GenreIndex { get; set; } = new Dictionary<string, List<Movie>>();
 
+        /// <summary>
+        /// Get a single actor by ID
+        /// </summary>
+        /// <param name="actorId">ID</param>
+        /// <returns>Actor object</returns>
         public async Task<Actor> GetActorAsync(string actorId)
         {
             return await Task.Run(() => { return GetActor(actorId); }).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Get a single actor by ID
+        /// </summary>
+        /// <param name="actorId">ID</param>
+        /// <returns>Actor object</returns>
         public Actor GetActor(string actorId)
         {
             if (ActorsIndex.ContainsKey(actorId))
@@ -154,6 +131,11 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             throw new CosmosException("Not Found", System.Net.HttpStatusCode.NotFound, 404, string.Empty, 0);
         }
 
+        /// <summary>
+        /// Get actors by search criteria
+        /// </summary>
+        /// <param name="actorQueryParameters">search criteria</param>
+        /// <returns>List of Actor</returns>
         public Task<IEnumerable<Actor>> GetActorsAsync(ActorQueryParameters actorQueryParameters)
         {
             return Task<IEnumerable<Actor>>.Factory.StartNew(() =>
@@ -162,6 +144,11 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             });
         }
 
+        /// <summary>
+        /// Get actors by search criteria
+        /// </summary>
+        /// <param name="actorQueryParameters">search criteria</param>
+        /// <returns>List of Actor</returns>
         public List<Actor> GetActors(ActorQueryParameters actorQueryParameters)
         {
             if (actorQueryParameters == null)
@@ -172,6 +159,13 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             return GetActors(actorQueryParameters.Q, actorQueryParameters.GetOffset(), actorQueryParameters.PageSize);
         }
 
+        /// <summary>
+        /// Worker function
+        /// </summary>
+        /// <param name="q">search query (optional)</param>
+        /// <param name="offset">result offset</param>
+        /// <param name="limit">page size</param>
+        /// <returns>List of Actor</returns>
         public List<Actor> GetActors(string q, int offset = 0, int limit = 100)
         {
             List<Actor> res = new List<Actor>();
@@ -200,6 +194,10 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             return res;
         }
 
+        /// <summary>
+        /// Get list of featured Movie IDs
+        /// </summary>
+        /// <returns>List of IDs</returns>
         public Task<List<string>> GetFeaturedMovieListAsync()
         {
             return Task<List<string>>.Factory.StartNew(() =>
@@ -208,6 +206,10 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             });
         }
 
+        /// <summary>
+        /// Get list of featured Movie IDs
+        /// </summary>
+        /// <returns>List of IDs</returns>
         public List<string> GetFeaturedMovieList()
         {
             return new List<string>
@@ -222,6 +224,10 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             };
         }
 
+        /// <summary>
+        /// Get list of Genres
+        /// </summary>
+        /// <returns>List of Genres</returns>
         public async Task<IEnumerable<string>> GetGenresAsync()
         {
             return await Task<List<string>>.Factory.StartNew(() =>
@@ -230,11 +236,21 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             }).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Get Movie by ID
+        /// </summary>
+        /// <param name="movieId">ID</param>
+        /// <returns>Movie</returns>
         public async Task<Movie> GetMovieAsync(string movieId)
         {
             return await Task<Movie>.Factory.StartNew(() => { return GetMovie(movieId); }).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Get Movie by ID
+        /// </summary>
+        /// <param name="movieId">ID</param>
+        /// <returns>Movie</returns>
         public Movie GetMovie(string movieId)
         {
             if (MoviesIndex.ContainsKey(movieId))
@@ -245,18 +261,23 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             throw new CosmosException("Not Found", System.Net.HttpStatusCode.NotFound, 404, string.Empty, 0);
         }
 
-        public string GetMovieIds(MovieQueryParameters param)
+        /// <summary>
+        /// Get Cosmos query string based on query parameters
+        /// </summary>
+        /// <param name="movieQueryParameters">query params</param>
+        /// <returns>Cosmos query string</returns>
+        public string GetMovieIds(MovieQueryParameters movieQueryParameters)
         {
             List<Movie> cache;
             string ids = string.Empty;
 
-            if (param == null)
+            if (movieQueryParameters == null)
             {
                 cache = GetMovies(string.Empty, string.Empty, offset: 0, limit: 100);
             }
             else
             {
-                cache = GetMovies(param.Q, param.Genre, param.Year, param.Rating, param.ActorId, param.GetOffset(), param.PageSize);
+                cache = GetMovies(movieQueryParameters.Q, movieQueryParameters.Genre, movieQueryParameters.Year, movieQueryParameters.Rating, movieQueryParameters.ActorId, movieQueryParameters.GetOffset(), movieQueryParameters.PageSize);
             }
 
             foreach (Movie m in cache)
@@ -274,6 +295,11 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             return sql.Replace("{0}", ids[0..^1], StringComparison.Ordinal);
         }
 
+        /// <summary>
+        /// Get list of Movies based on query parameters
+        /// </summary>
+        /// <param name="movieQueryParameters">query params</param>
+        /// <returns>List of Movie</returns>
         public List<Movie> GetMovies(MovieQueryParameters movieQueryParameters)
         {
             if (movieQueryParameters == null)
@@ -284,6 +310,17 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             return GetMovies(movieQueryParameters.Q, movieQueryParameters.Genre, movieQueryParameters.Year, movieQueryParameters.Rating, movieQueryParameters.ActorId, movieQueryParameters.GetOffset(), movieQueryParameters.PageSize);
         }
 
+        /// <summary>
+        /// Get List of Movie by search params
+        /// </summary>
+        /// <param name="q">match title</param>
+        /// <param name="genre">match genre</param>
+        /// <param name="year">match year</param>
+        /// <param name="rating">match rating</param>
+        /// <param name="actorId">match Actor ID</param>
+        /// <param name="offset">page offset</param>
+        /// <param name="limit">page size</param>
+        /// <returns>List of Movie</returns>
         public List<Movie> GetMovies(string q, string genre, int year = 0, double rating = 0.0, string actorId = "", int offset = 0, int limit = 100)
         {
             List<Movie> res = new List<Movie>();
@@ -382,6 +419,11 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             return res;
         }
 
+        /// <summary>
+        /// Get list of Movies based on query parameters
+        /// </summary>
+        /// <param name="movieQueryParameters">query params</param>
+        /// <returns>List of Movie</returns>
         public Task<IEnumerable<Movie>> GetMoviesAsync(MovieQueryParameters movieQueryParameters)
         {
             return Task<IEnumerable<Movie>>.Factory.StartNew(() =>
@@ -390,6 +432,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             });
         }
 
+        // Part of IDal Interface - not used
         public Task Reconnect(Uri cosmosUrl, string cosmosKey, string cosmosDatabase, string cosmosCollection, bool force = false)
         {
             // do nothing
