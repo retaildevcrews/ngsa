@@ -22,7 +22,7 @@ namespace CSE.NextGenSymmetricApp
     /// </summary>
     public sealed partial class App
     {
-        private static bool cache = true;
+        private static readonly bool Cache = true;
 
         // ILogger instance
         private static ILogger<App> logger;
@@ -46,7 +46,7 @@ namespace CSE.NextGenSymmetricApp
         public static string Zone { get; set; } = string.Empty;
         public static string PodType { get; set; }
 
-        public static bool UseCache => cache || Middleware.Logger.RequestsPerSecond > Constants.MaxReqSecBeforeCache;
+        public static bool UseCache => Cache || Middleware.Logger.RequestsPerSecond > Constants.MaxReqSecBeforeCache;
 
         /// <summary>
         /// Gets or sets LogLevel
