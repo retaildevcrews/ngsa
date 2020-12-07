@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require("../../package.json");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const swagger = require("../../swagger/ngsa.json");
+const swagger = require("../../swagger/swagger.json");
 
 import fs = require("fs");
 
@@ -18,7 +18,7 @@ export class VersionUtilities {
         return `${pkg.version}+${month}${day}.${hour}${minute}`;
     }
 
-    // return the version string based on swagger/ngsa.json file
+    // return the version string based on swagger/swagger.json file
     public static getSwaggerVersion(): string {
         return `${swagger.info.version}`;
     }

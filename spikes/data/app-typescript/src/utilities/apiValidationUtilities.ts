@@ -2,10 +2,10 @@ import * as HttpStatus from "http-status-codes";
 import { ParameterValidationUtilities } from "./parameterValidationUtilities";
 
 export const queryErrorTypes = {
-    actorQuery: "https://github.com/retaildevcrews/helium/blob/main/docs/ParameterValidation.md#actors-api",
-    movieQuery: "https://github.com/retaildevcrews/helium/blob/main/docs/ParameterValidation.md#movies-api",
-    movieDirectRead: "https://github.com/retaildevcrews/helium/blob/main/docs/ParameterValidation.md#movies-direct-read",
-    actorDirectRead: "https://github.com/retaildevcrews/helium/blob/main/docs/ParameterValidation.md#actors-direct-read"
+    actorQuery: "https://github.com/retaildevcrews/ngsa/blob/main/docs/ParameterValidation.md#actors-api",
+    movieQuery: "https://github.com/retaildevcrews/ngsa/blob/main/docs/ParameterValidation.md#movies-api",
+    movieDirectRead: "https://github.com/retaildevcrews/ngsa/blob/main/docs/ParameterValidation.md#movies-direct-read",
+    actorDirectRead: "https://github.com/retaildevcrews/ngsa/blob/main/docs/ParameterValidation.md#actors-direct-read"
 };
 
 
