@@ -62,7 +62,7 @@
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 
-    <None Include="App\ascii-art.txt">
+    <None Include="Core\ascii-art.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
