@@ -23,7 +23,7 @@ namespace CSE.WebValidate
         {
             RootCommand root = new RootCommand
             {
-                Name = "WebValidate",
+                Name = "loderunner",
                 Description = "Validate API responses",
                 TreatUnmatchedTokensAsErrors = true,
             };

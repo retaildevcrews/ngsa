@@ -22,7 +22,7 @@ namespace CSE.Middleware
     {
         private const string IpHeader = "X-Client-IP";
         private const string CVHeader = "X-Correlation-Vector";
-        private const string TraceHeader = "X-WebV-Trace";
+        private const string TraceHeader = "X-LodeRunner-Trace";
 
         // next action to Invoke
         private readonly RequestDelegate next;
@@ -61,18 +61,20 @@ namespace CSE.Middleware
             CorrelationVector cv;
             DateTime dtStart = DateTime.Now;
             double duration = 0;
+            double ttfb = 0;
 
             // write trace headers
             context.Response.OnStarting(() =>
             {
-                duration = duration == 0 ? Math.Round(DateTime.Now.Subtract(dtStart).TotalMilliseconds, 2) : duration;
+                ttfb = Math.Round(DateTime.Now.Subtract(dtStart).TotalMilliseconds, 2);
+                duration = ttfb;
 
                 Dictionary<string, object> trace = new Dictionary<string, object>
                 {
                     { "AppRegion", App.Region },
                     { "AppZone", App.Zone },
                     { "AppPodType", App.PodType },
-                    { "AppDuration", Math.Round(duration, 2) },
+                    { "AppDuration", Math.Round(ttfb, 2) },
                     { "AppCosmosName", App.CosmosName },
                     { "AppCosmosQueryId", "todo" },
                     { "AppCosmosRUs", 1.23 },
@@ -82,6 +84,39 @@ namespace CSE.Middleware
 
                 return Task.CompletedTask;
             });
+
+            cv = ExtendCVector(context);
+
+            // Invoke next handler
+            if (next != null)
+            {
+                await next.Invoke(context).ConfigureAwait(false);
+            }
+
+            // compute request duration
+            duration = Math.Round(DateTime.Now.Subtract(dtStart).TotalMilliseconds, 2);
+            ttfb = ttfb == 0 ? duration : ttfb;
+
+            // don't log favicon.ico 404s
+            if (context.Request.Path.StartsWithSegments("/favicon.ico", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            // handle healthz composite logging
+            // todo - update to log to json
+            if (LogHealthzHandled(context, duration))
+            {
+                return;
+            }
+
+            LogRequest(context, cv, ttfb, duration);
+        }
+
+        // correlation vector
+        private static CorrelationVector ExtendCVector(HttpContext context)
+        {
+            CorrelationVector cv;
 
             if (context.Request.Headers.ContainsKey(CVHeader))
             {
@@ -102,35 +137,20 @@ namespace CSE.Middleware
                 cv = new CorrelationVector();
             }
 
-            // Invoke next handler
-            if (next != null)
-            {
-                await next.Invoke(context).ConfigureAwait(false);
-            }
+            return cv;
+        }
 
-            // compute request duration
-            duration = duration == 0 ? Math.Round(DateTime.Now.Subtract(dtStart).TotalMilliseconds, 2) : duration;
-
-            // don't log favicon.ico 404s
-            if (context.Request.Path.StartsWithSegments("/favicon.ico", StringComparison.OrdinalIgnoreCase))
-            {
-                return;
-            }
-
-            // handle healthz composite logging
-            // todo - update to log to json
-            if (LogHealthzHandled(context, duration))
-            {
-                return;
-            }
-
+        // log the request
+        private static void LogRequest(HttpContext context, CorrelationVector cv, double ttfb, double duration)
+        {
             Dictionary<string, object> log = new Dictionary<string, object>
             {
                 { "Date", DateTime.UtcNow },
                 { "StatusCode", context.Response.StatusCode },
+                { "TTFB", ttfb },
                 { "Duration", duration },
                 { "Verb", context.Request.Method },
-                { "Path", context.Request.Path.ToString() },
+                { "Path", GetPathAndQuerystring(context.Request) },
                 { "Host", context.Request.Headers["Host"].ToString() },
                 { "ClientIP", GetClientIp(context) },
                 { "UserAgent", context.Request.Headers["User-Agent"].ToString() },

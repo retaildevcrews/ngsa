@@ -25,7 +25,7 @@ namespace CSE.WebValidate
         /// Correlation Vector http header name
         /// </summary>
         public const string CVHeaderName = "X-Correlation-Vector";
-        private const string TraceHeader = "X-WebV-Trace";
+        private const string TraceHeader = "X-LodeRunner-Trace";
 
         private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
         {
@@ -80,6 +80,8 @@ namespace CSE.WebValidate
                 Console.WriteLine("RunOnce:Config is null");
                 return -1;
             }
+
+            DisplayStartupMessage(config);
 
             int duration;
             PerfLog pl;
@@ -472,33 +474,23 @@ namespace CSE.WebValidate
         /// </summary>
         private static void DisplayStartupMessage(Config config)
         {
-            string msg = $"{Now}\tStarting Web Validation Test";
-            msg += $"\n\t\tVersion: {Version.AssemblyVersion}";
-            msg += $"\n\t\tHost: {string.Join(' ', config.Server)}";
-
-            if (!string.IsNullOrEmpty(config.Tag))
+            Dictionary<string, object> msg = new Dictionary<string, object>
             {
-                msg += $"\n\t\tTag: {config.Tag}";
-            }
+                { "Date", DateTime.UtcNow },
+                { "EventType", "Startup" },
+                { "Version", Version.AssemblyVersion },
+                { "Host", string.Join(' ', config.Server) },
+                { "BaseUrl", config.BaseUrl },
+                { "Files", string.Join(' ', config.Files) },
+                { "Sleep", config.Sleep },
+                { "MaxConcurrent", config.MaxConcurrent },
+                { "Duration", config.Duration },
+                { "Random", config.Random },
+                { "Verbose", config.Verbose },
+                { "Tag", config.Tag },
+            };
 
-            if (!string.IsNullOrEmpty(config.BaseUrl))
-            {
-                msg += $"\n\t\tBaseUrl: {config.BaseUrl}";
-            }
-
-            msg += $"\n\t\tFiles: {string.Join(' ', config.Files)}";
-            msg += $"\n\t\tSleep: {config.Sleep}";
-            msg += $"\n\t\tMaxConcurrent: {config.MaxConcurrent}";
-
-            if (config.Duration > 0)
-            {
-                msg += $"\n\t\tDuration: {config.Duration}";
-            }
-
-            msg += config.Random ? "\n\t\tRandom" : string.Empty;
-            msg += config.Verbose ? "\n\t\tVerbose" : string.Empty;
-
-            Console.WriteLine(msg + "\n");
+            Console.WriteLine(JsonSerializer.Serialize(msg));
         }
 
         /// <summary>
@@ -528,7 +520,7 @@ namespace CSE.WebValidate
                 Timeout = new TimeSpan(0, 0, config.Timeout),
                 BaseAddress = new Uri(host),
             };
-            client.DefaultRequestHeaders.Add("User-Agent", $"webv/{Version.ShortVersion}");
+            client.DefaultRequestHeaders.Add("User-Agent", $"l8r/{Version.ShortVersion}");
 
             return client;
         }

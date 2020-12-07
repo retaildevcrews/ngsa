@@ -20,11 +20,13 @@ spec:
         configMapKeyRef:
           name: ngsa-config
           key: Zone
+
     - name: Region
       valueFrom:
         configMapKeyRef:
           name: ngsa-config
           key: Region
+
     - name: PodType
       value: ngsa-cosmos
 

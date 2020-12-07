@@ -18,8 +18,8 @@ app:
   args: []
   port: 4120
   secretName: ngsa-secrets
-  region: ""
-  zone: ""
+  region: "Debug"
+  zone: "Debug"
 
 livenessProbe:
   initialDelaySeconds: 120
@@ -67,6 +67,7 @@ ingress:
   tls: {}
 
 cert:
+  enabled: true
   name: ngsa-cert
   issuer: letsencrypt-staging
   namespace: istio-system

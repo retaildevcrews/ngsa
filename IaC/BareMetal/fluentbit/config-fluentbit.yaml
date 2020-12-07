@@ -4,7 +4,7 @@ metadata:
   name: fluent-bit-config
   namespace: default
   labels:
-    k8s-app: fluent-bit
+    k8s-app: fluentb
 data:
   fluent-bit.conf: |
     [SERVICE]
@@ -23,15 +23,15 @@ data:
     [OUTPUT]
         Name            azure
         Match           kube.var.log.containers.l8r*.*
-        Customer_ID     ${WorkspaceId}
-        Shared_Key      ${SharedKey}
+        Customer_ID     ${LOG_ID}
+        Shared_Key      ${LOG_SHARED_KEY}
         Log_Type        ${l8rLog}
 
     [OUTPUT]
         Name            azure
         Match           kube.var.log.containers.ngsa*.*
-        Customer_ID     ${WorkspaceId}
-        Shared_Key      ${SharedKey}
+        Customer_ID     ${LOG_ID}
+        Shared_Key      ${LOG_SHARED_KEY}
         Log_Type        ${ngsaLog}
 
   input-kubernetes.conf: |

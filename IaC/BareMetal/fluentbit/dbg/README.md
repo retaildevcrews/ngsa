@@ -7,10 +7,16 @@ Debugging Fluent Bit on a local cluster by sending everything to stdout and then
 # start in this directory
 cd fluentbit/dbg
 
+### Create secrets only if skipped
+### fluentbit won't run without these secrets set
+kubectl create secret generic ngsa-secrets \
+  --from-literal=WorkspaceId=unused \
+  --from-literal=SharedKey=unused
+
 # create the service account
 kubectl apply -f role-fluentbit-debug.yaml
 
-# create app configmap
+# create configmap
 kubectl apply -f zone-config-debug.yaml
 
 # deploy ngsa-memory
@@ -19,7 +25,7 @@ kubectl apply -f in-memory-debug.yaml
 #### wait for ngsa to start
 
 # apply fluentbit to log to stdout
-./apply-stdout
+kubectl apply -f stdout-config-debug.yaml
 
 # check the logs
 kubectl logs fluentb
@@ -64,21 +70,8 @@ kubectl delete -f fluentbit-debug.yaml
 # create app pod (if necessary)
 kubectl apply -f in-memory.yaml
 
-### change these values
-# set env vars
-export LOG_ID=YourWorkspaceID
-export LOG_SHARED_KEY=YourSharedKey
-
-# this will create Log Analytics custom logs of the form:
-#  webvsuffix
-#  ngsasuffix
-#  kubesuffix
-#  suffix can ONLY be a-z; no punctuation or numeric values
-# leave unset to use webv, ngsa and kube log names
-export LOG_SUFFIX=a
-
 # apply the config and create fluentb pod
-./apply-la
+kubectl apply -f la-config-debug.yaml
 
 # check fluentb logs
 kubectl logs fluentb
