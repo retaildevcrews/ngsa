@@ -8,7 +8,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using CSE.NextGenSymmetricApp.Model;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Extensions.DependencyInjection;
 
 // TODO - convert to system.text.json?
 using Newtonsoft.Json;
