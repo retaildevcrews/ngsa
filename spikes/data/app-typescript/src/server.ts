@@ -4,7 +4,7 @@ import { BunyanLogService, LogService } from "./services";
 import { Container } from "inversify";
 import { ConsoleController } from "./config/ConsoleController";
 import { interfaces, TYPE } from "inversify-restify-utils";
-import { HeliumServer } from "./HeliumServer";
+import { NGSAServer } from "./NGSAServer";
 import NodeCache = require("node-cache");
 
 // main
@@ -29,15 +29,15 @@ import NodeCache = require("node-cache");
     container.bind<interfaces.Controller>(TYPE.Controller).to(HealthzController).whenTargetNamed("HealthzController");
 
     // instantiate the server
-    const heliumServer = new HeliumServer(container);
+    const ngsaServer = new NGSAServer(container);
 
     // start the server
-    heliumServer.start();
+    ngsaServer.start();
 
     // graceful shutdown
     ["SIGINT", "SIGTERM", "SIGQUIT"].forEach(signal => process.on(signal, () => {
         console.info(`Received '${signal}', commencing graceful shutdown. Waiting for active requests to complete.`);
-        heliumServer.shutdown();
+        ngsaServer.shutdown();
     }));
 
 })()

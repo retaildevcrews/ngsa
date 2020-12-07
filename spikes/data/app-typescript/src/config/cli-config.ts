@@ -1,5 +1,5 @@
 export const sections = [
-    { "header": "Helium", "content": "A web app" },
+    { "header": "Next Gen Symmetric Apps", "content": "A web app" },
     { "header": "Usage", "content": "npm start -- [options]" },
     {
         "header": "Options",

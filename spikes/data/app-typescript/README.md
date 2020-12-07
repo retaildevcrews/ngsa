@@ -72,7 +72,7 @@ curl localhost:4120/version
 
 ```
 
-Stop helium by typing Ctrl-C or the stop button if run via F5
+Stop the app by typing Ctrl-C or the stop button if run via F5
 
 ### Deep Testing
 

@@ -74,8 +74,8 @@ export class HealthzController implements interfaces.Controller {
     private async runHealthChecks() {
         const ietfResult: {[k: string]: any} = {};
         ietfResult.status = IetfStatus.pass;
-        ietfResult.serviceId =  "helium-typescript";
-        ietfResult.description = "Helium Typescript Health Check";
+        ietfResult.serviceId =  "ngsa";
+        ietfResult.description = "NGSA Typescript Health Check";
         ietfResult.instance = process.env[webInstanceRole] ?? "unknown";
         ietfResult.version = buildVersion;
 

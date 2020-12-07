@@ -9,7 +9,7 @@ import { buildVersion, swaggerVersion, gracefulShutdownTimeout, portConstant } f
 import bodyParser = require("body-parser");
 import restify = require("restify");
 
-export class HeliumServer {
+export class NGSAServer {
     private server: restify.Server;
     private inversifyServer: InversifyRestifyServer;
     private logService: LogService;
@@ -36,7 +36,7 @@ export class HeliumServer {
             // routes
             app.get("/swagger/*", restify.plugins.serveStatic({
                 directory: __dirname + "/..",
-                default: "helium.json",
+                default: "ngsa.json",
             }));
 
             app.get("/", (req, res) => {
