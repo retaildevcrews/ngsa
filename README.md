@@ -2,6 +2,12 @@
 
 > Next Generation Symmetric Apps
 
+- TODO - per review feedback, this should be a "roadmap"
+  - where would a new developer start?
+  - where would someone start with k8s?
+  - table of contents was suggested
+  - don't forget ci-cd
+
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 ## Contributing
