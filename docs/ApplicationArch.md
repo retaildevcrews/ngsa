@@ -8,7 +8,7 @@ TODO
 
 ## Data Access Design
 
-We wish to fully separate the service used to read and write data from the front-end services that act as brokers of the data to the calling clients.  This has the 
+We wish to fully separate the service used to read and write data from the front-end services that act as brokers of the data to the calling clients.  This provides deployment flexibility and isolates interactions with the data which eases synchronization needs, data caching implementation, and access semantics for the clients.
 
 ```
 OLD NGSA POD
