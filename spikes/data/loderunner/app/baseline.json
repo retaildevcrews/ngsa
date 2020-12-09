@@ -1,0 +1,29 @@
+{
+  "requests":
+  [
+    {"path":"/version","perfTarget":{"category":"Ignore"}},
+    {"path":"/api/actors","perfTarget":{"category":"Ignore"}},
+    {"path":"/api/movies","perfTarget":{"category":"Ignore"}},
+
+    {"path":"/api/actors/nm0000284","perfTarget":{"category":"DirectRead"}},
+    {"path":"/api/movies/tt1272878","perfTarget":{"category":"DirectRead"}},
+    {"path":"/api/movies?genre=Animation","perfTarget":{"category":"Genre100"},"validation":{"jsonArray":{"count":49}}},
+    {"path":"/api/actors/nm0001490","perfTarget":{"category":"DirectRead"}},
+    {"path":"/api/movies/tt0472033","perfTarget":{"category":"DirectRead"}},
+    {"path":"/api/movies?rating=5.0","perfTarget":{"category":"Rating100"},"validation":{"jsonArray":{"count":100}}},
+    {"path":"/api/actors/nm0179959","perfTarget":{"category":"DirectRead"}},
+    {"path":"/api/movies/tt0119535","perfTarget":{"category":"DirectRead"}},
+    {"path":"/api/movies?year=1992","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":18}}},
+    {"path":"/api/actors/nm0002159","perfTarget":{"category":"DirectRead"}},
+    {"path":"/api/movies/tt0405296","perfTarget":{"category":"DirectRead"}},
+    {"path":"/api/movies?pageSize=10&genre=Sport","perfTarget":{"category":"Genre10"},"validation":{"jsonArray":{"count":10}}},
+    {"path":"/api/actors/nm1573253","perfTarget":{"category":"DirectRead"}},
+    {"path":"/api/movies/tt6684714","perfTarget":{"category":"DirectRead"}},
+    {"path":"/api/movies?pageSize=10&rating=5.0","perfTarget":{"category":"Rating10"},"validation":{"jsonArray":{"count":10}}},
+    {"path":"/api/actors/nm2539953","perfTarget":{"category":"DirectRead"}},
+    {"path":"/api/movies/tt4743226","perfTarget":{"category":"DirectRead"}},
+    {"path":"/api/movies?pageSize=10&year=2017","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+    {"path":"/api/actors/nm3837786","perfTarget":{"category":"DirectRead"}},
+    {"path":"/api/movies/tt1243974","perfTarget":{"category":"DirectRead"}}
+  ]
+}

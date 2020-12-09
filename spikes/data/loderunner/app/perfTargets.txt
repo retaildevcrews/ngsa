@@ -1,0 +1,11 @@
+{
+  "DirectRead":{"category":"DirectRead","quartiles":[40,80,120]},
+  "Genre100":{"category":"Genre100","quartiles":[100,200,400]},
+  "Genre10":{"category":"Genre10","quartiles":[100,200,400]},
+  "Rating100":{"category":"Rating100","quartiles":[100,200,400]},
+  "Rating10":{"category":"Rating10","quartiles":[100,200,400]},
+  "Year100":{"category":"Year100","quartiles":[100,200,400]},
+  "Year10":{"category":"Year10","quartiles":[100,200,400]},
+  "Ignore":{"category":"Ignore","quartiles":[400,800,1600]},
+  "Static":{"category":"Static","quartiles":[40,80,160]}
+}

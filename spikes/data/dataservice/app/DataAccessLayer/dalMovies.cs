@@ -66,6 +66,10 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
 
             string ids = App.SearchService.GetMovieIds(movieQueryParameters);
 
+            // todo - add CVectorBase
+            // todo - remove trace headers
+            // todo - change to dataservice app name
+            // todo - should we cache this?
             // nothing found
             if (string.IsNullOrEmpty(ids))
             {
