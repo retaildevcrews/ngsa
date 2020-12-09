@@ -7,7 +7,6 @@ using System.Globalization;
 
 namespace CSE.NextGenSymmetricApp.Model
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1036:Override methods on comparable types", Justification = "TODO")]
     public class Movie
     {
         public string Id { get; set; }
