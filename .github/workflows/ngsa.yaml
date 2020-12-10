@@ -111,19 +111,20 @@ jobs:
         docker run -d --name ngsa -p 4120:4120 test
         
         echo "Waiting for web server to start ..."
-        sleep 10
-        wait_time=10        
         
+        wait_time=10        
+        sleep $wait_time
+
         # wait up to 30 seconds for web server to start
         while true
         do
             if curl localhost:4120/version ; then
-                echo "web server is running"
+                echo -e "\n web server is running"
                 echo APP_VERSION=`curl localhost:4120/version |  jq -r '.appVersion'` >> $GITHUB_ENV
                 break
             fi
             if [ $wait_time -gt 30 ] ; then
-              echo "timeout waiting for web server to start"
+              echo -e "\n timeout waiting for web server to start"
               exit 1
             fi
             
