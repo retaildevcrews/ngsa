@@ -380,7 +380,8 @@ namespace CSE.WebValidate
                     perfLog = CreatePerfLog(server, request, valid, duration, (long)resp.Content.Headers.ContentLength, (int)resp.StatusCode);
 
                     // add correlation vector to perf log
-                    perfLog.CorrelationVector = CVectorExtensions.GetBase(cv);
+                    perfLog.CorrelationVector = cv.Value;
+                    perfLog.CorrelationVectorBase = cv.GetBase();
                 }
                 catch (Exception ex)
                 {
@@ -590,6 +591,7 @@ namespace CSE.WebValidate
                     { "Duration", Math.Round(perfLog.Duration, 2) },
                     { "ContentLength", perfLog.ContentLength },
                     { "CVector", perfLog.CorrelationVector },
+                    { "CVectorBase", perfLog.CorrelationVectorBase },
                     { "Tag", perfLog.Tag },
                     { "Quartile", perfLog.Quartile },
                     { "Category", perfLog.Category },
@@ -602,7 +604,17 @@ namespace CSE.WebValidate
                 // log error details
                 if (config.VerboseErrors && valid.ValidationErrors.Count > 0)
                 {
-                    // todo - add the verbose errors
+                    string errors = string.Empty;
+
+                    // add up to 5 detailed errors
+                    int max = valid.ValidationErrors.Count > 5 ? 5 : valid.ValidationErrors.Count;
+
+                    for (int i = 0; i < max; i++)
+                    {
+                        errors += valid.ValidationErrors[i].Trim() + "\t";
+                    }
+
+                    logDict.Add("ErrorDetails", errors.Trim());
                 }
 
                 Console.WriteLine(JsonSerializer.Serialize(logDict, JsonOptions));
