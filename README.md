@@ -4,6 +4,10 @@
 
 ## Projection Description
 
+Understanding how infrastructure changes will impact application capabilities.  To that end, the NGSA effort is focused on creating a Kubernetes based application host environment in conjunction with a platform validation app that will allow continuous monitoring of the impact of changes in the hosting environment based on performance metrics results from a representative workload.
+
+At it's culmination the project will be a collection of guidance for deployment topologies based on capability maturity, a platform validation application, and a load generation tool.
+
 ## Table of Contents
 
 1. [Getting Started](#getting-started)
