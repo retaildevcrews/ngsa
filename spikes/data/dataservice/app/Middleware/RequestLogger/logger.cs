@@ -133,8 +133,6 @@ namespace CSE.Middleware
             {
                 RPS.RemoveAt(RPS.Count - 1);
             }
-
-            Console.WriteLine($"{DateTime.UtcNow:o}\t{RPS.Count}\t{RPS[0]}");
         }
 
         // extend correlation vector
