@@ -4,12 +4,12 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using CSE.NextGenSymmetricApp.Extensions;
 using CSE.WebValidate.Model;
 using CSE.WebValidate.Validators;
 using Microsoft.CorrelationVector;
@@ -380,7 +380,7 @@ namespace CSE.WebValidate
                     perfLog = CreatePerfLog(server, request, valid, duration, (long)resp.Content.Headers.ContentLength, (int)resp.StatusCode);
 
                     // add correlation vector to perf log
-                    perfLog.CorrelationVector = cv.Value;
+                    perfLog.CorrelationVector = CVectorExtensions.GetCVectorBase(cv);
                 }
                 catch (Exception ex)
                 {
