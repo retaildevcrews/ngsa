@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using CSE.NextGenSymmetricApp;
+using CSE.NextGenSymmetricApp.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.CorrelationVector;
 using Microsoft.Extensions.Options;
@@ -78,7 +79,7 @@ namespace CSE.Middleware
             double duration = 0;
             double ttfb = 0;
 
-            cv = ExtendCVector(context);
+            cv = CVectorExtensions.ExtendCVector(context);
 
             // Invoke next handler
             if (next != null)
@@ -109,33 +110,6 @@ namespace CSE.Middleware
             {
                 RPS.RemoveAt(RPS.Count - 1);
             }
-        }
-
-        // extend correlation vector
-        private static CorrelationVector ExtendCVector(HttpContext context)
-        {
-            CorrelationVector cv;
-
-            if (context.Request.Headers.ContainsKey(CorrelationVector.HeaderName))
-            {
-                try
-                {
-                    // extend the correlation vector
-                    cv = CorrelationVector.Extend(context.Request.Headers[CorrelationVector.HeaderName].ToString());
-                }
-                catch
-                {
-                    // create a new correlation vector
-                    cv = new CorrelationVector(CorrelationVectorVersion.V2);
-                }
-            }
-            else
-            {
-                // create a new correlation vector
-                cv = new CorrelationVector(CorrelationVectorVersion.V2);
-            }
-
-            return cv;
         }
 
         // log the request
