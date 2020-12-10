@@ -94,7 +94,5 @@ namespace CSE.WebValidate.Model
         /// Gets the validation errors
         /// </summary>
         public List<string> Errors { get; }
-
-        public IEnumerable<string> Trace { get; set; }
     }
 }
