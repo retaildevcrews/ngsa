@@ -21,8 +21,6 @@ namespace CSE.Middleware
     public class Logger
     {
         private const string IpHeader = "X-Client-IP";
-        private const string CVHeader = "X-Correlation-Vector";
-        private const string TraceHeader = "X-LodeRunner-Trace";
 
         // next action to Invoke
         private readonly RequestDelegate next;
@@ -63,28 +61,6 @@ namespace CSE.Middleware
             double duration = 0;
             double ttfb = 0;
 
-            // write trace headers
-            context.Response.OnStarting(() =>
-            {
-                ttfb = Math.Round(DateTime.Now.Subtract(dtStart).TotalMilliseconds, 2);
-                duration = ttfb;
-
-                Dictionary<string, object> trace = new Dictionary<string, object>
-                {
-                    { "AppRegion", App.Region },
-                    { "AppZone", App.Zone },
-                    { "AppPodType", App.PodType },
-                    { "AppDuration", Math.Round(ttfb, 2) },
-                    { "AppCosmosName", App.CosmosName },
-                    { "AppCosmosQueryId", "todo" },
-                    { "AppCosmosRUs", 1.23 },
-                };
-
-                context.Response.Headers.Add(TraceHeader, JsonSerializer.Serialize(trace));
-
-                return Task.CompletedTask;
-            });
-
             cv = ExtendCVector(context);
 
             // Invoke next handler
@@ -118,23 +94,23 @@ namespace CSE.Middleware
         {
             CorrelationVector cv;
 
-            if (context.Request.Headers.ContainsKey(CVHeader))
+            if (context.Request.Headers.ContainsKey(CorrelationVector.HeaderName))
             {
                 try
                 {
                     // extend the correlation vector
-                    cv = CorrelationVector.Extend(context.Request.Headers[CVHeader].ToString());
+                    cv = CorrelationVector.Extend(context.Request.Headers[CorrelationVector.HeaderName].ToString());
                 }
                 catch
                 {
                     // create a new correlation vector
-                    cv = new CorrelationVector();
+                    cv = new CorrelationVector(CorrelationVectorVersion.V2);
                 }
             }
             else
             {
                 // create a new correlation vector
-                cv = new CorrelationVector();
+                cv = new CorrelationVector(CorrelationVectorVersion.V2);
             }
 
             return cv;
