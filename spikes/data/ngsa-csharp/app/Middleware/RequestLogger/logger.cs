@@ -105,6 +105,7 @@ namespace CSE.Middleware
                 { "ClientIP", GetClientIp(context) },
                 { "UserAgent", context.Request.Headers["User-Agent"].ToString() },
                 { "CVector", cv.Value },
+                { "CVectorBase", cv.GetBase() },
                 { "CosmosName", App.CosmosName },
                 { "CosmosQueryId", "todo" },
                 { "CosmosRUs", 1.23 },
