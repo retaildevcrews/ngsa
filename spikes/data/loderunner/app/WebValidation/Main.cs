@@ -380,7 +380,7 @@ namespace CSE.WebValidate
                     perfLog = CreatePerfLog(server, request, valid, duration, (long)resp.Content.Headers.ContentLength, (int)resp.StatusCode);
 
                     // add correlation vector to perf log
-                    perfLog.CorrelationVector = CVectorExtensions.GetCVectorBase(cv);
+                    perfLog.CorrelationVector = CVectorExtensions.GetBase(cv);
                 }
                 catch (Exception ex)
                 {

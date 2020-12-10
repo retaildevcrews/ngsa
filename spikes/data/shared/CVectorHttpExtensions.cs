@@ -17,7 +17,7 @@ namespace CSE.NextGenSymmetricApp.Extensions
         /// </summary>
         /// <param name="context">http context</param>
         /// <returns>extended CV</returns>
-        public static CorrelationVector ExtendCVector(HttpContext context)
+        public static CorrelationVector Extend(HttpContext context)
         {
             if (context == null)
             {

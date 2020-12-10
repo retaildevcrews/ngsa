@@ -62,7 +62,7 @@ namespace CSE.Middleware
             double duration = 0;
             double ttfb = 0;
 
-            cv = CVectorExtensions.ExtendCVector(context);
+            cv = CVectorExtensions.Extend(context);
 
             // Invoke next handler
             if (next != null)

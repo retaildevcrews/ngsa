@@ -16,7 +16,7 @@ namespace CSE.NextGenSymmetricApp.Extensions
         /// </summary>
         /// <param name="correlationVector">Correlation Vector</param>
         /// <returns>string</returns>
-        public static string GetCVectorBase(this CorrelationVector correlationVector)
+        public static string GetBase(this CorrelationVector correlationVector)
         {
             if (correlationVector == null)
             {
