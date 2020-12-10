@@ -2,13 +2,33 @@
 
 > Next Generation Symmetric Apps
 
-- TODO - per review feedback, this should be a "roadmap"
-  - where would a new developer start?
-  - where would someone start with k8s?
-  - table of contents was suggested
-  - don't forget ci-cd
+## Projection Description
+
+## Table of Contents
+
+1. [Getting Started](#getting-started)
+2. [Contributing](#contributing)
+3. Cluster Setup Guides
+   1. [Bare Metal](/IaC/BareMetal/README.md)
+   2. [AKS](/IaC/AKS/README.md)
+4. [Developer Guide](/docs/developer.md)
+5. Applications
+   1. [NGSA App](/src/ngsa/README.md)
+   2. [Load Generator](/src/loderunner/README.md)
+6. Design, Practices, and Conventions
+   1. [Architecture](/docs/ApplicationArch.md)
+   2. [CI/CD](/docs/CICD.md)
+   3. [HTTP Error Responses](/docs/HttpErrorResponses)
+   4. [Engineering Practices](/docs/EngineeringPractices.md)
+   5. [Observability](/docs/Observability.md)
+   6. [Parameter Validation](/docs/ParameterValidation.md)
+   7. [Naming Conventions](/docs/NamingConvention.md)
 
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
+
+## Getting Started
+
+Add descriptive text to guide through cluster setup, app setup, and load execution.
 
 ## Contributing
 
