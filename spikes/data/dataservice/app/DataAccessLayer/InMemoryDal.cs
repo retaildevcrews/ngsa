@@ -5,13 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using CSE.NextGenSymmetricApp.Model;
 using Microsoft.Azure.Cosmos;
-
-// TODO - convert to system.text.json?
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 /// <summary>
 /// This code is used to support performance testing
@@ -33,13 +30,13 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
         /// </summary>
         public InMemoryDal()
         {
-            JsonSerializerSettings settings = new JsonSerializerSettings
+            JsonSerializerOptions settings = new JsonSerializerOptions
             {
-                ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() },
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             };
 
             // load the data from the json file
-            Actors = JsonConvert.DeserializeObject<List<Actor>>(File.ReadAllText("data/actors.json"), settings);
+            Actors = JsonSerializer.Deserialize<List<Actor>>(File.ReadAllText("data/actors.json"), settings);
 
             // sort by Name
             Actors.Sort(Actor.NameCompare);
@@ -52,7 +49,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             }
 
             // load the data from the json file
-            Movies = JsonConvert.DeserializeObject<List<Movie>>(File.ReadAllText("data/movies.json"), settings);
+            Movies = JsonSerializer.Deserialize<List<Movie>>(File.ReadAllText("data/movies.json"), settings);
 
             // sort by Title
             Movies.Sort(Movie.TitleCompare);
@@ -88,7 +85,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             }
 
             // load the data from the json file
-            List<dynamic> list = JsonConvert.DeserializeObject<List<dynamic>>(File.ReadAllText("data/genres.json"), settings);
+            List<dynamic> list = JsonSerializer.Deserialize<List<dynamic>>(File.ReadAllText("data/genres.json"), settings);
 
             // Convert Genre object to List<string> per API spec
             foreach (dynamic g in list)

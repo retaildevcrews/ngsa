@@ -4,12 +4,12 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using CSE.NextGenSymmetricApp.Extensions;
 using CSE.WebValidate.Model;
 using CSE.WebValidate.Validators;
 using Microsoft.CorrelationVector;
@@ -24,9 +24,6 @@ namespace CSE.WebValidate
         /// <summary>
         /// Correlation Vector http header name
         /// </summary>
-        public const string CVHeaderName = "X-Correlation-Vector";
-        private const string TraceHeader = "X-LodeRunner-Trace";
-
         private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
         {
             IgnoreNullValues = true,
@@ -353,7 +350,7 @@ namespace CSE.WebValidate
 
                 // create correlation vector and add to headers
                 CorrelationVector cv = new CorrelationVector(CorrelationVectorVersion.V2);
-                req.Headers.Add(CVHeaderName, cv.Value);
+                req.Headers.Add(CorrelationVector.HeaderName, cv.Value);
 
                 // add the body to the http request
                 if (!string.IsNullOrEmpty(request.Body))
@@ -384,15 +381,7 @@ namespace CSE.WebValidate
 
                     // add correlation vector to perf log
                     perfLog.CorrelationVector = cv.Value;
-
-                    if (resp.Headers.Contains(TraceHeader))
-                    {
-                        IEnumerable<string> trace = resp.Headers.GetValues(TraceHeader);
-                        if (trace != null && trace.Any())
-                        {
-                            perfLog.Trace = trace;
-                        }
-                    }
+                    perfLog.CorrelationVectorBase = cv.GetBase();
                 }
                 catch (Exception ex)
                 {
@@ -602,6 +591,7 @@ namespace CSE.WebValidate
                     { "Duration", Math.Round(perfLog.Duration, 2) },
                     { "ContentLength", perfLog.ContentLength },
                     { "CVector", perfLog.CorrelationVector },
+                    { "CVectorBase", perfLog.CorrelationVectorBase },
                     { "Tag", perfLog.Tag },
                     { "Quartile", perfLog.Quartile },
                     { "Category", perfLog.Category },
@@ -611,29 +601,20 @@ namespace CSE.WebValidate
                     { "PodType", App.PodType },
                 };
 
-                // log trace header
-                if (perfLog.Trace != null && perfLog.Trace.Any())
-                {
-                    try
-                    {
-                        Dictionary<string, object> trace = JsonSerializer.Deserialize<Dictionary<string, object>>(perfLog.Trace.First());
-
-                        // log each item in order
-                        foreach (string k in trace.Keys)
-                        {
-                            logDict.Add(k, trace[k]);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"TraceLog Exception: {ex.Message}");
-                    }
-                }
-
                 // log error details
                 if (config.VerboseErrors && valid.ValidationErrors.Count > 0)
                 {
-                    // todo - add the verbose errors
+                    string errors = string.Empty;
+
+                    // add up to 5 detailed errors
+                    int max = valid.ValidationErrors.Count > 5 ? 5 : valid.ValidationErrors.Count;
+
+                    for (int i = 0; i < max; i++)
+                    {
+                        errors += valid.ValidationErrors[i].Trim() + "\t";
+                    }
+
+                    logDict.Add("ErrorDetails", errors.Trim());
                 }
 
                 Console.WriteLine(JsonSerializer.Serialize(logDict, JsonOptions));
