@@ -120,7 +120,6 @@ jobs:
         do
             if curl localhost:4120/version ; then
                 echo -e "\n web server is running"
-                echo APP_VERSION=`curl localhost:4120/version |  jq -r '.appVersion'` >> $GITHUB_ENV
                 break
             fi
             if [ $wait_time -gt 30 ] ; then
@@ -178,7 +177,10 @@ jobs:
         else
           docker build . -t image -f src/ngsa/Dockerfile
         fi
-        
+    - name: Get App Version
+      run: |
+        echo APP_VERSION=`docker run image --version` >> $GITHUB_ENV
+  
     - name: Docker Tag and Push
       if: ${{ env.DOCKER_SET == 'true' }}
       run: |
