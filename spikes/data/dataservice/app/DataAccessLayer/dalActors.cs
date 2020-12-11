@@ -107,6 +107,7 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
 
             List<Actor> res = (List<Actor>)await InternalCosmosDBSqlQuery<Actor>(queryDefinition).ConfigureAwait(false);
 
+            // add to cache
             cache.Add(new System.Runtime.Caching.CacheItem(key, res), cachePolicy);
 
             return res;
