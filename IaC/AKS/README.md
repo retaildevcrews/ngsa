@@ -417,11 +417,16 @@ envsubst < clusterissuer.yaml | kubectl apply -f -
 
 ## Deploy NGSA with Helm
 
-A helm chart is included for the reference application ([NGSA](https://github.com/retaildevcrews/ngsa)).
+The NGSA helm chart can either be manually installed as explained below or through a GitOps continuous deployment approach by following the instructions in ([NGSA-CD](https://github.com/retaildevcrews/ngsa-cd)).
 
 ```bash
+cd $HOME
 
-cd $REPO_ROOT/IaC/AKS/cluster/charts/ngsa
+git clone git@github.com:retaildevcrews/ngsa-cd.git
+
+export CHART_REPO=$HOME/ngsa-cd
+
+cd $CHART_REPO/charts/ngsa
 
 # Use the helm-config.yaml file to configure the deployment
 envsubst < helm-config.example.yaml > helm-config.yaml
@@ -432,7 +437,7 @@ The `helm-config.yaml` file can be used as an override to the default values dur
 
 ```bash
 
-cd $REPO_ROOT/IaC/AKS/cluster/charts/
+cd $CHART_REPO/charts/
 
 # Install NGSA using the upstream ngsa image from Dockerhub
 # Start by using the "letsencrypt-staging" ClusterIssuer to get test certs from the Let's Encrypt staging environment.
