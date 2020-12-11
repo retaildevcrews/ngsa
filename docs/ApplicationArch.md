@@ -18,11 +18,13 @@ We wish to fully separate the service used to read and write data from the front
 
 ### Data Service Caching
 
-[TODO]
+WIP - The Data Service will use a cache-aside mechanism for results.  
 
 ### Data Service Logging
 
-[TODO]
+All expected logs are sent to `stdout`.
+
+All errors (e.g., 500 returns) are sent to `stderr`.
 
 ### Correlation Vectors
 
