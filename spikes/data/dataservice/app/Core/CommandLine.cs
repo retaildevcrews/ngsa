@@ -4,7 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
+using System.CommandLine.Parsing;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using CSE.NextGenSymmetricApp.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -17,6 +21,7 @@ namespace CSE.NextGenSymmetricApp
     {
         /// <summary>
         /// Combine env vars and command line values
+        ///   env vars take precedent
         /// </summary>
         /// <param name="args">command line args</param>
         /// <returns>string[]</returns>
@@ -29,19 +34,15 @@ namespace CSE.NextGenSymmetricApp
 
             List<string> cmd = new List<string>(args);
 
-            // add --log-level value from environment or default
-            if (!cmd.Contains("--log-level") && !cmd.Contains("-l"))
-            {
-                string logLevel = Environment.GetEnvironmentVariable("LOG_LEVEL");
+            // add values from environment
+            cmd.AddFromEnvironment("--in-memory");
+            cmd.AddFromEnvironment("--no-cache");
+            cmd.AddFromEnvironment("--perf-cache");
+            cmd.AddFromEnvironment("--secrets-volume");
+            cmd.AddFromEnvironment("--log-level", "-l");
 
-                cmd.Add("--log-level");
-                cmd.Add(string.IsNullOrEmpty(logLevel) ? "Warning" : logLevel);
-                App.IsLogLevelSet = !string.IsNullOrEmpty(logLevel);
-            }
-            else
-            {
-                App.IsLogLevelSet = true;
-            }
+            // was log level set
+            App.IsLogLevelSet = cmd.Contains("--log-level") || cmd.Contains("-l");
 
             return cmd.ToArray();
         }
@@ -54,16 +55,21 @@ namespace CSE.NextGenSymmetricApp
         {
             RootCommand root = new RootCommand
             {
-                Name = "ngsa",
-                Description = "Next Gen Symmetric App",
+                Name = "DataService",
+                Description = "NGSA Data Service",
                 TreatUnmatchedTokensAsErrors = true,
             };
 
             // add the options
             root.AddOption(new Option<bool>(new string[] { "--in-memory" }, "Use in-memory database"));
+            root.AddOption(new Option<bool>(new string[] { "--no-cache" }, "Don't cache results"));
+            root.AddOption(new Option<int>(new string[] { "--perf-cache" }, "Cache only when load exceeds value"));
             root.AddOption(new Option<string>(new string[] { "--secrets-volume" }, () => "secrets", "Secrets Volume Path"));
-            root.AddOption(new Option<LogLevel>(new string[] { "-l", "--log-level" }, "Log Level"));
+            root.AddOption(new Option<LogLevel>(new string[] { "-l", "--log-level" }, () => LogLevel.Warning, "Log Level"));
             root.AddOption(new Option<bool>(new string[] { "-d", "--dry-run" }, "Validates configuration"));
+
+            // validate dependencies
+            root.AddValidator(ValidateDependencies);
 
             return root;
         }
@@ -75,18 +81,25 @@ namespace CSE.NextGenSymmetricApp
         /// <param name="logLevel">Log Level</param>
         /// <param name="dryRun">Dry Run flag</param>
         /// <param name="inMemory">Use in-memory DB</param>
+        /// <param name="noCache">don't cache results</param>
+        /// <param name="perfCache">cache results under load</param>
         /// <returns>status</returns>
-        public static async Task<int> RunApp(string secretsVolume, LogLevel logLevel, bool dryRun, bool inMemory)
+        public static async Task<int> RunApp(string secretsVolume, LogLevel logLevel, bool dryRun, bool inMemory, bool noCache, int perfCache)
         {
             try
             {
+                // assign command line values
+                InMemory = inMemory;
+                NoCache = noCache;
+                PerfCache = perfCache;
+
                 Region = Environment.GetEnvironmentVariable("Region");
                 Zone = Environment.GetEnvironmentVariable("Zone");
                 PodType = Environment.GetEnvironmentVariable("PodType");
 
                 if (string.IsNullOrEmpty(PodType))
                 {
-                    PodType = inMemory ? "ngsa-memory" : "ngsa-cosmos";
+                    PodType = "ngsa-ds";
                 }
 
                 if (inMemory)
@@ -109,7 +122,7 @@ namespace CSE.NextGenSymmetricApp
                     CosmosName = Secrets.CosmosServer.Replace("https://", string.Empty, StringComparison.OrdinalIgnoreCase).Replace("http://", string.Empty, StringComparison.OrdinalIgnoreCase);
 
                     // todo - get this from cosmos query
-                    CosmosQueryId = "notImplemented";
+                    CosmosQueryId = "todo";
 
                     int ndx = CosmosName.IndexOf('.', StringComparison.OrdinalIgnoreCase);
 
@@ -145,7 +158,7 @@ namespace CSE.NextGenSymmetricApp
                     return -1;
                 }
 
-                // don't start the web server
+                // display dry run message
                 if (dryRun)
                 {
                     return DoDryRun();
@@ -182,22 +195,88 @@ namespace CSE.NextGenSymmetricApp
             }
         }
 
-        /// <summary>
-        /// Display the dry run message
-        /// </summary>
-        /// <param name="authType">authentication type</param>
-        /// <returns>0</returns>
+        // validate combinations of parameters
+        private static string ValidateDependencies(CommandResult result)
+        {
+            string msg = string.Empty;
+
+            try
+            {
+                int? perfCache = !(result.Children.FirstOrDefault(c => c.Symbol.Name == "perf-cache") is OptionResult perfCacheRes) ? null : perfCacheRes.GetValueOrDefault<int?>();
+                bool inMemory = !(result.Children.FirstOrDefault(c => c.Symbol.Name == "in-memory") is OptionResult inMemoryRes) ? false : inMemoryRes.GetValueOrDefault<bool>();
+                bool noCache = !(result.Children.FirstOrDefault(c => c.Symbol.Name == "no-cache") is OptionResult noCacheRes) ? false : noCacheRes.GetValueOrDefault<bool>();
+                string secrets = !(result.Children.FirstOrDefault(c => c.Symbol.Name == "secrets-volume") is OptionResult secretsRes) ? string.Empty : secretsRes.GetValueOrDefault<string>();
+
+                // validate secrets volume
+                if (string.IsNullOrWhiteSpace(secrets))
+                {
+                    msg += "--secrets-volume cannot be empty\n";
+                }
+
+                try
+                {
+                    // validate secrets-volume exists
+                    if (!Directory.Exists(secrets))
+                    {
+                        msg += $"--secrets-volume ({secrets}) does not exist\n";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    msg += $"--secrets-volume exception: {ex.Message}\n";
+                }
+
+                // invalid combination
+                if (inMemory && noCache)
+                {
+                    msg += "--in-memory and --no-cache are exclusive\n";
+                }
+
+                if (perfCache != null)
+                {
+                    // validate perfCache > 0
+                    if (perfCache < 1)
+                    {
+                        msg += "--perf-cache must be > 0\n";
+                    }
+
+                    // invalid combination
+                    if (inMemory)
+                    {
+                        msg += "--perf-cache and --in-memory are exclusive\n";
+                    }
+
+                    // invalid combination
+                    if (noCache)
+                    {
+                        msg += "--perf-cache and --no-cache are exclusive\n";
+                    }
+                }
+            }
+            catch
+            {
+                // system.commandline will catch and display parse exceptions
+            }
+
+            // return error message(s) or string.empty
+            return msg;
+        }
+
+        // Display the dry run message
         private static int DoDryRun()
         {
             Console.WriteLine($"Version            {Middleware.VersionExtension.Version}");
             Console.WriteLine($"Log Level          {AppLogLevel}");
-            Console.WriteLine($"Secrets Volume     {App.Secrets.Volume}");
-            Console.WriteLine($"Use in memory DB   {App.Secrets.UseInMemoryDb}");
-            Console.WriteLine($"Cosmos Server      {App.Secrets.CosmosServer}");
-            Console.WriteLine($"Cosmos Database    {App.Secrets.CosmosDatabase}");
-            Console.WriteLine($"Cosmos Collection  {App.Secrets.CosmosCollection}");
-            Console.WriteLine($"Cosmos Key         Length({App.Secrets.CosmosKey.Length})");
-            Console.WriteLine($"App Insights Key   Length({App.Secrets.AppInsightsKey.Length})");
+            Console.WriteLine($"In Memory          {InMemory}");
+            Console.WriteLine($"No Cache           {NoCache}");
+            Console.WriteLine($"Perf Cache         {PerfCache}");
+            Console.WriteLine($"Secrets Volume     {Secrets.Volume}");
+            Console.WriteLine($"Use in memory DB   {Secrets.UseInMemoryDb}");
+            Console.WriteLine($"Cosmos Server      {Secrets.CosmosServer}");
+            Console.WriteLine($"Cosmos Database    {Secrets.CosmosDatabase}");
+            Console.WriteLine($"Cosmos Collection  {Secrets.CosmosCollection}");
+            Console.WriteLine($"Cosmos Key         Length({Secrets.CosmosKey.Length})");
+            Console.WriteLine($"App Insights Key   Length({Secrets.AppInsightsKey.Length})");
 
             // always return 0 (success)
             return 0;

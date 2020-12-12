@@ -4,6 +4,7 @@
 using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.CommandLine.Parsing;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -52,6 +53,9 @@ namespace CSE.NextGenSymmetricApp
         /// Gets or sets LogLevel
         /// </summary>
         public static LogLevel AppLogLevel { get; set; } = LogLevel.Warning;
+        public static bool InMemory { get; set; }
+        public static bool NoCache { get; set; }
+        public static int PerfCache { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether LogLevel is set in command line or env var
@@ -76,7 +80,7 @@ namespace CSE.NextGenSymmetricApp
         {
             // build the System.CommandLine.RootCommand
             RootCommand root = BuildRootCommand();
-            root.Handler = CommandHandler.Create<string, LogLevel, bool, bool>(RunApp);
+            root.Handler = CommandHandler.Create<string, LogLevel, bool, bool, bool, int>(RunApp);
 
             string[] cmd = CombineEnvVarsWithCommandLine(args);
 
