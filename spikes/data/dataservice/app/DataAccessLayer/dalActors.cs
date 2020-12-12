@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Threading.Tasks;
 using CSE.NextGenSymmetricApp.Model;
 using Microsoft.Azure.Cosmos;
@@ -77,35 +76,9 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
                 return ac;
             }
 
-            string sql = ActorSelect;
+            string sql = App.SearchService.GetActorIds(actorQueryParameters);
 
-            int offset = actorQueryParameters.GetOffset();
-            int limit = actorQueryParameters.PageSize;
-
-            string offsetLimit = string.Format(CultureInfo.InvariantCulture, ActorOffset, offset, limit);
-
-            if (!string.IsNullOrEmpty(actorQueryParameters.Q))
-            {
-                // convert to lower and escape embedded '
-                actorQueryParameters.Q = actorQueryParameters.Q.Trim().ToLowerInvariant().Replace("'", "''", System.StringComparison.OrdinalIgnoreCase);
-
-                if (!string.IsNullOrEmpty(actorQueryParameters.Q))
-                {
-                    // get actors by a "like" search on name
-                    sql += string.Format(CultureInfo.InvariantCulture, $" and contains(m.textSearch, @q) ");
-                }
-            }
-
-            sql += ActorOrderBy + offsetLimit;
-
-            QueryDefinition queryDefinition = new QueryDefinition(sql);
-
-            if (!string.IsNullOrEmpty(actorQueryParameters.Q))
-            {
-                queryDefinition.WithParameter("@q", actorQueryParameters.Q);
-            }
-
-            List<Actor> res = (List<Actor>)await InternalCosmosDBSqlQuery<Actor>(queryDefinition).ConfigureAwait(false);
+            List<Actor> res = (List<Actor>)await InternalCosmosDBSqlQuery<Actor>(sql).ConfigureAwait(false);
 
             // add to cache
             cache.Add(new System.Runtime.Caching.CacheItem(key, res), cachePolicy);
