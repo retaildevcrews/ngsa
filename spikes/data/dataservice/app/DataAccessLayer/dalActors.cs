@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.Caching;
 using System.Threading.Tasks;
 using CSE.NextGenSymmetricApp.Model;
 using Microsoft.Azure.Cosmos;
@@ -14,11 +15,6 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
     /// </summary>
     public partial class CosmosDal
     {
-        // select template for Actors
-        private const string ActorSelect = "select m.id, m.partitionKey, m.actorId, m.type, m.name, m.birthYear, m.deathYear, m.profession, m.textSearch, m.movies from m where m.type = 'Actor' ";
-        private const string ActorOrderBy = " order by m.textSearch ASC, m.actorId ASC";
-        private const string ActorOffset = " offset {0} limit {1}";
-
         /// <summary>
         /// Retrieve a single Actor from CosmosDB by actorId
         ///
@@ -77,11 +73,19 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             }
 
             string sql = App.SearchService.GetActorIds(actorQueryParameters);
+            List<Actor> res;
 
-            List<Actor> res = (List<Actor>)await InternalCosmosDBSqlQuery<Actor>(sql).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(sql))
+            {
+                res = (List<Actor>)await InternalCosmosDBSqlQuery<Actor>(sql).ConfigureAwait(false);
+            }
+            else
+            {
+                res = new List<Actor>();
+            }
 
             // add to cache
-            cache.Add(new System.Runtime.Caching.CacheItem(key, res), cachePolicy);
+            cache.Add(new CacheItem(key, res), cachePolicy);
 
             return res;
         }
