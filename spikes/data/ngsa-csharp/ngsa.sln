@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ngsa", "app\ngsa.csproj", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tests", "tests\tests.csproj", "{FBBDF2B7-E28D-4A27-AFFB-9EBD3D042657}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSE.Middleware", "..\middleware\CSE.Middleware.csproj", "{F5891106-21B7-46AD-B083-F04B5BBD7556}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{FBBDF2B7-E28D-4A27-AFFB-9EBD3D042657}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBBDF2B7-E28D-4A27-AFFB-9EBD3D042657}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBBDF2B7-E28D-4A27-AFFB-9EBD3D042657}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5891106-21B7-46AD-B083-F04B5BBD7556}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5891106-21B7-46AD-B083-F04B5BBD7556}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5891106-21B7-46AD-B083-F04B5BBD7556}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5891106-21B7-46AD-B083-F04B5BBD7556}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
