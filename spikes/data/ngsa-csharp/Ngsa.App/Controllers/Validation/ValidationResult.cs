@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
+using Ngsa.Middleware;
 
 namespace Ngsa.App.Validation
 {
@@ -101,7 +102,6 @@ namespace Ngsa.App.Validation
         /// </summary>
         /// <param name="value">value to convert</param>
         /// <returns>string</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "tolower is correct")]
         private static string PascalToCamelCase(string value)
         {
             if (string.IsNullOrEmpty(value))
@@ -114,7 +114,7 @@ namespace Ngsa.App.Validation
                 return value.ToLowerInvariant();
             }
 
-            return value.Substring(0, 1).ToLowerInvariant() + value.Substring(1);
+            return value.Substring(0, 1).ToLowerInvariant() + value[1..];
         }
 
         /// <summary>
