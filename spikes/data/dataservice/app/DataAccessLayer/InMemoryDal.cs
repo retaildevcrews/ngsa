@@ -143,6 +143,40 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
         }
 
         /// <summary>
+        /// Get actor IDs by search criteria
+        /// </summary>
+        /// <param name="actorQueryParameters">search criteria</param>
+        /// <returns>Cosmos select statement</returns>
+        public string GetActorIds(ActorQueryParameters actorQueryParameters)
+        {
+            List<Actor> list;
+
+            if (actorQueryParameters == null)
+            {
+                list = GetActors(string.Empty, 0, 100);
+            }
+            else
+            {
+                list = GetActors(actorQueryParameters.Q, actorQueryParameters.GetOffset(), actorQueryParameters.PageSize);
+            }
+
+            string ids = string.Empty;
+
+            if (list != null && list.Count > 0)
+            {
+                foreach (Actor a in list)
+                {
+                    ids += $"'{a.ActorId}',";
+                }
+
+                string sql = "select m.id, m.partitionKey, m.actorId, m.type, m.name, m.birthYear, m.deathYear, m.profession, m.textSearch, m.movies from m where m.id in ({0}) order by m.textSearch ASC";
+                ids = sql.Replace("{0}", ids[0..^1], StringComparison.Ordinal);
+            }
+
+            return ids;
+        }
+
+        /// <summary>
         /// Get actors by search criteria
         /// </summary>
         /// <param name="actorQueryParameters">search criteria</param>
