@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Imdb.Model;
+using Ngsa.Middleware;
 
 namespace Ngsa.DataService.DataAccessLayer
 {

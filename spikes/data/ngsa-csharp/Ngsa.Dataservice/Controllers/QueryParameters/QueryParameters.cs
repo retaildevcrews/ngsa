@@ -2,9 +2,9 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.ComponentModel.DataAnnotations;
-using Ngsa.DataService.Validation;
+using Ngsa.Middleware.Validation;
 
-namespace Ngsa.DataService
+namespace Ngsa.Middleware
 {
     /// <summary>
     /// abstract class used to validate query string parameters

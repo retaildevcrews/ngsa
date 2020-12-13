@@ -14,7 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Ngsa.DataService.DataAccessLayer;
-using Ngsa.DataService.Validation;
+using Ngsa.Middleware.Validation;
 
 namespace Ngsa.DataService
 {
@@ -67,8 +67,6 @@ namespace Ngsa.DataService
         /// Gets or sets the secrets from k8s volume
         /// </summary>
         public static Secrets Secrets { get; set; }
-
-        public static ILogger<ValidationResult> ValidationLogger { get; set; }
 
         /// <summary>
         /// Main entry point
@@ -135,7 +133,6 @@ namespace Ngsa.DataService
         {
             // get the logger service
             logger = host.Services.GetRequiredService<ILogger<App>>();
-            ValidationLogger = host.Services.GetRequiredService<ILogger<ValidationResult>>();
 
             if (logger != null)
             {

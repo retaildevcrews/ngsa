@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Ngsa.DataService.DataAccessLayer;
+using Ngsa.Middleware;
 
 namespace Ngsa.DataService.Controllers
 {

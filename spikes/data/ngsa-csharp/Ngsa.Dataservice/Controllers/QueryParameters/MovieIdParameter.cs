@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Ngsa.DataService.Validation;
+using Ngsa.Middleware.Validation;
 
-namespace Ngsa.DataService
+namespace Ngsa.Middleware
 {
     /// <summary>
     /// Movie ID URI validation class

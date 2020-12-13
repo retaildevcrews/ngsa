@@ -7,6 +7,7 @@ using System.Runtime.Caching;
 using System.Threading.Tasks;
 using Imdb.Model;
 using Microsoft.Azure.Cosmos;
+using Ngsa.Middleware;
 
 namespace Ngsa.DataService.DataAccessLayer
 {

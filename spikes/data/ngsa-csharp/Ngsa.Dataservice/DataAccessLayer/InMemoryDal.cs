@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Imdb.Model;
 using Microsoft.Azure.Cosmos;
+using Ngsa.Middleware;
 
 /// <summary>
 /// This code is used to support performance testing

@@ -13,15 +13,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 
-namespace Ngsa.DataService.Validation
+namespace Ngsa.Middleware.Validation
 {
     /// <summary>
     /// Validation Result class
     /// </summary>
     public class ValidationResult : IActionResult
     {
-        private readonly ILogger logger = App.ValidationLogger;
-
         public Task ExecuteResultAsync(ActionContext context)
         {
             if (context == null)
@@ -31,7 +29,7 @@ namespace Ngsa.DataService.Validation
 
             context.HttpContext.Response.ContentType = "application/problem+json";
             context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            context.HttpContext.Response.WriteAsync(WriteJsonOutput(context, logger));
+            context.HttpContext.Response.WriteAsync(WriteJsonOutput(context));
 
             return Task.CompletedTask;
         }
@@ -40,8 +38,7 @@ namespace Ngsa.DataService.Validation
         /// Creates JSON response using ValidationProblemDetails given inputs
         /// </summary>
         /// <param name="context">ActionContext</param>
-        /// <param name="logger">ILogger</param>
-        private static string WriteJsonOutput(ActionContext context, ILogger logger)
+        private static string WriteJsonOutput(ActionContext context)
         {
             // create problem details response
             ValidationDetail problemDetails = new ValidationDetail
@@ -63,9 +60,6 @@ namespace Ngsa.DataService.Validation
                 {
                     continue;
                 }
-
-                // log each validation error in the collection
-                logger.LogInformation($"InvalidParameter|{context.HttpContext.Request.Path}|{validationError.Value.Errors[0].ErrorMessage}");
 
                 // add error object to problemDetails
                 problemDetails.ValidationErrors.Add(CreateValidationError(validationError.Key));
