@@ -4,6 +4,7 @@ using System.CommandLine.Parsing;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Ngsa.LodeRunner;
 using Xunit;
 
 namespace CSE.WebValidate.Tests.Unit

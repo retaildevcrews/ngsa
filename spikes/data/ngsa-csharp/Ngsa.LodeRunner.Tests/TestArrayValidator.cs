@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using CSE.WebValidate.Model;
-using CSE.WebValidate.Validators;
+using Ngsa.LodeRunner.Model;
+using Ngsa.LodeRunner.Validators;
 using Xunit;
 
 namespace CSE.WebValidate.Tests.Unit
