@@ -23,8 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\shared\CVectorExtensions.cs" Link="CVectorExtensions.cs" />
-    <Compile Include="..\..\shared\CVectorHttpExtensions.cs" Link="CVectorExtensions.cs" />
+    <ProjectReference Include="..\..\middleware\CSE.Middleware.csproj" />
   </ItemGroup>
 
   <ItemGroup>
