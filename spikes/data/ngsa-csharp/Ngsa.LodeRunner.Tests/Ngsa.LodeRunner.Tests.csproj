@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\app\loderunner.csproj" />
+    <ProjectReference Include="..\Ngsa.LodeRunner\Ngsa.LodeRunner.csproj" />
   </ItemGroup>
 
   <ItemGroup>
