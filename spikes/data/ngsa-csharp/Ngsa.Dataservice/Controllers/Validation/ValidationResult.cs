@@ -100,7 +100,6 @@ namespace Ngsa.DataService.Validation
         /// </summary>
         /// <param name="value">value to convert</param>
         /// <returns>string</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "tolower is correct")]
         private static string PascalToCamelCase(string value)
         {
             if (string.IsNullOrEmpty(value))
@@ -113,7 +112,7 @@ namespace Ngsa.DataService.Validation
                 return value.ToLowerInvariant();
             }
 
-            return value.Substring(0, 1).ToLowerInvariant() + value.Substring(1);
+            return value.Substring(0, 1).ToLowerInvariant() + value[1..];
         }
 
         /// <summary>
