@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Caching;
 using System.Threading.Tasks;
-using CSE.NextGenSymmetricApp.Model;
+using Imdb.Model;
 using Microsoft.Azure.Cosmos;
 
 namespace CSE.NextGenSymmetricApp.DataAccessLayer

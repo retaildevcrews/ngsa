@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using CSE.NextGenSymmetricApp.Model;
+using Imdb.Model;
 using Microsoft.Azure.Cosmos;
 
 /// <summary>

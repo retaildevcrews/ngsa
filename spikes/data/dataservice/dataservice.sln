@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tests", "tests\tests.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSE.Web.Middleware", "..\CSE.Web.Middleware\CSE.Web.Middleware.csproj", "{530F6D7F-1FB3-4364-A477-FC171005D538}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Imdb.Model", "..\Imdb.Model\Imdb.Model.csproj", "{BEC8787F-3B36-4ECB-92AD-7885F8FD9B0F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{530F6D7F-1FB3-4364-A477-FC171005D538}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{530F6D7F-1FB3-4364-A477-FC171005D538}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{530F6D7F-1FB3-4364-A477-FC171005D538}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEC8787F-3B36-4ECB-92AD-7885F8FD9B0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEC8787F-3B36-4ECB-92AD-7885F8FD9B0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEC8787F-3B36-4ECB-92AD-7885F8FD9B0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEC8787F-3B36-4ECB-92AD-7885F8FD9B0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
