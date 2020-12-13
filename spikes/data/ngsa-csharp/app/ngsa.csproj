@@ -61,6 +61,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\CSE.Web.Middleware\CSE.Web.Middleware.csproj" />
+    <ProjectReference Include="..\..\Imdb.Model\Imdb.Model.csproj" />
   </ItemGroup>
 
   <ItemGroup>

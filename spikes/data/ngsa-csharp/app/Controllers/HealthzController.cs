@@ -23,7 +23,7 @@ namespace CSE.NextGenSymmetricApp.Controllers
         private readonly ILogger<CosmosHealthCheck> hcLogger;
 
         /// <summary>
-        /// Constructor
+        /// Initializes a new instance of the <see cref="HealthzController"/> class.
         /// </summary>
         /// <param name="logger">logger</param>
         /// <param name="dal">data access layer</param>

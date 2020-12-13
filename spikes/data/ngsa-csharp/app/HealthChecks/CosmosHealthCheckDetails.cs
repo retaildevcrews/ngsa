@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using CSE.NextGenSymmetricApp.Controllers;
 using CSE.NextGenSymmetricApp.Model;
+using Imdb.Model;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace CSE.NextGenSymmetricApp

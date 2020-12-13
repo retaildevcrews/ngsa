@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\middleware\CSE.Middleware.csproj" />
+    <ProjectReference Include="..\..\CSE.Web.Middleware\CSE.Web.Middleware.csproj" />
   </ItemGroup>
 
   <ItemGroup>
