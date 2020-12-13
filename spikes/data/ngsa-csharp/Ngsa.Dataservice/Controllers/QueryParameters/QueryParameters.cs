@@ -40,8 +40,7 @@ namespace Ngsa.DataService
 
         public string GetKey()
         {
-            string key = $"/api/actors/{PageNumber}/{PageNumber}";
-            return $"/{(string.IsNullOrWhiteSpace(Q) ? string.Empty : Q.ToUpperInvariant().Trim())}";
+            return $"/api/actors/{PageNumber}/{PageNumber}/{(string.IsNullOrWhiteSpace(Q) ? string.Empty : Q.ToUpperInvariant().Trim())}";
         }
     }
 }
