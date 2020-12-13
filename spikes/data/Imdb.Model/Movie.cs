@@ -46,5 +46,19 @@ namespace Imdb.Model
 
             throw new ArgumentException("Invalid Partition Key");
         }
+
+        public static int TitleCompare(Movie x, Movie y)
+        {
+            int result;
+
+            result = string.Compare(x?.Title, y?.Title, StringComparison.OrdinalIgnoreCase);
+
+            if (result == 0)
+            {
+                return string.Compare(y.Id, y.Id, StringComparison.OrdinalIgnoreCase);
+            }
+
+            return result;
+        }
     }
 }
