@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Ngsa.App.Model;
+using Ngsa.Middleware;
 
 namespace Ngsa.App
 {
