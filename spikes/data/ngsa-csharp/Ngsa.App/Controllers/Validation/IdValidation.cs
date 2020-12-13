@@ -4,7 +4,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Ngsa.App.Validation
+namespace Ngsa.Middleware.Validation
 {
     /// <summary>
     /// Paramameter validation for Movie ID and Actor ID

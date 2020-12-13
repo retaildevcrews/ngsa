@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 
-namespace Ngsa.App.Validation
+namespace Ngsa.Middleware.Validation
 {
     /// <summary>
     /// Model class for Validation Problem Details

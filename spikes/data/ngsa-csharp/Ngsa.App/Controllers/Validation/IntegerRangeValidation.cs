@@ -3,7 +3,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace Ngsa.App.Validation
+namespace Ngsa.Middleware.Validation
 {
     /// <summary>
     /// Paramameter validation for integer ranges

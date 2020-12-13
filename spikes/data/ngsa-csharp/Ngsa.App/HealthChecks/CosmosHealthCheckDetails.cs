@@ -9,6 +9,7 @@ using Imdb.Model;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Ngsa.App.Controllers;
 using Ngsa.App.Model;
+using Ngsa.Middleware;
 
 namespace Ngsa.App
 {

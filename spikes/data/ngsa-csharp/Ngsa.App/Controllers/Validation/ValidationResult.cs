@@ -12,16 +12,15 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
-using Ngsa.Middleware;
 
-namespace Ngsa.App.Validation
+namespace Ngsa.Middleware.Validation
 {
     /// <summary>
     /// Validation Result class
     /// </summary>
     public class ValidationResult : IActionResult
     {
-        private readonly ILogger logger = App.ValidationLogger;
+        private readonly ILogger logger = Ngsa.App.App.ValidationLogger;
 
         public Task ExecuteResultAsync(ActionContext context)
         {
