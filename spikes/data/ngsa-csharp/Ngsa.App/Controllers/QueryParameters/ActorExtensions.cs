@@ -5,7 +5,7 @@ using System;
 using Microsoft.AspNetCore.Http;
 using Ngsa.Middleware;
 
-namespace Ngsa.App
+namespace Ngsa.Middleware
 {
     public static class ActorExtensions
     {

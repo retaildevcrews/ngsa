@@ -37,5 +37,10 @@ namespace Ngsa.Middleware
         {
             return PageSize * (PageNumber > 1 ? PageNumber - 1 : 0);
         }
+
+        public string GetKey()
+        {
+            return $"/api/actors/{PageNumber}/{PageNumber}/{(string.IsNullOrWhiteSpace(Q) ? string.Empty : Q.ToUpperInvariant().Trim())}";
+        }
     }
 }

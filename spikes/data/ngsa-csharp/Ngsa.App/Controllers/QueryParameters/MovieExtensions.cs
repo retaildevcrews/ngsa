@@ -28,7 +28,7 @@ namespace Ngsa.Middleware
 
             string method = "GetMovies";
 
-            if (httpContext.Request?.Query == null)
+            if (httpContext?.Request?.Query == null)
             {
                 return method;
             }
