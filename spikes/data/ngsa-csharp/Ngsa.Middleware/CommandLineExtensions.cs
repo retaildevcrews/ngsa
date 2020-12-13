@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CSE.NextGenSymmetricApp.Extensions
+namespace Ngsa.Middleware
 {
     public static class CommandLineExtensions
     {
