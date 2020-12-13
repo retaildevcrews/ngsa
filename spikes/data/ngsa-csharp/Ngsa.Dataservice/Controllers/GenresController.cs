@@ -2,11 +2,11 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Threading.Tasks;
-using CSE.NextGenSymmetricApp.DataAccessLayer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Ngsa.DataService.DataAccessLayer;
 
-namespace CSE.NextGenSymmetricApp.Controllers
+namespace Ngsa.DataService.Controllers
 {
     /// <summary>
     /// Handle the single /api/genres requests

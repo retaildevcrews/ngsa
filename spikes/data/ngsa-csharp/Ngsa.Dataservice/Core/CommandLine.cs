@@ -8,12 +8,11 @@ using System.CommandLine.Parsing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using CSE.NextGenSymmetricApp.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Ngsa.Middleware;
 
-namespace CSE.NextGenSymmetricApp
+namespace Ngsa.DataService
 {
     /// <summary>
     /// Main application class

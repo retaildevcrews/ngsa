@@ -4,7 +4,7 @@
 using System;
 using System.IO;
 
-namespace CSE.NextGenSymmetricApp
+namespace Ngsa.DataService
 {
     /// <summary>
     /// Application secrets

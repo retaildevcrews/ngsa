@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Imdb.Model;
 
-namespace CSE.NextGenSymmetricApp.DataAccessLayer
+namespace Ngsa.DataService.DataAccessLayer
 {
     /// <summary>
     /// Data Access Layer for CosmosDB Interface

@@ -17,7 +17,7 @@ using Microsoft.Azure.Cosmos;
 /// This provides higher performance and less variability which allows us to establish
 /// baseline performance metrics
 /// </summary>
-namespace CSE.NextGenSymmetricApp.DataAccessLayer
+namespace Ngsa.DataService.DataAccessLayer
 {
     public class InMemoryDal : IDAL
     {

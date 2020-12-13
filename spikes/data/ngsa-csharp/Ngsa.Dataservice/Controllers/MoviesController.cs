@@ -3,12 +3,12 @@
 
 using System;
 using System.Threading.Tasks;
-using CSE.NextGenSymmetricApp.DataAccessLayer;
-using CSE.NextGenSymmetricApp.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Ngsa.DataService.DataAccessLayer;
+using Ngsa.DataService.Extensions;
 
-namespace CSE.NextGenSymmetricApp.Controllers
+namespace Ngsa.DataService.Controllers
 {
     /// <summary>
     /// Handle all of the /api/movies requests

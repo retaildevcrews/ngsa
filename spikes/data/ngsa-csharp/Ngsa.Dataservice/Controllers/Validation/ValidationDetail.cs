@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 
-namespace CSE.NextGenSymmetricApp.Validation
+namespace Ngsa.DataService.Validation
 {
     /// <summary>
     /// Model class for Validation Problem Details

@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 
-namespace CSE.NextGenSymmetricApp.Validation
+namespace Ngsa.DataService.Validation
 {
     /// <summary>
     /// Validation Result class

@@ -8,7 +8,7 @@ using System.Runtime.Caching;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
 
-namespace CSE.NextGenSymmetricApp.DataAccessLayer
+namespace Ngsa.DataService.DataAccessLayer
 {
     /// <summary>
     /// Data Access Layer for CosmosDB

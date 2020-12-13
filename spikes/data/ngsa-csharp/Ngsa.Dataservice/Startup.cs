@@ -4,16 +4,16 @@
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using CSE.NextGenSymmetricApp.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Ngsa.DataService.Validation;
 using Ngsa.Middleware;
 
-namespace CSE.NextGenSymmetricApp
+namespace Ngsa.DataService
 {
     /// <summary>
     /// WebHostBuilder Startup

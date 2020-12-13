@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 
-namespace CSE.NextGenSymmetricApp.Controllers
+namespace Ngsa.DataService.Controllers
 {
     /// <summary>
     /// Handles query requests from the controllers

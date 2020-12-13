@@ -4,11 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CSE.NextGenSymmetricApp.DataAccessLayer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Ngsa.DataService.DataAccessLayer;
 
-namespace CSE.NextGenSymmetricApp.Controllers
+namespace Ngsa.DataService.Controllers
 {
     /// <summary>
     /// Handle /api/featured/movie requests

@@ -3,7 +3,7 @@
 
 using System.Net;
 
-namespace CSE.NextGenSymmetricApp.Controllers
+namespace Ngsa.DataService.Controllers
 {
     public class ErrorResult
     {

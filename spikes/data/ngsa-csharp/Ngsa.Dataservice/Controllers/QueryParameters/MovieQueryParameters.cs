@@ -2,9 +2,9 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.ComponentModel.DataAnnotations;
-using CSE.NextGenSymmetricApp.Validation;
+using Ngsa.DataService.Validation;
 
-namespace CSE.NextGenSymmetricApp
+namespace Ngsa.DataService
 {
     /// <summary>
     /// Query sting parameters for Movies controller

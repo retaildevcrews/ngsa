@@ -4,7 +4,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace CSE.NextGenSymmetricApp.Validation
+namespace Ngsa.DataService.Validation
 {
     /// <summary>
     /// Paramameter validation for Year

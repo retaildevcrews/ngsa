@@ -8,15 +8,15 @@ using System.CommandLine.Parsing;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using CSE.NextGenSymmetricApp.DataAccessLayer;
-using CSE.NextGenSymmetricApp.Validation;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Ngsa.DataService.DataAccessLayer;
+using Ngsa.DataService.Validation;
 
-namespace CSE.NextGenSymmetricApp
+namespace Ngsa.DataService
 {
     /// <summary>
     /// Main application class
@@ -218,7 +218,7 @@ namespace CSE.NextGenSymmetricApp
                     logger.AddFilter("Microsoft", AppLogLevel)
                     .AddFilter("System", AppLogLevel)
                     .AddFilter("Default", AppLogLevel)
-                    .AddFilter("CSE.NextGenSymmetricApp", AppLogLevel);
+                    .AddFilter("Ngsa.DataService", AppLogLevel);
                 }
             });
 
