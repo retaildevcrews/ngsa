@@ -44,7 +44,7 @@ namespace CSE.NextGenSymmetricApp
             cmd.AddFromEnvironment("--log-level", "-l");
 
             // was log level set
-            App.IsLogLevelSet = cmd.Contains("--log-level") || cmd.Contains("-l");
+            IsLogLevelSet = cmd.Contains("--log-level") || cmd.Contains("-l");
 
             return cmd.ToArray();
         }
