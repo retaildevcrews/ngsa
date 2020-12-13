@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ngsa", "app\ngsa.csproj", "{BC9AE556-1995-4A7A-AA2B-1087EED4FEB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ngsa.App", "Ngsa.App\Ngsa.App.csproj", "{BC9AE556-1995-4A7A-AA2B-1087EED4FEB2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tests", "tests\tests.csproj", "{FBBDF2B7-E28D-4A27-AFFB-9EBD3D042657}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ngsa.Middleware", "Ngsa.Middleware\Ngsa.Middleware.csproj", "{3B4D932C-DCCE-4406-9DFF-B2D09D0AA281}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSE.Web.Middleware", "..\CSE.Web.Middleware\CSE.Web.Middleware.csproj", "{3B4D932C-DCCE-4406-9DFF-B2D09D0AA281}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Imdb.Model", "Imdb.Model\Imdb.Model.csproj", "{BEC8787F-3B36-4ECB-92AD-7885F8FD9B0F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Imdb.Model", "..\Imdb.Model\Imdb.Model.csproj", "{BEC8787F-3B36-4ECB-92AD-7885F8FD9B0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ngsa.DataService", "Ngsa.DataService\Ngsa.DataService.csproj", "{8C794C64-7955-41BA-93DD-C7304BF18418}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ngsa.LodeRunner", "Ngsa.LodeRunner\Ngsa.LodeRunner.csproj", "{1ED2BACE-306A-4D1C-8AE5-57368892D570}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +23,6 @@ Global
 		{BC9AE556-1995-4A7A-AA2B-1087EED4FEB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC9AE556-1995-4A7A-AA2B-1087EED4FEB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC9AE556-1995-4A7A-AA2B-1087EED4FEB2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FBBDF2B7-E28D-4A27-AFFB-9EBD3D042657}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FBBDF2B7-E28D-4A27-AFFB-9EBD3D042657}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FBBDF2B7-E28D-4A27-AFFB-9EBD3D042657}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FBBDF2B7-E28D-4A27-AFFB-9EBD3D042657}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3B4D932C-DCCE-4406-9DFF-B2D09D0AA281}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3B4D932C-DCCE-4406-9DFF-B2D09D0AA281}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B4D932C-DCCE-4406-9DFF-B2D09D0AA281}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +31,14 @@ Global
 		{BEC8787F-3B36-4ECB-92AD-7885F8FD9B0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEC8787F-3B36-4ECB-92AD-7885F8FD9B0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEC8787F-3B36-4ECB-92AD-7885F8FD9B0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C794C64-7955-41BA-93DD-C7304BF18418}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C794C64-7955-41BA-93DD-C7304BF18418}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C794C64-7955-41BA-93DD-C7304BF18418}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C794C64-7955-41BA-93DD-C7304BF18418}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1ED2BACE-306A-4D1C-8AE5-57368892D570}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ED2BACE-306A-4D1C-8AE5-57368892D570}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ED2BACE-306A-4D1C-8AE5-57368892D570}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ED2BACE-306A-4D1C-8AE5-57368892D570}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
