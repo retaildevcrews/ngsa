@@ -1,12 +1,11 @@
 using System;
 using System.CommandLine;
 using System.Threading.Tasks;
-using CSE.NextGenSymmetricApp;
+using Ngsa.DataService;
 using Xunit;
 
 namespace Tests
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1001:Types that own disposable fields should be disposable")]
     public class AppTest
     {
         [Fact]
