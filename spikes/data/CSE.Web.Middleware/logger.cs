@@ -83,7 +83,7 @@ namespace CSE.Middleware
             double duration = 0;
             double ttfb = 0;
 
-            cv = CVectorExtensions.Extend(context);
+            cv = CorrelationVectorExtensions.Extend(context);
 
             // Invoke next handler
             if (next != null)
@@ -105,7 +105,6 @@ namespace CSE.Middleware
         }
 
         // roll request counter into list
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA1801:Review unused parameters", Justification = "required by delegate")]
         private static void RollCounter(object state)
         {
             RPS.Insert(0, Interlocked.Exchange(ref counter, 0));

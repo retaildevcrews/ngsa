@@ -10,8 +10,27 @@ namespace CSE.Middleware
     /// <summary>
     /// Correlation Vector extensions
     /// </summary>
-    public static partial class CVectorExtensions
+    public static class CorrelationVectorExtensions
     {
+        /// <summary>
+        /// Get the Correlation Vector base
+        /// </summary>
+        /// <param name="correlationVector">Correlation Vector</param>
+        /// <returns>string</returns>
+        public static string GetBase(this CorrelationVector correlationVector)
+        {
+            if (correlationVector == null)
+            {
+                throw new ArgumentNullException(nameof(correlationVector));
+            }
+
+            return correlationVector.Version switch
+            {
+                CorrelationVectorVersion.V1 => correlationVector.Value.Substring(0, 16),
+                _ => correlationVector.Value.Substring(0, 22),
+            };
+        }
+
         /// <summary>
         /// Extend correlation vector
         /// </summary>
