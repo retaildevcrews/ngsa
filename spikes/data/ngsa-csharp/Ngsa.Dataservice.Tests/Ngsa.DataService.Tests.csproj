@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\app\ds.csproj" />
+    <ProjectReference Include="..\Ngsa.DataService\Ngsa.DataService.csproj" />
   </ItemGroup>
 
 </Project>
