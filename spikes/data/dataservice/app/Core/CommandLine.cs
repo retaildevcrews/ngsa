@@ -35,6 +35,7 @@ namespace CSE.NextGenSymmetricApp
             List<string> cmd = new List<string>(args);
 
             // add values from environment
+            cmd.AddFromEnvironment("--cache-duration");
             cmd.AddFromEnvironment("--in-memory");
             cmd.AddFromEnvironment("--no-cache");
             cmd.AddFromEnvironment("--perf-cache");
@@ -61,6 +62,7 @@ namespace CSE.NextGenSymmetricApp
             };
 
             // add the options
+            root.AddOption(new Option<int>(new string[] { "--cache-duration" }, () => 300, "Cache for duration (seconds)"));
             root.AddOption(new Option<bool>(new string[] { "--in-memory" }, "Use in-memory database"));
             root.AddOption(new Option<bool>(new string[] { "--no-cache" }, "Don't cache results"));
             root.AddOption(new Option<int>(new string[] { "--perf-cache" }, "Cache only when load exceeds value"));
@@ -83,59 +85,20 @@ namespace CSE.NextGenSymmetricApp
         /// <param name="inMemory">Use in-memory DB</param>
         /// <param name="noCache">don't cache results</param>
         /// <param name="perfCache">cache results under load</param>
+        /// <param name="cacheDuration">cache duration (seconds)</param>
         /// <returns>status</returns>
-        public static async Task<int> RunApp(string secretsVolume, LogLevel logLevel, bool dryRun, bool inMemory, bool noCache, int perfCache)
+        public static async Task<int> RunApp(string secretsVolume, LogLevel logLevel, bool dryRun, bool inMemory, bool noCache, int perfCache, int cacheDuration)
         {
             try
             {
                 // assign command line values
+                AppLogLevel = logLevel;
+                CacheDuration = cacheDuration;
                 InMemory = inMemory;
                 NoCache = noCache;
                 PerfCache = perfCache;
 
-                Region = Environment.GetEnvironmentVariable("Region");
-                Zone = Environment.GetEnvironmentVariable("Zone");
-                PodType = Environment.GetEnvironmentVariable("PodType");
-
-                if (string.IsNullOrEmpty(PodType))
-                {
-                    PodType = "ngsa-ds";
-                }
-
-                if (inMemory)
-                {
-                    Secrets = new Secrets
-                    {
-                        UseInMemoryDb = true,
-                        AppInsightsKey = string.Empty,
-                        CosmosCollection = "movies",
-                        CosmosDatabase = "imdb",
-                        CosmosKey = "in-memory",
-                        CosmosServer = "in-memory",
-                    };
-                }
-                else
-                {
-                    Secrets = Secrets.GetSecretsFromVolume(secretsVolume);
-
-                    // set the Cosmos server name for logging
-                    CosmosName = Secrets.CosmosServer.Replace("https://", string.Empty, StringComparison.OrdinalIgnoreCase).Replace("http://", string.Empty, StringComparison.OrdinalIgnoreCase);
-
-                    // todo - get this from cosmos query
-                    CosmosQueryId = "todo";
-
-                    int ndx = CosmosName.IndexOf('.', StringComparison.OrdinalIgnoreCase);
-
-                    if (ndx > 0)
-                    {
-                        CosmosName = CosmosName.Remove(ndx);
-                    }
-                }
-
-                // setup ctl c handler
-                ctCancel = SetupCtlCHandler();
-
-                AppLogLevel = logLevel;
+                LoadSecrets(secretsVolume);
 
                 // load the cache
                 CacheDal = new DataAccessLayer.InMemoryDal();
@@ -164,6 +127,9 @@ namespace CSE.NextGenSymmetricApp
                     return DoDryRun();
                 }
 
+                // setup ctl c handler
+                ctCancel = SetupCtlCHandler();
+
                 // log startup messages
                 LogStartup();
 
@@ -171,7 +137,7 @@ namespace CSE.NextGenSymmetricApp
                 Task w = host.RunAsync();
 
                 // start request count timer
-                Middleware.Logger.StartCounterTime(10000, 5000);
+                Middleware.Logger.StartCounterTime(5000, 1000);
 
                 // this doesn't return except on ctl-c
                 await w.ConfigureAwait(false);
@@ -195,6 +161,50 @@ namespace CSE.NextGenSymmetricApp
             }
         }
 
+        // load secrets
+        private static void LoadSecrets(string secretsVolume)
+        {
+            // todo - add to command line
+            Region = Environment.GetEnvironmentVariable("Region");
+            Zone = Environment.GetEnvironmentVariable("Zone");
+            PodType = Environment.GetEnvironmentVariable("PodType");
+
+            if (string.IsNullOrEmpty(PodType))
+            {
+                PodType = "ngsa-ds";
+            }
+
+            if (InMemory)
+            {
+                Secrets = new Secrets
+                {
+                    UseInMemoryDb = true,
+                    AppInsightsKey = string.Empty,
+                    CosmosCollection = "movies",
+                    CosmosDatabase = "imdb",
+                    CosmosKey = "in-memory",
+                    CosmosServer = "in-memory",
+                };
+            }
+            else
+            {
+                Secrets = Secrets.GetSecretsFromVolume(secretsVolume);
+
+                // set the Cosmos server name for logging
+                CosmosName = Secrets.CosmosServer.Replace("https://", string.Empty, StringComparison.OrdinalIgnoreCase).Replace("http://", string.Empty, StringComparison.OrdinalIgnoreCase);
+
+                // todo - get this from cosmos query
+                CosmosQueryId = "todo";
+
+                int ndx = CosmosName.IndexOf('.', StringComparison.OrdinalIgnoreCase);
+
+                if (ndx > 0)
+                {
+                    CosmosName = CosmosName.Remove(ndx);
+                }
+            }
+        }
+
         // validate combinations of parameters
         private static string ValidateDependencies(CommandResult result)
         {
@@ -202,9 +212,10 @@ namespace CSE.NextGenSymmetricApp
 
             try
             {
+                int? cacheDuration = !(result.Children.FirstOrDefault(c => c.Symbol.Name == "cache-duration") is OptionResult cacheDurationRes) ? null : cacheDurationRes.GetValueOrDefault<int?>();
                 int? perfCache = !(result.Children.FirstOrDefault(c => c.Symbol.Name == "perf-cache") is OptionResult perfCacheRes) ? null : perfCacheRes.GetValueOrDefault<int?>();
-                bool inMemory = !(result.Children.FirstOrDefault(c => c.Symbol.Name == "in-memory") is OptionResult inMemoryRes) ? false : inMemoryRes.GetValueOrDefault<bool>();
-                bool noCache = !(result.Children.FirstOrDefault(c => c.Symbol.Name == "no-cache") is OptionResult noCacheRes) ? false : noCacheRes.GetValueOrDefault<bool>();
+                bool inMemory = result.Children.FirstOrDefault(c => c.Symbol.Name == "in-memory") is OptionResult inMemoryRes && inMemoryRes.GetValueOrDefault<bool>();
+                bool noCache = result.Children.FirstOrDefault(c => c.Symbol.Name == "no-cache") is OptionResult noCacheRes && noCacheRes.GetValueOrDefault<bool>();
                 string secrets = !(result.Children.FirstOrDefault(c => c.Symbol.Name == "secrets-volume") is OptionResult secretsRes) ? string.Empty : secretsRes.GetValueOrDefault<string>();
 
                 // validate secrets volume
@@ -224,6 +235,12 @@ namespace CSE.NextGenSymmetricApp
                 catch (Exception ex)
                 {
                     msg += $"--secrets-volume exception: {ex.Message}\n";
+                }
+
+                // validate cache-duration
+                if ((int)cacheDuration < 1)
+                {
+                    msg += "--cache-duration must be > 0\n";
                 }
 
                 // invalid combination
