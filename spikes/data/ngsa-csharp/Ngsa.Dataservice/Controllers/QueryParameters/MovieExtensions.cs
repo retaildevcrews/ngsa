@@ -4,7 +4,7 @@
 using System;
 using Microsoft.AspNetCore.Http;
 
-namespace Ngsa.DataService.Extensions
+namespace Ngsa.DataService
 {
     public static class MovieExtensions
     {
