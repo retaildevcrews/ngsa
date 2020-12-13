@@ -20,8 +20,6 @@ namespace Ngsa.Middleware.Validation
     /// </summary>
     public class ValidationResult : IActionResult
     {
-        private readonly ILogger logger = Ngsa.App.App.ValidationLogger;
-
         public Task ExecuteResultAsync(ActionContext context)
         {
             if (context == null)
@@ -31,7 +29,7 @@ namespace Ngsa.Middleware.Validation
 
             context.HttpContext.Response.ContentType = "application/problem+json";
             context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            context.HttpContext.Response.WriteAsync(WriteJsonOutput(context, logger));
+            context.HttpContext.Response.WriteAsync(WriteJsonOutput(context));
 
             return Task.CompletedTask;
         }
@@ -40,8 +38,7 @@ namespace Ngsa.Middleware.Validation
         /// Creates JSON response using ValidationProblemDetails given inputs
         /// </summary>
         /// <param name="context">ActionContext</param>
-        /// <param name="logger">ILogger</param>
-        private static string WriteJsonOutput(ActionContext context, ILogger logger)
+        private static string WriteJsonOutput(ActionContext context)
         {
             // create problem details response
             ValidationDetail problemDetails = new ValidationDetail
@@ -64,9 +61,6 @@ namespace Ngsa.Middleware.Validation
                     continue;
                 }
 
-                // log each validation error in the collection
-                logger.LogInformation($"InvalidParameter|{context.HttpContext.Request.Path}|{validationError.Value.Errors[0].ErrorMessage}");
-
                 // add error object to problemDetails
                 problemDetails.ValidationErrors.Add(CreateValidationError(validationError.Key));
             }
@@ -79,7 +73,6 @@ namespace Ngsa.Middleware.Validation
             };
 
             jsonOptions.Converters.Add(new JsonStringEnumConverter());
-            jsonOptions.Converters.Add(new TimeSpanConverter());
 
             return JsonSerializer.Serialize(problemDetails, jsonOptions);
         }
