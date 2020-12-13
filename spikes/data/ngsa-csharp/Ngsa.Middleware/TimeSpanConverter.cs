@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Ngsa.App
+namespace Ngsa.Middleware
 {
     /// <summary>
     /// Custom TimeSpan Converter
