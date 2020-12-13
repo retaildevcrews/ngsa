@@ -47,7 +47,7 @@ namespace Ngsa.DataService.Validation
                           id.Length < minimumCharacters ||
                           id.Length > maximumCharacters ||
                           id.Substring(0, 2) != startingCharacters ||
-                          !int.TryParse(id.Substring(2), out int val) ||
+                          !int.TryParse(id[2..], out int val) ||
                           val <= 0;
 
             return isInvalid ? new System.ComponentModel.DataAnnotations.ValidationResult(errorMessage) : System.ComponentModel.DataAnnotations.ValidationResult.Success;
