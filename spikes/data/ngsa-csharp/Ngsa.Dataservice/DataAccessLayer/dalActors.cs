@@ -3,7 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Runtime.Caching;
 using System.Threading.Tasks;
 using Imdb.Model;
 using Microsoft.Azure.Cosmos;
@@ -15,11 +15,6 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
     /// </summary>
     public partial class CosmosDal
     {
-        // select template for Actors
-        private const string ActorSelect = "select m.id, m.partitionKey, m.actorId, m.type, m.name, m.birthYear, m.deathYear, m.profession, m.textSearch, m.movies from m where m.type = 'Actor' ";
-        private const string ActorOrderBy = " order by m.textSearch ASC, m.actorId ASC";
-        private const string ActorOffset = " offset {0} limit {1}";
-
         /// <summary>
         /// Retrieve a single Actor from CosmosDB by actorId
         ///
@@ -77,37 +72,20 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
                 return ac;
             }
 
-            string sql = ActorSelect;
+            string sql = App.SearchService.GetActorIds(actorQueryParameters);
+            List<Actor> res;
 
-            int offset = actorQueryParameters.GetOffset();
-            int limit = actorQueryParameters.PageSize;
-
-            string offsetLimit = string.Format(CultureInfo.InvariantCulture, ActorOffset, offset, limit);
-
-            if (!string.IsNullOrEmpty(actorQueryParameters.Q))
+            if (!string.IsNullOrEmpty(sql))
             {
-                // convert to lower and escape embedded '
-                actorQueryParameters.Q = actorQueryParameters.Q.Trim().ToLowerInvariant().Replace("'", "''", System.StringComparison.OrdinalIgnoreCase);
-
-                if (!string.IsNullOrEmpty(actorQueryParameters.Q))
-                {
-                    // get actors by a "like" search on name
-                    sql += string.Format(CultureInfo.InvariantCulture, $" and contains(m.textSearch, @q) ");
-                }
+                res = (List<Actor>)await InternalCosmosDBSqlQuery<Actor>(sql).ConfigureAwait(false);
+            }
+            else
+            {
+                res = new List<Actor>();
             }
 
-            sql += ActorOrderBy + offsetLimit;
-
-            QueryDefinition queryDefinition = new QueryDefinition(sql);
-
-            if (!string.IsNullOrEmpty(actorQueryParameters.Q))
-            {
-                queryDefinition.WithParameter("@q", actorQueryParameters.Q);
-            }
-
-            List<Actor> res = (List<Actor>)await InternalCosmosDBSqlQuery<Actor>(queryDefinition).ConfigureAwait(false);
-
-            cache.Add(new System.Runtime.Caching.CacheItem(key, res), cachePolicy);
+            // add to cache
+            cache.Add(new CacheItem(key, res), cachePolicy);
 
             return res;
         }

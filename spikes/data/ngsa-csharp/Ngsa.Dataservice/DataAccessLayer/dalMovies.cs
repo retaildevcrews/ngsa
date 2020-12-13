@@ -66,17 +66,15 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
 
             string ids = App.SearchService.GetMovieIds(movieQueryParameters);
 
-            // todo - add CVectorBase
-            // todo - change to dataservice app name
-            // todo - should we cache this?
-            // nothing found
-            if (string.IsNullOrEmpty(ids))
+            List<Movie> movies = new List<Movie>();
+
+            // retrieve the items
+            if (!string.IsNullOrEmpty(ids))
             {
-                return new List<Movie>();
+                movies = (List<Movie>)await InternalCosmosDBSqlQuery<Movie>(ids).ConfigureAwait(false);
             }
 
-            List<Movie> movies = (List<Movie>)await InternalCosmosDBSqlQuery<Movie>(ids).ConfigureAwait(false);
-
+            // add to cache
             cache.Add(new CacheItem(key, movies), cachePolicy);
 
             return movies;
