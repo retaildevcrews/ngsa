@@ -4,7 +4,7 @@
 using System;
 using Microsoft.AspNetCore.Http;
 
-namespace Ngsa.App.Extensions
+namespace Ngsa.App
 {
     public static class ActorExtensions
     {
