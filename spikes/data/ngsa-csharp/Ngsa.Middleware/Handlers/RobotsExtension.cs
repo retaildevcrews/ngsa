@@ -28,7 +28,7 @@ namespace Ngsa.Middleware
             builder.Use(async (context, next) =>
             {
                 // remove the leading /
-                string path = context.Request.Path.Value.Substring(1);
+                string path = context.Request.Path.Value[1..];
 
                 // matches /robots*.txt (/robots.txt /robots123.txt etc)
                 // does not match /robots/robots.txt
@@ -36,7 +36,7 @@ namespace Ngsa.Middleware
                 {
                     // return the content
                     context.Response.ContentType = "text/plain";
-                    await context.Response.Body.WriteAsync(ResponseBytes, 0, ResponseBytes.Length).ConfigureAwait(false);
+                    await context.Response.Body.WriteAsync(ResponseBytes).ConfigureAwait(false);
                 }
                 else
                 {
