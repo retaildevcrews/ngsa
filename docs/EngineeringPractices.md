@@ -109,5 +109,3 @@ multipass is *really* cool!
 <https://multipass.run/>
 
 setup instructions are in the repo
-
-
