@@ -96,7 +96,7 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown -R $(id -u):$(id -g) $HOME/.kube
 
 # add flannel network overlay
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml --namespace=kube-system
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yaml --namespace=kube-system
 
 # optional - add the taint to schedule normal pods on the control plane
 # this let you run a "one node" cluster for `development`
@@ -114,7 +114,7 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.4/manife
 kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
 
 # create metal LB config map
-sed -e "s/{PIP}/${PIP}/g" metalLB.yml | k apply -f -
+sed -e "s/{PIP}/${PIP}/g" metalLB.yaml | k apply -f -
 
 ```
 

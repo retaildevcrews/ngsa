@@ -2,7 +2,7 @@
 
 In order to run nginx in a pod with https, we need to setup `letsencrypt` or use a `self-signed` cert (which will give a cert warning)
 
-We mount these files as volumes in the nginx pod via `lb.yml`
+We mount these files as volumes in the nginx pod via `lb.yaml`
 
 - volumes mounted
   - /etc/ngsa/certbot
@@ -45,7 +45,7 @@ openssl req -x509 -nodes -newkey rsa:1024 -days 365 \
 sed -e "s/{MY_DOMAIN}/${MY_DOMAIN}/g" template.conf > /etc/ngsa/conf.d/ngsa.conf
 
 # create the load balancer
-k apply -f lb.yml
+k apply -f lb.yaml
 
 # make sure everything is running
 k get all

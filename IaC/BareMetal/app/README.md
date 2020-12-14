@@ -4,16 +4,16 @@
 
 # add secrets
 
-#### edit config.yml for region / zone
+#### edit config.yaml for region / zone
 
 # add configmap to cluster
-kubectl apply -f config.yml
+kubectl apply -f config.yaml
 
 # deploy ngsa-cosmos
-kubectl apply -f ngsa.yml
+kubectl apply -f ngsa.yaml
 
 # deploy ngsa-memory
-kubectl apply -f in-memory.yml
+kubectl apply -f in-memory.yaml
 
 # check local logs
 kubectl get all
@@ -23,10 +23,10 @@ kubectl get all
 curl 10.x.x.x:4120/version
 
 # run baseline test
-kubectl apply -f baseline.yml
+kubectl apply -f baseline.yaml
 
 # check local logs
-kubectl delete -f baseline.yml
+kubectl delete -f baseline.yaml
 
 # setup load balancer for ngsa-cosmos endpoint
 # curl endpoint
@@ -36,10 +36,10 @@ curl https://ngsa-west.cse.ms/version
 
 # after all 3 public endpoints are up and running
 ### this will fail if the public endpoints aren't up
-### depending on final DNS naming, may need to update webv.yml
+### depending on final DNS naming, may need to update webv.yaml
 
 # deploy webv
-kubectl apply -f webv.yml
+kubectl apply -f webv.yaml
 
 # check local logs and log analytics
 
