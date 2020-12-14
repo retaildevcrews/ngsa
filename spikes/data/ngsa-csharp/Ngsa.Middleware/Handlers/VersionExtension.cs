@@ -27,6 +27,7 @@ namespace Ngsa.Middleware
         {
             get
             {
+                // use reflection to get the version
                 if (string.IsNullOrEmpty(version))
                 {
                     if (Attribute.GetCustomAttribute(Assembly.GetEntryAssembly(), typeof(AssemblyInformationalVersionAttribute)) is AssemblyInformationalVersionAttribute v)
@@ -50,7 +51,7 @@ namespace Ngsa.Middleware
             builder.Use(async (context, next) =>
             {
                 // matches /version
-                if (context.Request.Path.Value.Equals("/version", System.StringComparison.OrdinalIgnoreCase))
+                if (context.Request.Path.Value.Equals("/version", StringComparison.OrdinalIgnoreCase))
                 {
                     // cache the version info for performance
                     if (responseBytes == null)
@@ -60,24 +61,24 @@ namespace Ngsa.Middleware
                         try
                         {
                             // read swagger version from swagger.json
-                            using JsonDocument sw = JsonDocument.Parse(File.ReadAllText("wwwroot/swagger.json"));
+                            using JsonDocument sw = JsonDocument.Parse(File.ReadAllText("wwwroot/swagger/swagger.json"));
                             swaggerVersion = sw.RootElement.GetProperty("info").GetProperty("version").ToString();
                         }
                         catch (Exception ex)
                         {
                             // log and default to 1.0
-                            Console.WriteLine($"UseVersion:{ex.Message}");
+                            Console.WriteLine($"UseVersion Exception: {ex.Message}");
                             swaggerVersion = "1.0";
                         }
 
                         // build and cache the json string
-                        string json = $"{{ \"apiVersion\": \"{swaggerVersion}\", \"appVersion\": \"{Middleware.VersionExtension.Version}\", \"language\": \"C#\" }}";
+                        string json = $"{{ \"apiVersion\": \"{swaggerVersion}\", \"appVersion\": \"{Version}\", \"language\": \"C#\" }}";
                         responseBytes = System.Text.Encoding.UTF8.GetBytes(json);
                     }
 
                     // return the version info
                     context.Response.ContentType = "application/json";
-                    await context.Response.Body.WriteAsync(responseBytes, 0, responseBytes.Length).ConfigureAwait(false);
+                    await context.Response.Body.WriteAsync(responseBytes).ConfigureAwait(false);
                 }
                 else
                 {
