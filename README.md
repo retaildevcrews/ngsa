@@ -14,19 +14,19 @@ At it's culmination the project will be a collection of guidance for deployment 
 2. [Contributing](#contributing)
 3. Cluster Setup Guides
    1. [Bare Metal](./IaC/BareMetal/README.md)
-   2. [AKS](https://github.com/retaildevcrews/ngsa/blob/main/IaC/AKS/README.md)
-4. [Developer Guide](/docs/developer.md)
+   2. [AKS](./IaC/AKS/README.md)
+4. [Developer Guide](./docs/developer.md)
 5. Applications
-   1. [NGSA App](/src/ngsa/README.md)
-   2. [Load Generator](/src/loderunner/README.md)
+   1. [NGSA App](./src/ngsa/README.md)
+   2. [Load Generator](./src/loderunner/README.md)
 6. Design, Practices, and Conventions
-   1. [Architecture](/docs/ApplicationArch.md)
-   2. [CI/CD](/docs/CICD.md)
-   3. [HTTP Error Responses](/docs/HttpErrorResponses)
-   4. [Engineering Practices](/docs/EngineeringPractices.md)
-   5. [Observability](/docs/Observability.md)
-   6. [Parameter Validation](/docs/ParameterValidation.md)
-   7. [Naming Conventions](/docs/NamingConvention.md)
+   1. [Architecture](./docs/ApplicationArch.md)
+   2. [CI/CD](./docs/CICD.md)
+   3. [HTTP Error Responses](./docs/HttpErrorResponses)
+   4. [Engineering Practices](./docs/EngineeringPractices.md)
+   5. [Observability](./docs/Observability.md)
+   6. [Parameter Validation](./docs/ParameterValidation.md)
+   7. [Naming Conventions](./docs/NamingConvention.md)
 
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
