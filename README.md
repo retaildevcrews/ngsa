@@ -13,8 +13,8 @@ At it's culmination the project will be a collection of guidance for deployment 
 1. [Getting Started](#getting-started)
 2. [Contributing](#contributing)
 3. Cluster Setup Guides
-   1. [Bare Metal](/IaC/BareMetal/README.md)
-   2. [AKS](/IaC/AKS/README.md)
+   1. [Bare Metal](./IaC/BareMetal/README.md)
+   2. [AKS](https://github.com/retaildevcrews/ngsa/blob/main/IaC/AKS/README.md)
 4. [Developer Guide](/docs/developer.md)
 5. Applications
    1. [NGSA App](/src/ngsa/README.md)
