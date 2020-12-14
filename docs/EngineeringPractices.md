@@ -22,7 +22,11 @@ Engineering Playbook [Definition of Done](https://github.com/microsoft/code-with
 
 ## Documentation
 
-In this repo documentation will be co-located with the related source.  Additionally, we will have a main readme with project overview, Table of Contents (ToC), and a Getting Started section. Documentation that spans the scope of the solution will be located in the [[root]/docs](/docs) folder.
+### Project Documentation Structure
+
+- Root readme will have a project overview, Table of Contents (ToC), and a Getting Started section.
+- Each top-level component or project folder should have a README for it scope
+- High-level documentation (e.g., solution architecture) should be stored in the [/docs](https://github.com/retaildevcrews/ngsa/tree/main/docs) folder
 
 ### Markdown (MD) Files
 
@@ -106,7 +110,4 @@ multipass is *really* cool!
 
 setup instructions are in the repo
 
-### Project Documentation Structure
 
-- Each top-level component or project folder should have a README for it scope
-- High-level documentation (e.g., solution architecture) should be stored in the [/docs](https://github.com/retaildevcrews/ngsa/tree/main/docs) folder
