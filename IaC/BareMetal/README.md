@@ -78,7 +78,7 @@ sudo kubeadm reset -f
 # make sure you're in the ngsa/IaC/BareMetal directory
 cd IaC/BareMetal
 
-# make sure PIP is set correctly
+# make sure public IP is set correctly
 echo $PIP
 
 # install k8s controller
