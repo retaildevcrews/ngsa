@@ -20,7 +20,11 @@
 
 Engineering Playbook [Definition of Done](https://github.com/microsoft/code-with-engineering-playbook/tree/master/agile-development/team-agreements/definition-of-done/readme.md)
 
-## Markdown (md files)
+## Documentation
+
+In this repo documentation will be co-located with the related source.  Additionally, we will have a main readme with project overview, Table of Contents (ToC), and a Getting Started section. Documentation that spans the scope of the solution will be located in the [[root]/docs](/docs) folder.
+
+### Markdown (MD) Files
 
 - Use [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint) add-in for VS Code
   - Repeating header lint issues are OK if avoiding would cause readability issues
