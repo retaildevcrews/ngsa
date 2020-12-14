@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>Ngsa.Data</RootNamespace>
-    <AssemblyName>dataservice</AssemblyName>
+    <RootNamespace>Ngsa.DataService</RootNamespace>
     <VersionPrefix>0.0.8</VersionPrefix>
     <VersionSuffix>$([System.DateTime]::UtcNow.ToString(`MMdd-HHmm`))</VersionSuffix>
     <Copyright>Copyright (c) Microsoft Corporation. All rights reserved.</Copyright>

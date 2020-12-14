@@ -20,7 +20,15 @@
 
 Engineering Playbook [Definition of Done](https://github.com/microsoft/code-with-engineering-playbook/tree/master/agile-development/team-agreements/definition-of-done/readme.md)
 
-## Markdown (md files)
+## Documentation
+
+### Project Documentation Structure
+
+- Root readme will have a project overview, Table of Contents (ToC), and a Getting Started section.
+- Each top-level component or project folder should have a README for it scope
+- High-level documentation (e.g., solution architecture) should be stored in the [/docs](https://github.com/retaildevcrews/ngsa/tree/main/docs) folder
+
+### Markdown (MD) Files
 
 - Use [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint) add-in for VS Code
   - Repeating header lint issues are OK if avoiding would cause readability issues
