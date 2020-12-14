@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-namespace CSE.NextGenSymmetricApp.Model
+namespace Imdb.Model
 {
     public class GenreObject
     {
