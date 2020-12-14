@@ -1,8 +1,10 @@
 # NGSA
 
-> Next Generation Symmetric Apps
+Next Generation Symmetric Apps
 
-## Projection Description
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+
+## Project Description
 
 Understanding how infrastructure changes will impact application capabilities.  To that end, the NGSA effort is focused on creating a Kubernetes based application host environment in conjunction with a platform validation app that will allow continuous monitoring of the impact of changes in the hosting environment based on performance metrics results from a representative workload.
 
@@ -27,8 +29,6 @@ At it's culmination the project will be a collection of guidance for deployment 
    5. [Observability](./docs/Observability.md)
    6. [Parameter Validation](./docs/ParameterValidation.md)
    7. [Naming Conventions](./docs/NamingConvention.md)
-
-![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 ## Getting Started
 
