@@ -22,6 +22,9 @@ namespace Ngsa.DataService.DataAccessLayer
 {
     public class InMemoryDal : IDAL
     {
+        private const string ActorsSQL = "select m.id, m.partitionKey, m.actorId, m.type, m.name, m.birthYear, m.deathYear, m.profession, m.textSearch, m.movies from m where m.id in ({0}) order by m.textSearch ASC";
+        private const string MoviesSQL = "select m.id, m.partitionKey, m.movieId, m.type, m.textSearch, m.title, m.year, m.runtime, m.rating, m.votes, m.totalScore, m.genres, m.roles from m where m.id in ({0}) order by m.textSearch ASC, m.movieId ASC";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="InMemoryDal"/> class.
         /// </summary>
@@ -170,8 +173,7 @@ namespace Ngsa.DataService.DataAccessLayer
                     ids += $"'{a.ActorId}',";
                 }
 
-                string sql = "select m.id, m.partitionKey, m.actorId, m.type, m.name, m.birthYear, m.deathYear, m.profession, m.textSearch, m.movies from m where m.id in ({0}) order by m.textSearch ASC";
-                ids = sql.Replace("{0}", ids[0..^1], StringComparison.Ordinal);
+                ids = ActorsSQL.Replace("{0}", ids[0..^1], StringComparison.Ordinal);
             }
 
             return ids;
@@ -324,8 +326,7 @@ namespace Ngsa.DataService.DataAccessLayer
                 return string.Empty;
             }
 
-            string sql = "select m.id, m.partitionKey, m.movieId, m.type, m.textSearch, m.title, m.year, m.runtime, m.rating, m.votes, m.totalScore, m.genres, m.roles from m where m.id in ({0}) order by m.textSearch ASC, m.movieId ASC";
-            return sql.Replace("{0}", ids[0..^1], StringComparison.Ordinal);
+            return MoviesSQL.Replace("{0}", ids[0..^1], StringComparison.Ordinal);
         }
 
         /// <summary>

@@ -65,14 +65,14 @@ namespace Ngsa.DataService.DataAccessLayer
                 return m;
             }
 
-            string ids = App.SearchService.GetMovieIds(movieQueryParameters);
+            string sql = App.SearchService.GetMovieIds(movieQueryParameters);
 
             List<Movie> movies = new List<Movie>();
 
             // retrieve the items
-            if (!string.IsNullOrEmpty(ids))
+            if (!string.IsNullOrEmpty(sql))
             {
-                movies = (List<Movie>)await InternalCosmosDBSqlQuery<Movie>(ids).ConfigureAwait(false);
+                movies = (List<Movie>)await InternalCosmosDBSqlQuery<Movie>(sql).ConfigureAwait(false);
             }
 
             // add to cache
