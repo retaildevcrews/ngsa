@@ -136,12 +136,6 @@ namespace Ngsa.DataService
 
             if (logger != null)
             {
-                // log a not using app insights warning
-                if (string.IsNullOrEmpty(App.Secrets.AppInsightsKey))
-                {
-                    logger.LogWarning("App Insights Key not set");
-                }
-
                 logger.LogInformation("Web Server Started");
             }
 

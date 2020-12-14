@@ -179,7 +179,6 @@ namespace Ngsa.DataService
                 Secrets = new Secrets
                 {
                     UseInMemoryDb = true,
-                    AppInsightsKey = string.Empty,
                     CosmosCollection = "movies",
                     CosmosDatabase = "imdb",
                     CosmosKey = "in-memory",
@@ -293,7 +292,6 @@ namespace Ngsa.DataService
             Console.WriteLine($"Cosmos Database    {Secrets.CosmosDatabase}");
             Console.WriteLine($"Cosmos Collection  {Secrets.CosmosCollection}");
             Console.WriteLine($"Cosmos Key         Length({Secrets.CosmosKey.Length})");
-            Console.WriteLine($"App Insights Key   Length({Secrets.AppInsightsKey.Length})");
 
             // always return 0 (success)
             return 0;

@@ -13,7 +13,6 @@ namespace Ngsa.DataService
     {
         public bool UseInMemoryDb { get; set; }
         public string Volume { get; set; }
-        public string AppInsightsKey { get; set; }
         public string CosmosServer { get; set; }
         public string CosmosKey { get; set; }
         public string CosmosDatabase { get; set; }
@@ -41,7 +40,6 @@ namespace Ngsa.DataService
             Secrets sec = new Secrets
             {
                 Volume = volume,
-                AppInsightsKey = GetSecretFromFile(volume, "AppInsightsKey"),
                 CosmosCollection = GetSecretFromFile(volume, "CosmosCollection"),
                 CosmosDatabase = GetSecretFromFile(volume, "CosmosDatabase"),
                 CosmosKey = GetSecretFromFile(volume, "CosmosKey"),
