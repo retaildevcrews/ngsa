@@ -48,8 +48,6 @@ namespace Ngsa.App
         /// </summary>
         public static bool IsLogLevelSet { get; set; }
 
-        public static ILogger<ValidationResult> ValidationLogger { get; set; }
-
         /// <summary>
         /// Main entry point
         ///
@@ -126,7 +124,6 @@ namespace Ngsa.App
         {
             // get the logger service
             logger = host.Services.GetRequiredService<ILogger<App>>();
-            ValidationLogger = host.Services.GetRequiredService<ILogger<ValidationResult>>();
 
             DisplayAsciiArt();
 
