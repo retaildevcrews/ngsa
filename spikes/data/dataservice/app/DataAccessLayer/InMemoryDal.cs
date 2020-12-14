@@ -85,12 +85,12 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             }
 
             // load the data from the json file
-            List<dynamic> list = JsonSerializer.Deserialize<List<dynamic>>(File.ReadAllText("data/genres.json"), settings);
+            List<ReadGenre> list = JsonSerializer.Deserialize<List<ReadGenre>>(File.ReadAllText("data/genres.json"), settings);
 
             // Convert Genre object to List<string> per API spec
-            foreach (dynamic g in list)
+            foreach (ReadGenre g in list)
             {
-                Genres.Add(g["genre"].Value);
+                Genres.Add(g.Genre);
             }
 
             Genres.Sort();
@@ -144,6 +144,40 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             {
                 return GetActors(actorQueryParameters);
             });
+        }
+
+        /// <summary>
+        /// Get actor IDs by search criteria
+        /// </summary>
+        /// <param name="actorQueryParameters">search criteria</param>
+        /// <returns>Cosmos select statement</returns>
+        public string GetActorIds(ActorQueryParameters actorQueryParameters)
+        {
+            List<Actor> list;
+
+            if (actorQueryParameters == null)
+            {
+                list = GetActors(string.Empty, 0, 100);
+            }
+            else
+            {
+                list = GetActors(actorQueryParameters.Q, actorQueryParameters.GetOffset(), actorQueryParameters.PageSize);
+            }
+
+            string ids = string.Empty;
+
+            if (list != null && list.Count > 0)
+            {
+                foreach (Actor a in list)
+                {
+                    ids += $"'{a.ActorId}',";
+                }
+
+                string sql = "select m.id, m.partitionKey, m.actorId, m.type, m.name, m.birthYear, m.deathYear, m.profession, m.textSearch, m.movies from m where m.id in ({0}) order by m.textSearch ASC";
+                ids = sql.Replace("{0}", ids[0..^1], StringComparison.Ordinal);
+            }
+
+            return ids;
         }
 
         /// <summary>
@@ -440,5 +474,11 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             // do nothing
             return Task.CompletedTask;
         }
+    }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "simplicity")]
+    internal class ReadGenre
+    {
+        public string Genre { get; set; }
     }
 }
