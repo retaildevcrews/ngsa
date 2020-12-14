@@ -32,7 +32,7 @@ At it's culmination the project will be a collection of guidance for deployment 
 
 ## Getting Started
 
-Add descriptive text to guide through cluster setup, app setup, and load execution.
+[WIP] Add descriptive text to guide through cluster setup, app setup, and load execution.
 
 ## Contributing
 

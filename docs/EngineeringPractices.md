@@ -110,4 +110,3 @@ setup instructions are in the repo
 
 - Each top-level component or project folder should have a README for it scope
 - High-level documentation (e.g., solution architecture) should be stored in the [/docs](https://github.com/retaildevcrews/ngsa/tree/main/docs) folder
-- 
