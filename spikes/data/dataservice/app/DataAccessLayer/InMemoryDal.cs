@@ -19,10 +19,6 @@ using Microsoft.Azure.Cosmos;
 /// </summary>
 namespace CSE.NextGenSymmetricApp.DataAccessLayer
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "log params aren't localized")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "json serialization requires read/write")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "key is lower case")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2234:Pass system uri objects instead of strings", Justification = "Cosmos requirement")]
     public class InMemoryDal : IDAL
     {
         /// <summary>
@@ -85,10 +81,10 @@ namespace CSE.NextGenSymmetricApp.DataAccessLayer
             }
 
             // load the data from the json file
-            List<ReadGenre> list = JsonSerializer.Deserialize<List<ReadGenre>>(File.ReadAllText("data/genres.json"), settings);
+            List<GenreObject> list = JsonSerializer.Deserialize<List<GenreObject>>(File.ReadAllText("data/genres.json"), settings);
 
             // Convert Genre object to List<string> per API spec
-            foreach (ReadGenre g in list)
+            foreach (GenreObject g in list)
             {
                 Genres.Add(g.Genre);
             }
