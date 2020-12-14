@@ -1,4 +1,8 @@
-# App Setup
+# Deprecated
+
+> This approach was a temporary solution until fluentbit was setup
+
+## App Setup
 
 With log agent sidecar
 
