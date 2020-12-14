@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>CSE.NextGenSymmetricApp</RootNamespace>
-    <AssemblyName>ngsa</AssemblyName>
+    <AssemblyName>dataservice</AssemblyName>
     <VersionPrefix>0.0.8</VersionPrefix>
     <VersionSuffix>$([System.DateTime]::UtcNow.ToString(`MMdd-HHmm`))</VersionSuffix>
     <Copyright>Copyright (c) Microsoft Corporation. All rights reserved.</Copyright>
@@ -23,6 +23,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\shared\CVectorExtensions.cs" Link="CVectorExtensions.cs" />
+    <Compile Include="..\..\shared\CVectorHttpExtensions.cs" Link="CVectorExtensions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="stylecop.json" />
   </ItemGroup>
 
@@ -31,18 +36,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20574.7" />
+    <PackageReference Include="System.Runtime.Caching" Version="5.0.0" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.15.0" />
+    <PackageReference Include="Microsoft.CorrelationVector" Version="1.0.42" />
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CorrelationVector" Version="1.0.42" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20574.7" />
-    <PackageReference Include="System.Runtime.Caching" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>

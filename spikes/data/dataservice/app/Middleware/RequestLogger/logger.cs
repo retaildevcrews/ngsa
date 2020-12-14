@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using CSE.NextGenSymmetricApp;
+using CSE.NextGenSymmetricApp.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.CorrelationVector;
 using Microsoft.Extensions.Options;
@@ -19,8 +20,6 @@ namespace CSE.Middleware
     public class Logger
     {
         private const string IpHeader = "X-Client-IP";
-        private const string CVHeader = "X-Correlation-Vector";
-        private const string TraceHeader = "X-LodeRunner-Trace";
 
         private static readonly List<int> RPS = new List<int>();
         private static int counter;
@@ -80,29 +79,7 @@ namespace CSE.Middleware
             double duration = 0;
             double ttfb = 0;
 
-            // write trace headers
-            context.Response.OnStarting(() =>
-            {
-                ttfb = Math.Round(DateTime.Now.Subtract(dtStart).TotalMilliseconds, 2);
-                duration = ttfb;
-
-                Dictionary<string, object> trace = new Dictionary<string, object>
-                {
-                    { "AppRegion", App.Region },
-                    { "AppZone", App.Zone },
-                    { "AppPodType", App.PodType },
-                    { "AppDuration", Math.Round(ttfb, 2) },
-                    { "AppCosmosName", App.CosmosName },
-                    { "AppCosmosQueryId", "todo" },
-                    { "AppCosmosRUs", 1.23 },
-                };
-
-                context.Response.Headers.Add(TraceHeader, JsonSerializer.Serialize(trace));
-
-                return Task.CompletedTask;
-            });
-
-            cv = ExtendCVector(context);
+            cv = CVectorExtensions.Extend(context);
 
             // Invoke next handler
             if (next != null)
@@ -135,33 +112,6 @@ namespace CSE.Middleware
             }
         }
 
-        // extend correlation vector
-        private static CorrelationVector ExtendCVector(HttpContext context)
-        {
-            CorrelationVector cv;
-
-            if (context.Request.Headers.ContainsKey(CVHeader))
-            {
-                try
-                {
-                    // extend the correlation vector
-                    cv = CorrelationVector.Extend(context.Request.Headers[CVHeader].ToString());
-                }
-                catch
-                {
-                    // create a new correlation vector
-                    cv = new CorrelationVector();
-                }
-            }
-            else
-            {
-                // create a new correlation vector
-                cv = new CorrelationVector();
-            }
-
-            return cv;
-        }
-
         // log the request
         private static void LogRequest(HttpContext context, CorrelationVector cv, double ttfb, double duration)
         {
@@ -179,6 +129,7 @@ namespace CSE.Middleware
                 { "ClientIP", GetClientIp(context) },
                 { "UserAgent", context.Request.Headers["User-Agent"].ToString() },
                 { "CVector", cv.Value },
+                { "CVectorBase", cv.GetBase() },
                 { "CosmosName", App.CosmosName },
                 { "CosmosQueryId", "todo" },
                 { "CosmosRUs", 1.23 },

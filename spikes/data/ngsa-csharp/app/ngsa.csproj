@@ -60,6 +60,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\shared\CVectorExtensions.cs" Link="CVectorExtensions.cs" />
+    <Compile Include="..\..\shared\CVectorHttpExtensions.cs" Link="CVectorExtensions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="App\ascii-art.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
