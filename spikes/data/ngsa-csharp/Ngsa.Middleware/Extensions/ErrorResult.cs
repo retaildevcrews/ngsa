@@ -3,7 +3,7 @@
 
 using System.Net;
 
-namespace Ngsa.DataService.Controllers
+namespace Ngsa.Middleware
 {
     public class ErrorResult
     {
