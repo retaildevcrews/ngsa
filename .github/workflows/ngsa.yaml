@@ -206,6 +206,3 @@ jobs:
 
         # Push to the repo
         docker push $DOCKER_REPO
-
-
-
