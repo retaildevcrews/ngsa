@@ -473,4 +473,10 @@ namespace Ngsa.DataService.DataAccessLayer
             return Task.CompletedTask;
         }
     }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "simplicity")]
+    internal class ReadGenre
+    {
+        public string Genre { get; set; }
+    }
 }
