@@ -12,7 +12,7 @@ We wish to fully separate the service used to read and write data from the front
 
 <!-- markdownlint-disable MD033 -->
 <!-- couldn't get sizing to work in standard markdown -->
-<img src="../images/ngsa-app-deploy-top.png" width="550" height="600"/>
+<img src="./images/ngsa-app-deploy-top.png" width="550" height="600"/>
 
 `Data Service POD Topology`
 
