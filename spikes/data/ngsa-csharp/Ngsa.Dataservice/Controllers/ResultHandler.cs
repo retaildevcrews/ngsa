@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
+using Ngsa.Middleware;
 
 namespace Ngsa.DataService.Controllers
 {
