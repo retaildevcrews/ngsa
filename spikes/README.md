@@ -9,4 +9,4 @@ The spikes folder contains projects and files that were created as part of our e
 1. [fluentd](./fluentd) - investigation into the use of fluentd instead of a custom sidecar for log collection and export
 2. [Grafana <- Azure Monitor](./grafana-az-monitor) - work to surface Azure Monitor data into a Grafana dashboard
 3. [Istio-Multicluster](./istio-multicluster) - work to understand how to operation an Istio Service Mesh across multiple clusters
-4. [logapp](./)
+4. [logapp](./logapp) - Simple C# app that logs errors to stderr used when working on log handling
