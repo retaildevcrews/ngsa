@@ -18,14 +18,15 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 - **2 Queries/Alerts**: One for each pod type, will trigger per zone
 
 ``` bash
+
   # Failed Server Requests (ngsa-cosmos)
-  
+
   fbngsa_CL
   | where PodType_s == 'ngsa-cosmos' and StatusCode_d >= 400
   | summarize AggregatedValue=count() by bin(TimeGenerated, 5m), Zone_s
   
   # Failed Server Requests (ngsa-memory)
-  
+
   fbngsa_CL
   | where PodType_s == 'ngsa-memory' and StatusCode_d >= 400
   | summarize AggregatedValue=count() by bin(TimeGenerated, 5m), Zone_s
@@ -43,8 +44,22 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 - **Frequency**: 10 minutes
 - **Suppress Alerts**: Wait 30 minutes before alerting again.
 - **2 Queries/Alerts**: One for each pod type, will trigger per zone
-  - Failed Client Requests (ngsa-cosmos): `fbwebv_CL | where PodType_s == 'l8r' and AppPodType_s == 'ngsa-cosmos' and StatusCode_d >= 400 | summarize AggregatedValue=count() by bin(TimeGenerated, 5m), Zone_s`
-  - Failed Client Requests (ngsa-memory): `fbwebv_CL | where PodType_s == 'l8r' and AppPodType_s == 'ngsa-memory' and StatusCode_d >= 400 | summarize AggregatedValue=count() by bin(TimeGenerated, 5m), Zone_s`
+
+```bash
+
+  # Failed Client Requests (ngsa-cosmos)
+
+  fbwebv_CL
+  | where PodType_s == 'l8r' and AppPodType_s == 'ngsa-cosmos' and StatusCode_d >= 400
+  | summarize AggregatedValue=count() by bin(TimeGenerated, 5m), Zone_s
+
+  # Failed Client Requests (ngsa-memory)
+
+  fbwebv_CL
+  | where PodType_s == 'l8r' and AppPodType_s == 'ngsa-memory' and StatusCode_d >= 400
+  | summarize AggregatedValue=count() by bin(TimeGenerated, 5m), Zone_s
+
+```
 
 ### Too Few Server Requests
 
@@ -57,8 +72,22 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 - **Frequency**: 10 minutes
 - **Suppress Alerts**: Wait 30 minutes before alerting again.
 - **2 Queries/Alerts**: One for each pod type, will trigger per zone
-  - Too Few Server Requests (ngsa-cosmos): `fbngsa_CL | where PodType_s == 'ngsa-cosmos' | summarize AggregatedValue=count() by bin(TimeGenerated,1m), Zone_s`
-  - Too Few Server Requests (ngsa-memory): `fbngsa_CL | where PodType_s == 'ngsa-memory' | summarize AggregatedValue=count() by bin(TimeGenerated,1m), Zone_s`
+
+```bash
+
+  # Too Few Server Requests (ngsa-cosmos)
+
+  fbngsa_CL
+  | where PodType_s == 'ngsa-cosmos'
+  | summarize AggregatedValue=count() by bin(TimeGenerated,1m), Zone_s
+
+  # Too Few Server Requests (ngsa-memory)
+
+  fbngsa_CL 
+  | where PodType_s == 'ngsa-memory'
+  | summarize AggregatedValue=count() by bin(TimeGenerated,1m), Zone_s
+
+```
 
 ### Too Few Client Requests (loderunner)
 
@@ -71,8 +100,22 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 - **Frequency**: 10 minutes
 - **Suppress Alerts**: Wait 30 minutes before alerting again.
 - **2 Queries/Alerts**: One for reach pod type, will trigger per zone
-  - Too Few Client Requests (ngsa-cosmos): `fbwebv_CL | where PodType_s == 'l8r' and AppPodType_s == 'ngsa-cosmos' | summarize AggregatedValue=count() by bin(TimeGenerated,1m), Zone_s | project-rename AggregatedValue=cnt`
-  - Too Few Client Requests (ngsa-memory): `fbwebv_CL | where PodType_s == 'l8r' and AppPodType_s == 'ngsa-memory' | summarize AggregatedValue=count() by bin(TimeGenerated,1m), Zone_s`
+
+```bash
+
+  # Too Few Client Requests (ngsa-cosmos)
+
+  fbwebv_CL
+  | where PodType_s == 'l8r' and AppPodType_s == 'ngsa-cosmos'
+  | summarize AggregatedValue=count() by bin(TimeGenerated,1m), Zone_s
+
+  # Too Few Client Requests (ngsa-memory)
+
+  fbwebv_CL 
+  | where PodType_s == 'l8r' and AppPodType_s == 'ngsa-memory'
+  | summarize AggregatedValue=count() by bin(TimeGenerated,1m), Zone_s
+
+```
 
 ## Performance
 
@@ -92,10 +135,34 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 - **Frequency**: 10 minutes
 - **Suppress Alerts**: Wait 30 minutes before alerting again.
 - **4 Queries/Alerts**:
-  - High Server Response Time in CentralUS (ngsa-cosmos): `fbngsa_CL | where PodType_s == 'ngsa-cosmos' and Zone_s == "Az-CentralUS" | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)`
-  - High Server Response Time in EastUS2 (ngsa-cosmos): `fbngsa_CL | where PodType_s == 'ngsa-cosmos' and Zone_s == "Az-EastUS2" | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)`
-  - High Server Response Time in WestUS2 (ngsa-cosmos): `fbngsa_CL | where PodType_s == 'ngsa-cosmos' and Zone_s == "Az-WestUS2" | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)`
-  - High Server Response Time (ngsa-memory): `fbngsa_CL | where PodType_s == 'ngsa-memory' | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m), Zone_s`
+
+```bash
+
+  # High Server Response Time in CentralUS (ngsa-cosmos)
+
+  fbngsa_CL
+  | where PodType_s == 'ngsa-cosmos' and Zone_s == "Az-CentralUS"
+  | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)
+
+  # High Server Response Time in EastUS2 (ngsa-cosmos)
+
+  fbngsa_CL
+  | where PodType_s == 'ngsa-cosmos' and Zone_s == "Az-EastUS2"
+  | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)
+
+  # High Server Response Time in WestUS2 (ngsa-cosmos)
+
+  fbngsa_CL
+  | where PodType_s == 'ngsa-cosmos' and Zone_s == "Az-WestUS2"
+  | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)
+
+  # High Server Response Time (ngsa-memory)
+
+  fbngsa_CL
+  | where PodType_s == 'ngsa-memory'
+  | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m), Zone_s
+
+```
 
 ### High Client Response Time (loderunner)
 
@@ -113,10 +180,34 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 - **Frequency**: 10 minutes
 - **Suppress Alerts**: Wait 30 minutes before alerting again.
 - **4 Queries/Alerts**:
-  - High Client Response Time in CentralUS (ngsa-cosmos): `fbwebv_CL | where AppPodType_s == 'ngsa-cosmos' and Zone_s == "Az-CentralUS" | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)`
-  - High Client Response Time in EastUS2 (ngsa-cosmos): `fbwebv_CL | where AppPodType_s == 'ngsa-cosmos' and Zone_s == "Az-EastUS2" | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)`
-  - High Client Response Time in WestUS2 (ngsa-cosmos): `fbwebv_CL | where AppPodType_s == 'ngsa-cosmos' and Zone_s == "Az-WestUS2" | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)`
-  - High Client Response Time (ngsa-memory): `fbwebv_CL | where AppPodType_s == 'ngsa-memory' | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m), Zone_s`
+
+```bash
+
+  # High Client Response Time in CentralUS (ngsa-cosmos)
+
+  fbwebv_CL
+  | where AppPodType_s == 'ngsa-cosmos' and Zone_s == "Az-CentralUS"
+  | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)
+
+  # High Client Response Time in EastUS2 (ngsa-cosmos)
+
+  fbwebv_CL
+  | where AppPodType_s == 'ngsa-cosmos' and Zone_s == "Az-EastUS2"
+  | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)
+
+  # High Client Response Time in WestUS2 (ngsa-cosmos)
+
+  fbwebv_CL
+  | where AppPodType_s == 'ngsa-cosmos' and Zone_s == "Az-WestUS2"
+  | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)
+
+  # High Client Response Time (ngsa-memory)
+
+  fbwebv_CL
+  | where AppPodType_s == 'ngsa-memory'
+  | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m), Zone_s
+
+```
 
 ## Expected Usage
 
@@ -131,5 +222,17 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 - **Frequency**: 10 minutes
 - **Suppress Alerts**: Wait 30 minutes before alerting again.
 - **2 Queries/Alerts**:
-  - Too Many Server Requests (ngsa-cosmos): `fbngsa_CL | where PodType_s == "ngsa-cosmos" | summarize AggregatedValue=count() by bin(TimeGenerated, 1m), Zone_s`
-  - Too Many Server Requests (ngsa-memory): `fbngsa_CL | where PodType_s == "ngsa-memory" | summarize AggregatedValue=count() by bin(TimeGenerated, 1m), Zone_s`
+
+```bash
+
+  # Too Many Server Requests (ngsa-cosmos)
+  fbngsa_CL
+  | where PodType_s == "ngsa-cosmos"
+  | summarize AggregatedValue=count() by bin(TimeGenerated, 1m), Zone_s
+
+  # Too Many Server Requests (ngsa-memory)
+  fbngsa_CL
+  | where PodType_s == "ngsa-memory"
+  | summarize AggregatedValue=count() by bin(TimeGenerated, 1m), Zone_s
+
+```
