@@ -1,4 +1,19 @@
-# Developer Docs
+# NGSA Application
+
+[TODO - fix run commands, replace webv with loderunner]
+
+## Overview
+
+- describe app
+- describe modalities (in-memory, CosmosDB)
+
+## Pre-requisites
+
+### In-memory
+
+The in-memory execution requires no external dependencies as the data served back is loaded from static files in the project.
+
+### CosmosDB
 
 - In order to run locally, you need to create 3 files in the src/app/secrets directory
   - CosmosUrl
@@ -7,7 +22,18 @@
 
 > The file names are case sensitive and are ignored in .gitignore
 
-## Run locally
+## Running NGSA Locally
+
+**Option 1** - Starting In-memory:
+
+```bash
+
+# from src/app
+dotnet run
+
+```
+
+**Option 2** - Starting with CosmosDB:
 
 ```bash
 
