@@ -9,7 +9,7 @@ namespace Ngsa.App
     public sealed class Constants
     {
         public const string SwaggerTitle = "Next Gen Symmetric Apps";
-        public const string SwaggerPath = "/swagger.json";
+        public const string SwaggerPath = "/swagger/swagger.json";
 
         // if port is changed, also update value in the Dockerfiles
         public const string Port = "4120";
