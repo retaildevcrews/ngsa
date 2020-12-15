@@ -16,8 +16,21 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 - **Frequency**: 10 minutes
 - **Suppress Alerts**: Wait 30 minutes before alerting again.
 - **2 Queries/Alerts**: One for each pod type, will trigger per zone
-  - Failed Server Requests (ngsa-cosmos): `fbngsa_CL | where PodType_s == 'ngsa-cosmos' and StatusCode_d >= 400 | summarize AggregatedValue=count() by bin(TimeGenerated, 5m), Zone_s`
-  - Failed Server Requests (ngsa-memory): `fbngsa_CL | where PodType_s == 'ngsa-memory' and StatusCode_d >= 400 | summarize AggregatedValue=count() by bin(TimeGenerated, 5m), Zone_s`
+
+``` bash
+  # Failed Server Requests (ngsa-cosmos)
+  
+  fbngsa_CL
+  | where PodType_s == 'ngsa-cosmos' and StatusCode_d >= 400
+  | summarize AggregatedValue=count() by bin(TimeGenerated, 5m), Zone_s
+  
+  # Failed Server Requests (ngsa-memory)
+  
+  fbngsa_CL
+  | where PodType_s == 'ngsa-memory' and StatusCode_d >= 400
+  | summarize AggregatedValue=count() by bin(TimeGenerated, 5m), Zone_s
+
+```
 
 ### Failed Client Requests (loderunner)
 
