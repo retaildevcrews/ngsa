@@ -144,7 +144,7 @@ az group create -n $Imdb_RG -l $Imdb_Location
 
 - This takes several minutes to run
 - This reference app is designed to use a simple dataset from IMDb of 1300 movies and their associated actors and genres
-- Follow the steps in the [IMDb Repo](https://github.com/retaildevcrews/imdb) to create a Cosmos DB server, database, and collection and load the sample IMDb data
+- Follow the steps in the [IMDb Repo](https://github.com/retaildevcrews/imdb#create-cosmos-db-server-database-and-container) to create a Cosmos DB server, database, and collection and load the sample IMDb data
   - The repo readme also provides an explanation of the data model design decisions
 
   > You can safely start with the Create Cosmos DB step
@@ -191,13 +191,13 @@ Create and connect to the AKS cluster.
 
 ```bash
 
+# this step usually takes 2-4 minutes
+az aks create --name $Ngsa_AKS_Name --resource-group $Ngsa_App_RG --location $Ngsa_Location --enable-cluster-autoscaler --min-count 3 --max-count 6 --node-count 3 --kubernetes-version $Ngsa_K8S_VER --no-ssh-key
+
 # note: if you see the following failure, navigate to your .azure\ directory
 # and delete the file "aksServicePrincipal.json":
 #    Waiting for AAD role to propagate[################################    ]  90.0000%Could not create a
 #    role assignment for ACR. Are you an Owner on this subscription?
-
-# this step usually takes 2-4 minutes
-az aks create --name $Ngsa_AKS_Name --resource-group $Ngsa_App_RG --location $Ngsa_Location --enable-cluster-autoscaler --min-count 3 --max-count 6 --node-count 3 --kubernetes-version $Ngsa_K8S_VER --no-ssh-key
 
 az aks get-credentials -n $Ngsa_AKS_Name -g $Ngsa_App_RG
 
@@ -258,7 +258,7 @@ Add the required helm repositories
 
 ```bash
 
-helm repo add stable https://kubernetes-charts.storage.googleapis.com
+helm repo add stable https://charts.helm.sh/stable
 helm repo add kedacore https://kedacore.github.io/charts
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
@@ -417,11 +417,16 @@ envsubst < clusterissuer.yaml | kubectl apply -f -
 
 ## Deploy NGSA with Helm
 
-A helm chart is included for the reference application ([NGSA](https://github.com/retaildevcrews/ngsa)).
+The NGSA application has been packed into a Helm chart for deployment into the cluster. The following instructions will walk you through the manual process of deployment of the helm chart and is recommended for development and testing. Alternatively, the helm chart can be deployed in a GitOps CICD approach. GitOps allows the automated deployment of the application to the cluster using FluxCD in which the configuration of the application is stored in Git.([NGSA-CD](https://github.com/retaildevcrews/ngsa-cd)). 
 
 ```bash
+cd $HOME
 
-cd $REPO_ROOT/IaC/AKS/cluster/charts/ngsa
+git clone git@github.com:retaildevcrews/ngsa-cd.git
+
+export CHART_REPO=$HOME/ngsa-cd
+
+cd $CHART_REPO/charts/ngsa
 
 # Use the helm-config.yaml file to configure the deployment
 envsubst < helm-config.example.yaml > helm-config.yaml
@@ -432,7 +437,7 @@ The `helm-config.yaml` file can be used as an override to the default values dur
 
 ```bash
 
-cd $REPO_ROOT/IaC/AKS/cluster/charts/
+cd $CHART_REPO/charts/
 
 # Install NGSA using the upstream ngsa image from Dockerhub
 # Start by using the "letsencrypt-staging" ClusterIssuer to get test certs from the Let's Encrypt staging environment.
@@ -488,7 +493,9 @@ Deploy Lode Runner to drive consistent traffic to the AKS cluster for monitoring
 cd $REPO_ROOT/IaC/AKS/cluster/charts
 
 kubectl create namespace ngsa-l8r
+
 cp ./loderunner/helm-config.example.yaml ./loderunner/helm-config.yaml
+
 helm install l8r loderunner -f ./loderunner/helm-config.yaml --namespace ngsa-l8r
 
 # Verify the pods are running
@@ -505,6 +512,7 @@ Deploy Fluent Bit to forward application and smoker logs to the Log Analytics in
 cd $REPO_ROOT/IaC/AKS/cluster/charts
 
 kubectl create namespace fluentbit
+
 kubectl create secret generic fluentbit-secrets \
   --namespace fluentbit \
   --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query customerId -o tsv) \
