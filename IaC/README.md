@@ -1,4 +1,4 @@
-# Infrastructure 
+# Infrastructure
 
 ## Overview
 

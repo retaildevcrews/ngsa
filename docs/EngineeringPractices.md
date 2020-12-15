@@ -54,7 +54,7 @@ Engineering Playbook [Definition of Done](https://github.com/microsoft/code-with
 > All net-new issues need to be triaged, leverage Notes for discussions points as needed
 
 - Create the issue in the appropriate repo with the appropriate template
-- Add project to the issue (i.e. ngsa, ngsa-cd) 
+- Add project to the issue (i.e. ngsa, ngsa-cd)
   - this will add to the main board
   - necessary for multi-repo project like NGSA
 - Add all relevant tags (language, enhancement, bug, design review, etc)

@@ -28,7 +28,7 @@ The following instructions allow the deployment of NGSA application in AKS with 
 - kubectl (install by using `sudo az aks install-cli`)
 - Helm v3 ([Install Instructions](https://helm.sh/docs/intro/install/))
 - Istioctl ([Install Instructions](https://istio.io/latest/docs/setup/getting-started/#download))
-- 
+
 ### Note on Rate Limits
 
 >[Let's Encrypt](https://letsencrypt.org/) is used to issue TLS certificates.  Let's Encrypt has [rate limit policies](https://letsencrypt.org/docs/rate-limits/) that could be triggered if you run multiple deployments in sequence.  Please take note and be careful not to exceed their rate thresholds.
@@ -520,11 +520,14 @@ helm install fluentbit fluentbit --namespace fluentbit
 kubectl get pod --namespace fluentbit
 
 ```
+
 ## AKS Cluster using automated script
+
 With this script a cluster can be deployed in AKS (uses the same steps above).
 The script is self-contained, meaning, it won't change the user-environment (e.g. selected Azure Subscription or ubernetes context) unless it's explicitly specified.
 It is located [here](../scripts/create-cluster-env.bash).
 Script Usage:
+
 ```bash
     ./create-cluster-env.bash --ngsa-prefix basename123 [Optional Args/Flags]
     ./create-cluster-env.bash -s azure-subs -n basename123 [Optional Args/Flags]
@@ -552,6 +555,7 @@ Optional Flag:
 ```
 
 Example usage:
+
 - Create a cluster with selected Azure subscription
 
   `./create-cluster-env.bash --ngsa-prefix basengsa`

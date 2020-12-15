@@ -35,8 +35,10 @@ At it's culmination the project will be a collection of guidance for deployment 
 The NGSA solution is a combination of a Kubernetes based infrastructure, a platform validation application ([ngsa](./src/ngsa/README.md)), and the load client ([loderunner](./src/loderunner/README.md)).
 
 To that end we suggest that you follow these steps to get started:
+
 1. [Setup local dev environment](./IaC/BareMetal/README.md)
-2. 
+2. [Running the app locally](./src/README.md)
+3. TODO - deploying the app to dev cluster
 
 ## Contributing
 
