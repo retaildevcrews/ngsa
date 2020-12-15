@@ -1,13 +1,22 @@
-# Spikes
+# NGSA Application
 
-- TODO - explain what spikes are
-  - Completeness
-  - quality bar
+## Overview - TODO 
 
-- TODO - ToC of spikes
-  - data
-  - fluentd (not used)
-  - grafana
-  - multi cluster
-  - log app (not used)
-  - sidecar (not used)
+- describe app
+- describe modalities (in-memory, CosmosDB)
+
+## Pre-requisites
+
+### In-memory 
+
+The in-memory execution requires no external dependencies as the data served back is loaded from static files in the project.
+
+### CosmosDB
+
+[TODO]
+
+## Running NGSA
+
+[TODO - In-memory directions]
+
+[TODO - CosmosDB directions]

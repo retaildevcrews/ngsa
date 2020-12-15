@@ -28,6 +28,10 @@ The following instructions allow the deployment of NGSA application in AKS with 
 - kubectl (install by using `sudo az aks install-cli`)
 - Helm v3 ([Install Instructions](https://helm.sh/docs/intro/install/))
 - Istioctl ([Install Instructions](https://istio.io/latest/docs/setup/getting-started/#download))
+- 
+### Note on Rate Limits
+
+>[Let's Encrypt](https://letsencrypt.org/) is used to issue TLS certificates.  Let's Encrypt has [rate limit policies](https://letsencrypt.org/docs/rate-limits/) that could be triggered if you run multiple deployments in sequence.  Please take note and be careful not to exceed their rate thresholds.
 
 ### DNS, SSL/TLS Prerequisites
 
