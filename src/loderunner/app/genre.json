@@ -53,6 +53,6 @@
     {"path":"/api/movies?pageSize=10&genre=Animation","perfTarget":{"category":"Genre10"},"validation":{"jsonArray":{"count":10}}},
 
     {"path":"/api/movies?genre=War","perfTarget":{"category":"Genre100"},"validation":{"jsonArray":{"count":26}}},
-    {"path":"/api/movies?pageSize=10&genre=Action","perfTarget":{"category":"Genre10"},"validation":{"jsonArray":{"count":10}}},
+    {"path":"/api/movies?pageSize=10&genre=Action","perfTarget":{"category":"Genre10"},"validation":{"jsonArray":{"count":10}}}
   ]
 }
