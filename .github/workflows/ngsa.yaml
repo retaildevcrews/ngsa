@@ -99,10 +99,13 @@ jobs:
         # build test image
         docker build . -t test -f src/ngsa/Dockerfile --target test
 
-    - name: Install WebV
+    - name: Build LodeRunner
       if: ${{ env.COSMOS_SET == 'true' }}
       run: |
-        dotnet tool install -g webvalidate
+        # build the validation test
+        pushd src/loderunner/app
+        dotnet build
+        popd
 
     - name: Start NGSA container
       if: ${{ env.COSMOS_SET == 'true' }}
@@ -131,14 +134,14 @@ jobs:
             ((wait_time=wait_time+1))
         done
 
-    - name: Run WebV
+    - name: Run LodeRunner
       if: ${{ env.COSMOS_SET == 'true' }}
       run: |
-        # run web validation test
+        # run loderunner validation test
         # fail on any validation errors
-        cd TestFiles
-        webv -s localhost:4120 --max-errors 1 -f baseline.json
-        cd ..
+        pushd src/loderunner/app/bin/Debug/netcoreapp3.1
+        ./loderunner -s localhost:4120 --max-errors 1 -f baseline.json
+        popd
 
     - name: Display failed docker logs
       if: ${{ failure() }}

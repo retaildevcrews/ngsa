@@ -360,6 +360,6 @@
     {"path":"/api/actors/nm0628304","perfTarget":{"category":"DirectRead"}},
     {"path":"/api/movies/tt0407304","perfTarget":{"category":"DirectRead"}},
     {"path":"/api/actors/nm0629950","perfTarget":{"category":"DirectRead"}},
-    {"path":"/api/movies/tt0271259","perfTarget":{"category":"DirectRead"}},
+    {"path":"/api/movies/tt0271259","perfTarget":{"category":"DirectRead"}}
   ]
 }

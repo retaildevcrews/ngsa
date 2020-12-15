@@ -16,6 +16,6 @@
     {"path":"/api/movies?pageSize=10&rating=4.5","perfTarget":{"category":"Rating10"},"validation":{"jsonArray":{"count":10}}},
 
     {"path":"/api/movies?rating=6.0","perfTarget":{"category":"Rating100"},"validation":{"jsonArray":{"count":100}}},
-    {"path":"/api/movies?pageSize=10&rating=4.0","perfTarget":{"category":"Rating10"},"validation":{"jsonArray":{"count":10}}},
+    {"path":"/api/movies?pageSize=10&rating=4.0","perfTarget":{"category":"Rating10"},"validation":{"jsonArray":{"count":10}}}
   ]
 }
