@@ -85,12 +85,12 @@ namespace Ngsa.DataService.DataAccessLayer
             }
 
             // load the data from the json file
-            List<GenreObject> list = JsonSerializer.Deserialize<List<GenreObject>>(File.ReadAllText("data/genres.json"), settings);
+            List<Genre> list = JsonSerializer.Deserialize<List<Genre>>(File.ReadAllText("data/genres.json"), settings);
 
             // Convert Genre object to List<string> per API spec
-            foreach (GenreObject g in list)
+            foreach (Genre g in list)
             {
-                Genres.Add(g.Genre);
+                Genres.Add(g.Name);
             }
 
             Genres.Sort();
