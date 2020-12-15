@@ -140,7 +140,7 @@ jobs:
         # run loderunner validation test
         # fail on any validation errors
         pushd src/loderunner/app/bin/Debug/netcoreapp3.1
-        dotnet loderunner.dll -s localhost:4120 --max-errors 1 -f baseline.json
+        ./loderunner -s localhost:4120 --max-errors 1 -f baseline.json
         popd
 
     - name: Display failed docker logs
