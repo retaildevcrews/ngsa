@@ -1,0 +1,94 @@
+{
+  "requests":
+  [
+    {"path":"/api/movies?year=1990","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":18}}},
+    {"path":"/api/movies?pageSize=10&year=2019","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=1991","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":26}}},
+    {"path":"/api/movies?pageSize=10&year=2018","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=1992","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":18}}},
+    {"path":"/api/movies?pageSize=10&year=2017","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=1993","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":32}}},
+    {"path":"/api/movies?pageSize=10&year=2016","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=1994","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":30}}},
+    {"path":"/api/movies?pageSize=10&year=2015","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=1995","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":28}}},
+    {"path":"/api/movies?pageSize=10&year=2014","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=1996","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":37}}},
+    {"path":"/api/movies?pageSize=10&year=2013","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=1997","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":37}}},
+    {"path":"/api/movies?pageSize=10&year=2012","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=1998","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":37}}},
+    {"path":"/api/movies?pageSize=10&year=2011","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=1999","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":39}}},
+    {"path":"/api/movies?pageSize=10&year=2010","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=2000","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":47}}},
+    {"path":"/api/movies?pageSize=10&year=2009","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=2001","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":48}}},
+    {"path":"/api/movies?pageSize=10&year=2008","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=2002","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":53}}},
+    {"path":"/api/movies?pageSize=10&year=2007","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=2003","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":60}}},
+    {"path":"/api/movies?pageSize=10&year=2006","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=2004","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":56}}},
+    {"path":"/api/movies?pageSize=10&year=2005","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=2005","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":56}}},
+    {"path":"/api/movies?pageSize=10&year=2004","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=2006","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":51}}},
+    {"path":"/api/movies?pageSize=10&year=2003","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=2007","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":49}}},
+    {"path":"/api/movies?pageSize=10&year=2002","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=2008","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":51}}},
+    {"path":"/api/movies?pageSize=10&year=2001","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=2009","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":44}}},
+    {"path":"/api/movies?pageSize=10&year=2000","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=2010","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":46}}},
+    {"path":"/api/movies?pageSize=10&year=1999","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=2011","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":49}}},
+    {"path":"/api/movies?pageSize=10&year=1998","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=2012","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":52}}},
+    {"path":"/api/movies?pageSize=10&year=1997","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=2013","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":61}}},
+    {"path":"/api/movies?pageSize=10&year=1996","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=2014","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":43}}},
+    {"path":"/api/movies?pageSize=10&year=1995","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=2015","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":51}}},
+    {"path":"/api/movies?pageSize=10&year=1994","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=2016","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":53}}},
+    {"path":"/api/movies?pageSize=10&year=1993","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=2017","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":48}}},
+    {"path":"/api/movies?pageSize=10&year=1992","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=2018","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":50}}},
+    {"path":"/api/movies?pageSize=10&year=1991","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+
+    {"path":"/api/movies?year=2019","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":33}}},
+    {"path":"/api/movies?pageSize=10&year=1990","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}}
+  ]
+}

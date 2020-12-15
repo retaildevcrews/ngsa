@@ -89,6 +89,6 @@
     {"path":"/api/movies?pageSize=10&year=1991","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
 
     {"path":"/api/movies?year=2019","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":33}}},
-    {"path":"/api/movies?pageSize=10&year=1990","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}},
+    {"path":"/api/movies?pageSize=10&year=1990","perfTarget":{"category":"Year10"},"validation":{"jsonArray":{"count":10}}}
   ]
 }

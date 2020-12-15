@@ -544,6 +544,6 @@
     {"path":"/api/movies?genre=Sci-Fi","perfTarget":{"category":"Genre100"},"validation":{"jsonArray":{"count":91}}},
     {"path":"/api/movies?rating=5.0","perfTarget":{"category":"Rating100"},"validation":{"jsonArray":{"count":100}}},
     {"path":"/api/movies?year=1992","perfTarget":{"category":"Year100"},"validation":{"jsonArray":{"count":18}}},
-    {"path":"/api/movies?pageSize=10&genre=Crime","perfTarget":{"category":"Genre10"},"validation":{"jsonArray":{"count":10}}},
+    {"path":"/api/movies?pageSize=10&genre=Crime","perfTarget":{"category":"Genre10"},"validation":{"jsonArray":{"count":10}}}
   ]
 }
