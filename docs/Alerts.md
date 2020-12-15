@@ -11,10 +11,10 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 - **Purpose**: Notify of failures on server side
 - **Metric**: Count of status code >=400
 - **Threshold**: >20 failed requests over last 5 minutes
-- **Trigger**: If total thresholds are breached >=1 time in last 10 minutes
+- **Trigger**: If threshold is breached >=1 time in last 10 minutes
 - **Period**: 10 minutes
 - **Frequency**: 10 minutes
-- **Suppress Alerts**: Wait 30 minutes before alerting again.
+- **Suppress Alerts**: Wait 30 minutes before alerting again
 - **2 Queries/Alerts**: One for each pod type, will trigger per zone
 
 ``` bash
@@ -39,10 +39,10 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 - **Purpose**: Notify of failures on client side
 - **Metric**: Count of status code >=400
 - **Threshold**: >20 failed requests over last 5 minutes
-- **Trigger**: If total thresholds are breached >=1 time in last 10 minutes
+- **Trigger**: If threshold is breached >=1 time in last 10 minutes
 - **Period**: 10 minutes
 - **Frequency**: 10 minutes
-- **Suppress Alerts**: Wait 30 minutes before alerting again.
+- **Suppress Alerts**: Wait 30 minutes before alerting again
 - **2 Queries/Alerts**: One for each pod type, will trigger per zone
 
 ```bash
@@ -67,10 +67,10 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 - **Purpose**: Notify if loderunner is down (not sending requests) or ngsa app is down
 - **Metric**: Server requests per minute
 - **Threshold**: < 5 requests over last minute
-- **Trigger**: If total thresholds are breached >4 times in last 10 minutes
+- **Trigger**: If threshold is breached >4 times in last 10 minutes
 - **Period**: 10 minutes
 - **Frequency**: 10 minutes
-- **Suppress Alerts**: Wait 30 minutes before alerting again.
+- **Suppress Alerts**: Wait 30 minutes before alerting again
 - **2 Queries/Alerts**: One for each pod type, will trigger per zone
 
 ```bash
@@ -98,7 +98,7 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 - **Trigger**: If threshold is breached >4 times in last 10 minutes
 - **Period**: 10 minutes
 - **Frequency**: 10 minutes
-- **Suppress Alerts**: Wait 30 minutes before alerting again.
+- **Suppress Alerts**: Wait 30 minutes before alerting again
 - **2 Queries/Alerts**: One for reach pod type, will trigger per zone
 
 ```bash
@@ -130,10 +130,10 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
     - Az-CentralUS: >116ms
     - Az-WestUS2: >24ms
   - ngsa-memory: >3ms
-- **Trigger**: If any thresholds are breached >4 times in last 10 minutes
+- **Trigger**: If threshold is breached >4 times in last 10 minutes
 - **Period**: 10 minutes
 - **Frequency**: 10 minutes
-- **Suppress Alerts**: Wait 30 minutes before alerting again.
+- **Suppress Alerts**: Wait 30 minutes before alerting again
 - **4 Queries/Alerts**:
 
 ```bash
@@ -175,10 +175,10 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
     - Az-CentralUS: >116ms
     - Az-WestUS2: >25ms
   - ngsa-memory: >7ms
-- **Trigger**: If any thresholds are breached >4 times in last 10 minutes
+- **Trigger**: If threshold is breached >4 times in last 10 minutes
 - **Period**: 10 minutes
 - **Frequency**: 10 minutes
-- **Suppress Alerts**: Wait 30 minutes before alerting again.
+- **Suppress Alerts**: Wait 30 minutes before alerting again
 - **4 Queries/Alerts**:
 
 ```bash
@@ -220,7 +220,7 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 - **Trigger**: If threshold is breached >4 times in last 10 minutes
 - **Period**: 10 minutes
 - **Frequency**: 10 minutes
-- **Suppress Alerts**: Wait 30 minutes before alerting again.
+- **Suppress Alerts**: Wait 30 minutes before alerting again
 - **2 Queries/Alerts**:
 
 ```bash
