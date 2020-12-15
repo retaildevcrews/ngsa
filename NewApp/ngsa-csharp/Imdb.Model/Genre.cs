@@ -3,10 +3,11 @@
 
 namespace Imdb.Model
 {
-    public class GenreObject
+    public class Genre
     {
         public string Id { get; set; }
-        public string Genre { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("genre")]
+        public string Name { get; set; }
         public string PartitionKey { get; set; }
         public string Type { get; set; }
     }
