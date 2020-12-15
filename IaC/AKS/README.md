@@ -29,6 +29,10 @@ The following instructions allow the deployment of NGSA application in AKS with 
 - Helm v3 ([Install Instructions](https://helm.sh/docs/intro/install/))
 - Istioctl ([Install Instructions](https://istio.io/latest/docs/setup/getting-started/#download))
 
+### Note on Rate Limits
+
+>[Let's Encrypt](https://letsencrypt.org/) is used to issue TLS certificates.  Let's Encrypt has [rate limit policies](https://letsencrypt.org/docs/rate-limits/) that could be triggered if you run multiple deployments in sequence.  Please take note and be careful not to exceed their rate thresholds.
+
 ### DNS, SSL/TLS Prerequisites
 
  A domain name and SSL/TLS certificates are required for HTTPS access over the internet.
@@ -417,7 +421,7 @@ envsubst < clusterissuer.yaml | kubectl apply -f -
 
 ## Deploy NGSA with Helm
 
-The NGSA application has been packed into a Helm chart for deployment into the cluster. The following instructions will walk you through the manual process of deployment of the helm chart and is recommended for development and testing. Alternatively, the helm chart can be deployed in a GitOps CICD approach. GitOps allows the automated deployment of the application to the cluster using FluxCD in which the configuration of the application is stored in Git.([NGSA-CD](https://github.com/retaildevcrews/ngsa-cd)). 
+The NGSA application has been packed into a Helm chart for deployment into the cluster. The following instructions will walk you through the manual process of deployment of the helm chart and is recommended for development and testing. Alternatively, the helm chart can be deployed in a GitOps CICD approach. GitOps allows the automated deployment of the application to the cluster using FluxCD in which the configuration of the application is stored in Git.([NGSA-CD](https://github.com/retaildevcrews/ngsa-cd)).
 
 ```bash
 cd $HOME
@@ -524,11 +528,14 @@ helm install fluentbit fluentbit --namespace fluentbit
 kubectl get pod --namespace fluentbit
 
 ```
+
 ## AKS Cluster using automated script
+
 With this script a cluster can be deployed in AKS (uses the same steps above).
 The script is self-contained, meaning, it won't change the user-environment (e.g. selected Azure Subscription or ubernetes context) unless it's explicitly specified.
 It is located [here](../scripts/create-cluster-env.bash).
 Script Usage:
+
 ```bash
     ./create-cluster-env.bash --ngsa-prefix basename123 [Optional Args/Flags]
     ./create-cluster-env.bash -s azure-subs -n basename123 [Optional Args/Flags]
@@ -556,6 +563,7 @@ Optional Flag:
 ```
 
 Example usage:
+
 - Create a cluster with selected Azure subscription
 
   `./create-cluster-env.bash --ngsa-prefix basengsa`

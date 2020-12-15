@@ -18,7 +18,24 @@ We wish to fully separate the service used to read and write data from the front
 
 ### Data Service Caching
 
-WIP - The Data Service will use a cache-aside mechanism for results.  
+The initial implementation of the Data Service uses a cache-aside mechanism built using `System.Runtime.Caching`.  The flags for controlling cache behavior are as follows:
+
+#### Default Behavior
+
+- always cache
+- `--cache-duration` = 300 seconds
+
+#### Runtime Flags
+
+The following flags are mutually exclusive:
+`--in-memory`: [0|1]
+`--no-cache` (never cache): [0|1]
+`--perf-cache` (req/sec limit): int
+`--cache-duration` = int
+
+Validation:
+`--cache-duration`: int > 0
+`--perf-cache`: int > 0
 
 ### Data Service Logging
 

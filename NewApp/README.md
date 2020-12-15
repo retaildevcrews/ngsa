@@ -1,44 +1,23 @@
-# Developer Docs
+# Developer Roadmap
 
-- In order to run locally, you need to create 3 files in the src/app/secrets directory
-  - CosmosUrl
-  - CosmosKey
-  - AppInsightsKey (optional)
+- TODO - per review feedback, this should be a "roadmap"
+  - this is where a dev would start
+  - explain ngsa and loderunner
+  - link to how to deploy to k8s
 
-> The file names are case sensitive and are ignored in .gitignore
+- TODO - how "hierarchical" should the docs be?
+  - is it better to have shorter docs in each directory?
 
-## Run locally
+## Source Code Hierarchy
 
-```bash
+- ngsa-typescript
+  - typescript version of the ngsa application
+- ngsa-csharp
+  - C# version of the ngsa application
+  - DataService (required by ngsa app)
+  - LodeRunner (load service)
 
-# from src/app
-dotnet run
+## Running the Applications
 
-```
-
-## Run tests
-
-```bash
-
-# from src/tests
-dotnet test
-
-```
-
-- You can run a complete end-to-end test using webv
-  - You must create your secrets first
-  - You will need a second bash console.
-
-```bash
-
-# from src/tests (first console)
-./runtests
-
-# wait for Application started. Press Ctrl+c to shutdown.
-
-# from TestFiles (second console)
-webv -s localhost:4120 -f baseline.json
-
-```
-
-> Coverage results are available in `src/tests/TestResults`
+1. To reduce setup complexity we suggest that you follow the directions for running the application in In-memory mode as detailed in the [NGSA App Readme](./ngsa-csharp/README.md)
+2. Once the app is running locally you may run tests against it using [Loderunner](https://github.com/retaildevcrews/ngsa/blob/main/src/loderunner/README.md)

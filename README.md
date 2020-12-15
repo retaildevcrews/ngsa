@@ -17,7 +17,7 @@ At it's culmination the project will be a collection of guidance for deployment 
 3. Cluster Setup Guides
    1. [Bare Metal](./IaC/BareMetal/README.md)
    2. [AKS](./IaC/AKS/README.md)
-4. [Developer Guide](./docs/Developer.md)
+4. [Developer Guide](./src/README.md)
 5. Applications
    1. [NGSA App](./src/ngsa/README.md)
    2. [Load Generator](./src/loderunner/README.md)
@@ -32,7 +32,13 @@ At it's culmination the project will be a collection of guidance for deployment 
 
 ## Getting Started
 
-[WIP] Add descriptive text to guide through cluster setup, app setup, and load execution.
+The NGSA solution is a combination of a Kubernetes based infrastructure, a platform validation application ([ngsa](./src/ngsa/README.md)), and the load client ([loderunner](./src/loderunner/README.md)).
+
+To that end we suggest that you follow these steps to get started:
+
+1. [Setup local dev environment](./IaC/BareMetal/README.md)
+2. [Running the app locally](./src/README.md)
+3. TODO - deploying the app to dev cluster
 
 ## Contributing
 
