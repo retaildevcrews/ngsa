@@ -2,14 +2,14 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 
 # Copy the source
-COPY src/loderunner /src
+COPY NewApp/ngsa-csharp /src
 
 ### Run the unit tests
 #WORKDIR /src/tests
 #RUN dotnet test
 
 ### Build the release app
-WORKDIR /src/app
+WORKDIR /src/Ngsa.LodeRunner
 RUN dotnet publish -c Release -o /app
 
     
@@ -21,21 +21,21 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine AS runtime
 
 ### create a user
 ### dotnet needs a home directory
-RUN addgroup -S webv && \
-    adduser -S webv -G webv && \
-    mkdir -p /home/webv && \
-    chown -R webv:webv /home/webv
+RUN addgroup -S ngsa && \
+    adduser -S ngsa -G ngsa && \
+    mkdir -p /home/ngsa && \
+    chown -R ngsa:ngsa /home/ngsa
 
 WORKDIR /app
 COPY --from=build /app .
 RUN mkdir -p /app/TestFiles && \
     cp *.json TestFiles && \
     cp perfTargets.txt TestFiles && \
-    chown -R webv:webv /app
+    chown -R ngsa:ngsa /app
 
 WORKDIR /app/TestFiles
 
-# run as the webv user
-USER webv
+# run as the ngsa user
+USER ngsa
 
-ENTRYPOINT [ "dotnet",  "../loderunner.dll" ]
+ENTRYPOINT [ "dotnet",  "../Ngsa.LodeRunner.dll" ]
