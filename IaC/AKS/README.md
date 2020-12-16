@@ -490,7 +490,7 @@ TODO
 
 ## Smoke Tests
 
-Deploy Lode Runner to drive consistent traffic to the AKS cluster for monitoring.
+Deploy Loderunner to drive consistent traffic to the AKS cluster for monitoring.
 
 ```bash
 
