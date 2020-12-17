@@ -17,7 +17,7 @@ WORKDIR /src/Ngsa.App
 RUN if [ "$TAG" == "true" ]; then dotnet publish -c Release -o /app --version-suffix ''; else dotnet publish -c Release -o /app; fi
 
 WORKDIR /src/Ngsa.App.Tests
-ENTRYPOINT [ "./runtests" ]
+ENTRYPOINT [ "./runtests.sh" ]
 
 ###########################################################
 
