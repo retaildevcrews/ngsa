@@ -24,7 +24,7 @@ setup variables
 
 ```bash
 
-# git clone and cd in spikes/kuma
+TODO: git clone and cd in spikes/kuma
 
 LOCATION=centralus
 
@@ -48,13 +48,13 @@ az group create -n $RG_NAME -l $LOCATION
 # create clusters
 
 # create a cluster for the main kuma zone.
-az aks create --name main --resource-group $RG_NAME --location $LOCATION --enable-cluster-autoscaler --min-count 1 --max-count 3 --node-count 1 --kubernetes-version 1.19.3 --no-ssh-key
+az aks create -n main -g $RG_NAME -l $LOCATION --enable-cluster-autoscaler --min-count 1 --max-count 3 --node-count 1 -k $AKS_VERSION --no-ssh-key
 
 # create a cluster for the first remote kuma zone
-az aks create --name remote1 --resource-group $RG_NAME --location $LOCATION --enable-cluster-autoscaler --min-count 1 --max-count 3 --node-count 1 --kubernetes-version 1.19.3 --no-ssh-key
+az aks create -n remote1 -g $RG_NAME -l $LOCATION --enable-cluster-autoscaler --min-count 1 --max-count 3 --node-count 1 -k $AKS_VERSION --no-ssh-key
 
 # create a cluster for the second remote kuma zone
-az aks create --name remote2 --resource-group $RG_NAME --location $LOCATION --enable-cluster-autoscaler --min-count 1 --max-count 3 --node-count 1 --kubernetes-version 1.19.3 --no-ssh-key
+az aks create -n remote2 -g $RG_NAME -l $LOCATION --enable-cluster-autoscaler --min-count 1 --max-count 3 --node-count 1 -k $AKS_VERSION --no-ssh-key
 
 ```
 
@@ -185,6 +185,9 @@ add debugging pod to mesh
 # add a debugging pod to the remote1 zone
 kubectl apply -f debug.yaml --context remote1
 
+# make sure pods are running
+kubectl get pods --namespace kuma-spike --context remote1
+
 # exec into the debug container
 kubectl exec -it debug --namespace kuma-spike --context remote1 --container debug -- /bin/sh
 
@@ -206,7 +209,7 @@ watch -n 1 curl http://ngsa-memory:4120/version
 
 ```
 
-update the balance of traffic between the kuma zones. open a new terminal.
+open a new terminal. update the balance of traffic between the kuma zones.
 
 ```bash
 
