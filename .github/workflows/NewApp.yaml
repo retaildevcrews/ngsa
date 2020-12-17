@@ -168,7 +168,7 @@ jobs:
       run: |
         # run loderunner validation test
         # fail on any validation errors
-        docker run --rm --network ngsa lr -s http://ds:4122 --max-errors 1 -f baseline.json
+        docker run --rm --network ngsa lr -s http://ds:4122 --max-errors 1 -f baseline.json baseline.json
 
     - name: Display failed data logs
       if: ${{ failure() }}
