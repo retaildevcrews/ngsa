@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Ngsa.App.Controllers;
 using Ngsa.Middleware.Validation;
 
 namespace Ngsa.App
@@ -32,6 +33,7 @@ namespace Ngsa.App
 
         private static CancellationTokenSource ctCancel;
 
+        public static string DataService { get; set; }
         public static string CosmosName { get; set; } = string.Empty;
         public static string CosmosQueryId { get; set; } = string.Empty;
         public static string Region { get; set; } = string.Empty;
@@ -59,7 +61,7 @@ namespace Ngsa.App
         {
             // build the System.CommandLine.RootCommand
             RootCommand root = BuildRootCommand();
-            root.Handler = CommandHandler.Create<string, LogLevel, bool, bool>(RunApp);
+            root.Handler = CommandHandler.Create<string, LogLevel, bool>(RunApp);
 
             string[] cmd = CombineEnvVarsWithCommandLine(args);
 

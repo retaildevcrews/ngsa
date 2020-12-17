@@ -7,6 +7,7 @@ using System.CommandLine;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
+using Ngsa.Middleware;
 
 namespace Ngsa.App
 {
@@ -29,19 +30,10 @@ namespace Ngsa.App
 
             List<string> cmd = new List<string>(args);
 
-            // add --log-level value from environment or default
-            if (!cmd.Contains("--log-level") && !cmd.Contains("-l"))
-            {
-                string logLevel = Environment.GetEnvironmentVariable("LOG_LEVEL");
+            cmd.AddFromEnvironment("--data-service", "-s");
+            cmd.AddFromEnvironment("--log-level", "-l");
 
-                cmd.Add("--log-level");
-                cmd.Add(string.IsNullOrEmpty(logLevel) ? "Warning" : logLevel);
-                App.IsLogLevelSet = !string.IsNullOrEmpty(logLevel);
-            }
-            else
-            {
-                App.IsLogLevelSet = true;
-            }
+            IsLogLevelSet = cmd.Contains("--log-level") || cmd.Contains("-l");
 
             return cmd.ToArray();
         }
@@ -60,6 +52,7 @@ namespace Ngsa.App
             };
 
             // add the options
+            root.AddOption(new Option<string>(new string[] { "-s", "--data-service" }, () => "http://localhost:4122", "Data Service URL"));
             root.AddOption(new Option<LogLevel>(new string[] { "-l", "--log-level" }, "Log Level"));
             root.AddOption(new Option<bool>(new string[] { "-d", "--dry-run" }, "Validates configuration"));
 
@@ -69,12 +62,11 @@ namespace Ngsa.App
         /// <summary>
         /// Run the app
         /// </summary>
-        /// <param name="secretsVolume">k8s Secrets Volume Path</param>
+        /// <param name="dataService">Data Service URL (default: http://localhost:4122)</param>
         /// <param name="logLevel">Log Level</param>
         /// <param name="dryRun">Dry Run flag</param>
-        /// <param name="inMemory">Use in-memory DB</param>
         /// <returns>status</returns>
-        public static async Task<int> RunApp(string secretsVolume, LogLevel logLevel, bool dryRun, bool inMemory)
+        public static async Task<int> RunApp(string dataService, LogLevel logLevel, bool dryRun)
         {
             try
             {
@@ -91,6 +83,9 @@ namespace Ngsa.App
                 ctCancel = SetupCtlCHandler();
 
                 AppLogLevel = logLevel;
+
+                // todo - validate params
+                DataService = dataService;
 
                 // build the host
                 host = BuildHost();

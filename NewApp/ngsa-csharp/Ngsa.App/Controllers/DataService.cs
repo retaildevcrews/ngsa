@@ -27,7 +27,7 @@ namespace Ngsa.App.Controllers
         // http client used to call data layer
         private static readonly HttpClient Client = new HttpClient
         {
-            BaseAddress = new Uri("http://localhost:4122"),
+            BaseAddress = new Uri(App.DataService),
         };
 
         /// <summary>
