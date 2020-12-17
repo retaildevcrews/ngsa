@@ -3,7 +3,6 @@
 
 using System;
 using Microsoft.AspNetCore.Http;
-using Ngsa.Middleware;
 
 namespace Ngsa.Middleware
 {

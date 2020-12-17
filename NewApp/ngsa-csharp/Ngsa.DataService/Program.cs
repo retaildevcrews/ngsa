@@ -14,7 +14,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Ngsa.DataService.DataAccessLayer;
-using Ngsa.Middleware.Validation;
 
 namespace Ngsa.DataService
 {

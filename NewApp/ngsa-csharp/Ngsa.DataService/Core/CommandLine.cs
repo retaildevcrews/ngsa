@@ -237,7 +237,7 @@ namespace Ngsa.DataService
                 }
 
                 // validate cache-duration
-                if ((int)cacheDuration < 1)
+                if (cacheDuration < 1)
                 {
                     msg += "--cache-duration must be > 0\n";
                 }
