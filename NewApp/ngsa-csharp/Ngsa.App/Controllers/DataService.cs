@@ -27,7 +27,7 @@ namespace Ngsa.App.Controllers
         // http client used to call data layer
         private static readonly HttpClient Client = new HttpClient
         {
-            BaseAddress = new Uri("http://localhost:4122"),
+            BaseAddress = new Uri(App.DataService),
         };
 
         /// <summary>
@@ -53,16 +53,24 @@ namespace Ngsa.App.Controllers
 
             try
             {
-                string res = await Client.GetStringAsync(fullPath).ConfigureAwait(false);
+                HttpResponseMessage resp = await Client.GetAsync(fullPath);
 
-                T obj = System.Text.Json.JsonSerializer.Deserialize<T>(res, Options);
+                if (resp.IsSuccessStatusCode)
+                {
+                    T obj = JsonSerializer.Deserialize<T>(await resp.Content.ReadAsByteArrayAsync().ConfigureAwait(false), Options);
+                    return new JsonResult(obj, Options);
+                }
 
-                return new JsonResult(obj, Options);
+                dynamic err = JsonSerializer.Deserialize<dynamic>(await resp.Content.ReadAsByteArrayAsync().ConfigureAwait(false), Options);
+
+                return new JsonResult(err, Options)
+                {
+                    StatusCode = (int)resp.StatusCode,
+                };
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                return new BadRequestResult();
+                return CreateResult(ex.Message, HttpStatusCode.InternalServerError);
             }
         }
 
@@ -74,19 +82,7 @@ namespace Ngsa.App.Controllers
         /// <returns>IActionResult</returns>
         public static async Task<IActionResult> Read<T>(HttpRequest request)
         {
-            try
-            {
-                string res = await Client.GetStringAsync(request?.Path.ToString() + request?.QueryString.ToString()).ConfigureAwait(false);
-
-                T obj = System.Text.Json.JsonSerializer.Deserialize<T>(res, Options);
-
-                return new JsonResult(obj, Options);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return CreateResult(ex.Message, HttpStatusCode.BadRequest);
-            }
+            return await Read<T>(request?.Path.ToString() + request?.QueryString.ToString()).ConfigureAwait(false);
         }
 
         /// <summary>

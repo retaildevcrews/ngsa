@@ -16,11 +16,11 @@ namespace Tests
             args = new string[] { "-l", "Warning", "--help", "-d", "--version" };
             Assert.Equal(0, await App.Main(args));
 
-            // run the web server for 15 seconds for integration test
+            // run the web server for 30 seconds for integration test
             if (!string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
                 Console.WriteLine("Starting web server");
-                App.Main(Array.Empty<string>()).Wait(15000);
+                App.Main(Array.Empty<string>()).Wait(30000);
                 Console.WriteLine("Web server stopped");
             }
         }

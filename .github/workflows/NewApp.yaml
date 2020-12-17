@@ -1,0 +1,270 @@
+name: New Build
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+    branches:
+      - main
+
+    paths:
+    - 'NewApp/ngsa-csharp/**'
+    - '.github/workflows/NewApp.yaml'
+
+  push:
+    branches:
+      - main
+
+    paths:
+    - 'NewApp/ngsa-csharp/**'
+    - '.github/workflows/NewApp.yaml'
+
+    tags:
+      - v*
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    env:
+      # copy the config value to environment variables
+      # do not copy the actual secrets!
+
+      APP_REPO: retaildevcrew/ngsa-app
+      DS_REPO: retaildevcrew/ngsa-dataservice
+      LR_REPO: retaildevcrew/ngsa-loderunner
+
+      # These are used in if: conditions
+      DOCKER_SET: false
+      COSMOS_SET: false
+      BUILD: true
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set conditions
+      run: |
+        # check that all Docker secrets are set
+        if [[ "${{ secrets.DOCKER_PAT }}" != "" && "${{ secrets.DOCKER_USER }}" != "" ]];
+        then
+          echo "DOCKER_SET=true" >> $GITHUB_ENV
+        fi
+        
+        if [[ "${{ secrets.CosmosUrl }}" != "" && "${{ secrets.CosmosKey }}" != "" ]];
+        then
+          echo '${{ secrets.CosmosUrl }}' > src/ngsa/app/secrets/CosmosUrl
+          echo '${{ secrets.CosmosKey }}' > src/ngsa/app/secrets/CosmosKey
+          echo "COSMOS_SET=true" >> $GITHUB_ENV
+        fi
+
+    - name: PR Closed
+      if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && ! github.event.pull_request.merged }}
+      run: |
+
+        # handle PR Closed event by building / pushing main branch
+        
+        # checkout parent branch (usually "main")
+        git config pull.ff only
+        git fetch --all
+        git checkout ${{ github.base_ref }}
+        git pull
+
+    - name: PR Merged
+      if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged }}
+      run: |
+
+        # Do not build on PR Merged
+        
+        # Skip remaining steps
+        echo "DOCKER_SET=false" >> $GITHUB_ENV
+        echo "COSMOS_SET=false" >> $GITHUB_ENV
+        echo "BUILD=false" >> $GITHUB_ENV
+
+    - name: Docker Login
+      if: ${{ env.DOCKER_SET == 'true' }}
+      run: |
+        # login to dockerhub
+        echo "${{ secrets.DOCKER_PAT }}" | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+
+    - name: Docker Pull Images
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        # Pull the latest image if needed
+        # This doesn't have to be a separate step, but makes the output easier to read and debug
+        docker pull mcr.microsoft.com/dotnet/core/sdk:3.1
+        docker pull mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine
+
+    - name: Docker Build Data Service
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        docker build . -t ds-test -f NewApp/ngsa-csharp/Ngsa.DataService/Dockerfile --target test
+
+    - name: Docker Build App
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        docker build . -t app-test -f NewApp/ngsa-csharp/Ngsa.App/Dockerfile --target test
+
+    - name: Docker Build LoadRunner
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        if [[ "${{ github.ref }}" == "refs/tags/"* ]]
+        then
+          docker build . -t lr -f NewApp/ngsa-csharp/Ngsa.LodeRunner/Dockerfile --build-arg TAG=true
+        else
+          docker build . -t lr -f NewApp/ngsa-csharp/Ngsa.LodeRunner/Dockerfile
+        fi
+  
+    - name: Start services
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        # create the docker network
+        docker network create ngsa
+
+        # run the data service
+        docker run -d --name ds --network ngsa -p 4122:4122 ds-test
+        
+        # run the app
+        docker run -d --name app --network ngsa -p 4120:4120 app-test
+        
+        echo "Waiting for services to start ..."
+        
+        wait_time=10
+        sleep $wait_time
+
+        # wait up to 30 seconds for data service to start
+        while true
+        do
+            if curl localhost:4122/version ; then
+                echo -e "\n\ndata service is running\n"
+                break
+            fi
+            if [ $wait_time -gt 30 ] ; then
+              echo -e "\n\ntimeout waiting for data service to start"
+              exit 1
+            fi
+            
+            sleep 1
+            ((wait_time=wait_time+1))
+        done
+
+        # wait up to 30 seconds for web app to start
+        while true
+        do
+            if curl localhost:4120/version ; then
+                echo -e "\n\nweb app is running"
+                break
+            fi
+            if [ $wait_time -gt 30 ] ; then
+              echo -e "\n\ntimeout waiting for web app to start"
+              exit 1
+            fi
+            
+            sleep 1
+            ((wait_time=wait_time+1))
+        done
+
+    - name: Run LodeRunner
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        # run loderunner validation test
+        # fail on any validation errors
+        docker run --rm --network ngsa lr -s http://app:4120 --max-errors 1 -f baseline.json baseline.json
+
+    - name: Display failed data logs
+      if: ${{ failure() }}
+      run: |
+        docker logs ds
+
+    - name: Display failed app logs
+      if: ${{ failure() }}
+      run: |
+        docker logs app
+
+    - name: Docker Build App
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        # build image
+        if [[ "${{ github.ref }}" == "refs/tags/"* ]]
+        then
+          docker build . -t app -f NewApp/ngsa-csharp/Ngsa.App/Dockerfile --build-arg TAG=true
+        else
+          docker build . -t app -f NewApp/ngsa-csharp/Ngsa.App/Dockerfile
+        fi
+
+    - name: Docker Build Data Service
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        # build image
+        if [[ "${{ github.ref }}" == "refs/tags/"* ]]
+        then
+          docker build . -t ds -f NewApp/ngsa-csharp/Ngsa.DataService/Dockerfile --build-arg TAG=true
+        else
+          docker build . -t ds -f NewApp/ngsa-csharp/Ngsa.DataService/Dockerfile
+        fi
+
+    - name: Get Version
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        echo DS_VERSION=`docker run --rm ds --version` >> $GITHUB_ENV
+        echo APP_VERSION=`docker run --rm app --version` >> $GITHUB_ENV
+        echo LR_VERSION=`docker run --rm lr --version` >> $GITHUB_ENV
+        
+    - name: Docker Tag
+      if: ${{ env.DOCKER_SET == 'true' }}
+      run: |
+        # Tag the image with :beta and semver
+        docker tag app $APP_REPO:beta
+        docker tag app $APP_REPO:beta-$APP_VERSION-${{ github.run_number }}
+
+        docker tag ds $DS_REPO:beta
+        docker tag ds $DS_REPO:beta-$DS_VERSION-${{ github.run_number }}
+
+        docker tag lr $LR_REPO:beta
+        docker tag lr $LR_REPO:beta-$LR_VERSION-${{ github.run_number }}
+
+        # Tag image based on repo tag if a github label
+        if [[ "${{ github.ref }}" == "refs/tags/"* ]]
+        then
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,'  | sed -e 's/^v//')
+
+          # tag the image with :version and :latest
+          docker tag app $APP_REPO:$VERSION
+          docker tag app $APP_REPO:latest
+          docker tag ds $DS_REPO:$VERSION
+          docker tag ds $DS_REPO:latest
+          docker tag lr $LR_REPO:$VERSION
+          docker tag lr $LR_REPO:latest
+        fi
+
+    - name: Docker Push
+      if: ${{ env.DOCKER_SET == 'true' }}
+      run: |
+        # Push to the repo
+        docker push $APP_REPO
+        docker push $DS_REPO
+        docker push $LR_REPO
+
+    - name: Display app coverage results
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        # display the results
+        docker logs app | tail -n 15
+
+    - name: Display data service coverage results
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        # display the results
+        docker logs ds | tail -n 15
+
+    - name: Display app results
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        # display the results
+        docker logs app
+
+    - name: Display data service results
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        # display the results
+        docker logs ds
