@@ -86,17 +86,12 @@ jobs:
         # login to dockerhub
         echo "${{ secrets.DOCKER_PAT }}" | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
 
-    - name: Docker Pull Test
+    - name: Docker Pull Images
       if: ${{ env.BUILD == 'true' }}
       run: |
         # Pull the latest image if needed
         # This doesn't have to be a separate step, but makes the output easier to read and debug
         docker pull mcr.microsoft.com/dotnet/core/sdk:3.1
-
-    - name: Docker Pull Release
-      if: ${{ env.BUILD == 'true' }}
-      run: |
-        # Pull the latest image if needed
         docker pull mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine
 
     - name: Docker Build Data Service
@@ -119,7 +114,7 @@ jobs:
           docker build . -t lr -f NewApp/ngsa-csharp/Ngsa.LodeRunner/Dockerfile
         fi
   
-    - name: Start data service
+    - name: Start services
       if: ${{ env.BUILD == 'true' }}
       run: |
         # create the docker network
@@ -140,11 +135,11 @@ jobs:
         while true
         do
             if curl localhost:4122/version ; then
-                echo -e "\n data service is running"
+                echo -e "\n\ndata service is running\n"
                 break
             fi
             if [ $wait_time -gt 30 ] ; then
-              echo -e "\n timeout waiting for data service to start"
+              echo -e "\n\ntimeout waiting for data service to start"
               exit 1
             fi
             
@@ -156,11 +151,11 @@ jobs:
         while true
         do
             if curl localhost:4120/version ; then
-                echo -e "\n web app is running"
+                echo -e "\n\nweb app is running"
                 break
             fi
             if [ $wait_time -gt 30 ] ; then
-              echo -e "\n timeout waiting for web app to start"
+              echo -e "\n\ntimeout waiting for web app to start"
               exit 1
             fi
             
