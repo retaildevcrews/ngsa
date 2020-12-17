@@ -1,4 +1,4 @@
-name: ngsa Build
+name: New Build
 
 on:
   pull_request:
@@ -45,7 +45,7 @@ jobs:
     - name: Set conditions
       run: |
         # check that all Docker secrets are set
-        if [[ "${{ secrets.DOCKER_PAT }}" != "" && "${{ secrets.NGSA_REPO }}" != "" && "${{ secrets.DOCKER_USER }}" != "" ]];
+        if [[ "${{ secrets.DOCKER_PAT }}" != "" && "${{ secrets.DOCKER_USER }}" != "" ]];
         then
           echo "DOCKER_SET=true" >> $GITHUB_ENV
         fi
@@ -93,15 +93,21 @@ jobs:
         # This doesn't have to be a separate step, but makes the output easier to read and debug
         docker pull mcr.microsoft.com/dotnet/core/sdk:3.1
 
+    - name: Docker Pull Release
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        # Pull the latest image if needed
+        docker pull mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine
+
     - name: Docker Build Data Service
       if: ${{ env.BUILD == 'true' }}
       run: |
-        docker build . -t ds -f NewApp/ngsa-csharp/Ngsa.DataService/Dockerfile --target test
+        docker build . -t ds-test -f NewApp/ngsa-csharp/Ngsa.DataService/Dockerfile --target test
 
     - name: Docker Build App
       if: ${{ env.BUILD == 'true' }}
       run: |
-        docker build . -t app -f NewApp/ngsa-csharp/Ngsa.App/Dockerfile --target test
+        docker build . -t app-test -f NewApp/ngsa-csharp/Ngsa.App/Dockerfile --target test
 
     - name: Docker Build Loadrunner
       if: ${{ env.BUILD == 'true' }}
@@ -115,7 +121,7 @@ jobs:
         docker network create ngsa
 
         # run the app
-        docker run -d --name ds --network ngsa -p 4122:4122 ds --in-memory
+        docker run -d --name ds --network ngsa -p 4122:4122 ds-test
         
         echo "Waiting for web server to start ..."
         
@@ -143,36 +149,12 @@ jobs:
       run: |
         # run loderunner validation test
         # fail on any validation errors
-        docker run --rm --network ngsa lr -s http://ds:4122 --max-errors 1 -f benchmark.json
+        docker run --rm --network ngsa lr -s http://ds:4122 --max-errors 1 -f baseline.json
 
     - name: Display failed docker logs
       if: ${{ failure() }}
       run: |
         docker logs ds
-
-    - name: Display coverage results
-      if: ${{ env.BUILD == 'true' }}
-      run: |
-        # wait for data service to shutdown
-        sleep 15
-
-        # display the results
-        docker logs ds | tail -n 15
-
-    - name: Display full test results
-      if: ${{ env.BUILD == 'true' }}
-      run: |
-        # display the results
-        docker logs ds
-
-        # remove the container
-        docker rm -f ds
-
-    - name: Docker Pull Release
-      if: ${{ env.BUILD == 'true' }}
-      run: |
-        # Pull the latest image if needed
-        docker pull mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine
 
     - name: Docker Build App
       if: ${{ env.BUILD == 'true' }}
@@ -196,17 +178,6 @@ jobs:
           docker build . -t ds -f NewApp/ngsa-csharp/Ngsa.DataService/Dockerfile
         fi
 
-    - name: Docker Build LodeRunner
-      if: ${{ env.BUILD == 'true' }}
-      run: |
-        # build image
-        if [[ "${{ github.ref }}" == "refs/tags/"* ]]
-        then
-          docker build . -t lr -f NewApp/ngsa-csharp/Ngsa.LodeRunner/Dockerfile --build-arg TAG=true
-        else
-          docker build . -t lr -f NewApp/ngsa-csharp/Ngsa.LodeRunner/Dockerfile
-        fi
-
     - name: Get Version
       if: ${{ env.BUILD == 'true' }}
       run: |
@@ -215,7 +186,7 @@ jobs:
         echo LR_VERSION=`docker run --rm lr --version` >> $GITHUB_ENV
         
     - name: Docker Tag
-      if: ${{ env.BUILD == 'true' }}
+      if: ${{ env.DOCKER_SET == 'true' }}
       run: |
         # Tag the image with :beta and semver
         docker tag app $APP_REPO:beta
@@ -249,3 +220,15 @@ jobs:
         docker push $APP_REPO
         docker push $DS_REPO
         docker push $LR_REPO
+
+    - name: Display coverage results
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        # display the results
+        docker logs ds | tail -n 15
+
+    - name: Display full test results
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        # display the results
+        docker logs ds
