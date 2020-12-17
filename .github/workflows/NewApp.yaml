@@ -109,10 +109,15 @@ jobs:
       run: |
         docker build . -t app-test -f NewApp/ngsa-csharp/Ngsa.App/Dockerfile --target test
 
-    - name: Docker Build Loadrunner
+    - name: Docker Build LoadRunner
       if: ${{ env.BUILD == 'true' }}
       run: |
-        docker build . -t lr -f NewApp/ngsa-csharp/Ngsa.LodeRunner/Dockerfile
+        if [[ "${{ github.ref }}" == "refs/tags/"* ]]
+        then
+          docker build . -t lr -f NewApp/ngsa-csharp/Ngsa.LodeRunner/Dockerfile --build-arg TAG=true
+        else
+          docker build . -t lr -f NewApp/ngsa-csharp/Ngsa.LodeRunner/Dockerfile
+        fi
   
     - name: Start data service
       if: ${{ env.BUILD == 'true' }}
@@ -120,23 +125,42 @@ jobs:
         # create the docker network
         docker network create ngsa
 
-        # run the app
+        # run the data service
         docker run -d --name ds --network ngsa -p 4122:4122 ds-test
         
-        echo "Waiting for web server to start ..."
+        # run the app
+        docker run -d --name app --network ngsa -p 4120:4120 app-test
         
-        wait_time=10        
+        echo "Waiting for services to start ..."
+        
+        wait_time=10
         sleep $wait_time
 
-        # wait up to 30 seconds for web server to start
+        # wait up to 30 seconds for data service to start
         while true
         do
             if curl localhost:4122/version ; then
-                echo -e "\n web server is running"
+                echo -e "\n data service is running"
                 break
             fi
             if [ $wait_time -gt 30 ] ; then
-              echo -e "\n timeout waiting for web server to start"
+              echo -e "\n timeout waiting for data service to start"
+              exit 1
+            fi
+            
+            sleep 1
+            ((wait_time=wait_time+1))
+        done
+
+        # wait up to 30 seconds for web app to start
+        while true
+        do
+            if curl localhost:4120/version ; then
+                echo -e "\n web app is running"
+                break
+            fi
+            if [ $wait_time -gt 30 ] ; then
+              echo -e "\n timeout waiting for web app to start"
               exit 1
             fi
             
@@ -151,10 +175,15 @@ jobs:
         # fail on any validation errors
         docker run --rm --network ngsa lr -s http://ds:4122 --max-errors 1 -f baseline.json
 
-    - name: Display failed docker logs
+    - name: Display failed data logs
       if: ${{ failure() }}
       run: |
         docker logs ds
+
+    - name: Display failed app logs
+      if: ${{ failure() }}
+      run: |
+        docker logs app
 
     - name: Docker Build App
       if: ${{ env.BUILD == 'true' }}
@@ -221,13 +250,25 @@ jobs:
         docker push $DS_REPO
         docker push $LR_REPO
 
-    - name: Display coverage results
+    - name: Display app coverage results
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        # display the results
+        docker logs app | tail -n 15
+
+    - name: Display data service coverage results
       if: ${{ env.BUILD == 'true' }}
       run: |
         # display the results
         docker logs ds | tail -n 15
 
-    - name: Display full test results
+    - name: Display app results
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        # display the results
+        docker logs app
+
+    - name: Display data service results
       if: ${{ env.BUILD == 'true' }}
       run: |
         # display the results
