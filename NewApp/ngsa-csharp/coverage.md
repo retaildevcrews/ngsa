@@ -1,62 +1,48 @@
 # Generate Code Coverage Report
 
-## Start three Windows command prompts
+## Start a Windows command prompt
 
-- to run in bash
-  - change `\` to `/`
-  - change `set` to `export`
+```cmd
 
-
-```bash
-
-# t1
-cd ngsa\NewApp\ngsa-csharp
+cd ngsa\NewApp\ngsa-csharp\Ngsa.LodeRunner
 set RUN_TEST_COVERAGE=true
 dotnet tool install -g dotnet-reportgenerator-globaltool
-
-# t2
-cd ngsa\NewApp\ngsa-csharp\Ngsa.LodeRunner
 dotnet build
 
-# t3
-cd ngsa\NewApp\ngsa-csharp\Ngsa.DataService
+rem start the data service in test mode
+start dotnet test ..\Ngsa.DataService.Tests\Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput="../TestResults/"
 
-# t1 - start the data service in test mode
-dotnet test Ngsa.DataService.Tests\Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput="../TestResults/"
+rem Wait for
+rem    Starting test execution, please wait...
+rem    A total of 1 test files matched the specified pattern.
 
-# Wait for
-#    Starting test execution, please wait...
-#    A total of 1 test files matched the specified pattern.
-
-# t2 - run LodeRunner
+rem run LodeRunner
 dotnet run -- -s http://localhost:4122 -f dataservice.json
 
-# wait for t1 to finish (45 seconds or so)
+rem wait for data service test to finish (45 seconds or so)
 
-# t3 - start the data service
-dotnet run
+rem start the data service
+start dotnet run --project ..\Ngsa.Dataservice\Ngsa.DataService.csproj
 
-# t1 - run the app in test mode
-# merge the results and create the coverage file
-dotnet test Ngsa.App.Tests\Ngsa.App.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput="../TestResults/" /p:MergeWith="../TestResults/coverage.json" /p:CoverletOutputFormat="opencover"
+rem run the app in test mode
+rem merge the results and create the coverage file
+start dotnet test ..\Ngsa.App.Tests\Ngsa.App.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput="../TestResults/" /p:MergeWith="../TestResults/coverage.json" /p:CoverletOutputFormat="opencover"
 
-# Wait for
-#    Starting test execution, please wait...
-#    A total of 1 test files matched the specified pattern.
+rem Wait for
+rem    Starting test execution, please wait...
+rem    A total of 1 test files matched the specified pattern.
 
-# t2 - LodeRunner
+rem run LodeRunner
 dotnet run -- -s http://localhost:4120 -f baseline.json
 
-# wait for t1 to finish
-# press ctl-c in t2 to stop data service
+rem wait for app test to finish
+rem press ctl-c stop data service
 
-# t1
-
-# generate the coverage report
-cd TestResults
+rem generate the coverage report
+cd ..\TestResults
 reportgenerator -reports:coverage.opencover.xml -targetdir:rpt -reporttypes:Html
 
-# open coverage report in your browser
+rem open coverage report in your browser
 cd rpt
 index.html
 
