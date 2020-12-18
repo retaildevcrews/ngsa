@@ -36,11 +36,11 @@ kumactl version
 
 ```
 
-## Architecture diagram
-
-TODO: high level diagram of final setup
-
 ## Setup
+
+High level diagram
+
+![architecture diagram](./diagram.png)
 
 ### Create clusters
 
