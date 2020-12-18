@@ -28,7 +28,7 @@ namespace Tests
             if (!string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
                 Console.WriteLine("Starting web server");
-                App.Main(Array.Empty<string>()).Wait(40000);
+                App.Main(Array.Empty<string>()).Wait(30000);
                 Console.WriteLine("Web server stopped");
             }
         }
