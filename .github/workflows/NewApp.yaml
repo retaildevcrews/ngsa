@@ -104,6 +104,11 @@ jobs:
       run: |
         docker build . -t app-test -f NewApp/ngsa-csharp/Ngsa.App/Dockerfile --target test
 
+    - name: Test LoadRunner
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        dotnet test NewApp/ngsa-csharp/Ngsa.LodeRunner.Tests/Ngsa.LodeRunner.Tests.csproj
+
     - name: Docker Build LoadRunner
       if: ${{ env.BUILD == 'true' }}
       run: |
