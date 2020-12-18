@@ -16,45 +16,34 @@ run-coverage.cmd
 
 Run manual coverage report
 
-```cmd
+```bash
 
-rem you can ignore the global tool install error if already installed
+# you can ignore the global tool install error if already installed
 
 set RUN_TEST_COVERAGE=true
 dotnet tool install -g dotnet-reportgenerator-globaltool
+dotnet clean
 dotnet build
 cd Ngsa.LodeRunner
 
-rem start the data service in test mode
-start dotnet test ..\Ngsa.DataService.Tests\Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=..\TestResults\
+# start app in test mode
+start dotnet test ..\Ngsa.App.Tests\Ngsa.App.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=..\TestResults\ /p:MergeWith=..\TestResults\coverage.json
 
-rem Wait for
-rem    Starting test execution, please wait...
-rem    A total of 1 test files matched the specified pattern.
+# Wait for
+#    Starting test execution, please wait...
 
-rem run LodeRunner
-dotnet run -- -s http://localhost:4122 -f dataservice.json
+# start data service in test mode
+start dotnet test ..\Ngsa.DataService.Tests\Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=..\TestResults\  /p:MergeWith=../TestResults/coverage.json /p:CoverletOutputFormat=opencover
 
-rem wait for data service test to finish (40 seconds or so)
+# Wait for
+#    Starting test execution, please wait...
 
-rem start the data service
-start dotnet run --project ..\Ngsa.Dataservice\Ngsa.DataService.csproj
-
-rem run the app in test mode
-rem   merge the results and create the coverage file
-start dotnet test ..\Ngsa.App.Tests\Ngsa.App.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:MergeWith=../TestResults/coverage.json /p:CoverletOutputFormat=opencover
-
-rem Wait for
-rem    Starting test execution, please wait...
-rem    A total of 1 test files matched the specified pattern.
-
-rem run LodeRunner
+# run LodeRunner
 dotnet run -- -s http://localhost:4120 -f baseline.json
 
-rem wait for app test to finish
-rem press ctl-c stop data service
+# wait for services to finish (30 seconds or so)
 
-rem generate the coverage report
+# generate the coverage report
 cd ..\TestResults
 reportgenerator -reports:coverage.opencover.xml -targetdir:rpt -reporttypes:Html
 rpt\index.html
