@@ -1,13 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.Linq;
 using System.Threading.Tasks;
+using Imdb.Model;
 using Ngsa.DataService;
 using Ngsa.DataService.DataAccessLayer;
 using Ngsa.Middleware;
-using Imdb.Model;
 using Xunit;
-using System.Collections.Generic;
 
 namespace Tests
 {
@@ -61,7 +61,7 @@ namespace Tests
             Actor a = await dal.GetActorAsync("nm0000031").ConfigureAwait(false);
             Assert.Equal("nm0000031", a.ActorId);
 
-            var movies = await dal.GetMoviesAsync(new MovieQueryParameters { Genre = "Action" }).ConfigureAwait(false);
+            IEnumerable<Movie> movies = await dal.GetMoviesAsync(new MovieQueryParameters { Genre = "Action" }).ConfigureAwait(false);
             Assert.Equal(100, movies.ToList().Count);
 
             movies = await dal.GetMoviesAsync(new MovieQueryParameters { Genre = "Action" }).ConfigureAwait(false);
