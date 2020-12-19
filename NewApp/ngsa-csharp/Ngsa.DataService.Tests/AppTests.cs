@@ -28,7 +28,45 @@ namespace Tests
             if (!string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
                 Console.WriteLine("Starting web server");
-                App.Main(Array.Empty<string>()).Wait(30000);
+                Task t = App.Main(null);
+
+                await Task.Delay(30000);
+
+                // test Cosmos DAL
+                if (App.CosmosDal is CosmosDal d)
+                {
+                    Assert.Equal(21, (await d.GetGenresAsync()).ToList().Count);
+
+                    try
+                    {
+                        await d.GetActorsAsync(null);
+                    }
+                    catch (ArgumentNullException)
+                    {
+                    }
+
+                    try
+                    {
+                        await d.GetActorAsync(null);
+                    }
+                    catch (ArgumentNullException)
+                    {
+                    }
+
+                    try
+                    {
+                        await d.Reconnect(null, string.Empty, string.Empty, string.Empty, true);
+                    }
+                    catch (ArgumentNullException)
+                    {
+                    }
+
+                    d.Dispose();
+                }
+
+                // end the app
+                t.Wait(10);
+
                 Console.WriteLine("Web server stopped");
             }
         }
@@ -48,6 +86,8 @@ namespace Tests
 
             Assert.Equal(1, root.Parse("--foo").Errors.Count);
             Assert.Equal(2, root.Parse("-f bar").Errors.Count);
+
+            Assert.Equal(1, root.Parse("--in-memory --no-cache --perf-cache 0 --cache-duration 0 --secrets-volume notfound -l Error").Errors.Count);
         }
     }
 }
