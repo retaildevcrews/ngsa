@@ -22,7 +22,7 @@ namespace Tests
                 Console.WriteLine("Starting web server");
                 Task t = App.Main(null);
 
-                await Task.Delay(30000);
+                await Task.Delay(45000);
 
                 // test Cosmos DAL
                 if (App.CosmosDal is CosmosDal d)

@@ -18,7 +18,7 @@ namespace Tests
                 Task t = App.Main(null);
 
                 // let the service run for 30 seconds
-                await Task.Delay(30000);
+                await Task.Delay(40000);
 
                 // stop the service
                 t.Wait(10);
