@@ -12,12 +12,12 @@ timeout /T 10 /nobreak
 start dotnet test ..\Ngsa.DataService.Tests\Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=..\TestResults\  /p:MergeWith=../TestResults/coverage.json
 timeout /T 15 /nobreak
 
-dotnet run -- -s http://localhost:4120 -f baseline.json
+dotnet test ..\Ngsa.LodeRunner.Tests\Ngsa.LodeRunner.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=..\TestResults\  /p:MergeWith=../TestResults/coverage.json
 timeout /T 25 /nobreak
 
 set RUN_TEST_COVERAGE=
+dotnet test ..\Ngsa.App.Tests\Ngsa.App.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=..\TestResults\  /p:MergeWith=../TestResults/coverage.json
 dotnet test ..\Ngsa.DataService.Tests\Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=..\TestResults\  /p:MergeWith=../TestResults/coverage.json
-
 dotnet test ..\Ngsa.LodeRunner.Tests\Ngsa.LodeRunner.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=..\TestResults\  /p:MergeWith=../TestResults/coverage.json /p:CoverletOutputFormat=opencover
 
 cd ..\TestResults
