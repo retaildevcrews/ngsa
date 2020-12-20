@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,7 +19,7 @@ namespace Ngsa.DataService.Controllers
         private readonly IDAL dal;
 
         /// <summary>
-        /// Constructor
+        /// Initializes a new instance of the <see cref="GenresController"/> class.
         /// </summary>
         /// <param name="logger">log instance</param>
         /// <param name="dal">data access layer instance</param>
@@ -36,6 +37,12 @@ namespace Ngsa.DataService.Controllers
         [HttpGet]
         public async Task<IActionResult> GetGenresAsync()
         {
+            string method = nameof(GetGenresAsync);
+
+            // TODO - remove after testing
+            logger.LogWarning("TestWarning {method}", method);
+            logger.LogError(1, new ArgumentException("Argument Exception"), "TestError {method}", method);
+
             // get list of genres as list of string
             return await ResultHandler.Handle(dal.GetGenresAsync(), nameof(GetGenresAsync), Constants.GenresControllerException, logger).ConfigureAwait(false);
         }

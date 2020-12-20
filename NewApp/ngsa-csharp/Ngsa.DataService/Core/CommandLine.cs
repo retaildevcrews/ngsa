@@ -137,7 +137,7 @@ namespace Ngsa.DataService
                 Task w = host.RunAsync();
 
                 // start request count timer
-                Ngsa.Middleware.Logger.StartCounterTime(5000, 1000);
+                Ngsa.Middleware.RequestLogger.StartCounterTime(5000, 1000);
 
                 // this doesn't return except on ctl-c
                 await w.ConfigureAwait(false);

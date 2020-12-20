@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Ngsa.DataService.DataAccessLayer;
+using Ngsa.Middleware;
 
 namespace Ngsa.DataService
 {
@@ -46,7 +47,7 @@ namespace Ngsa.DataService
         public static string Zone { get; set; } = string.Empty;
         public static string PodType { get; set; }
 
-        public static bool UseCache => Cache || Ngsa.Middleware.Logger.RequestsPerSecond > Constants.MaxReqSecBeforeCache;
+        public static bool UseCache => Cache || Ngsa.Middleware.RequestLogger.RequestsPerSecond > Constants.MaxReqSecBeforeCache;
 
         /// <summary>
         /// Gets or sets LogLevel
@@ -198,8 +199,10 @@ namespace Ngsa.DataService
             // configure logger based on command line
             builder.ConfigureLogging(logger =>
             {
+                LogLevel logLevel = AppLogLevel <= LogLevel.Information ? AppLogLevel : LogLevel.Information;
+
                 logger.ClearProviders();
-                logger.AddConsole();
+                logger.AddNgsaLogger(config => { config.LogLevel = logLevel; });
 
                 // if you specify the --log-level option, it will override the appsettings.json options
                 // remove any or all of the code below that you don't want to override
@@ -208,7 +211,7 @@ namespace Ngsa.DataService
                     logger.AddFilter("Microsoft", AppLogLevel)
                     .AddFilter("System", AppLogLevel)
                     .AddFilter("Default", AppLogLevel)
-                    .AddFilter("Ngsa.DataService", AppLogLevel);
+                    .AddFilter("Ngsa.DataService", logLevel);
                 }
             });
 
