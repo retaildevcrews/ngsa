@@ -56,7 +56,7 @@ namespace Ngsa.DataService
             // this should be first as it "wraps" all requests
             if (App.AppLogLevel != LogLevel.None)
             {
-                app.UseLogger(new LoggerOptions
+                app.UseRequestLogger(new RequestLoggerOptions
                 {
                     Log2xx = App.AppLogLevel <= LogLevel.Information,
                     Log3xx = App.AppLogLevel <= LogLevel.Information,

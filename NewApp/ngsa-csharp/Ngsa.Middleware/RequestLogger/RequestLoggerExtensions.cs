@@ -11,17 +11,17 @@ namespace Ngsa.Middleware
     ///
     /// Note: Logger should be one of the first things registered in DI
     /// </summary>
-    public static class LoggerExtension
+    public static class RequestLoggerExtensions
     {
-        public static IApplicationBuilder UseLogger(this IApplicationBuilder builder, LoggerOptions options = null)
+        public static IApplicationBuilder UseRequestLogger(this IApplicationBuilder builder, RequestLoggerOptions options = null)
         {
             // extension - use app.UseMyLogger();
             if (options == null)
             {
-                options = new LoggerOptions();
+                options = new RequestLoggerOptions();
             }
 
-            return builder.UseMiddleware<RequestLogger>(Options.Create<LoggerOptions>(options));
+            return builder.UseMiddleware<RequestLogger>(Options.Create<RequestLoggerOptions>(options));
         }
     }
 }

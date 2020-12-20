@@ -24,14 +24,14 @@ namespace Ngsa.Middleware
 
         // next action to Invoke
         private readonly RequestDelegate next;
-        private readonly LoggerOptions options;
+        private readonly RequestLoggerOptions options;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestLogger"/> class.
         /// </summary>
         /// <param name="next">RequestDelegate</param>
         /// <param name="options">LoggerOptions</param>
-        public RequestLogger(RequestDelegate next, IOptions<LoggerOptions> options)
+        public RequestLogger(RequestDelegate next, IOptions<RequestLoggerOptions> options)
         {
             // save for later
             this.next = next;
@@ -40,7 +40,7 @@ namespace Ngsa.Middleware
             if (this.options == null)
             {
                 // use default
-                this.options = new LoggerOptions();
+                this.options = new RequestLoggerOptions();
             }
         }
 
