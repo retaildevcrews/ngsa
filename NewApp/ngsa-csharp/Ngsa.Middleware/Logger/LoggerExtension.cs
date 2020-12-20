@@ -21,7 +21,7 @@ namespace Ngsa.Middleware
                 options = new LoggerOptions();
             }
 
-            return builder.UseMiddleware<Logger>(Options.Create<LoggerOptions>(options));
+            return builder.UseMiddleware<RequestLogger>(Options.Create<LoggerOptions>(options));
         }
     }
 }

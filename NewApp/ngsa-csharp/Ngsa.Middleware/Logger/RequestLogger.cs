@@ -15,7 +15,7 @@ namespace Ngsa.Middleware
     /// <summary>
     /// Simple aspnet core middleware that logs requests to the console
     /// </summary>
-    public class Logger
+    public class RequestLogger
     {
         private const string IpHeader = "X-Client-IP";
 
@@ -27,11 +27,11 @@ namespace Ngsa.Middleware
         private readonly LoggerOptions options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Logger"/> class.
+        /// Initializes a new instance of the <see cref="RequestLogger"/> class.
         /// </summary>
         /// <param name="next">RequestDelegate</param>
         /// <param name="options">LoggerOptions</param>
-        public Logger(RequestDelegate next, IOptions<LoggerOptions> options)
+        public RequestLogger(RequestDelegate next, IOptions<LoggerOptions> options)
         {
             // save for later
             this.next = next;
