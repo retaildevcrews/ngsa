@@ -80,7 +80,7 @@ jobs:
         echo "COSMOS_SET=false" >> $GITHUB_ENV
         echo "BUILD=false" >> $GITHUB_ENV
 
-    - name: Dreaft PR
+    - name: Draft PR
       if: ${{ github.event_name == 'pull_request'  }}
       run: |
 
@@ -91,9 +91,7 @@ jobs:
         echo "COSMOS_SET=false" >> $GITHUB_ENV
         echo "BUILD=false" >> $GITHUB_ENV
 
-        echo ${{ github.event }}
-        
-        echo ${{ github.draft }}
+        echo ${{ github }}
 
     - name: Docker Login
       if: ${{ env.DOCKER_SET == 'true' }}
