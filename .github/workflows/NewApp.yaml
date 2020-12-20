@@ -91,6 +91,8 @@ jobs:
         echo "COSMOS_SET=false" >> $GITHUB_ENV
         echo "BUILD=false" >> $GITHUB_ENV
 
+        echo ${{ github.event.pull_request.draft }}
+
         echo ${{ github }}
 
     - name: Docker Login
