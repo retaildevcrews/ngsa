@@ -85,7 +85,7 @@ jobs:
       run: |
 
         # Do not build on Draft PR
-        
+
         # Skip remaining steps
         echo "DOCKER_SET=false" >> $GITHUB_ENV
         echo "COSMOS_SET=false" >> $GITHUB_ENV
