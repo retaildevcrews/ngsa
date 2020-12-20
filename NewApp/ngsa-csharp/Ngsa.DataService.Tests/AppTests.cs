@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.CommandLine;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -37,7 +36,7 @@ namespace Tests
                     dal.GetMovieIds(null);
                     await dal.Reconnect(null, string.Empty, string.Empty, string.Empty, false);
 
-                    var actors = dal.GetActors(null);
+                    List<Actor> actors = dal.GetActors(null);
                     Assert.Equal(100, actors.Count);
 
                     actors = dal.GetActors(new ActorQueryParameters { Q = "Nicole" });
