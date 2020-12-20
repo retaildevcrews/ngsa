@@ -1,5 +1,10 @@
 @echo off
 
+IF NOT EXIST Ngsa.DataService\secrets\CosmosKey (
+  echo Error: CosmosKey must be present
+  exit /b
+)
+
 rd TestResults /s/q
 
 set RUN_TEST_COVERAGE=true
