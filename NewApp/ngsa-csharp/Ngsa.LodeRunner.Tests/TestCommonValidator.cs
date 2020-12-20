@@ -228,7 +228,7 @@ namespace CSE.WebValidate.Tests.Unit
 
                 cfg.Files = new List<string> { "baseline.json" };
                 _ = new WebV(cfg);
-                
+
             }
         }
 
