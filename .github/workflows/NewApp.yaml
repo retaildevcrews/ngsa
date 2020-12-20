@@ -93,7 +93,7 @@ jobs:
 
         echo ${{ github.event }}
         
-        echo ${{ github.event.draft }}
+        echo ${{ github.draft }}
 
     - name: Docker Login
       if: ${{ env.DOCKER_SET == 'true' }}
