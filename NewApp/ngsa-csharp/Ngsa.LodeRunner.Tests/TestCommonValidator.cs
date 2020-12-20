@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Parsing;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Ngsa.LodeRunner;
 using Ngsa.LodeRunner.Model;
@@ -110,16 +113,122 @@ namespace CSE.WebValidate.Tests.Unit
             {
                 Request r = new Request();
 
-                //Assert.False(ResponseValidator.Validate(r, null, string.Empty).Failed);
+                Assert.Empty(ResponseValidator.Validate(r, null, string.Empty).ValidationErrors);
 
                 r.Validation = new Validation();
 
-                Assert.True(ResponseValidator.Validate(r, null, "this is a test").Failed);
+                Assert.NotEmpty(ResponseValidator.Validate(r, null, "this is a test").ValidationErrors);
 
-                //using System.Net.Http.HttpResponseMessage resp = new System.Net.Http.HttpResponseMessage(System.Net.HttpStatusCode.NotFound);
-                //Assert.True(ResponseValidator.Validate(r, resp, "this is a test").Failed);
+                using HttpResponseMessage resp = new System.Net.Http.HttpResponseMessage(HttpStatusCode.NotFound);
+                Assert.NotEmpty(ResponseValidator.Validate(r, resp, "this is a test").ValidationErrors);
 
-                //Assert.True(ResponseValidator.ValidateStatusCode(400, 200).Failed);
+                resp.StatusCode = HttpStatusCode.Moved;
+                r.Validation = new Validation { StatusCode = 301 };
+                Assert.Empty(ResponseValidator.Validate(r, resp, "this is a test").ValidationErrors);
+
+                resp.StatusCode = HttpStatusCode.OK;
+                r.Validation.StatusCode = 200;
+                resp.Content = new StringContent("this is a test");
+                Assert.NotEmpty(ResponseValidator.Validate(r, resp, "this is a test").ValidationErrors);
+
+                r.Validation.ContentType = "text/plain";
+                Assert.Empty(ResponseValidator.Validate(r, resp, null).ValidationErrors);
+            }
+        }
+
+        [Fact]
+        public void ParameterValidatorTest()
+        {
+            if (string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
+            {
+                Assert.NotEmpty(ParameterValidator.Validate((Request)null).ValidationErrors);
+
+                Assert.Empty(ParameterValidator.ValidateNotContains(null).ValidationErrors);
+                Assert.Empty(ParameterValidator.ValidateNotContains(new List<string>()).ValidationErrors);
+                Assert.NotEmpty(ParameterValidator.ValidateNotContains(new List<string> { "test", string.Empty }).ValidationErrors);
+                Assert.Empty(ParameterValidator.ValidateNotContains(new List<string> { "test" }).ValidationErrors);
+
+                Assert.Empty(ParameterValidator.ValidateContains(null).ValidationErrors);
+                Assert.Empty(ParameterValidator.ValidateContains(new List<string>()).ValidationErrors);
+                Assert.NotEmpty(ParameterValidator.ValidateContains(new List<string> { "test", string.Empty }).ValidationErrors);
+                Assert.Empty(ParameterValidator.ValidateContains(new List<string> { "test" }).ValidationErrors);
+            }
+        }
+
+        [Fact]
+        public void ResponseValidatorTest()
+        {
+            if (string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
+            {
+                Assert.NotEmpty(ResponseValidator.ValidateStatusCode(400, 200).ValidationErrors);
+
+                Assert.Empty(ResponseValidator.ValidateNotContains(null, null).ValidationErrors);
+                Assert.Empty(ResponseValidator.ValidateNotContains(new List<string>(), null).ValidationErrors);
+                Assert.Empty(ResponseValidator.ValidateNotContains(new List<string> { "test" }, null).ValidationErrors);
+                Assert.Empty(ResponseValidator.ValidateNotContains(new List<string> { "good" }, "bad").ValidationErrors);
+                Assert.NotEmpty(ResponseValidator.ValidateNotContains(new List<string> { "good" }, "good").ValidationErrors);
+
+                Assert.Empty(ResponseValidator.ValidateContains(null, null).ValidationErrors);
+                Assert.Empty(ResponseValidator.ValidateContains(new List<string>(), null).ValidationErrors);
+                Assert.NotEmpty(ResponseValidator.ValidateContains(new List<string> { "test" }, null).ValidationErrors);
+                Assert.NotEmpty(ResponseValidator.ValidateContains(new List<string> { "good" }, "bad").ValidationErrors);
+                Assert.Empty(ResponseValidator.ValidateContains(new List<string> { "good" }, "good").ValidationErrors);
+
+                Assert.Empty(ResponseValidator.Validate(new Validation(), null).ValidationErrors);
+                Assert.Empty(ResponseValidator.Validate(new List<JsonItem>(), null).ValidationErrors);
+                Assert.NotEmpty(ResponseValidator.Validate(new List<JsonItem> { new JsonItem() }, null).ValidationErrors);
+
+                Assert.NotEmpty(ResponseValidator.Validate(new JsonArray(), null).ValidationErrors);
+                Assert.Empty(ResponseValidator.ValidateContentType(null, "bad").ValidationErrors);
+                Assert.NotEmpty(ResponseValidator.ValidateContentType("good", "bad").ValidationErrors);
+                Assert.Empty(ResponseValidator.ValidateContentType("good", "good").ValidationErrors);
+
+                Assert.Empty(ResponseValidator.ValidateLength(1, null).ValidationErrors);
+                Assert.NotEmpty(ResponseValidator.ValidateLength(1, new Validation { MinLength = 2, MaxLength = 10 }).ValidationErrors);
+                Assert.NotEmpty(ResponseValidator.ValidateLength(11, new Validation { MinLength = 2, MaxLength = 10 }).ValidationErrors);
+                Assert.Empty(ResponseValidator.ValidateLength(5, new Validation { MinLength = 2, MaxLength = 10 }).ValidationErrors);
+                Assert.NotEmpty(ResponseValidator.ValidateLength(5, new Validation { Length = 10 }).ValidationErrors);
+                Assert.Empty(ResponseValidator.ValidateLength(10, new Validation { Length = 10 }).ValidationErrors);
+
+                Assert.Empty(ResponseValidator.ValidateExactMatch(null, null).ValidationErrors);
+                Assert.NotEmpty(ResponseValidator.ValidateExactMatch("good", null).ValidationErrors);
+                Assert.NotEmpty(ResponseValidator.ValidateExactMatch("good", "bad").ValidationErrors);
+                Assert.Empty(ResponseValidator.ValidateExactMatch("good", "good").ValidationErrors);
+
+                // TODO validate json array length
+            }
+        }
+
+        [Fact]
+        public void ConfigTest()
+        {
+            if (string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
+            {
+                Config cfg = null;
+
+                try
+                { _ = new WebV(cfg); }
+                catch (ArgumentNullException) { }
+                cfg = new Config();
+                try
+                { _ = new WebV(cfg); }
+                catch (ArgumentNullException) { }
+                cfg.Files = new List<string>();
+                try
+                { _ = new WebV(cfg); }
+                catch (ArgumentNullException) { }
+                cfg.Server = new List<string>();
+                try
+                { _ = new WebV(cfg); }
+                catch (ArgumentNullException) { }
+                cfg.Server = new List<string> { "localhost", "bluebell" };
+                try
+                { _ = new WebV(cfg); }
+                catch (ArgumentException) { }
+
+                cfg.Files = new List<string> { "baseline.json" };
+                _ = new WebV(cfg);
+                
             }
         }
 

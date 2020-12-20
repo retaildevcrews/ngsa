@@ -19,12 +19,30 @@ namespace CSE.WebValidate.Tests.Unit
                 string[] args = new string[]
                 {
                     "-s",
-                    "http://localhost:4120",
+                    "localhost:4120",
                     "-f",
                     "baseline.json",
+                    "-l",
+                    "1",
                 };
 
                 Assert.Equal(0, await App.Main(args).ConfigureAwait(false));
+
+                args = new string[]
+                {
+                    "-s",
+                    "localhost:4120",
+                    "-f",
+                    "baseline.json",
+                    "-l",
+                    "1",
+                    "-r",
+                    "--duration",
+                    "5",
+                };
+
+                Assert.Equal(0, await App.Main(args).ConfigureAwait(false));
+
             }
         }
     }
