@@ -91,6 +91,8 @@ namespace Ngsa.DataService
         {
             try
             {
+                Task art = DisplayAsciiArt();
+
                 // assign command line values
                 AppLogLevel = logLevel;
                 CacheDuration = cacheDuration;
@@ -102,6 +104,8 @@ namespace Ngsa.DataService
 
                 // load the cache
                 CacheDal = new DataAccessLayer.InMemoryDal();
+
+                await art;
 
                 // create the cosomos data access layer
                 if (App.Secrets.UseInMemoryDb)
