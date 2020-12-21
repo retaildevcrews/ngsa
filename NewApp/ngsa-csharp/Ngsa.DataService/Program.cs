@@ -88,26 +88,19 @@ namespace Ngsa.DataService
             return await root.InvokeAsync(cmd).ConfigureAwait(false);
         }
 
-        internal class Location
-        {
-            public int Row { get; set; }
-            public int Col { get; set; }
-            public char Value { get; set; }
-            public ConsoleColor Color { get; set; } = ConsoleColor.Red;
-        }
-
         /// <summary>
         /// Display the ASCII art file if it exists
         /// </summary>
         private static async Task DisplayAsciiArt()
         {
+            // todo - move to middleware
+
             const string file = "Core/ascii-art.txt";
 
             if (File.Exists(file))
             {
                 string txt = File.ReadAllText(file);
                 string[] lines = File.ReadAllLines(file);
-                string[] bartr = File.ReadAllLines("Core/bartr.txt");
 
                 int top = Console.CursorTop;
                 int row = top + Console.WindowHeight - lines.Length - 5;
@@ -122,9 +115,8 @@ namespace Ngsa.DataService
                 int key = 0;
                 Random rnd = new Random(DateTime.Now.Millisecond);
 
-                SortedList<int, Location> lrandom = new SortedList<int, Location>();
-                List<Location> list = new List<Location>();
-                SortedList<int, Location> lbartr = new SortedList<int, Location>();
+                SortedList<int, ConsoleCharacter> lrandom = new SortedList<int, ConsoleCharacter>();
+                List<ConsoleCharacter> list = new List<ConsoleCharacter>();
 
                 // create the random list
                 for (int r = 0; r < lines.Length; r++)
@@ -140,42 +132,27 @@ namespace Ngsa.DataService
                                 key = rnd.Next(1, int.MaxValue);
                             }
 
-                            Location l = new Location
+                            ConsoleCharacter l = new ConsoleCharacter
                             {
+                                Color = ConsoleColor.DarkMagenta,
                                 Row = top + r,
                                 Col = c,
                                 Value = line[c],
                             };
 
+                            // add to random list and in-order list
                             list.Add(l);
                             lrandom.Add(key, l);
                         }
                     }
                 }
 
-                // create the random list
-                for (int r = 0; r < bartr.Length; r++)
+                // show the art - random dissolve
+                // todo - make a method
+                foreach (ConsoleCharacter l in lrandom.Values)
                 {
-                    string line = bartr[r];
-
-                    for (int c = 0; c < line.Length; c++)
-                    {
-                        while (key < 1 || lbartr.ContainsKey(key))
-                        {
-                            key = rnd.Next(1, int.MaxValue);
-                        }
-
-                        lbartr.Add(key, new Location { Value = line[c], Row = r + top, Col = c });
-                    }
-                }
-
-                Console.ForegroundColor = ConsoleColor.DarkMagenta;
-
-                // show the art
-                foreach (Location l in lrandom.Values)
-                {
-                    Console.CursorLeft = l.Col;
-                    Console.CursorTop = l.Row;
+                    Console.SetCursorPosition(l.Col, l.Row);
+                    Console.ForegroundColor = l.Color;
                     Console.Write(l.Value);
                     await Task.Delay(10);
                 }
@@ -184,6 +161,8 @@ namespace Ngsa.DataService
                 Console.CursorVisible = true;
                 Console.ResetColor();
                 return;
+
+                // todo - move animations into methods
 
                 row = top + Console.WindowHeight - lines.Length - 2;
 
@@ -201,7 +180,7 @@ namespace Ngsa.DataService
                     await Task.Delay(100);
                 }
 
-                // clear the art
+                // clear the art from bottom right
                 for (int r = lines.Length - 1 + top; r >= top; r--)
                 {
                     string line = lines[r - top];
@@ -220,9 +199,8 @@ namespace Ngsa.DataService
 
                 Console.SetCursorPosition(0, top);
 
+                // show the logo from top left
                 Console.ForegroundColor = ConsoleColor.Green;
-
-                // show the logo
                 foreach (char c in txt)
                 {
                     Console.Write(c);
@@ -233,7 +211,7 @@ namespace Ngsa.DataService
                     }
                 }
 
-                // change art color
+                // change art color from bottom right
                 Console.ForegroundColor = ConsoleColor.Blue;
                 for (int r = lines.Length - 1 + top; r >= top; r--)
                 {
@@ -251,10 +229,9 @@ namespace Ngsa.DataService
                     }
                 }
 
+                // change art color from top left
                 Console.SetCursorPosition(0, top);
                 Console.ForegroundColor = ConsoleColor.Cyan;
-
-                // change art color
                 foreach (char c in txt)
                 {
                     Console.Write(c);
@@ -265,7 +242,7 @@ namespace Ngsa.DataService
                     }
                 }
 
-                // change art to multicolor
+                // change art to two color
                 int end = list.Count - 1;
                 int last = end;
 
@@ -283,31 +260,16 @@ namespace Ngsa.DataService
                     await Task.Delay(30);
                 }
 
-                //await Task.Delay(2000);
-
-                //Console.ForegroundColor = ConsoleColor.DarkMagenta;
-
-                //// show bartr
-                //foreach (Location l in lbartr.Values)
-                //{
-                //    Console.SetCursorPosition(l.Col, l.Row);
-                //    Console.Write(l.Value);
-
-                //    if (!char.IsWhiteSpace(l.Value))
-                //    {
-                //        await Task.Delay(10);
-                //    }
-                //}
-
+                // reset console
                 Console.SetCursorPosition(0, top + lines.Length + 2);
                 Console.CursorVisible = true;
                 Console.ResetColor();
             }
         }
 
+        // TODO - delete this
         private static async Task Santa()
         {
-            // const string file = "Core/ascii-art.txt";
             const string file = "Core/happy.txt";
 
             if (File.Exists(file))
@@ -323,13 +285,11 @@ namespace Ngsa.DataService
                     Console.WriteLine();
                 }
 
-                await Task.Delay(100);
-
                 int key = 0;
                 Random rnd = new Random(DateTime.Now.Millisecond);
 
-                SortedList<int, Location> lrandom = new SortedList<int, Location>();
-                List<Location> list = new List<Location>();
+                SortedList<int, ConsoleCharacter> lrandom = new SortedList<int, ConsoleCharacter>();
+                List<ConsoleCharacter> list = new List<ConsoleCharacter>();
 
                 // create the random list
                 for (int r = 0; r < lines.Length; r++)
@@ -345,7 +305,7 @@ namespace Ngsa.DataService
                                 key = rnd.Next(1, int.MaxValue);
                             }
 
-                            Location l = new Location
+                            ConsoleCharacter l = new ConsoleCharacter
                             {
                                 Row = top + r + 2,
                                 Col = c + 24,
@@ -369,7 +329,7 @@ namespace Ngsa.DataService
                 }
 
                 // show the art
-                foreach (Location l in lrandom.Values)
+                foreach (ConsoleCharacter l in lrandom.Values)
                 {
                     Console.SetCursorPosition(l.Col, l.Row);
                     Console.ForegroundColor = l.Color;
@@ -500,6 +460,14 @@ namespace Ngsa.DataService
 
             // build the host
             return builder.Build();
+        }
+
+        internal class ConsoleCharacter
+        {
+            public int Row { get; set; }
+            public int Col { get; set; }
+            public char Value { get; set; }
+            public ConsoleColor Color { get; set; } = ConsoleColor.DarkMagenta;
         }
     }
 }
