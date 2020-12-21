@@ -139,6 +139,8 @@ kubectl config use-context remote1
 kumactl install control-plane --mode=remote --zone=remote1 --ingress-enabled --kds-global-address $GLOBAL_ADDRESS | kubectl apply --context remote1 -f -
 
 # Configure Kuma DNS.
+# This enables the cluster to use Kuma to resolve ".mesh" service names.
+# Kuma services get a name with the format [SERVICE-NAME]_[SERVICE-NAMESPACE]_svc_[PORT].mesh
 kumactl install dns | kubectl apply --context remote1 -f -
 
 ```
@@ -164,11 +166,17 @@ Deploy different versions of the NGSA app in the two Kuma zones. The app version
 
 ```bash
 
+# Create namespace in remote1.
+kubectl apply -f namespace.yaml --context remote1
+
 # Deploy one version to remote1.
 NGSA_IMAGE_TAG="beta-0.0.8-1215-2142-117" envsubst < ngsa.yaml | kubectl apply --context remote1 -f -
 
 # Make sure pods are running.
 kubectl get pods --namespace kuma-spike --context remote1
+
+# Create namespace in remote2.
+kubectl apply -f namespace.yaml --context remote2
 
 # Deploy a different version to remote2.
 NGSA_IMAGE_TAG="beta-0.0.8-1215-1946-115" envsubst < ngsa.yaml | kubectl apply --context remote2 -f -

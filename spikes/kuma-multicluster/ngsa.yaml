@@ -1,11 +1,4 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  name: kuma-spike
-  annotations:
-    kuma.io/sidecar-injection: enabled
----
-apiVersion: v1
 kind: Pod
 metadata:
   name: ngsa-memory
