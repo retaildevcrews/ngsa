@@ -100,6 +100,8 @@ jobs:
     - name: Test App
       if: ${{ env.BUILD == 'true' }}
       run: |
+        cd NewApp/ngsa-csharp
+        
         dotnet test Ngsa.App.Tests/Ngsa.App.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json
 
     - name: Test Data Service
