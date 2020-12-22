@@ -96,7 +96,7 @@ jobs:
         echo "COSMOS_SET=false" >> $GITHUB_ENV
         echo "BUILD=false" >> $GITHUB_ENV
 
-    - name: Build App
+    - name: Build All
       if: ${{ env.BUILD == 'true' }}
       run: |
         cd NewApp/ngsa-csharp
