@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ngsa.LodeRunner", "Ngsa.Lod
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ngsa.App.Tests", "Ngsa.App.Tests\Ngsa.App.Tests.csproj", "{041AE67C-BA1D-455A-BF43-93D269EBE5E1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ngsa.DataService.Tests", "Ngsa.Dataservice.Tests\Ngsa.DataService.Tests.csproj", "{49A2A06B-E85C-4A70-B2B5-96C10ECFECCB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ngsa.DataService.Tests", "Ngsa.DataService.Tests\Ngsa.DataService.Tests.csproj", "{49A2A06B-E85C-4A70-B2B5-96C10ECFECCB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ngsa.LodeRunner.Tests", "Ngsa.LodeRunner.Tests\Ngsa.LodeRunner.Tests.csproj", "{63C7A6B5-05F0-4A68-94D1-406CA2D2855B}"
 EndProject
