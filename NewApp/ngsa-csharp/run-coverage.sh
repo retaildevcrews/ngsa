@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ ! -f "./Ngsa.DataService/secrets/CosmosKey" ]; then
+  echo "Error: Ngsa.DataService/secrets/CosmosKey does not exist"
+  exit 1
+fi
+
 # install coverage tool
 # ignore already installed error
 dotnet tool install -g dotnet-reportgenerator-globaltool
