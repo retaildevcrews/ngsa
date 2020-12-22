@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# remove existing test results
-rm -rf TestResults
-
 # install coverage tool
 # ignore already installed error
 dotnet tool install -g dotnet-reportgenerator-globaltool
@@ -11,16 +8,19 @@ dotnet tool install -g dotnet-reportgenerator-globaltool
 dotnet clean
 dotnet build
 
+# remove existing test results
+rm -rf TestResults
+
 # set environment variables
 export RUN_TEST_COVERAGE=true
-unset IN_MEMORY=
+export IN_MEMORY=true
 
-# run Cosmos DB tests
+# run in memory tests
 nohup dotnet test Ngsa.DataService.Tests/Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json &
 sleep 5
 
 nohup dotnet test Ngsa.App.Tests/Ngsa.App.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:MergeWith=../TestResults/coverage.json &
-sleep 15
+sleep 10
 
 dotnet test Ngsa.LodeRunner.Tests/Ngsa.LodeRunner.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json
 
@@ -29,10 +29,10 @@ touch tests-complete
 sleep 3
 rm tests-complete
 
-# run in memory tests
-set IN_MEMORY=true
+# run Cosmos tests
+unset IN_MEMORY
 nohup dotnet test Ngsa.DataService.Tests/Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json &
-sleep 10
+sleep 15
 
 cd Ngsa.LodeRunner
 dotnet run -- -s localhost:4122 -f dataservice.json
