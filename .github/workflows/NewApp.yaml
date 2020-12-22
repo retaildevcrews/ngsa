@@ -54,6 +54,10 @@ jobs:
         then
           echo '${{ secrets.CosmosUrl }}' > src/ngsa/app/secrets/CosmosUrl
           echo '${{ secrets.CosmosKey }}' > src/ngsa/app/secrets/CosmosKey
+
+          echo '${{ secrets.CosmosUrl }}' > NewApp/ngsa-csharp/Ngsa.DataService/secrets/CosmosUrl
+          echo '${{ secrets.CosmosKey }}' > NewApp/ngsa-csharp/Ngsa.DataService/secrets/CosmosKey
+
           echo "COSMOS_SET=true" >> $GITHUB_ENV
         fi
 
