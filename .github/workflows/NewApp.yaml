@@ -55,6 +55,7 @@ jobs:
           echo '${{ secrets.CosmosUrl }}' > src/ngsa/app/secrets/CosmosUrl
           echo '${{ secrets.CosmosKey }}' > src/ngsa/app/secrets/CosmosKey
 
+          # TODO - remove after merge
           echo '${{ secrets.CosmosUrl }}' > NewApp/ngsa-csharp/Ngsa.DataService/secrets/CosmosUrl
           echo '${{ secrets.CosmosKey }}' > NewApp/ngsa-csharp/Ngsa.DataService/secrets/CosmosKey
 
