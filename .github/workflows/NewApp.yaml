@@ -91,27 +91,31 @@ jobs:
         echo "COSMOS_SET=false" >> $GITHUB_ENV
         echo "BUILD=false" >> $GITHUB_ENV
 
-    - name: Docker Login
-      if: ${{ env.DOCKER_SET == 'true' }}
+    - name: Build App
+      if: ${{ env.BUILD == 'true' }}
       run: |
-        # login to dockerhub
-        echo "${{ secrets.DOCKER_PAT }}" | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+        cd NewApp/ngsa-csharp
+        
+        dotnet build
 
     - name: Test App
       if: ${{ env.BUILD == 'true' }}
       run: |
         cd NewApp/ngsa-csharp
-        
+
         dotnet test Ngsa.App.Tests/Ngsa.App.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json
 
     - name: Test Data Service
       if: ${{ env.BUILD == 'true' }}
       run: |
+        cd NewApp/ngsa-csharp
+
         dotnet test Ngsa.DataService.Tests/Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json
 
     - name: Test In Memory
       if: ${{ env.BUILD == 'true' }}
       run: |
+        cd NewApp/ngsa-csharp
         export RUN_TEST_COVERAGE=true
         export IN_MEMORY=true
 
@@ -134,6 +138,8 @@ jobs:
     - name: Test Cosmos DB
       if: ${{ env.COSMOS_SET == 'true' }}
       run: |
+        cd NewApp/ngsa-csharp
+
         # set env vars
         export RUN_TEST_COVERAGE=true
         unset IN_MEMORY
@@ -155,6 +161,8 @@ jobs:
     - name: Test LodeRunner
       if: ${{ env.BUILD == 'true' }}
       run: |
+        cd NewApp/ngsa-csharp
+
         # clear env vars
         unset RUN_TEST_COVERAGE
         unset IN_MEMORY
@@ -162,8 +170,14 @@ jobs:
         # this should be last as it summarizes the results
         dotnet test Ngsa.LodeRunner.Tests/Ngsa.LodeRunner.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json /p:CoverletOutputFormat=opencover
 
+    - name: Docker Login
+      if: ${{ env.DOCKER_SET == 'true' }}
+      run: |
+        # login to dockerhub
+        echo "${{ secrets.DOCKER_PAT }}" | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+
     - name: Docker Pull Images
-      if: ${{ env.BUILD == 'true' }}
+      if: ${{ env.DOCKER_SET == 'true' }}
       run: |
         # Pull the latest image if needed
         # This doesn't have to be a separate step, but makes the output easier to read and debug
@@ -171,7 +185,7 @@ jobs:
         docker pull mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine
 
     - name: Docker Build LoadRunner
-      if: ${{ env.BUILD == 'true' }}
+      if: ${{ env.DOCKER_SET == 'true' }}
       run: |
         if [[ "${{ github.ref }}" == "refs/tags/"* ]]
         then
@@ -181,7 +195,7 @@ jobs:
         fi
 
     - name: Docker Build App
-      if: ${{ env.BUILD == 'true' }}
+      if: ${{ env.DOCKER_SET == 'true' }}
       run: |
         # build image
         if [[ "${{ github.ref }}" == "refs/tags/"* ]]
@@ -192,7 +206,7 @@ jobs:
         fi
 
     - name: Docker Build Data Service
-      if: ${{ env.BUILD == 'true' }}
+      if: ${{ env.DOCKER_SET == 'true' }}
       run: |
         # build image
         if [[ "${{ github.ref }}" == "refs/tags/"* ]]
@@ -203,7 +217,7 @@ jobs:
         fi
 
     - name: Get Version
-      if: ${{ env.BUILD == 'true' }}
+      if: ${{ env.DOCKER_SET == 'true' }}
       run: |
         echo DS_VERSION=`docker run --rm ds --version` >> $GITHUB_ENV
         echo APP_VERSION=`docker run --rm app --version` >> $GITHUB_ENV
@@ -244,27 +258,3 @@ jobs:
         docker push $APP_REPO
         docker push $DS_REPO
         docker push $LR_REPO
-
-    - name: Display app coverage results
-      if: ${{ env.BUILD == 'true' }}
-      run: |
-        # display the results
-        docker logs app | tail -n 15
-
-    - name: Display data service coverage results
-      if: ${{ env.BUILD == 'true' }}
-      run: |
-        # display the results
-        docker logs ds | tail -n 15
-
-    - name: Display app results
-      if: ${{ env.BUILD == 'true' }}
-      run: |
-        # display the results
-        docker logs app
-
-    - name: Display data service results
-      if: ${{ env.BUILD == 'true' }}
-      run: |
-        # display the results
-        docker logs ds
