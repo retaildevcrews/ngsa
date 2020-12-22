@@ -124,7 +124,7 @@ jobs:
         export RUN_TEST_COVERAGE=true
         export IN_MEMORY=true
 
-        # start data service
+        # start data service (in memory)
         nohup dotnet test Ngsa.DataService.Tests/Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json &
         sleep 5
 
@@ -149,7 +149,7 @@ jobs:
         export RUN_TEST_COVERAGE=true
         unset IN_MEMORY
 
-        # start data service (in memory)
+        # start data service (Cosmos DB)
         nohup dotnet test Ngsa.DataService.Tests/Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json &
         sleep 15
 
