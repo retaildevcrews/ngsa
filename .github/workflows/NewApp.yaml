@@ -180,7 +180,7 @@ jobs:
     - name: Test Coverage
       if: ${{ env.BUILD == 'true' }}
       run: |
-        tail -n 25 test.out
+        tail -n 25 NewApp/ngsa-csharp/test.out
 
     - name: Docker Login
       if: ${{ env.DOCKER_SET == 'true' }}
