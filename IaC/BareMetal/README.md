@@ -96,7 +96,7 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown -R $(id -u):$(id -g) $HOME/.kube
 
 # add flannel network overlay
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yaml --namespace=kube-system
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml --namespace=kube-system
 
 # optional - add the taint to schedule normal pods on the control plane
 # this let you run a "one node" cluster for `development`
