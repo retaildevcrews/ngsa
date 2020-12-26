@@ -47,13 +47,17 @@ Create your Azure VM per instructions at [Azure Kubernetes Development Cluster](
 ```bash
 
 # AKDC_IP is set during the previous step
-ssh akdc@${AKDC_IP}
+# the -L allows you to forward your port from the dev cluster via SSH tunneling
+ssh -L 4120:127.0.0.1:4120 akdc@${AKDC_IP}
 
 # clone this repository
 git clone https://github.com/retaildevcrews/ngsa
 
 # change to the correct directory
 cd ngsa/IaC/BareMetal/app
+
+# verify kubernetes is running
+kubectl get all --all-namespaces
 
 ```
 

@@ -60,6 +60,16 @@ kubectl logs baseline-memory
 # delete baseline
 kubectl delete -f ../loderunner/baseline-memory.yaml
 
+# optional - test port forwarding
+# setup port forwarding
+kubectl port-forward svc/ngsa-memory 4120:4120
+
+# open your local browser
+http://127.0.0.1:4120/version
+http://127.0.0.1:4120/api/genres
+
+# press ctl-c to stop port forwarding
+
 # delete ngsa-memory
 kubectl delete -f in-memory.yaml
 
