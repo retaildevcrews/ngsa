@@ -58,7 +58,12 @@ ssh akdc@${AKDC_IP}
 # delete if necessary - you can safely ignore the not exists error
 kubectl delete secret ngsa-secrets
 
-# create from Azure
+# if you aren't using Cosmos or Log Analytics
+kubectl create secret generic ngsa-secrets \
+  --from-literal=WorkspaceId=dev \
+  --from-literal=SharedKey=dev
+
+# Add Cosmos and Log Analytics values from Azure
 kubectl create secret generic ngsa-secrets \
   --from-literal=CosmosDatabase=$Imdb_DB \
   --from-literal=CosmosCollection=$Imdb_Col \
@@ -77,10 +82,10 @@ kubectl create secret generic ngsa-secrets \
 
 ```
 
-## Deploy ngsa
+## Deploy the NGSA app
 
 Follow the deployment instructions in [app](app/README.md) to deploy ngsa
 
-## Deploy fluent bit
+## Deploy fluentbit (log forwarding)
 
-Follow the deployment instructions in [fluentbit/dbg](fluentbit/dbg/README.md) to debug ngsa with fluent bit and Azure Log Analytics
+Follow the deployment instructions in [fluentbit](fluentbit/README.md) to debug ngsa with fluent bit and Azure Log Analytics
