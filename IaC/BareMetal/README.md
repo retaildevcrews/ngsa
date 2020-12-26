@@ -51,37 +51,6 @@ ssh akdc@${AKDC_IP}
 
 ```
 
-## Set ngsa secrets
-
-```bash
-
-# delete if necessary - you can safely ignore the not exists error
-kubectl delete secret ngsa-secrets
-
-# if you aren't using Cosmos or Log Analytics
-kubectl create secret generic ngsa-secrets \
-  --from-literal=WorkspaceId=dev \
-  --from-literal=SharedKey=dev
-
-# Add Cosmos and Log Analytics values from Azure
-kubectl create secret generic ngsa-secrets \
-  --from-literal=CosmosDatabase=$Imdb_DB \
-  --from-literal=CosmosCollection=$Imdb_Col \
-  --from-literal=CosmosKey=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryReadonlyMasterKey -o tsv) \
-  --from-literal=CosmosUrl=https://${Imdb_Name}.documents.azure.com:443/ \
-  --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_RG -n $Ngsa_Log_Name --query customerId -o tsv) \
-  --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_RG -n $Ngsa_Log_Name --query primarySharedKey -o tsv)
-  
-# display the secrets (base 64 encoded)
-kubectl get secret ngsa-secrets -o jsonpath='{.data}'
-
-# if you need to update a secret
-kubectl create secret generic ngsa-secrets \
-  --from-literal=foo=bar \
-  --dry-run=client -o yaml | kubectl apply -f -
-
-```
-
 ## Deploy the NGSA app
 
 Follow the deployment instructions in [app](app/README.md) to deploy ngsa
