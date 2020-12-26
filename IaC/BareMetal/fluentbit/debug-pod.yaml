@@ -38,11 +38,11 @@ spec:
             name: ngsa-config
             key: ngsaLog
 
-      - name: l8rLog
+      - name: lodeLog
         valueFrom:
           configMapKeyRef:
             name: ngsa-config
-            key: l8rLog
+            key: lodeLog
 
       volumeMounts:
       - name: varlog
