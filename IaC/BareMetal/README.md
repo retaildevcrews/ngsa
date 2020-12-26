@@ -38,83 +38,16 @@ az monitor log-analytics workspace create -g $Ngsa_Log_RG -n $Ngsa_Log_Name -l $
 
 ```
 
-## Create VM
+## Create Azure VM
 
-Create your VM per instructions in [Bare Metal Setup](setup-bare-metal-vm.md)
+Create your Azure VM per instructions at [Azure Kubernetes Development Cluster](https://github.com/retaildevcrews/akdc)
 
-- It should work on any Ubuntu 18.04 VM
-- We've tested on
-  - Azure VMs
-  - Multipass VMs
-  - Digital Ocean VMs
-
-## setup k8s
-
-### Export your public IP address
+## SSH into the Azure VM
 
 ```bash
 
-# check if it's set correctly
-echo $PIP
-
-# set if necessary
-export PIP=YourPublicIPAddress
-
-```
-
-### Reset cluster if necessary
-
-```bash
-
-# reset your cluster
-sudo kubeadm reset -f
-
-```
-
-### Initialize cluster
-
-```bash
-
-# make sure you're in the ngsa/IaC/BareMetal directory
-cd IaC/BareMetal
-
-# make sure public IP is set correctly
-echo $PIP
-
-# install k8s controller
-sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address $PIP
-
-### WARNING ###
-# This will delete your existing kubectl configuration
-# Make sure to back up or merge manually
-###############
-
-# setup your config file
-sudo rm -rf $HOME/.kube
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown -R $(id -u):$(id -g) $HOME/.kube
-
-# add flannel network overlay
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml --namespace=kube-system
-
-# optional - add the taint to schedule normal pods on the control plane
-# this let you run a "one node" cluster for `development`
-k taint nodes --all node-role.kubernetes.io/master-
-
-# patch kube-proxy for metal LB
-kubectl get configmap kube-proxy -n kube-system -o yaml | \
-sed -e "s/strictARP: false/strictARP: true/" | \
-sed -e 's/mode: ""/mode: "ipvs"/' | \
-kubectl apply -f - -n kube-system
-
-## Install metal LB
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.4/manifests/namespace.yaml
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.4/manifests/metallb.yaml
-kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
-
-# create metal LB config map
-sed -e "s/{PIP}/${PIP}/g" metalLB.yaml | k apply -f -
+# AKDC_IP is set during the previous step
+ssh akdc@${AKDC_IP}
 
 ```
 
