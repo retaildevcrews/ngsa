@@ -1,20 +1,24 @@
 # Debugging Fluent Bit
 
-Debugging Fluent Bit on a local cluster by sending everything to stdout and then to Azure Log Analytics
+Debugging Fluent Bit on a local dev cluster by sending everything to stdout and then to Azure Log Analytics
 
 ```bash
 
-# start in this directory
+# start in the fluentbit directory
 cd fluentbit
 
-### Create secrets only if skipped
-### fluentbit won't run without these secrets set
+### Create secrets if necessary
+### fluentbit won't run without these secrets
+### skip this step if already set
 kubectl create secret generic ngsa-secrets \
   --from-literal=WorkspaceId=unused \
   --from-literal=SharedKey=unused
 
-# create the service account
+# create the fluentbit service account
 kubectl apply -f account.yaml
+
+# apply fluentbit config to log to stdout
+kubectl apply -f debug-stdout.yaml
 
 # create configmap
 kubectl apply -f ../app/config.yaml
@@ -22,10 +26,19 @@ kubectl apply -f ../app/config.yaml
 # deploy ngsa-memory
 kubectl apply -f ../app/in-memory.yaml
 
-#### wait for ngsa to start
+# check pods
+kubectl get pods
 
-# apply fluentbit to log to stdout
-kubectl apply -f debug-stdout.yaml
+# wait for app to start
+# Now listening on: http://[::]:4120
+# Application started. Press Ctrl+C to shut down.
+kubectl logs ngsa-memory
+
+# start fluentbit pod
+kubectl apply -f debug-pod.yaml
+
+# check pods
+kubectl get pods
 
 # check the logs
 kubectl logs fluentb
@@ -33,33 +46,23 @@ kubectl logs fluentb
 # save the cluster IP
 export ngsa=$(kubectl get service | grep ngsa | awk '{print $3}'):4120
 
-# save to .bashrc (optional but handy)
-echo "" >> ~/.bashrc
-echo "export ngsa=$(kubectl get service | grep ngsa | awk '{print $3}'):4120" >> ~/.bashrc
+# check the version and genres endpoints
+http http://$ngsa/version
+http http://$ngsa/api/genres
 
-# check the version endpoint
-curl http://$ngsa/version
-
-# check the version remotely
-
-# if you are running kubectl on the bare metal VM, use SSH to forward your port
-### from a new local terminal
-ssh -L 4120:127.0.0.1:4120 YourIP-DNS
-
-# setup port forwarding
-kubectl port-forward svc/ngsa 4120:4120
-
-# open your local browser
-http://127.0.0.1:4120/version
-
-# check the logs
+# check the logs again
 kubectl logs fluentb
 
 # delete fluentb
-kubectl delete -f fluentbit-debug.yaml
+kubectl delete -f debug-pod.yaml
 
-# leave ngsa pod running
-# deleting a pod also deletes it's log files
+# delete ngsa-memory
+kubectl delete -f ../app/in-memory.yaml
+
+# check pods
+kubectl get pods
+
+# Result - No resources found in default namespace.
 
 ```
 
@@ -67,11 +70,18 @@ kubectl delete -f fluentbit-debug.yaml
 
 ```bash
 
-# create app pod (if necessary)
+# create app pod
 kubectl apply -f ../app/in-memory.yaml
 
 # apply the config and create fluentb pod
+# todo - test this
 kubectl apply -f debug-loga.yaml
+
+# start fluentbit pod
+kubectl apply -f debug-pod.yaml
+
+# check pods
+kubectl get pods
 
 # check fluentb logs
 kubectl logs fluentb
@@ -79,9 +89,18 @@ kubectl logs fluentb
 # run baseline test
 kubectl apply -f ../loderunner/baseline-memory.yaml
 
-### leave both pods running
+# check pods
+kubectl get pods
+
+# delete baseline test after status: Completed
+kubectl delete -f ../loderunner/baseline-memory.yaml
+
+# check pods
+kubectl get pods
 
 # check fluentb logs
+kubectl logs fluentb
+
 # looking for a line like:
 #   [2020/11/16 21:54:19] [ info] [output:azure:azure.*]
 
@@ -89,13 +108,12 @@ kubectl apply -f ../loderunner/baseline-memory.yaml
 # this can take 10-15 minutes :(
 
 # delete the app
-kubectl delete -f ../loderunner/baseline-memory.yaml
-kubectl delete -f fluentbit-debug.yaml
+kubectl delete -f debug-pod.yaml
 kubectl delete -f ../app/in-memory.yaml
 
-# delete configmaps and role (not necessary)
-kubectl delete -f config.yaml
-kubectl delete -f account.yaml
-kubectl delete -f ../app/config.yaml
+# check pods
+kubectl get pods
+
+# Result - No resources found in default namespace.
 
 ```
