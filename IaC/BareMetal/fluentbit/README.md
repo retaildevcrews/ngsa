@@ -5,7 +5,8 @@ Debugging Fluent Bit on a local dev cluster by sending everything to stdout and 
 ```bash
 
 # start in the fluentbit directory
-cd fluentbit
+# assumes you were in the app directory
+cd ../fluentbit
 
 ### Create secrets if necessary
 ### fluentbit won't run without these secrets
@@ -15,10 +16,10 @@ kubectl create secret generic ngsa-secrets \
   --from-literal=SharedKey=unused
 
 # create the fluentbit service account
-kubectl apply -f account.yaml
+kubectl apply -f dev-account.yaml
 
 # apply fluentbit config to log to stdout
-kubectl apply -f debug-stdout.yaml
+kubectl apply -f dev-stdout.yaml
 
 # create configmap
 kubectl apply -f ../app/config.yaml
@@ -35,7 +36,7 @@ kubectl get pods
 kubectl logs ngsa-memory
 
 # start fluentbit pod
-kubectl apply -f debug-pod.yaml
+kubectl apply -f dev-pod.yaml
 
 # check pods
 kubectl get pods
@@ -54,7 +55,7 @@ http $ngsa/api/genres
 kubectl logs fluentb
 
 # delete fluentb
-kubectl delete -f debug-pod.yaml
+kubectl delete -f dev-pod.yaml
 
 # delete ngsa-memory
 kubectl delete -f ../app/in-memory.yaml
@@ -74,11 +75,10 @@ kubectl get pods
 kubectl apply -f ../app/in-memory.yaml
 
 # apply the config and create fluentb pod
-# todo - test this
-kubectl apply -f debug-loga.yaml
+kubectl apply -f dev-loga.yaml
 
 # start fluentbit pod
-kubectl apply -f debug-pod.yaml
+kubectl apply -f dev-pod.yaml
 
 # check pods
 kubectl get pods
@@ -108,7 +108,7 @@ kubectl logs fluentb
 # this can take 10-15 minutes :(
 
 # delete the app
-kubectl delete -f debug-pod.yaml
+kubectl delete -f dev-pod.yaml
 kubectl delete -f ../app/in-memory.yaml
 
 # check pods

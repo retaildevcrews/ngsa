@@ -4,6 +4,9 @@
 
 # Set app secrets
 
+### TODO - I think we should move this to a separate section
+##         focus the initial quick start on in-memory + stdout only
+
 # delete if necessary - you can safely ignore the not exists error
 kubectl delete secret ngsa-secrets
 
@@ -12,9 +15,15 @@ kubectl create secret generic ngsa-secrets \
   --from-literal=WorkspaceId=dev \
   --from-literal=SharedKey=dev
 
-### TODO - I think we should move this to a separate section
-##         focus the initial quick start on in-memory + stdout only
+### TODO - in order for this to work, you have to install AZ CLI and login
+###        we don't currently install Azure CLI in the setup
+###        we do add the repo
+###        alternatively, you could run kubectl from your local machine to the dev cluster
 
+# if you aren't using Cosmos but are using Log Analytics
+kubectl create secret generic ngsa-secrets \
+  --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_RG -n $Ngsa_Log_Name --query customerId -o tsv) \
+  --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_RG -n $Ngsa_Log_Name --query primarySharedKey -o tsv)
 
 # Add Cosmos and Log Analytics values from Azure
 kubectl create secret generic ngsa-secrets \
@@ -44,7 +53,7 @@ kubectl apply -f in-memory.yaml
 kubectl get pods
 
 # check local logs
-kubectl logs baseline-memory
+kubectl logs ngsa-memory
 
 # save the cluster IP
 export ngsa=http://$(kubectl get service | grep ngsa-memory | awk '{print $3}'):4120
@@ -62,11 +71,15 @@ kubectl apply -f ../loderunner/baseline-memory.yaml
 # check pods
 kubectl get pods
 
-# check local logs
+# check logs
+kubectl logs ngsa-memory
 kubectl logs baseline-memory
 
 # delete baseline after status is Completed
 kubectl delete -f ../loderunner/baseline-memory.yaml
+
+# check pods
+kubectl get pods
 
 # setup port forwarding
 # this allows you to access the ngsa-memory service

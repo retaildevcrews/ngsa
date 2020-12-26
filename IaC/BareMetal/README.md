@@ -62,6 +62,9 @@ git clone https://github.com/retaildevcrews/ngsa
 # change to the correct directory
 cd ngsa/IaC/BareMetal/app
 
+# TODO - remove this
+git checkout containerd
+
 # verify kubernetes is running
 kubectl get all --all-namespaces
 
