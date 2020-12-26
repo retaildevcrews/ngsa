@@ -49,6 +49,12 @@ Create your Azure VM per instructions at [Azure Kubernetes Development Cluster](
 # AKDC_IP is set during the previous step
 ssh akdc@${AKDC_IP}
 
+# clone this repository
+git clone https://github.com/retaildevcrews/ngsa
+
+# change to the correct directory
+cd ngsa/IaC/BareMetal
+
 ```
 
 ## Deploy the NGSA app
