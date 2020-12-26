@@ -35,41 +35,30 @@ kubectl apply -f config.yaml
 # deploy ngsa-memory
 kubectl apply -f in-memory.yaml
 
-# check local logs
-kubectl get pods
-
-# get the Cluster IP address
-export ngsa_memory="http://$(kubectl get svc ngsa-memory | awk '{print $3}' | tail -n 1):4120"
-
-# curl the IP addresses of the cluster IP to validate service
-curl $ngsa_memory/version
-
-# run baseline test
-kubectl apply -f ../loderunner/baseline-memory.yaml
-
 # check pods
 kubectl get pods
 
 # check local logs
 kubectl logs baseline-memory
 
+# save the cluster IP
+export ngsa=$(kubectl get service | grep ngsa | awk '{print $3}'):4120
+
+# check the version and genres endpoints
+http http://$ngsa/version
+http http://$ngsa/api/genres
+
+# check local logs
+kubectl logs baseline-memory
+
+# run baseline test
+kubectl apply -f ../loderunner/baseline-memory.yaml
+
+# check local logs
+kubectl logs baseline-memory
+
 # delete baseline
 kubectl delete -f ../loderunner/baseline-memory.yaml
-
-# check pods
-kubectl get pods
-
-# deploy LodeRunner
-kubectl apply -f ../loderunner/benchmark-memory.yaml
-
-# check pods
-kubectl get pods
-
-# check logs
-kubectl logs benchmark-memory
-
-# delete LodeRunner
-kubectl delete -f ../loderunner/benchmark-memory.yaml
 
 # delete ngsa-memory
 kubectl delete -f in-memory.yaml
