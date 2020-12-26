@@ -7,7 +7,6 @@ metadata:
     app: benchmark-memory
 
 spec:
-  serviceAccountName: k8s-admin
   restartPolicy: Never
   containers:
   - name: app
