@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: ngsa-config
 data:
-  Region: "West"
-  Zone: "AZ-WestUs2"
+  Region: "Dev"
+  Zone: "Dev"
