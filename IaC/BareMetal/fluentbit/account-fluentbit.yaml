@@ -7,10 +7,12 @@ metadata:
     k8s-app: fluentbit
     addonmanager.kubernetes.io/mode: Reconcile
 ---
+
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: fluentbit
+  namespace: default
   labels:
     k8s-app: fluentbit
     addonmanager.kubernetes.io/mode: Reconcile
@@ -25,6 +27,7 @@ rules:
   - "watch"
   - "list"
 ---
+
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
