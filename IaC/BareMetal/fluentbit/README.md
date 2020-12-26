@@ -5,7 +5,7 @@ Debugging Fluent Bit on a local cluster by sending everything to stdout and then
 ```bash
 
 # start in this directory
-cd fluentbit/dbg
+cd fluentbit
 
 ### Create secrets only if skipped
 ### fluentbit won't run without these secrets set
@@ -14,18 +14,18 @@ kubectl create secret generic ngsa-secrets \
   --from-literal=SharedKey=unused
 
 # create the service account
-kubectl apply -f role-fluentbit-debug.yaml
+kubectl apply -f account.yaml
 
 # create configmap
-kubectl apply -f zone-config-debug.yaml
+kubectl apply -f ../app/config.yaml
 
 # deploy ngsa-memory
-kubectl apply -f in-memory-debug.yaml
+kubectl apply -f ../app/in-memory.yaml
 
 #### wait for ngsa to start
 
 # apply fluentbit to log to stdout
-kubectl apply -f stdout-config-debug.yaml
+kubectl apply -f debug-stdout.yaml
 
 # check the logs
 kubectl logs fluentb
@@ -68,16 +68,16 @@ kubectl delete -f fluentbit-debug.yaml
 ```bash
 
 # create app pod (if necessary)
-kubectl apply -f in-memory.yaml
+kubectl apply -f ../app/in-memory.yaml
 
 # apply the config and create fluentb pod
-kubectl apply -f la-config-debug.yaml
+kubectl apply -f debug-loga.yaml
 
 # check fluentb logs
 kubectl logs fluentb
 
 # run baseline test
-kubectl apply -f baseline-debug.yaml
+kubectl apply -f ../loderunner/baseline-memory.yaml
 
 ### leave both pods running
 
@@ -89,13 +89,13 @@ kubectl apply -f baseline-debug.yaml
 # this can take 10-15 minutes :(
 
 # delete the app
-kubectl delete -f baseline-debug.yaml
+kubectl delete -f ../loderunner/baseline-memory.yaml
 kubectl delete -f fluentbit-debug.yaml
-kubectl delete -f in-memory-debug.yaml
+kubectl delete -f ../app/in-memory.yaml
 
 # delete configmaps and role (not necessary)
-kubectl delete -f la-config-debug.yaml
-kubectl delete -f role-fluentbit-debug.yaml
-kubectl delete -f zone-config-debug.yaml
+kubectl delete -f config.yaml
+kubectl delete -f account.yaml
+kubectl delete -f ../app/config.yaml
 
 ```
