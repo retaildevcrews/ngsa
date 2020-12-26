@@ -4,6 +4,9 @@
 
 ## Create IMDb Cosmos DB
 
+> TODO - I think we should move this to a separate section / file
+> focus the initial quick start on in-memory only
+
 Create IMDb Cosmos DB and load sample data per instructions [here](https://github.com/retaildevcrews/imdb)
 
 ```bash
@@ -21,6 +24,9 @@ env | grep Imdb_
 ```
 
 ## setup Log Analytics
+
+> TODO - I think we should move this to a separate section / file
+> focus the initial quick start on in-memory + stdout only
 
 ```bash
 

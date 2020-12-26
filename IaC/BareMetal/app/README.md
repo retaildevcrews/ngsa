@@ -12,6 +12,10 @@ kubectl create secret generic ngsa-secrets \
   --from-literal=WorkspaceId=dev \
   --from-literal=SharedKey=dev
 
+### TODO - I think we should move this to a separate section
+##         focus the initial quick start on in-memory + stdout only
+
+
 # Add Cosmos and Log Analytics values from Azure
 kubectl create secret generic ngsa-secrets \
   --from-literal=CosmosDatabase=$Imdb_DB \
@@ -25,15 +29,35 @@ kubectl create secret generic ngsa-secrets \
 kubectl get secret ngsa-secrets -o jsonpath='{.data}'
 
 # if you need to update a secret
+### TODO - update a real secret
 kubectl create secret generic ngsa-secrets \
   --from-literal=foo=bar \
   --dry-run=client -o yaml | kubectl apply -f -
 
-# add configmap to cluster
+# add app configmap to cluster
 kubectl apply -f config.yaml
 
-# deploy ngsa-memory
+# deploy ngsa-memory app
 kubectl apply -f in-memory.yaml
+
+# check pods until running
+kubectl get pods
+
+# check local logs
+kubectl logs baseline-memory
+
+# save the cluster IP
+export ngsa=http://$(kubectl get service | grep ngsa-memory | awk '{print $3}'):4120
+
+# check the version and genres endpoints
+http $ngsa/version
+http $ngsa/api/genres
+
+# check local logs
+kubectl logs ngsa-memory
+
+# run baseline test
+kubectl apply -f ../loderunner/baseline-memory.yaml
 
 # check pods
 kubectl get pods
@@ -41,27 +65,12 @@ kubectl get pods
 # check local logs
 kubectl logs baseline-memory
 
-# save the cluster IP
-export ngsa=$(kubectl get service | grep ngsa | awk '{print $3}'):4120
-
-# check the version and genres endpoints
-http http://$ngsa/version
-http http://$ngsa/api/genres
-
-# check local logs
-kubectl logs baseline-memory
-
-# run baseline test
-kubectl apply -f ../loderunner/baseline-memory.yaml
-
-# check local logs
-kubectl logs baseline-memory
-
-# delete baseline
+# delete baseline after status is Completed
 kubectl delete -f ../loderunner/baseline-memory.yaml
 
-# optional - test port forwarding
 # setup port forwarding
+# this allows you to access the ngsa-memory service
+# from your local browser
 kubectl port-forward svc/ngsa-memory 4120:4120
 
 # open your local browser
