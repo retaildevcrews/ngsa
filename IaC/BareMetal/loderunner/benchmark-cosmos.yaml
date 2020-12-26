@@ -2,9 +2,9 @@ apiVersion: v1
 kind: Pod
 
 metadata:
-  name: l8r-benchmark
+  name: benchmark-cosmos
   labels:
-    app: l8r-benchmark
+    app: benchmark-cosmos
 
 spec:
   serviceAccountName: k8s-admin
@@ -14,13 +14,10 @@ spec:
     image: retaildevcrew/loderunner:beta
     imagePullPolicy: Always
     args: 
-    - --duration
-    - "3600"
     - -l
     - "1000"
     - -r
     - -s
-    - http://ngsa-memory:4120
     - http://ngsa-cosmos:4120
     - -f
     - benchmark.json
@@ -39,5 +36,5 @@ spec:
           key: Region
 
     - name: PodType
-      value: l8r-benchmark
+      value: lr-benchmark
 
