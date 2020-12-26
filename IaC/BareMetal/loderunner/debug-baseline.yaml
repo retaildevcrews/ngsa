@@ -2,9 +2,9 @@ apiVersion: v1
 kind: Pod
 
 metadata:
-  name: l8r-baseline
+  name: baseline-memory
   labels:
-    app: l8r-baseline
+    app: baseline-memory
 
 spec:
   restartPolicy: Never
@@ -15,7 +15,7 @@ spec:
 
     args: 
     - -s
-    - http://ngsa:4120
+    - http://ngsa-memory:4120
     - -f
     - baseline.json
 
@@ -33,4 +33,4 @@ spec:
           key: Region
 
     - name: PodType
-      value: webv
+      value: loderunner

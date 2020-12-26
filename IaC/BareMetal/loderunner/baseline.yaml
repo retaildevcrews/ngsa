@@ -2,19 +2,19 @@ apiVersion: v1
 kind: Pod
 
 metadata:
-  name: l8r-baseline
+  name: baseline-cosmos
   labels:
-    app: l8r-baseline
+    app: baseline-cosmos
 
 spec:
   restartPolicy: Never
   containers:
-  - name: l8r
+  - name: app
     image: retaildevcrew/loderunner:beta
     imagePullPolicy: Always
+
     args:
     - -s
-    - http://ngsa-memory:4120
     - http://ngsa-cosmos:4120
     - -f
     - baseline.json
@@ -33,4 +33,4 @@ spec:
           key: Region
 
     - name: PodType
-      value: l8r-baseline
+      value: loderunner
