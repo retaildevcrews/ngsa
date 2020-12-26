@@ -53,7 +53,7 @@ ssh akdc@${AKDC_IP}
 git clone https://github.com/retaildevcrews/ngsa
 
 # change to the correct directory
-cd ngsa/IaC/BareMetal
+cd ngsa/IaC/BareMetal/app
 
 ```
 
