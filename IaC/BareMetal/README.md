@@ -64,6 +64,7 @@ cd ngsa/IaC/BareMetal/app
 
 # TODO - remove this
 git checkout containerd
+git pull
 
 # verify kubernetes is running
 kubectl get all --all-namespaces
