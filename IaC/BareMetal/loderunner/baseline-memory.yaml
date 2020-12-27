@@ -2,9 +2,9 @@ apiVersion: v1
 kind: Pod
 
 metadata:
-  name: baseline-memory
+  name: loderunner-baseline-memory
   labels:
-    app: baseline-memory
+    app: loderunner-baseline-memory
 
 spec:
   restartPolicy: Never

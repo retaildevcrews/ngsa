@@ -2,12 +2,12 @@ apiVersion: v1
 kind: Pod
 
 metadata:
-  name: benchmark-memory
+  name: loderunner-benchmark-memory
   labels:
-    app: benchmark-memory
+    app: loderunner-benchmark-memory
 
 spec:
-  restartPolicy: Never
+  restartPolicy: Always
   containers:
   - name: app
     image: retaildevcrew/loderunner:beta

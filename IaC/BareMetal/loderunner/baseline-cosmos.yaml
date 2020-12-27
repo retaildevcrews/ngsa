@@ -2,9 +2,9 @@ apiVersion: v1
 kind: Pod
 
 metadata:
-  name: baseline-cosmos
+  name: loderunner-baseline-cosmos
   labels:
-    app: baseline-cosmos
+    app: loderunner-baseline-cosmos
 
 spec:
   restartPolicy: Never

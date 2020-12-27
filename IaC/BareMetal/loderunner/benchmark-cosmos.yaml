@@ -2,12 +2,12 @@ apiVersion: v1
 kind: Pod
 
 metadata:
-  name: benchmark-cosmos
+  name: loderunner-benchmark-cosmos
   labels:
-    app: benchmark-cosmos
+    app: loderunner-benchmark-cosmos
 
 spec:
-  restartPolicy: Never
+  restartPolicy: Always
   containers:
   - name: app
     image: retaildevcrew/loderunner:beta
