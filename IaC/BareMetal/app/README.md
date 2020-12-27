@@ -2,38 +2,11 @@
 
 ```bash
 
-# Set app secrets
-
-### TODO - I think we should move this to a separate section
-##         focus the initial quick start on in-memory + stdout only
-
-# delete if necessary - you can safely ignore the not exists error
-kubectl delete secret ngsa-secrets
-
-# if you aren't using Cosmos or Log Analytics
+# set temporary Log Analytics secrets
 kubectl create secret generic ngsa-secrets \
   --from-literal=WorkspaceId=dev \
   --from-literal=SharedKey=dev
 
-### TODO - in order for this to work, you have to install AZ CLI and login
-###        we don't currently install Azure CLI in the setup
-###        we do add the repo
-###        alternatively, you could run kubectl from your local machine to the dev cluster
-
-# if you aren't using Cosmos but are using Log Analytics
-kubectl create secret generic ngsa-secrets \
-  --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_RG -n $Ngsa_Log_Name --query customerId -o tsv) \
-  --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_RG -n $Ngsa_Log_Name --query primarySharedKey -o tsv)
-
-# Add Cosmos and Log Analytics values from Azure
-kubectl create secret generic ngsa-secrets \
-  --from-literal=CosmosDatabase=$Imdb_DB \
-  --from-literal=CosmosCollection=$Imdb_Col \
-  --from-literal=CosmosKey=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryReadonlyMasterKey -o tsv) \
-  --from-literal=CosmosUrl=https://${Imdb_Name}.documents.azure.com:443/ \
-  --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_RG -n $Ngsa_Log_Name --query customerId -o tsv) \
-  --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_RG -n $Ngsa_Log_Name --query primarySharedKey -o tsv)
-  
 # display the secrets (base 64 encoded)
 kubectl get secret ngsa-secrets -o jsonpath='{.data}'
 
