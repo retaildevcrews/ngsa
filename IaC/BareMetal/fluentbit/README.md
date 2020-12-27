@@ -16,10 +16,10 @@ kubectl create secret generic ngsa-secrets \
   --from-literal=SharedKey=unused
 
 # create the fluentbit service account
-kubectl apply -f dev-account.yaml
+kubectl apply -f account.yaml
 
 # apply fluentbit config to log to stdout
-kubectl apply -f dev-stdout.yaml
+kubectl apply -f stdout-config.yaml
 
 # create configmap
 kubectl apply -f ../app/config.yaml
@@ -36,7 +36,7 @@ kubectl get pods
 kubectl logs ngsa-memory
 
 # start fluentbit pod
-kubectl apply -f dev-pod.yaml
+kubectl apply -f fluentbit-pod.yaml
 
 # check pods
 kubectl get pods
@@ -55,7 +55,7 @@ http $ngsa/api/genres
 kubectl logs fluentb
 
 # delete fluentb
-kubectl delete -f dev-pod.yaml
+kubectl delete -f fluentbit-pod.yaml
 
 # delete ngsa-memory
 kubectl delete -f ../app/in-memory.yaml
@@ -75,10 +75,10 @@ kubectl get pods
 kubectl apply -f ../app/in-memory.yaml
 
 # apply the config and create fluentb pod
-kubectl apply -f dev-loga.yaml
+kubectl apply -f loga-config.yaml
 
 # start fluentbit pod
-kubectl apply -f dev-pod.yaml
+kubectl apply -f fluentbit-pod.yaml
 
 # check pods
 kubectl get pods
@@ -108,7 +108,7 @@ kubectl logs fluentb
 # this can take 10-15 minutes :(
 
 # delete the app
-kubectl delete -f dev-pod.yaml
+kubectl delete -f fluentbit-pod.yaml
 kubectl delete -f ../app/in-memory.yaml
 
 # check pods
