@@ -35,5 +35,5 @@ spec:
           key: Region
 
     - name: PodType
-      value: lr-benchmark
+      value: loderunner
 
