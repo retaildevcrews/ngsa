@@ -1,4 +1,4 @@
-# Setup k8s IaaS
+# Setup Azure Kubernetes Dev Cluster
 
 > This will setup a single node k8s cluster for development
 
