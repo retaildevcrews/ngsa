@@ -9,8 +9,8 @@ Debugging Fluent Bit on a local dev cluster by sending everything to stdout and 
 cd ../fluentbit
 
 ### Create secrets if necessary
-### fluentbit won't run without these secrets
-### skip this step if already set
+###   fluentbit won't run without these secrets
+###   skip this step if already set
 kubectl create secret generic ngsa-secrets \
   --from-literal=WorkspaceId=unused \
   --from-literal=SharedKey=unused
@@ -69,8 +69,67 @@ kubectl get pods
 
 ## Test sending to Log Analytics
 
+### Login to Azure
+
 ```bash
 
+# login to Azure
+az login
+
+az account list -o table
+
+# select subscription (if necesary)
+az account set -s YourSubscriptionName
+
+```
+
+### Setup Log Analytics
+
+```bash
+
+# add az cli extension
+az extension add --name log-analytics
+
+# set environment variables
+export AKDC_RG=akdc
+export AKDC_LOC=westus2
+export Ngsa_Log_Name=akdc
+
+# create Log Analytics instance
+az monitor log-analytics workspace create -g $AKDC_RG -n $Ngsa_Log_Name -l $AKDC_LOC
+
+### TODO - in order for this to work, you have to install AZ CLI and login
+###        alternatively, you could run kubectl from your local machine to the dev cluster
+
+### TODO - I think we should move the LA create here
+
+# delete ngsa-secrets
+kubectl delete secret ngsa-secrets
+
+# add Log Analytics secrets
+kubectl create secret generic ngsa-secrets \
+  --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $AKDC_RG -n $Ngsa_Log_Name --query customerId -o tsv) \
+  --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $AKDC_RG -n $Ngsa_Log_Name --query primarySharedKey -o tsv)
+
+# display the secrets (base 64 encoded)
+kubectl get secret ngsa-secrets -o jsonpath='{.data}'
+
+### TODO - I think Cosmos should be in a separate file
+
+# add Cosmos and Log Analytics values from Azure if both are set
+kubectl create secret generic ngsa-secrets \
+  --from-literal=CosmosDatabase=$Imdb_DB \
+  --from-literal=CosmosCollection=$Imdb_Col \
+  --from-literal=CosmosKey=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryReadonlyMasterKey -o tsv) \
+  --from-literal=CosmosUrl=https://${Imdb_Name}.documents.azure.com:443/ \
+  --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_RG -n $Ngsa_Log_Name --query customerId -o tsv) \
+  --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_RG -n $Ngsa_Log_Name --query primarySharedKey -o tsv)
+  
+```
+
+### Deploy to Kubernetes
+
+```bash
 # create app pod
 kubectl apply -f ../app/in-memory.yaml
 
