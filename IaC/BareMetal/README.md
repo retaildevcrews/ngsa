@@ -77,4 +77,4 @@ Follow the deployment instructions in [app](app/README.md) to deploy ngsa
 
 ## Deploy fluentbit (log forwarding)
 
-Follow the deployment instructions in [fluentbit](fluentbit/README.md) to debug ngsa with fluent bit and Azure Log Analytics
+Follow the deployment instructions in [fluentbit](fluentbit/README.md) to setup Fluent Bit and Azure Log Analytics
