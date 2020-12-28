@@ -1,6 +1,6 @@
-# Debugging Fluent Bit
+# Fluent Bit Setup
 
-Debugging Fluent Bit on a local dev cluster by sending everything to stdout and then to Azure Log Analytics
+Setup Fluent Bit on a dev cluster by sending everything to stdout and then to Azure Log Analytics
 
 ```bash
 
@@ -24,15 +24,13 @@ kubectl apply -f stdout-config.yaml
 # create configmap
 kubectl apply -f ../app/config.yaml
 
-# deploy ngsa-memory
+# deploy ngsa app
 kubectl apply -f ../app/in-memory.yaml
 
 # check pods
 kubectl get pods
 
-# wait for app to start
-# Now listening on: http://[::]:4120
-# Application started. Press Ctrl+C to shut down.
+# wait for pod to show Running
 kubectl logs ngsa-memory
 
 # start fluentbit pod
@@ -41,7 +39,7 @@ kubectl apply -f fluentbit-pod.yaml
 # check pods
 kubectl get pods
 
-# check the logs
+# wait for pod to show Running
 kubectl logs fluentb
 
 # save the cluster IP
@@ -87,44 +85,28 @@ az account set -s YourSubscriptionName
 
 ```bash
 
+# set environment variables (edit if desired)
+export Ngsa_Log_Loc=westus2
+export Ngsa_Log_RG=akdc
+export Ngsa_Log_Name=akdc
+
 # add az cli extension
 az extension add --name log-analytics
 
-# set environment variables
-export AKDC_RG=akdc
-export AKDC_LOC=westus2
-export Ngsa_Log_Name=akdc
-
 # create Log Analytics instance
-az monitor log-analytics workspace create -g $AKDC_RG -n $Ngsa_Log_Name -l $AKDC_LOC
-
-### TODO - in order for this to work, you have to install AZ CLI and login
-###        alternatively, you could run kubectl from your local machine to the dev cluster
-
-### TODO - I think we should move the LA create here
+az monitor log-analytics workspace create -g $Ngsa_Log_RG -n $Ngsa_Log_Name -l $Ngsa_Log_Loc
 
 # delete ngsa-secrets
 kubectl delete secret ngsa-secrets
 
 # add Log Analytics secrets
 kubectl create secret generic ngsa-secrets \
-  --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $AKDC_RG -n $Ngsa_Log_Name --query customerId -o tsv) \
-  --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $AKDC_RG -n $Ngsa_Log_Name --query primarySharedKey -o tsv)
+  --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_RG -n $Ngsa_Log_Name --query customerId -o tsv) \
+  --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_RG -n $Ngsa_Log_Name --query primarySharedKey -o tsv)
 
 # display the secrets (base 64 encoded)
 kubectl get secret ngsa-secrets -o jsonpath='{.data}'
 
-### TODO - I think Cosmos should be in a separate file
-
-# add Cosmos and Log Analytics values from Azure if both are set
-kubectl create secret generic ngsa-secrets \
-  --from-literal=CosmosDatabase=$Imdb_DB \
-  --from-literal=CosmosCollection=$Imdb_Col \
-  --from-literal=CosmosKey=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryReadonlyMasterKey -o tsv) \
-  --from-literal=CosmosUrl=https://${Imdb_Name}.documents.azure.com:443/ \
-  --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_RG -n $Ngsa_Log_Name --query customerId -o tsv) \
-  --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_RG -n $Ngsa_Log_Name --query primarySharedKey -o tsv)
-  
 ```
 
 ### Deploy to Kubernetes
