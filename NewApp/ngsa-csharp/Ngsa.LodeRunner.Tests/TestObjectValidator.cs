@@ -3,7 +3,7 @@ using Ngsa.LodeRunner.Model;
 using Ngsa.LodeRunner.Validators;
 using Xunit;
 
-namespace CSE.WebValidate.Tests.Unit
+namespace CSE.LodeRunner.Tests
 {
     public class TestJsonObjectValidator
     {
