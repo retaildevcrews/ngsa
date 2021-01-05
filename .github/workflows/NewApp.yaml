@@ -54,6 +54,11 @@ jobs:
         then
           echo '${{ secrets.CosmosUrl }}' > src/ngsa/app/secrets/CosmosUrl
           echo '${{ secrets.CosmosKey }}' > src/ngsa/app/secrets/CosmosKey
+
+          # TODO - remove after merge
+          echo '${{ secrets.CosmosUrl }}' > NewApp/ngsa-csharp/Ngsa.DataService/secrets/CosmosUrl
+          echo '${{ secrets.CosmosKey }}' > NewApp/ngsa-csharp/Ngsa.DataService/secrets/CosmosKey
+
           echo "COSMOS_SET=true" >> $GITHUB_ENV
         fi
 
@@ -91,6 +96,92 @@ jobs:
         echo "COSMOS_SET=false" >> $GITHUB_ENV
         echo "BUILD=false" >> $GITHUB_ENV
 
+    - name: Build All
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        cd NewApp/ngsa-csharp
+        
+        dotnet build
+
+    - name: Test App
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        cd NewApp/ngsa-csharp
+
+        dotnet test Ngsa.App.Tests/Ngsa.App.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json
+
+    - name: Test Data Service
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        cd NewApp/ngsa-csharp
+
+        dotnet test Ngsa.DataService.Tests/Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json
+
+    - name: Test In Memory
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        cd NewApp/ngsa-csharp
+        export RUN_TEST_COVERAGE=true
+        export IN_MEMORY=true
+
+        # start data service (in memory)
+        nohup dotnet test Ngsa.DataService.Tests/Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json &
+        sleep 5
+
+        # start app
+        nohup dotnet test Ngsa.App.Tests/Ngsa.App.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:MergeWith=../TestResults/coverage.json &
+        sleep 10
+
+        # run LodeRunner
+        dotnet test Ngsa.LodeRunner.Tests/Ngsa.LodeRunner.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json
+
+        # signal tests with file semaphore
+        touch tests-complete
+        sleep 3
+        rm tests-complete
+
+    - name: Test Cosmos DB
+      if: ${{ env.COSMOS_SET == 'true' }}
+      run: |
+        cd NewApp/ngsa-csharp
+
+        # set env vars
+        export RUN_TEST_COVERAGE=true
+        unset IN_MEMORY
+
+        # start data service (Cosmos DB)
+        nohup dotnet test Ngsa.DataService.Tests/Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json &
+        sleep 15
+
+        # run LoadRunner
+        cd Ngsa.LodeRunner
+        dotnet run -- -s localhost:4122 -f dataservice.json
+        cd ..
+
+        # signal tests with file semaphore
+        touch tests-complete
+        sleep 3
+        rm tests-complete
+
+    - name: Test LoadRunner
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        cd NewApp/ngsa-csharp
+
+        # clear env vars
+        unset RUN_TEST_COVERAGE
+        unset IN_MEMORY
+
+        # this should be last as it summarizes the results
+        dotnet test Ngsa.LodeRunner.Tests/Ngsa.LodeRunner.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json /p:CoverletOutputFormat=opencover > test.out
+
+        cat test.out
+
+    - name: Test Coverage
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        tail -n 25 NewApp/ngsa-csharp/test.out
+
     - name: Docker Login
       if: ${{ env.DOCKER_SET == 'true' }}
       run: |
@@ -98,30 +189,15 @@ jobs:
         echo "${{ secrets.DOCKER_PAT }}" | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
 
     - name: Docker Pull Images
-      if: ${{ env.BUILD == 'true' }}
+      if: ${{ env.DOCKER_SET == 'true' }}
       run: |
         # Pull the latest image if needed
         # This doesn't have to be a separate step, but makes the output easier to read and debug
         docker pull mcr.microsoft.com/dotnet/core/sdk:3.1
         docker pull mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine
 
-    - name: Docker Build Data Service
-      if: ${{ env.BUILD == 'true' }}
-      run: |
-        docker build . -t ds-test -f NewApp/ngsa-csharp/Ngsa.DataService/Dockerfile --target test
-
-    - name: Docker Build App
-      if: ${{ env.BUILD == 'true' }}
-      run: |
-        docker build . -t app-test -f NewApp/ngsa-csharp/Ngsa.App/Dockerfile --target test
-
-    - name: Test LoadRunner
-      if: ${{ env.BUILD == 'true' }}
-      run: |
-        dotnet test NewApp/ngsa-csharp/Ngsa.LodeRunner.Tests/Ngsa.LodeRunner.Tests.csproj
-
     - name: Docker Build LoadRunner
-      if: ${{ env.BUILD == 'true' }}
+      if: ${{ env.DOCKER_SET == 'true' }}
       run: |
         if [[ "${{ github.ref }}" == "refs/tags/"* ]]
         then
@@ -129,75 +205,9 @@ jobs:
         else
           docker build . -t lr -f NewApp/ngsa-csharp/Ngsa.LodeRunner/Dockerfile
         fi
-  
-    - name: Start services
-      if: ${{ env.BUILD == 'true' }}
-      run: |
-        # create the docker network
-        docker network create ngsa
-
-        # run the data service
-        docker run -d --name ds --network ngsa -p 4122:4122 ds-test
-        
-        # run the app
-        docker run -d --name app --network ngsa -p 4120:4120 app-test
-        
-        echo "Waiting for services to start ..."
-        
-        wait_time=10
-        sleep $wait_time
-
-        # wait up to 30 seconds for data service to start
-        while true
-        do
-            if curl localhost:4122/version ; then
-                echo -e "\n\ndata service is running\n"
-                break
-            fi
-            if [ $wait_time -gt 30 ] ; then
-              echo -e "\n\ntimeout waiting for data service to start"
-              exit 1
-            fi
-            
-            sleep 1
-            ((wait_time=wait_time+1))
-        done
-
-        # wait up to 30 seconds for web app to start
-        while true
-        do
-            if curl localhost:4120/version ; then
-                echo -e "\n\nweb app is running"
-                break
-            fi
-            if [ $wait_time -gt 30 ] ; then
-              echo -e "\n\ntimeout waiting for web app to start"
-              exit 1
-            fi
-            
-            sleep 1
-            ((wait_time=wait_time+1))
-        done
-
-    - name: Run LodeRunner
-      if: ${{ env.BUILD == 'true' }}
-      run: |
-        # run loderunner validation test
-        # fail on any validation errors
-        docker run --rm --network ngsa lr -s http://app:4120 --max-errors 1 -f baseline.json baseline.json
-
-    - name: Display failed data logs
-      if: ${{ failure() }}
-      run: |
-        docker logs ds
-
-    - name: Display failed app logs
-      if: ${{ failure() }}
-      run: |
-        docker logs app
 
     - name: Docker Build App
-      if: ${{ env.BUILD == 'true' }}
+      if: ${{ env.DOCKER_SET == 'true' }}
       run: |
         # build image
         if [[ "${{ github.ref }}" == "refs/tags/"* ]]
@@ -208,7 +218,7 @@ jobs:
         fi
 
     - name: Docker Build Data Service
-      if: ${{ env.BUILD == 'true' }}
+      if: ${{ env.DOCKER_SET == 'true' }}
       run: |
         # build image
         if [[ "${{ github.ref }}" == "refs/tags/"* ]]
@@ -219,7 +229,7 @@ jobs:
         fi
 
     - name: Get Version
-      if: ${{ env.BUILD == 'true' }}
+      if: ${{ env.DOCKER_SET == 'true' }}
       run: |
         echo DS_VERSION=`docker run --rm ds --version` >> $GITHUB_ENV
         echo APP_VERSION=`docker run --rm app --version` >> $GITHUB_ENV
@@ -260,27 +270,3 @@ jobs:
         docker push $APP_REPO
         docker push $DS_REPO
         docker push $LR_REPO
-
-    - name: Display app coverage results
-      if: ${{ env.BUILD == 'true' }}
-      run: |
-        # display the results
-        docker logs app | tail -n 15
-
-    - name: Display data service coverage results
-      if: ${{ env.BUILD == 'true' }}
-      run: |
-        # display the results
-        docker logs ds | tail -n 15
-
-    - name: Display app results
-      if: ${{ env.BUILD == 'true' }}
-      run: |
-        # display the results
-        docker logs app
-
-    - name: Display data service results
-      if: ${{ env.BUILD == 'true' }}
-      run: |
-        # display the results
-        docker logs ds

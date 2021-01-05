@@ -3,7 +3,7 @@
 rd TestResults /s/q
 
 set RUN_TEST_COVERAGE=true
-set IN_MEMORY=
+set IN_MEMORY=true
 
 dotnet tool install -g dotnet-reportgenerator-globaltool
 dotnet clean
@@ -13,19 +13,25 @@ start dotnet test Ngsa.DataService.Tests/Ngsa.DataService.Tests.csproj /p:Collec
 timeout /T 5 /nobreak
 
 start dotnet test Ngsa.App.Tests/Ngsa.App.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:MergeWith=../TestResults/coverage.json
-timeout /T 15 /nobreak
+timeout /T 10 /nobreak
 
 dotnet test Ngsa.LodeRunner.Tests/Ngsa.LodeRunner.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json
-timeout /T 30 /nobreak
 
-set IN_MEMORY=true
+echo "done" > tests-complete
+timeout /T 3 /nobreak
+del tests-complete
+
+set IN_MEMORY=
 start dotnet test Ngsa.DataService.Tests/Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json
 timeout /T 10 /nobreak
 
 cd Ngsa.LodeRunner
 dotnet run -- -s localhost:4122 -f dataservice.json
 cd ..
-timeout /T 15 /nobreak
+
+echo "done" > tests-complete
+timeout /T 3 /nobreak
+del tests-complete
 
 set RUN_TEST_COVERAGE=
 set IN_MEMORY=
