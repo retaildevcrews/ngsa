@@ -90,273 +90,24 @@ namespace Ngsa.DataService
                 cmd.Contains("-h") ||
                 cmd.Contains("--help"))
             {
-                artTask = DisplayAsciiArt();
+                AsciiArt.Animation animation = AsciiArt.Animation.Santa;
 
+                artTask = AsciiArt.DisplayAsciiArt("Core/ascii-art.txt", ConsoleColor.DarkMagenta, animation);
+
+                if (animation == AsciiArt.Animation.Santa)
+                {
+                    return 0;
+                }
+
+                // wait for animation to finish
                 if (cmd.Contains("-h") || cmd.Contains("--help"))
                 {
                     await artTask.ConfigureAwait(false);
-                    await Task.Delay(400);
                 }
             }
 
             // run the app
             return await root.InvokeAsync(cmd.ToArray()).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Display the ASCII art file if it exists
-        /// </summary>
-        private static async Task DisplayAsciiArt()
-        {
-            // todo - move to middleware
-
-            const string file = "Core/ascii-art.txt";
-
-            if (File.Exists(file))
-            {
-                string txt = File.ReadAllText(file);
-                string[] lines = File.ReadAllLines(file);
-
-                Console.CursorVisible = false;
-
-                // scroll the window
-                for (int i = 0; i < Console.WindowHeight; i++)
-                {
-                    Console.WriteLine();
-                }
-
-                int top = Console.CursorTop - Console.WindowHeight;
-                int row = top + Console.WindowHeight - lines.Length - 5;
-
-                int key = 0;
-                Random rnd = new Random(DateTime.Now.Millisecond);
-
-                SortedList<int, ConsoleCharacter> lrandom = new SortedList<int, ConsoleCharacter>();
-                List<ConsoleCharacter> list = new List<ConsoleCharacter>();
-
-                // create the random list
-                for (int r = 0; r < lines.Length; r++)
-                {
-                    string line = lines[r];
-
-                    for (int c = 0; c < line.Length; c++)
-                    {
-                        if (!char.IsWhiteSpace(line[c]))
-                        {
-                            while (key < 1 || lrandom.ContainsKey(key))
-                            {
-                                key = rnd.Next(1, int.MaxValue);
-                            }
-
-                            ConsoleCharacter l = new ConsoleCharacter
-                            {
-                                Color = ConsoleColor.DarkMagenta,
-                                Row = top + r,
-                                Col = c,
-                                Value = line[c],
-                            };
-
-                            // add to random list and in-order list
-                            list.Add(l);
-                            lrandom.Add(key, l);
-                        }
-                    }
-                }
-
-                // show the art - random dissolve
-                // todo - make a method
-                foreach (ConsoleCharacter l in lrandom.Values)
-                {
-                    Console.SetCursorPosition(l.Col, l.Row);
-                    Console.ForegroundColor = l.Color;
-                    Console.Write(l.Value);
-                    await Task.Delay(2);
-                }
-
-                Console.SetCursorPosition(0, top + lines.Length + 1);
-                Console.CursorVisible = true;
-                Console.ResetColor();
-                return;
-
-                // todo - move animations into methods
-
-                row = top + Console.WindowHeight - lines.Length - 2;
-
-                // scroll the art down
-                for (int i = top; i < row; i++)
-                {
-                    Console.MoveBufferArea(0, i, Console.BufferWidth, lines.Length, 0, i + 1);
-                    await Task.Delay(100);
-                }
-
-                // scroll the art up
-                for (int i = row; i > top; i--)
-                {
-                    Console.MoveBufferArea(0, i, Console.BufferWidth, lines.Length, 0, i - 1);
-                    await Task.Delay(100);
-                }
-
-                // clear the art from bottom right
-                for (int r = lines.Length - 1 + top; r >= top; r--)
-                {
-                    string line = lines[r - top];
-
-                    for (int c = line.Length - 1; c >= 0; c--)
-                    {
-                        Console.SetCursorPosition(c, r);
-                        Console.Write(' ');
-
-                        if (!char.IsWhiteSpace(line[c]))
-                        {
-                            await Task.Delay(20);
-                        }
-                    }
-                }
-
-                Console.SetCursorPosition(0, top);
-
-                // show the logo from top left
-                Console.ForegroundColor = ConsoleColor.Green;
-                foreach (char c in txt)
-                {
-                    Console.Write(c);
-
-                    if (!char.IsWhiteSpace(c))
-                    {
-                        await Task.Delay(20);
-                    }
-                }
-
-                // change art color from bottom right
-                Console.ForegroundColor = ConsoleColor.Blue;
-                for (int r = lines.Length - 1 + top; r >= top; r--)
-                {
-                    string line = lines[r - top];
-
-                    for (int c = line.Length - 1; c >= 0; c--)
-                    {
-                        Console.SetCursorPosition(c, r);
-                        Console.Write(line[c]);
-
-                        if (!char.IsWhiteSpace(line[c]))
-                        {
-                            await Task.Delay(20);
-                        }
-                    }
-                }
-
-                // change art color from top left
-                Console.SetCursorPosition(0, top);
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                foreach (char c in txt)
-                {
-                    Console.Write(c);
-
-                    if (!char.IsWhiteSpace(c))
-                    {
-                        await Task.Delay(20);
-                    }
-                }
-
-                // change art to two color
-                int end = list.Count - 1;
-                int last = end;
-
-                for (int i = 0; i <= end; i++)
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.SetCursorPosition(list[i].Col, list[i].Row);
-                    Console.Write(list[i].Value);
-
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.SetCursorPosition(list[end].Col, list[end].Row);
-                    Console.Write(list[end].Value);
-                    end--;
-
-                    await Task.Delay(30);
-                }
-
-                // reset console
-                Console.SetCursorPosition(0, top + lines.Length + 2);
-                Console.CursorVisible = true;
-                Console.ResetColor();
-            }
-        }
-
-        // TODO - delete this
-        private static async Task Santa()
-        {
-            const string file = "Core/happy.txt";
-
-            if (File.Exists(file))
-            {
-                string[] lines = File.ReadAllLines(file);
-
-                int top = Console.CursorTop;
-                Console.CursorVisible = false;
-
-                // scroll the window
-                for (int i = 0; i < Console.WindowHeight; i++)
-                {
-                    Console.WriteLine();
-                }
-
-                int key = 0;
-                Random rnd = new Random(DateTime.Now.Millisecond);
-
-                SortedList<int, ConsoleCharacter> lrandom = new SortedList<int, ConsoleCharacter>();
-                List<ConsoleCharacter> list = new List<ConsoleCharacter>();
-
-                // create the random list
-                for (int r = 0; r < lines.Length; r++)
-                {
-                    string line = lines[r];
-
-                    for (int c = 0; c < line.Length; c++)
-                    {
-                        if (!char.IsWhiteSpace(line[c]))
-                        {
-                            while (key < 1 || lrandom.ContainsKey(key))
-                            {
-                                key = rnd.Next(1, int.MaxValue);
-                            }
-
-                            ConsoleCharacter l = new ConsoleCharacter
-                            {
-                                Row = top + r + 2,
-                                Col = c + 24,
-                                Value = line[c],
-                            };
-
-                            if (r < 9)
-                            {
-                                l.Color = ConsoleColor.Green;
-                            }
-
-                            if (r >= 25 && r <= 27)
-                            {
-                                l.Color = ConsoleColor.Green;
-                            }
-
-                            list.Add(l);
-                            lrandom.Add(key, l);
-                        }
-                    }
-                }
-
-                // show the art
-                foreach (ConsoleCharacter l in lrandom.Values)
-                {
-                    Console.SetCursorPosition(l.Col, l.Row);
-                    Console.ForegroundColor = l.Color;
-                    Console.Write(l.Value);
-                    await Task.Delay(2);
-                }
-
-                Console.ResetColor();
-                Console.CursorVisible = true;
-                Console.SetCursorPosition(0, Console.WindowHeight - 1 + top);
-            }
         }
 
         /// <summary>
@@ -476,14 +227,6 @@ namespace Ngsa.DataService
 
             // build the host
             return builder.Build();
-        }
-
-        internal class ConsoleCharacter
-        {
-            public int Row { get; set; }
-            public int Col { get; set; }
-            public char Value { get; set; }
-            public ConsoleColor Color { get; set; } = ConsoleColor.DarkMagenta;
         }
     }
 }
