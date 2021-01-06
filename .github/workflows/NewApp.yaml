@@ -155,7 +155,7 @@ jobs:
 
         # run LoadRunner
         cd Ngsa.LodeRunner
-        dotnet run -- -s localhost:4122 -f dataservice.json
+        dotnet run -- -s localhost:4122 -f dataservice.json --maxerrors 1
         cd ..
 
         # signal tests with file semaphore

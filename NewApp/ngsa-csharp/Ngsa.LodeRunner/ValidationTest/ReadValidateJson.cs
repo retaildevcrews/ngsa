@@ -12,9 +12,9 @@ using Ngsa.LodeRunner.Validators;
 namespace Ngsa.LodeRunner
 {
     /// <summary>
-    /// WebV class (partial)
+    /// Test class (partial)
     /// </summary>
-    public partial class WebV
+    public partial class ValidationTest
     {
         /// <summary>
         /// Reads a file from local or --base-url

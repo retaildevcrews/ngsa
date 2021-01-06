@@ -11,7 +11,7 @@ using Ngsa.LodeRunner.Model;
 using Ngsa.LodeRunner.Validators;
 using Xunit;
 
-namespace CSE.WebValidate.Tests.Unit
+namespace CSE.LodeRunner.Tests
 {
     public class TestCommonTarget
     {
@@ -207,27 +207,27 @@ namespace CSE.WebValidate.Tests.Unit
                 Config cfg = null;
 
                 try
-                { _ = new WebV(cfg); }
+                { _ = new ValidationTest(cfg); }
                 catch (ArgumentNullException) { }
                 cfg = new Config();
                 try
-                { _ = new WebV(cfg); }
+                { _ = new ValidationTest(cfg); }
                 catch (ArgumentNullException) { }
                 cfg.Files = new List<string>();
                 try
-                { _ = new WebV(cfg); }
+                { _ = new ValidationTest(cfg); }
                 catch (ArgumentNullException) { }
                 cfg.Server = new List<string>();
                 try
-                { _ = new WebV(cfg); }
+                { _ = new ValidationTest(cfg); }
                 catch (ArgumentNullException) { }
                 cfg.Server = new List<string> { "localhost", "bluebell" };
                 try
-                { _ = new WebV(cfg); }
+                { _ = new ValidationTest(cfg); }
                 catch (ArgumentException) { }
 
                 cfg.Files = new List<string> { "baseline.json" };
-                _ = new WebV(cfg);
+                _ = new ValidationTest(cfg);
 
             }
         }
@@ -269,7 +269,7 @@ namespace CSE.WebValidate.Tests.Unit
                 cfg.Files.Add("baseline.json");
 
                 // load and validate all of our test files
-                WebV wv = new WebV(cfg);
+                ValidationTest wv = new ValidationTest(cfg);
 
                 // file not found test
                 Assert.Null(wv.ReadJson("bad-file-name"));
