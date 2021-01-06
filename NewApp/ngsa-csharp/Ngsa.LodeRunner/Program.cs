@@ -121,7 +121,7 @@ namespace Ngsa.LodeRunner
             // create the test
             try
             {
-                WebV webv = new WebV(config);
+                ValidationTest lrt = new ValidationTest(config);
 
                 if (config.DelayStart > 0)
                 {
@@ -134,12 +134,12 @@ namespace Ngsa.LodeRunner
                 if (config.RunLoop)
                 {
                     // run in a loop
-                    return webv.RunLoop(config, TokenSource.Token);
+                    return lrt.RunLoop(config, TokenSource.Token);
                 }
                 else
                 {
                     // run one iteration
-                    return await webv.RunOnce(config, TokenSource.Token).ConfigureAwait(false);
+                    return await lrt.RunOnce(config, TokenSource.Token).ConfigureAwait(false);
                 }
             }
             catch (TaskCanceledException tce)

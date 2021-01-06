@@ -1,7 +1,5 @@
 # NGSA Application
 
-[TODO - fix run commands, replace webv with loderunner]
-
 ## Overview
 
 - describe app

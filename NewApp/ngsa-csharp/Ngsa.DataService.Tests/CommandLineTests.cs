@@ -1,16 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.CommandLine;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
-using Imdb.Model;
-using Microsoft.Azure.Cosmos;
 using Ngsa.DataService;
-using Ngsa.DataService.DataAccessLayer;
-using Ngsa.Middleware;
 using Xunit;
 
 namespace Tests
@@ -24,7 +14,7 @@ namespace Tests
             {
                 // test command line
                 Assert.Equal(0, await App.Main(new string[] { "-d", "-l", "Error", "--secrets-volume", "secrets", "--cache-duration", "60", "--perf-cache", "100" }).ConfigureAwait(false));
-                Assert.Equal(0, await App.Main(new string[] { "--version", "--log-level", "Error",  }).ConfigureAwait(false));
+                Assert.Equal(0, await App.Main(new string[] { "--version", "--log-level", "Error", }).ConfigureAwait(false));
                 Assert.Equal(0, await App.Main(new string[] { "--help", }).ConfigureAwait(false));
 
                 // test command line parser errors
