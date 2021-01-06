@@ -206,8 +206,14 @@ dotnet_diagnostic.CA1002.severity = none
 # SA1005: Single line comment should begin with a space
 dotnet_diagnostic.SA1005.severity = none
 
+# SA1013: Closing brace should be proceeded by a space
+dotnet_diagnostic.SA1013.severity = suggestion
+
 # SA1101: Prefix local calls with this
 dotnet_diagnostic.SA1101.severity = none
+
+# SA1136: Enum values should be on separate lines
+dotnet_diagnostic.SA1136.severity = none
 
 # SA1201: Elements should appear in the correct order
 dotnet_diagnostic.SA1201.severity = suggestion
@@ -230,6 +236,9 @@ dotnet_diagnostic.SA1502.severity = suggestion
 # SA1512: Single-line comments should not be followed by blank line
 dotnet_diagnostic.SA1512.severity = none
 
+# SA1515: Single-line comment should be proceeded by a blank line
+dotnet_diagnostic.SA1515.severity = suggestion
+
 # SA1516: Elements should be separated by a blank line
 dotnet_diagnostic.SA1516.severity = none
 
@@ -238,6 +247,9 @@ dotnet_diagnostic.SA1600.severity = none
 
 # SA1601: Partial elements should be documented
 dotnet_diagnostic.SA1601.severity = suggestion
+
+# SA1602: Enumeration items should be documented
+dotnet_diagnostic.SA1602.severity = suggestion
 
 # SA1629: Documentation text should end with a period
 dotnet_diagnostic.SA1629.severity = none
