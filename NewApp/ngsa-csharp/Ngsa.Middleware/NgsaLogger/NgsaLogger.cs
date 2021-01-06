@@ -41,57 +41,6 @@ namespace Ngsa.Middleware
             return logLevel >= config.LogLevel;
         }
 
-        public void LogError(EventId eventId, string message, Exception ex = null, HttpContext context = null, Dictionary<string, string> data = null)
-        {
-            const LogLevel logLevel = LogLevel.Error;
-
-            if (!IsEnabled(logLevel))
-            {
-                return;
-            }
-
-            Dictionary<string, object> d = new Dictionary<string, object>
-            {
-                { "logName", name },
-                { "logLevel", logLevel.ToString() },
-                { "eventId", eventId.Id },
-                { "eventName", eventId.Name },
-                { "message", message },
-            };
-
-            if (ex != null)
-            {
-                d.Add("exceptionType", ex.GetType());
-                d.Add("exceptionMessage", ex.Message);
-            }
-
-            if (context != null && context.Items != null)
-            {
-                CorrelationVector cv = CorrelationVectorExtensions.GetCorrelationVectorFromContext(context);
-
-                if (cv != null)
-                {
-                    d.Add("CVector", cv.Value);
-                }
-            }
-
-            if (data != null)
-            {
-                foreach (var kvp in data)
-                {
-                    d.Add(kvp.Key, kvp.Value);
-                }
-            }
-
-            // display the error
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Error.WriteLine(JsonSerializer.Serialize(d));
-            Console.ForegroundColor = origColor;
-
-            // free the memory for GC
-            d.Clear();
-        }
-
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
             if (!IsEnabled(logLevel))
@@ -127,12 +76,14 @@ namespace Ngsa.Middleware
                         break;
                 }
 
+                HttpContext c = null;
+
                 for (int i = list.Count - 1; i >= 0; i--)
                 {
                     // get correlation vector from HttpContext.Items
-                    if (list[i].Value is HttpContext c)
+                    if (c == null && list[i].Value is HttpContext)
                     {
-                        list.RemoveAt(i);
+                        c = list[i].Value as HttpContext;
 
                         if (c != null && c.Items != null)
                         {
@@ -143,15 +94,11 @@ namespace Ngsa.Middleware
                                 d.Add("CVector", cv.Value);
                             }
                         }
-
-                        break;
                     }
-                }
-
-                // add remaining state
-                foreach (var kvp in list)
-                {
-                    d.Add(kvp.Key.ToString(), kvp.Value.ToString());
+                    else
+                    {
+                        d.Add(list[i].Key.ToString(), list[i].Value == null ? string.Empty : list[i].Value.ToString());
+                    }
                 }
             }
 

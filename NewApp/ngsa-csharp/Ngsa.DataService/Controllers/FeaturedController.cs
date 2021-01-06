@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Ngsa.DataService.DataAccessLayer;
+using Ngsa.Middleware;
 
 namespace Ngsa.DataService.Controllers
 {
@@ -16,18 +17,22 @@ namespace Ngsa.DataService.Controllers
     [Route("api/[controller]")]
     public class FeaturedController : Controller
     {
-        private readonly ILogger logger;
+        private static readonly NgsaLog Logger = new NgsaLog
+        {
+            Name = typeof(FeaturedController).FullName,
+            LogLevel = LogLevel.Information,
+            ErrorMessage = Constants.FeaturedControllerException,
+        };
+
         private readonly IDAL dal;
         private readonly Random rand = new Random(DateTime.Now.Millisecond);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FeaturedController"/> class.
         /// </summary>
-        /// <param name="logger">log instance</param>
         /// <param name="dal">data access layer instance</param>
-        public FeaturedController(ILogger<FeaturedController> logger)
+        public FeaturedController()
         {
-            this.logger = logger;
             dal = App.CosmosDal;
         }
 
@@ -37,11 +42,9 @@ namespace Ngsa.DataService.Controllers
         /// <response code="200">OK</response>
         /// <returns>IActionResult</returns>
         [HttpGet("movie")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Security", "CA5394:Do not use insecure randomness", Justification = "not used for security")]
         public async Task<IActionResult> GetFeaturedMovieAsync()
         {
-            string method = nameof(GetFeaturedMovieAsync);
-            logger.LogInformation(method);
+            NgsaLog myLogger = Logger.GetLogger(nameof(GetFeaturedMovieAsync), HttpContext);
 
             List<string> featuredMovies = await App.CacheDal.GetFeaturedMovieListAsync().ConfigureAwait(false);
 
@@ -51,7 +54,7 @@ namespace Ngsa.DataService.Controllers
                 string movieId = featuredMovies[rand.Next(0, featuredMovies.Count - 1)];
 
                 // get movie by movieId
-                return await ResultHandler.Handle(dal.GetMovieAsync(movieId), method, Constants.FeaturedControllerException, logger).ConfigureAwait(false);
+                return await ResultHandler.Handle3(dal.GetMovieAsync(movieId), myLogger).ConfigureAwait(false);
             }
 
             return NotFound();

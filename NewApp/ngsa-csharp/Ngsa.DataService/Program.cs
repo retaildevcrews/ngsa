@@ -27,7 +27,7 @@ namespace Ngsa.DataService
         private static readonly bool Cache = true;
 
         // ILogger instance
-        private static ILogger<App> logger;
+        private static readonly NgsaLog Logger = new NgsaLog { Name = typeof(App).FullName };
 
         // web host
         private static IWebHost host;
@@ -129,12 +129,9 @@ namespace Ngsa.DataService
         /// </summary>
         private static void LogStartup()
         {
-            // get the logger service
-            logger = host.Services.GetRequiredService<ILogger<App>>();
-
-            if (logger != null)
+            if (Logger != null)
             {
-                logger.LogInformation("Web Server Started");
+                Logger.LogInformation("Web Server Started");
             }
 
             Console.WriteLine($"\nVersion: {Ngsa.Middleware.VersionExtension.Version}");
@@ -198,7 +195,7 @@ namespace Ngsa.DataService
                 LogLevel logLevel = AppLogLevel <= LogLevel.Information ? AppLogLevel : LogLevel.Information;
 
                 logger.ClearProviders();
-                logger.AddNgsaLogger(config => { config.LogLevel = logLevel; });
+                // logger.AddNgsaLogger(config => { config.LogLevel = logLevel; });
 
                 // if you specify the --log-level option, it will override the appsettings.json options
                 // remove any or all of the code below that you don't want to override

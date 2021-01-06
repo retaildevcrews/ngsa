@@ -17,16 +17,21 @@ namespace Ngsa.DataService.Controllers
     [ApiController]
     public class MoviesController : Controller
     {
-        private readonly ILogger logger;
+        private static readonly NgsaLog Logger = new NgsaLog
+        {
+            Name = typeof(MoviesController).FullName,
+            LogLevel = LogLevel.Information,
+            ErrorMessage = Constants.MoviesControllerException,
+            NotFoundError = "Movie Not Found",
+        };
+
         private readonly IDAL dal;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MoviesController"/> class.
         /// </summary>
-        /// <param name="logger">log instance</param>
-        public MoviesController(ILogger<MoviesController> logger)
+        public MoviesController()
         {
-            this.logger = logger;
             dal = App.CosmosDal;
         }
 
@@ -43,13 +48,15 @@ namespace Ngsa.DataService.Controllers
                 throw new ArgumentNullException(nameof(movieQueryParameters));
             }
 
+            NgsaLog myLogger = Logger.GetLogger(nameof(GetMoviesAsync), HttpContext);
+
             // get the result
-            IActionResult res = await ResultHandler.Handle(dal.GetMoviesAsync(movieQueryParameters), movieQueryParameters.GetMethodText(HttpContext), Constants.MoviesControllerException, logger).ConfigureAwait(false);
+            IActionResult res = await ResultHandler.Handle3(dal.GetMoviesAsync(movieQueryParameters), myLogger).ConfigureAwait(false);
 
             // use cache dal on Cosmos 429 errors
             if (res is JsonResult jres && jres.StatusCode == 429)
             {
-                res = await ResultHandler.Handle(App.CacheDal.GetMoviesAsync(movieQueryParameters), movieQueryParameters.GetMethodText(HttpContext), Constants.MoviesControllerException, logger).ConfigureAwait(false);
+                res = await ResultHandler.Handle3(App.CacheDal.GetMoviesAsync(movieQueryParameters), myLogger).ConfigureAwait(false);
             }
 
             return res;
@@ -68,14 +75,14 @@ namespace Ngsa.DataService.Controllers
                 throw new ArgumentNullException(nameof(movieIdParameter));
             }
 
-            string method = nameof(GetMovieByIdAsync) + movieIdParameter.MovieId;
+            NgsaLog myLogger = Logger.GetLogger(nameof(GetMovieByIdAsync), HttpContext);
 
-            IActionResult res = await ResultHandler.Handle(dal.GetMovieAsync(movieIdParameter.MovieId), method, "Movie Not Found", logger).ConfigureAwait(false);
+            IActionResult res = await ResultHandler.Handle3(dal.GetMovieAsync(movieIdParameter.MovieId), myLogger).ConfigureAwait(false);
 
             // use cache dal on Cosmos 429 errors
             if (res is JsonResult jres && jres.StatusCode == 429)
             {
-                res = await ResultHandler.Handle(App.CacheDal.GetMovieAsync(movieIdParameter.MovieId), method, "Movie Not Found", logger).ConfigureAwait(false);
+                res = await ResultHandler.Handle3(App.CacheDal.GetMovieAsync(movieIdParameter.MovieId), myLogger).ConfigureAwait(false);
             }
 
             return res;

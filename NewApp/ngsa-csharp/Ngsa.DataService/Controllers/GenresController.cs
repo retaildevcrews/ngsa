@@ -3,8 +3,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CorrelationVector;
 using Microsoft.Extensions.Logging;
 using Ngsa.DataService.DataAccessLayer;
 using Ngsa.Middleware;
@@ -17,19 +20,20 @@ namespace Ngsa.DataService.Controllers
     [Route("api/[controller]")]
     public class GenresController : Controller
     {
-        private static readonly NgsaLogger Logger = new NgsaLogger(typeof(GenresController).FullName, new NgsaLoggerConfiguration { LogLevel = LogLevel.Warning });
-
-        private readonly ILogger logger;
+        private static readonly NgsaLog Logger = new NgsaLog
+        {
+            Name = typeof(GenresController).FullName,
+            LogLevel = LogLevel.Information,
+            ErrorMessage = Constants.GenresControllerException,
+        };
         private readonly IDAL dal;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GenresController"/> class.
         /// </summary>
-        /// <param name="logger">log instance</param>
         /// <param name="dal">data access layer instance</param>
-        public GenresController(ILogger<GenresController> logger)
+        public GenresController()
         {
-            this.logger = logger;
             dal = App.CacheDal;
         }
 
@@ -41,34 +45,27 @@ namespace Ngsa.DataService.Controllers
         [HttpGet]
         public async Task<IActionResult> GetGenresAsync()
         {
-            // TODO - ILogger
-            Microsoft.AspNetCore.Http.HttpContext context = HttpContext;
-            string message = "Test Error";
-            string key1 = "value1";
-            string key2 = "value2";
+            NgsaLog myLogger = Logger.GetLogger(nameof(GetGenresAsync), HttpContext);
 
-            logger.LogError(
-                new EventId(123, nameof(GetGenresAsync)),
-                "{message} {context} {key1} {key2}",
-                message,
-                context,
-                key1,
-                key2);
+            // todo - modify handle once logging decision is made
+            return await ResultHandler.Handle3(dal.GetGenresAsync(), myLogger).ConfigureAwait(false);
 
-            // TODO - custom logger
-            Logger.LogError(
-                new EventId(123, nameof(GetGenresAsync)),
-                "Test Error",
-                null,
-                HttpContext,
-                new Dictionary<string, string>
-                {
-                    { "key1", "value1" },
-                    { "key2", "value2" },
-                });
+            // TODO - ILogger - Leave this for now
+            //Microsoft.AspNetCore.Http.HttpContext context = HttpContext;
+            //string message = "Test Error";
+            //string key1 = "value1";
+            //string key2 = "value2";
 
-            // get list of genres as list of string
-            return await ResultHandler.Handle2(HttpContext, dal.GetGenresAsync(), nameof(GetGenresAsync), Constants.GenresControllerException, logger).ConfigureAwait(false);
+            //logger.LogError(
+            //    new EventId(123, nameof(GetGenresAsync)),
+            //    "{message} {context} {key1} {key2}",
+            //    message,
+            //    context,
+            //    key1,
+            //    key2);
+
+            //// get list of genres as list of string
+            //return await ResultHandler.Handle2(HttpContext, dal.GetGenresAsync(), nameof(GetGenresAsync), Constants.GenresControllerException, logger).ConfigureAwait(false);
         }
     }
 }

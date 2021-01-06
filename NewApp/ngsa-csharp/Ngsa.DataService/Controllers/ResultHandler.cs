@@ -110,6 +110,55 @@ namespace Ngsa.DataService.Controllers
             }
         }
 
+        public static async Task<IActionResult> Handle3<T>(Task<T> task, NgsaLog logger)
+        {
+            // log the request
+            logger.LogInformation("Web request");
+
+            // return exception if task is null
+            if (task == null)
+            {
+                logger.EventId = new EventId((int)HttpStatusCode.InternalServerError, "Exception");
+                logger.Exception = new ArgumentNullException(nameof(task));
+                logger.LogError("Exception: task is null");
+
+                return CreateResult(logger.ErrorMessage, HttpStatusCode.InternalServerError);
+            }
+
+            try
+            {
+                // return an OK object result
+                return new OkObjectResult(await task.ConfigureAwait(false));
+            }
+            catch (CosmosException ce)
+            {
+                // log and return Cosmos status code
+                if (ce.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    logger.EventId = new EventId((int)ce.StatusCode, string.Empty);
+                    logger.LogWarning($"CosmosNotFound: {ce.StatusCode}");
+                    return CreateResult(logger.NotFoundError, ce.StatusCode);
+                }
+
+                logger.Exception = ce;
+                logger.EventId = new EventId((int)ce.StatusCode, "CosmosException");
+                logger.Data.Add("cosmosActivityId", ce.ActivityId);
+                logger.LogError($"CosmosException: {ce.Message}");
+
+                return CreateResult(logger.ErrorMessage, ce.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                // log and return exception
+                logger.Exception = ex;
+                logger.EventId = new EventId((int)HttpStatusCode.InternalServerError, "Exception");
+                logger.LogError($"Exception: {ex.Message}");
+
+                // return 500 error
+                return CreateResult("Internal Server Error", HttpStatusCode.InternalServerError);
+            }
+        }
+
         /// <summary>
         /// ContentResult factory
         /// </summary>

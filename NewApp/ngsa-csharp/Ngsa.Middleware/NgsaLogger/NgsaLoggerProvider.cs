@@ -15,7 +15,7 @@ namespace Ngsa.Middleware
         private readonly ConcurrentDictionary<string, NgsaLogger> loggers = new ConcurrentDictionary<string, NgsaLogger>();
 
         /// <summary>
-        /// Create a logger from a config
+        /// Initializes a new instance of the <see cref="NgsaLoggerProvider"/> class.
         /// </summary>
         /// <param name="loggerConfig">NgsaLoggerConfig</param>
         public NgsaLoggerProvider(NgsaLoggerConfiguration loggerConfig)

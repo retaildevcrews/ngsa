@@ -17,17 +17,22 @@ namespace Ngsa.DataService.Controllers
     [ApiController]
     public class ActorsController : Controller
     {
-        private readonly ILogger logger;
+        private static readonly NgsaLog Logger = new NgsaLog
+        {
+            Name = typeof(ActorsController).FullName,
+            LogLevel = LogLevel.Information,
+            ErrorMessage = Constants.ActorsControllerException,
+            NotFoundError = "Actor Not Found",
+        };
+
         private readonly IDAL dal;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ActorsController"/> class.
         /// </summary>
-        /// <param name="logger">log instance</param>
-        public ActorsController(ILogger<ActorsController> logger)
+        public ActorsController()
         {
             // save to local for use in handlers
-            this.logger = logger;
             dal = App.CosmosDal;
         }
 
@@ -44,9 +49,9 @@ namespace Ngsa.DataService.Controllers
                 throw new ArgumentNullException(nameof(actorQueryParameters));
             }
 
-            return await ResultHandler.Handle(
-                    dal.GetActorsAsync(actorQueryParameters), actorQueryParameters.GetMethodText(HttpContext), Constants.ActorsControllerException, logger)
-                .ConfigureAwait(false);
+            NgsaLog myLogger = Logger.GetLogger(nameof(GetActorsAsync), HttpContext);
+
+            return await ResultHandler.Handle3(dal.GetActorsAsync(actorQueryParameters), myLogger).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -63,12 +68,10 @@ namespace Ngsa.DataService.Controllers
                 throw new ArgumentNullException(nameof(actorIdParameter));
             }
 
-            string method = nameof(GetActorByIdAsync) + actorIdParameter.ActorId;
+            NgsaLog myLogger = Logger.GetLogger(nameof(GetActorByIdAsync), HttpContext);
 
             // return result
-            return await ResultHandler.Handle(
-                dal.GetActorAsync(actorIdParameter.ActorId), method, "Actor Not Found", logger)
-                .ConfigureAwait(false);
+            return await ResultHandler.Handle3(dal.GetActorAsync(actorIdParameter.ActorId), myLogger).ConfigureAwait(false);
         }
     }
 }
