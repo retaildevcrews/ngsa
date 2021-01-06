@@ -35,6 +35,8 @@ namespace Ngsa.DataService
         // Key Vault configuration
         private static IConfigurationRoot config;
 
+        private static Task artTask = null;
+
         private static CancellationTokenSource ctCancel;
 
         public static InMemoryDal CacheDal { get; set; }
@@ -82,10 +84,23 @@ namespace Ngsa.DataService
             RootCommand root = BuildRootCommand();
             root.Handler = CommandHandler.Create<string, LogLevel, bool, bool, bool, int, int>(RunApp);
 
-            string[] cmd = CombineEnvVarsWithCommandLine(args);
+            List<string> cmd = CombineEnvVarsWithCommandLine(args);
+
+            if (cmd.Contains("-d") ||
+                cmd.Contains("-h") ||
+                cmd.Contains("--help"))
+            {
+                artTask = DisplayAsciiArt();
+
+                if (cmd.Contains("-h") || cmd.Contains("--help"))
+                {
+                    await artTask.ConfigureAwait(false);
+                    await Task.Delay(400);
+                }
+            }
 
             // run the app
-            return await root.InvokeAsync(cmd).ConfigureAwait(false);
+            return await root.InvokeAsync(cmd.ToArray()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -102,8 +117,6 @@ namespace Ngsa.DataService
                 string txt = File.ReadAllText(file);
                 string[] lines = File.ReadAllLines(file);
 
-                int top = Console.CursorTop;
-                int row = top + Console.WindowHeight - lines.Length - 5;
                 Console.CursorVisible = false;
 
                 // scroll the window
@@ -111,6 +124,9 @@ namespace Ngsa.DataService
                 {
                     Console.WriteLine();
                 }
+
+                int top = Console.CursorTop - Console.WindowHeight;
+                int row = top + Console.WindowHeight - lines.Length - 5;
 
                 int key = 0;
                 Random rnd = new Random(DateTime.Now.Millisecond);
@@ -154,7 +170,7 @@ namespace Ngsa.DataService
                     Console.SetCursorPosition(l.Col, l.Row);
                     Console.ForegroundColor = l.Color;
                     Console.Write(l.Value);
-                    await Task.Delay(10);
+                    await Task.Delay(2);
                 }
 
                 Console.SetCursorPosition(0, top + lines.Length + 1);

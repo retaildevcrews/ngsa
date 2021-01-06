@@ -25,7 +25,7 @@ namespace Ngsa.DataService
         /// </summary>
         /// <param name="args">command line args</param>
         /// <returns>string[]</returns>
-        public static string[] CombineEnvVarsWithCommandLine(string[] args)
+        public static List<string> CombineEnvVarsWithCommandLine(string[] args)
         {
             if (args == null)
             {
@@ -45,7 +45,7 @@ namespace Ngsa.DataService
             // was log level set
             IsLogLevelSet = cmd.Contains("--log-level") || cmd.Contains("-l");
 
-            return cmd.ToArray();
+            return cmd;
         }
 
         /// <summary>
@@ -91,8 +91,6 @@ namespace Ngsa.DataService
         {
             try
             {
-                Task art = DisplayAsciiArt();
-
                 // assign command line values
                 AppLogLevel = logLevel;
                 CacheDuration = cacheDuration;
@@ -105,7 +103,10 @@ namespace Ngsa.DataService
                 // load the cache
                 CacheDal = new DataAccessLayer.InMemoryDal();
 
-                await art;
+                if (artTask != null)
+                {
+                    await artTask;
+                }
 
                 // create the cosomos data access layer
                 if (App.Secrets.UseInMemoryDb)
@@ -285,6 +286,8 @@ namespace Ngsa.DataService
         // Display the dry run message
         private static int DoDryRun()
         {
+            Console.ResetColor();
+
             Console.WriteLine($"Version            {Ngsa.Middleware.VersionExtension.Version}");
             Console.WriteLine($"Log Level          {AppLogLevel}");
             Console.WriteLine($"In Memory          {InMemory}");
