@@ -279,8 +279,6 @@ namespace Ngsa.DataService
         // Display the dry run message
         private static int DoDryRun()
         {
-            Console.ResetColor();
-
             Console.WriteLine($"Version            {Ngsa.Middleware.VersionExtension.Version}");
             Console.WriteLine($"Log Level          {AppLogLevel}");
             Console.WriteLine($"In Memory          {InMemory}");
