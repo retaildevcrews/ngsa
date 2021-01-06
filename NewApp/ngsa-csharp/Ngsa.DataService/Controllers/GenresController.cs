@@ -1,15 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
-using System.Collections.Generic;
-using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CorrelationVector;
-using Microsoft.Extensions.Logging;
-using Ngsa.DataService.DataAccessLayer;
 using Ngsa.Middleware;
 
 namespace Ngsa.DataService.Controllers
@@ -37,7 +30,7 @@ namespace Ngsa.DataService.Controllers
         {
             NgsaLog myLogger = Logger.GetLogger(nameof(GetGenresAsync), HttpContext);
 
-            var res = await ResultHandler.Handle(App.CosmosDal.GetGenresAsync(), myLogger).ConfigureAwait(false);
+            IActionResult res = await ResultHandler.Handle(App.CosmosDal.GetGenresAsync(), myLogger).ConfigureAwait(false);
 
             // use cache dal on Cosmos 429 errors
             if (res is JsonResult jres && jres.StatusCode == 429)

@@ -63,7 +63,7 @@ namespace Ngsa.Middleware
 
             if (LogLevel <= logLevel)
             {
-                var d = GetDictionary(message, logLevel);
+                Dictionary<string, object> d = GetDictionary(message, logLevel);
 
                 Console.WriteLine(JsonSerializer.Serialize(d));
             }
@@ -78,7 +78,7 @@ namespace Ngsa.Middleware
                 return;
             }
 
-            var d = GetDictionary(message, logLevel);
+            Dictionary<string, object> d = GetDictionary(message, logLevel);
 
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(JsonSerializer.Serialize(d));
@@ -119,7 +119,7 @@ namespace Ngsa.Middleware
 
         private Dictionary<string, object> GetDictionary(string message, LogLevel logLevel)
         {
-            var data = new Dictionary<string, object>
+            Dictionary<string, object> data = new Dictionary<string, object>
             {
                 { "logName", Name },
                 { "method", Method },
@@ -159,7 +159,7 @@ namespace Ngsa.Middleware
 
             if (Data != null)
             {
-                foreach (var kvp in Data)
+                foreach (KeyValuePair<string, string> kvp in Data)
                 {
                     data.Add(kvp.Key, kvp.Value);
                 }

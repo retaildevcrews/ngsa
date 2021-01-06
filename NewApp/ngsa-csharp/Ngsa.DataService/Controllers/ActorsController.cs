@@ -4,7 +4,6 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Ngsa.DataService.DataAccessLayer;
 using Ngsa.Middleware;
 
@@ -51,7 +50,7 @@ namespace Ngsa.DataService.Controllers
 
             NgsaLog myLogger = Logger.GetLogger(nameof(GetActorsAsync), HttpContext);
 
-            var res = await ResultHandler.Handle(dal.GetActorsAsync(actorQueryParameters), myLogger).ConfigureAwait(false);
+            IActionResult res = await ResultHandler.Handle(dal.GetActorsAsync(actorQueryParameters), myLogger).ConfigureAwait(false);
 
             // use cache dal on Cosmos 429 errors
             if (res is JsonResult jres && jres.StatusCode == 429)
@@ -79,7 +78,7 @@ namespace Ngsa.DataService.Controllers
             NgsaLog myLogger = Logger.GetLogger(nameof(GetActorByIdAsync), HttpContext);
 
             // return result
-            var res = await ResultHandler.Handle(dal.GetActorAsync(actorIdParameter.ActorId), myLogger).ConfigureAwait(false);
+            IActionResult res = await ResultHandler.Handle(dal.GetActorAsync(actorIdParameter.ActorId), myLogger).ConfigureAwait(false);
 
             // use cache dal on Cosmos 429 errors
             if (res is JsonResult jres && jres.StatusCode == 429)

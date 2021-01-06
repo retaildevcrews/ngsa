@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Ngsa.DataService.DataAccessLayer;
 using Ngsa.Middleware;
 
@@ -55,7 +54,7 @@ namespace Ngsa.DataService.Controllers
                 string movieId = featuredMovies[rand.Next(0, featuredMovies.Count - 1)];
 
                 // get movie by movieId
-                var res = await ResultHandler.Handle(dal.GetMovieAsync(movieId), myLogger).ConfigureAwait(false);
+                IActionResult res = await ResultHandler.Handle(dal.GetMovieAsync(movieId), myLogger).ConfigureAwait(false);
 
                 // use cache dal on Cosmos 429 errors
                 if (res is JsonResult jres && jres.StatusCode == 429)
