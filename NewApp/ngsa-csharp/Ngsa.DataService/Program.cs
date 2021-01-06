@@ -84,9 +84,10 @@ namespace Ngsa.DataService
 
             List<string> cmd = CombineEnvVarsWithCommandLine(args);
 
-            if (cmd.Contains("-d") ||
-                cmd.Contains("-h") ||
-                cmd.Contains("--help"))
+            if (cmd.Contains("-h") ||
+                cmd.Contains("--help") ||
+                cmd.Contains("-d") ||
+                cmd.Contains("--dry-run"))
             {
                 await AsciiArt.DisplayAsciiArt("Core/ascii-art.txt", ConsoleColor.DarkMagenta, AsciiArt.Animation.TwoColor).ConfigureAwait(false);
             }
