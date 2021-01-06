@@ -6,6 +6,7 @@ IF NOT EXIST Ngsa.DataService\secrets\CosmosKey (
 )
 
 rd TestResults /s/q
+del tests-complete
 
 set RUN_TEST_COVERAGE=true
 set IN_MEMORY=true
