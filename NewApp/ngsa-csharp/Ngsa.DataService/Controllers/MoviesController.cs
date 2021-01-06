@@ -20,8 +20,8 @@ namespace Ngsa.DataService.Controllers
         private static readonly NgsaLog Logger = new NgsaLog
         {
             Name = typeof(MoviesController).FullName,
-            LogLevel = LogLevel.Information,
-            ErrorMessage = Constants.MoviesControllerException,
+            LogLevel = App.AppLogLevel,
+            ErrorMessage = "MovieControllerException",
             NotFoundError = "Movie Not Found",
         };
 
@@ -51,12 +51,12 @@ namespace Ngsa.DataService.Controllers
             NgsaLog myLogger = Logger.GetLogger(nameof(GetMoviesAsync), HttpContext);
 
             // get the result
-            IActionResult res = await ResultHandler.Handle3(dal.GetMoviesAsync(movieQueryParameters), myLogger).ConfigureAwait(false);
+            IActionResult res = await ResultHandler.Handle(dal.GetMoviesAsync(movieQueryParameters), myLogger).ConfigureAwait(false);
 
             // use cache dal on Cosmos 429 errors
             if (res is JsonResult jres && jres.StatusCode == 429)
             {
-                res = await ResultHandler.Handle3(App.CacheDal.GetMoviesAsync(movieQueryParameters), myLogger).ConfigureAwait(false);
+                res = await ResultHandler.Handle(App.CacheDal.GetMoviesAsync(movieQueryParameters), myLogger).ConfigureAwait(false);
             }
 
             return res;
@@ -77,12 +77,12 @@ namespace Ngsa.DataService.Controllers
 
             NgsaLog myLogger = Logger.GetLogger(nameof(GetMovieByIdAsync), HttpContext);
 
-            IActionResult res = await ResultHandler.Handle3(dal.GetMovieAsync(movieIdParameter.MovieId), myLogger).ConfigureAwait(false);
+            IActionResult res = await ResultHandler.Handle(dal.GetMovieAsync(movieIdParameter.MovieId), myLogger).ConfigureAwait(false);
 
             // use cache dal on Cosmos 429 errors
             if (res is JsonResult jres && jres.StatusCode == 429)
             {
-                res = await ResultHandler.Handle3(App.CacheDal.GetMovieAsync(movieIdParameter.MovieId), myLogger).ConfigureAwait(false);
+                res = await ResultHandler.Handle(App.CacheDal.GetMovieAsync(movieIdParameter.MovieId), myLogger).ConfigureAwait(false);
             }
 
             return res;

@@ -20,8 +20,8 @@ namespace Ngsa.DataService.Controllers
         private static readonly NgsaLog Logger = new NgsaLog
         {
             Name = typeof(ActorsController).FullName,
-            LogLevel = LogLevel.Information,
-            ErrorMessage = Constants.ActorsControllerException,
+            LogLevel = App.AppLogLevel,
+            ErrorMessage = "ActorControllerException",
             NotFoundError = "Actor Not Found",
         };
 
@@ -51,7 +51,7 @@ namespace Ngsa.DataService.Controllers
 
             NgsaLog myLogger = Logger.GetLogger(nameof(GetActorsAsync), HttpContext);
 
-            return await ResultHandler.Handle3(dal.GetActorsAsync(actorQueryParameters), myLogger).ConfigureAwait(false);
+            return await ResultHandler.Handle(dal.GetActorsAsync(actorQueryParameters), myLogger).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace Ngsa.DataService.Controllers
             NgsaLog myLogger = Logger.GetLogger(nameof(GetActorByIdAsync), HttpContext);
 
             // return result
-            return await ResultHandler.Handle3(dal.GetActorAsync(actorIdParameter.ActorId), myLogger).ConfigureAwait(false);
+            return await ResultHandler.Handle(dal.GetActorAsync(actorIdParameter.ActorId), myLogger).ConfigureAwait(false);
         }
     }
 }

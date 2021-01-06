@@ -23,8 +23,8 @@ namespace Ngsa.DataService.Controllers
         private static readonly NgsaLog Logger = new NgsaLog
         {
             Name = typeof(GenresController).FullName,
-            LogLevel = LogLevel.Information,
-            ErrorMessage = Constants.GenresControllerException,
+            LogLevel = App.AppLogLevel,
+            ErrorMessage = "GenreControllerException",
         };
         private readonly IDAL dal;
 
@@ -48,9 +48,9 @@ namespace Ngsa.DataService.Controllers
             NgsaLog myLogger = Logger.GetLogger(nameof(GetGenresAsync), HttpContext);
 
             // todo - modify handle once logging decision is made
-            return await ResultHandler.Handle3(dal.GetGenresAsync(), myLogger).ConfigureAwait(false);
+            return await ResultHandler.Handle(dal.GetGenresAsync(), myLogger).ConfigureAwait(false);
 
-            // TODO - ILogger - Leave this for now
+            // TODO - ILogger - Leave this for now as an example
             //Microsoft.AspNetCore.Http.HttpContext context = HttpContext;
             //string message = "Test Error";
             //string key1 = "value1";
@@ -65,7 +65,7 @@ namespace Ngsa.DataService.Controllers
             //    key2);
 
             //// get list of genres as list of string
-            //return await ResultHandler.Handle2(HttpContext, dal.GetGenresAsync(), nameof(GetGenresAsync), Constants.GenresControllerException, logger).ConfigureAwait(false);
+            //return await ResultHandler.Handle(HttpContext, dal.GetGenresAsync(), nameof(GetGenresAsync), Constants.GenresControllerException, logger).ConfigureAwait(false);
         }
     }
 }

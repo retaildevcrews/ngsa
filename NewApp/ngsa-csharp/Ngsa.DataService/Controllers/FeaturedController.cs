@@ -20,8 +20,9 @@ namespace Ngsa.DataService.Controllers
         private static readonly NgsaLog Logger = new NgsaLog
         {
             Name = typeof(FeaturedController).FullName,
-            LogLevel = LogLevel.Information,
-            ErrorMessage = Constants.FeaturedControllerException,
+            LogLevel = App.AppLogLevel,
+            ErrorMessage = "FeaturedControllerException",
+            NotFoundError = "Movie Not Found",
         };
 
         private readonly IDAL dal;
@@ -54,7 +55,7 @@ namespace Ngsa.DataService.Controllers
                 string movieId = featuredMovies[rand.Next(0, featuredMovies.Count - 1)];
 
                 // get movie by movieId
-                return await ResultHandler.Handle3(dal.GetMovieAsync(movieId), myLogger).ConfigureAwait(false);
+                return await ResultHandler.Handle(dal.GetMovieAsync(movieId), myLogger).ConfigureAwait(false);
             }
 
             return NotFound();

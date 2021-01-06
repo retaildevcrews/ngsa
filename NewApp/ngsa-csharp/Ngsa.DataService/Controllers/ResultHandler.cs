@@ -17,16 +17,8 @@ namespace Ngsa.DataService.Controllers
     /// </summary>
     public static class ResultHandler
     {
-        /// <summary>
-        /// Handle an IActionResult request from a controller
-        /// </summary>
-        /// <typeparam name="T">type of result</typeparam>
-        /// <param name="task">async task (usually the Cosmos query)</param>
-        /// <param name="method">method name for logging</param>
-        /// <param name="errorMessage">error message to log on error</param>
-        /// <param name="logger">ILogger</param>
-        /// <returns>IActionResult</returns>
-        public static async Task<IActionResult> Handle<T>(Task<T> task, string method, string errorMessage, ILogger logger)
+        // todo - remove once logging decision is final
+        public static async Task<IActionResult> HandleOld<T>(Task<T> task, string method, string errorMessage, ILogger logger)
         {
             // log the request
             logger.LogInformation(method);
@@ -68,49 +60,14 @@ namespace Ngsa.DataService.Controllers
             }
         }
 
-        public static async Task<IActionResult> Handle2<T>(HttpContext context, Task<T> task, string method, string errorMessage, ILogger logger)
-        {
-            // log the request
-            logger.LogInformation(method);
-
-            // return exception if task is null
-            if (task == null)
-            {
-                logger.LogError("Exception:{method} task is null {context}", method, context);
-
-                return CreateResult(errorMessage, HttpStatusCode.InternalServerError);
-            }
-
-            try
-            {
-                // return an OK object result
-                return new OkObjectResult(await task.ConfigureAwait(false));
-            }
-            catch (CosmosException ce)
-            {
-                // log and return Cosmos status code
-                if (ce.StatusCode == System.Net.HttpStatusCode.NotFound)
-                {
-                    logger.LogWarning($"CosmosNotFound:{method}");
-                }
-                else
-                {
-                    logger.LogError($"{ce}\nCosmosException:{method}:{ce.StatusCode}:{ce.ActivityId}:{ce.Message}");
-                }
-
-                return CreateResult(errorMessage, ce.StatusCode);
-            }
-            catch (Exception ex)
-            {
-                // log and return exception
-                logger.LogError($"{ex}\nException:{method}:{ex.Message}");
-
-                // return 500 error
-                return CreateResult("Internal Server Error", HttpStatusCode.InternalServerError);
-            }
-        }
-
-        public static async Task<IActionResult> Handle3<T>(Task<T> task, NgsaLog logger)
+        /// <summary>
+        /// Handle an IActionResult request from a controller
+        /// </summary>
+        /// <typeparam name="T">type of result</typeparam>
+        /// <param name="task">async task (usually the Cosmos query)</param>
+        /// <param name="logger">NgsaLog</param>
+        /// <returns>IActionResult</returns>
+        public static async Task<IActionResult> Handle<T>(Task<T> task, NgsaLog logger)
         {
             // log the request
             logger.LogInformation("Web request");
