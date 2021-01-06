@@ -1,4 +1,3 @@
-using System;
 using System.CommandLine;
 using System.Diagnostics;
 using System.IO;
