@@ -14,7 +14,7 @@ namespace Ngsa.LodeRunner
     /// <summary>
     /// Test class (partial)
     /// </summary>
-    public partial class Test
+    public partial class ValidationTest
     {
         /// <summary>
         /// Reads a file from local or --base-url

@@ -121,7 +121,7 @@ namespace Ngsa.LodeRunner
             // create the test
             try
             {
-                Test lrt = new Test(config);
+                ValidationTest lrt = new ValidationTest(config);
 
                 if (config.DelayStart > 0)
                 {

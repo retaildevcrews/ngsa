@@ -19,7 +19,7 @@ namespace Ngsa.LodeRunner
     /// <summary>
     /// LodeRunner Test
     /// </summary>
-    public partial class Test
+    public partial class ValidationTest
     {
         /// <summary>
         /// Correlation Vector http header name
@@ -35,10 +35,10 @@ namespace Ngsa.LodeRunner
         private Config config;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Test"/> class
+        /// Initializes a new instance of the <see cref="ValidationTest"/> class
         /// </summary>
         /// <param name="config">Config</param>
-        public Test(Config config)
+        public ValidationTest(Config config)
         {
             if (config == null || config.Files == null || config.Server == null || config.Server.Count == 0)
             {
