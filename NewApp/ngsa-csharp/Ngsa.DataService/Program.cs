@@ -35,8 +35,6 @@ namespace Ngsa.DataService
         // Key Vault configuration
         private static IConfigurationRoot config;
 
-        private static Task artTask = null;
-
         private static CancellationTokenSource ctCancel;
 
         public static InMemoryDal CacheDal { get; set; }
@@ -90,20 +88,7 @@ namespace Ngsa.DataService
                 cmd.Contains("-h") ||
                 cmd.Contains("--help"))
             {
-                AsciiArt.Animation animation = AsciiArt.Animation.Santa;
-
-                artTask = AsciiArt.DisplayAsciiArt("Core/ascii-art.txt", ConsoleColor.DarkMagenta, animation);
-
-                if (animation == AsciiArt.Animation.Santa)
-                {
-                    return 0;
-                }
-
-                // wait for animation to finish
-                if (cmd.Contains("-h") || cmd.Contains("--help"))
-                {
-                    await artTask.ConfigureAwait(false);
-                }
+                await AsciiArt.DisplayAsciiArt("Core/ascii-art.txt", ConsoleColor.DarkMagenta, AsciiArt.Animation.TwoColor).ConfigureAwait(false);
             }
 
             // run the app

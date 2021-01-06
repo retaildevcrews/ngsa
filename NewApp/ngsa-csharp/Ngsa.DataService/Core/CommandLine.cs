@@ -103,11 +103,6 @@ namespace Ngsa.DataService
                 // load the cache
                 CacheDal = new DataAccessLayer.InMemoryDal();
 
-                if (artTask != null)
-                {
-                    await artTask;
-                }
-
                 // create the cosomos data access layer
                 if (App.Secrets.UseInMemoryDb)
                 {

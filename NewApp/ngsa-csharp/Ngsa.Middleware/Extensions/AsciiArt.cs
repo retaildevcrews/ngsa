@@ -96,9 +96,6 @@ namespace Ngsa.Middleware
                     case Animation.TwoColor:
                         await TwoColor(list).ConfigureAwait(false);
                         break;
-                    case Animation.Santa:
-                        Santa();
-                        return;
                     default:
                         break;
                 }
@@ -175,19 +172,20 @@ namespace Ngsa.Middleware
             Console.SetCursorPosition(0, top);
 
             // show the logo from top left
-            Console.ForegroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
             foreach (char c in txt)
             {
                 Console.Write(c);
 
                 if (!char.IsWhiteSpace(c))
                 {
-                    await Task.Delay(20);
+                    await Task.Delay(15);
                 }
             }
 
             // change art color from bottom right
-            Console.ForegroundColor = ConsoleColor.Blue;
+            await Task.Delay(200);
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
             for (int r = lines.Length - 1 + top; r >= top; r--)
             {
                 string line = lines[r - top];
@@ -199,25 +197,26 @@ namespace Ngsa.Middleware
 
                     if (!char.IsWhiteSpace(line[c]))
                     {
-                        await Task.Delay(20);
+                        await Task.Delay(15);
                     }
                 }
             }
 
             // change art color from top left
-            Console.SetCursorPosition(0, top);
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            foreach (char c in txt)
-            {
-                Console.Write(c);
+            //Console.SetCursorPosition(0, top);
+            //Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            //foreach (char c in txt)
+            //{
+            //    Console.Write(c);
 
-                if (!char.IsWhiteSpace(c))
-                {
-                    await Task.Delay(20);
-                }
-            }
+            //    if (!char.IsWhiteSpace(c))
+            //    {
+            //        await Task.Delay(20);
+            //    }
+            //}
         }
 
+        // TODO - delete this
         private static void Santa()
         {
             const string file = "Core/happy.txt";
@@ -291,7 +290,7 @@ namespace Ngsa.Middleware
             }
         }
 
-        public enum Animation { None, Dissolve, Fade, Scroll, TwoColor, Santa}
+        public enum Animation { None, Dissolve, Fade, Scroll, TwoColor }
 
         internal class ConsoleCharacter
         {

@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Ngsa.Middleware;
 
 namespace Ngsa.App
 {
@@ -61,10 +63,17 @@ namespace Ngsa.App
             RootCommand root = BuildRootCommand();
             root.Handler = CommandHandler.Create<string, LogLevel, bool>(RunApp);
 
-            string[] cmd = CombineEnvVarsWithCommandLine(args);
+            List<string> cmd = CombineEnvVarsWithCommandLine(args);
+
+            if (cmd.Contains("-d") ||
+                cmd.Contains("-h") ||
+                cmd.Contains("--help"))
+            {
+                await AsciiArt.DisplayAsciiArt("Core/ascii-art.txt", ConsoleColor.DarkMagenta, AsciiArt.Animation.Fade).ConfigureAwait(false);
+            }
 
             // run the app
-            return await root.InvokeAsync(cmd).ConfigureAwait(false);
+            return await root.InvokeAsync(cmd.ToArray()).ConfigureAwait(false);
         }
 
         /// <summary>

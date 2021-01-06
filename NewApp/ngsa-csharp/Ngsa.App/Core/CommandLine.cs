@@ -21,7 +21,7 @@ namespace Ngsa.App
         /// </summary>
         /// <param name="args">command line args</param>
         /// <returns>string[]</returns>
-        public static string[] CombineEnvVarsWithCommandLine(string[] args)
+        public static List<string> CombineEnvVarsWithCommandLine(string[] args)
         {
             if (args == null)
             {
@@ -35,7 +35,7 @@ namespace Ngsa.App
 
             IsLogLevelSet = cmd.Contains("--log-level") || cmd.Contains("-l");
 
-            return cmd.ToArray();
+            return cmd;
         }
 
         /// <summary>
