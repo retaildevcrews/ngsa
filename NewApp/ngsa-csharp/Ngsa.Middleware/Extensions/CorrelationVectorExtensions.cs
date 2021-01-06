@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.CorrelationVector;
 
@@ -40,7 +41,7 @@ namespace Ngsa.Middleware
         {
             if (context == null)
             {
-                throw new ArgumentNullException("context");
+                throw new ArgumentNullException(nameof(context));
             }
 
             CorrelationVector cv;
@@ -65,7 +66,44 @@ namespace Ngsa.Middleware
                 cv = new CorrelationVector(CorrelationVectorVersion.V2);
             }
 
+            // put the cvector into the http context for reuse
+            cv.PutCorrelationVectorIntoContext(context);
+
             return cv;
+        }
+
+        public static CorrelationVector GetCorrelationVectorFromContext(HttpContext context)
+        {
+            if (context != null &&
+                context.Items != null &&
+                context.Items.ContainsKey(CorrelationVector.HeaderName))
+            {
+                return context.Items[CorrelationVector.HeaderName] as CorrelationVector;
+            }
+
+            return null;
+        }
+
+        public static void PutCorrelationVectorIntoContext(this CorrelationVector cvector, HttpContext context)
+        {
+            if (cvector == null)
+            {
+                throw new ArgumentNullException(nameof(cvector));
+            }
+
+            if (context == null || context.Items != null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (context.Items.ContainsKey(CorrelationVector.HeaderName))
+            {
+                context.Items[CorrelationVector.HeaderName] = cvector;
+            }
+            else
+            {
+                context.Items.Add(KeyValuePair.Create<object, object>(CorrelationVector.HeaderName, cvector));
+            }
         }
     }
 }
