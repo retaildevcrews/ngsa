@@ -228,7 +228,7 @@ namespace CSE.LodeRunner.Tests
 
                 cfg.Files = new List<string> { "baseline.json" };
                 _ = new ValidationTest(cfg);
-                
+
             }
         }
 
