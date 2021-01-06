@@ -91,7 +91,7 @@ namespace Ngsa.Middleware
                 throw new ArgumentNullException(nameof(cvector));
             }
 
-            if (context == null || context.Items != null)
+            if (context == null || context.Items == null)
             {
                 throw new ArgumentNullException(nameof(context));
             }
