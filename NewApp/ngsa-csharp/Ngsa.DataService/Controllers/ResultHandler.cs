@@ -4,6 +4,7 @@
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
@@ -34,6 +35,48 @@ namespace Ngsa.DataService.Controllers
             if (task == null)
             {
                 logger.LogError($"Exception:{method} task is null");
+
+                return CreateResult(errorMessage, HttpStatusCode.InternalServerError);
+            }
+
+            try
+            {
+                // return an OK object result
+                return new OkObjectResult(await task.ConfigureAwait(false));
+            }
+            catch (CosmosException ce)
+            {
+                // log and return Cosmos status code
+                if (ce.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    logger.LogWarning($"CosmosNotFound:{method}");
+                }
+                else
+                {
+                    logger.LogError($"{ce}\nCosmosException:{method}:{ce.StatusCode}:{ce.ActivityId}:{ce.Message}");
+                }
+
+                return CreateResult(errorMessage, ce.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                // log and return exception
+                logger.LogError($"{ex}\nException:{method}:{ex.Message}");
+
+                // return 500 error
+                return CreateResult("Internal Server Error", HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public static async Task<IActionResult> Handle2<T>(HttpContext context, Task<T> task, string method, string errorMessage, ILogger logger)
+        {
+            // log the request
+            logger.LogInformation(method);
+
+            // return exception if task is null
+            if (task == null)
+            {
+                logger.LogError("Exception:{method} task is null {context}", method, context);
 
                 return CreateResult(errorMessage, HttpStatusCode.InternalServerError);
             }

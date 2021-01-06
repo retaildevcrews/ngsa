@@ -2,10 +2,12 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Ngsa.DataService.DataAccessLayer;
+using Ngsa.Middleware;
 
 namespace Ngsa.DataService.Controllers
 {
@@ -15,6 +17,8 @@ namespace Ngsa.DataService.Controllers
     [Route("api/[controller]")]
     public class GenresController : Controller
     {
+        private static readonly NgsaLogger Logger = new NgsaLogger(typeof(GenresController).FullName, new NgsaLoggerConfiguration { LogLevel = LogLevel.Warning });
+
         private readonly ILogger logger;
         private readonly IDAL dal;
 
@@ -37,8 +41,34 @@ namespace Ngsa.DataService.Controllers
         [HttpGet]
         public async Task<IActionResult> GetGenresAsync()
         {
+            // TODO - ILogger
+            Microsoft.AspNetCore.Http.HttpContext context = HttpContext;
+            string message = "Test Error";
+            string key1 = "value1";
+            string key2 = "value2";
+
+            logger.LogError(
+                new EventId(123, nameof(GetGenresAsync)),
+                "{message} {context} {key1} {key2}",
+                message,
+                context,
+                key1,
+                key2);
+
+            // TODO - custom logger
+            Logger.LogError(
+                new EventId(123, nameof(GetGenresAsync)),
+                "Test Error",
+                null,
+                HttpContext,
+                new Dictionary<string, string>
+                {
+                    { "key1", "value1" },
+                    { "key2", "value2" },
+                });
+
             // get list of genres as list of string
-            return await ResultHandler.Handle(dal.GetGenresAsync(), nameof(GetGenresAsync), Constants.GenresControllerException, logger).ConfigureAwait(false);
+            return await ResultHandler.Handle2(HttpContext, dal.GetGenresAsync(), nameof(GetGenresAsync), Constants.GenresControllerException, logger).ConfigureAwait(false);
         }
     }
 }
