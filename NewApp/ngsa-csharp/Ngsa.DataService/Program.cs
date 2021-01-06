@@ -27,7 +27,7 @@ namespace Ngsa.DataService
         private static readonly bool Cache = true;
 
         // ILogger instance
-        private static readonly NgsaLog Logger = new NgsaLog { Name = typeof(App).FullName };
+        private static readonly NgsaLog Logger = new NgsaLog { Name = typeof(App).FullName, Method = "Main" };
 
         // web host
         private static IWebHost host;
@@ -109,7 +109,9 @@ namespace Ngsa.DataService
                 e.Cancel = true;
                 ctCancel.Cancel();
 
-                Console.WriteLine("Ctl-C Pressed - Starting shutdown ...");
+                Logger.Method = "CtlCHandler";
+                Logger.Data.Clear();
+                Logger.LogInformation("Ctl-C Pressed");
 
                 // trigger graceful shutdown for the webhost
                 // force shutdown after timeout, defined in UseShutdownTimeout within BuildHost() method
@@ -131,10 +133,9 @@ namespace Ngsa.DataService
         {
             if (Logger != null)
             {
+                Logger.Data.Add("version", { Ngsa.Middleware.VersionExtension.Version});
                 Logger.LogInformation("Web Server Started");
             }
-
-            Console.WriteLine($"\nVersion: {Ngsa.Middleware.VersionExtension.Version}");
         }
 
         /// <summary>
@@ -160,7 +161,10 @@ namespace Ngsa.DataService
             catch (Exception ex)
             {
                 // log and fail
-                Console.WriteLine($"{ex}\nBuildConfig:Exception: {ex.Message}");
+                Logger.Method = nameof(BuildConfig);
+                Logger.Exception = ex;
+                Logger.LogError($"Exception: {ex.Message}");
+
                 Environment.Exit(-1);
             }
 
