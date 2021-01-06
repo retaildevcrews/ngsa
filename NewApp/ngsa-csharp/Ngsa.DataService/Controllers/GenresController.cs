@@ -37,12 +37,6 @@ namespace Ngsa.DataService.Controllers
         [HttpGet]
         public async Task<IActionResult> GetGenresAsync()
         {
-            string method = nameof(GetGenresAsync);
-
-            // TODO - remove after testing
-            logger.LogWarning("TestWarning {method}", method);
-            logger.LogError(1, new ArgumentException("Argument Exception"), "TestError {method}", method);
-
             // get list of genres as list of string
             return await ResultHandler.Handle(dal.GetGenresAsync(), nameof(GetGenresAsync), Constants.GenresControllerException, logger).ConfigureAwait(false);
         }
