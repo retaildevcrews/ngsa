@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CorrelationVector;
 using Ngsa.Middleware;
 
 namespace Ngsa.App.Controllers
@@ -36,8 +37,9 @@ namespace Ngsa.App.Controllers
         /// <typeparam name="T">Result Type</typeparam>
         /// <param name="path">path</param>
         /// <param name="queryString">query string</param>
+        /// <param name="cVector">Correlation Vector</param>
         /// <returns>IActionResult</returns>
-        public static async Task<IActionResult> Read<T>(string path, string queryString = "")
+        public static async Task<IActionResult> Read<T>(string path, string queryString, CorrelationVector cVector)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -53,7 +55,14 @@ namespace Ngsa.App.Controllers
 
             try
             {
-                HttpResponseMessage resp = await Client.GetAsync(fullPath);
+                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, fullPath);
+
+                if (cVector != null)
+                {
+                    req.Headers.Add(CorrelationVector.HeaderName, cVector.Value);
+                }
+
+                HttpResponseMessage resp = await Client.SendAsync(req);
 
                 if (resp.IsSuccessStatusCode)
                 {
@@ -82,7 +91,7 @@ namespace Ngsa.App.Controllers
         /// <returns>IActionResult</returns>
         public static async Task<IActionResult> Read<T>(HttpRequest request)
         {
-            return await Read<T>(request?.Path.ToString() + request?.QueryString.ToString()).ConfigureAwait(false);
+            return await Read<T>(request?.Path.ToString(), request?.QueryString.ToString(), Middleware.CorrelationVectorExtensions.GetCorrelationVectorFromContext(request.HttpContext)).ConfigureAwait(false);
         }
 
         /// <summary>

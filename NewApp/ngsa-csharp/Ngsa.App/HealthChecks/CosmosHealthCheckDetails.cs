@@ -78,7 +78,7 @@ namespace Ngsa.App
 
             try
             {
-                _ = await DataService.Read<List<string>>(path, string.Empty).ConfigureAwait(false);
+                _ = await DataService.Read<List<string>>(path, string.Empty, null).ConfigureAwait(false);
 
                 return BuildHealthzCheck(path, MaxResponseTime, null, data, name);
             }
@@ -104,7 +104,7 @@ namespace Ngsa.App
 
             try
             {
-                _ = await DataService.Read<Movie>(path, string.Empty).ConfigureAwait(false);
+                _ = await DataService.Read<Movie>(path, string.Empty, null).ConfigureAwait(false);
 
                 return BuildHealthzCheck(path, MaxResponseTime / 2, null, data, name);
             }
@@ -133,7 +133,7 @@ namespace Ngsa.App
 
             try
             {
-                _ = await DataService.Read<List<Movie>>(path, string.Empty).ConfigureAwait(false);
+                _ = await DataService.Read<List<Movie>>(path, string.Empty, null).ConfigureAwait(false);
 
                 return BuildHealthzCheck(path, MaxResponseTime, null, data, name);
             }
@@ -159,7 +159,7 @@ namespace Ngsa.App
 
             try
             {
-                _ = await DataService.Read<Actor>(path, string.Empty).ConfigureAwait(false);
+                _ = await DataService.Read<Actor>(path, string.Empty, null).ConfigureAwait(false);
 
                 return BuildHealthzCheck(path, MaxResponseTime / 2, null, data, name);
             }
@@ -188,7 +188,7 @@ namespace Ngsa.App
 
             try
             {
-                _ = await DataService.Read<List<Actor>>(path, string.Empty).ConfigureAwait(false);
+                _ = await DataService.Read<List<Actor>>(path, string.Empty, null).ConfigureAwait(false);
 
                 return BuildHealthzCheck(path, MaxResponseTime, null, data, name);
             }

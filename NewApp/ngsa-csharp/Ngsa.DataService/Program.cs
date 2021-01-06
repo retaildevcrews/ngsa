@@ -131,8 +131,9 @@ namespace Ngsa.DataService
         {
             if (Logger != null)
             {
+                // todo - add pod info?
                 Logger.Data.Add("version", Ngsa.Middleware.VersionExtension.Version);
-                Logger.LogInformation("Web Server Started");
+                Logger.LogInformation("Data Service Started");
                 Logger.Data.Clear();
             }
         }
