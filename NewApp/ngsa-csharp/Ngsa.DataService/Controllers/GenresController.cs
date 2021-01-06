@@ -26,16 +26,6 @@ namespace Ngsa.DataService.Controllers
             LogLevel = App.AppLogLevel,
             ErrorMessage = "GenreControllerException",
         };
-        private readonly IDAL dal;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GenresController"/> class.
-        /// </summary>
-        /// <param name="dal">data access layer instance</param>
-        public GenresController()
-        {
-            dal = App.CacheDal;
-        }
 
         /// <summary>
         /// Returns a JSON string array of Genre
@@ -47,8 +37,15 @@ namespace Ngsa.DataService.Controllers
         {
             NgsaLog myLogger = Logger.GetLogger(nameof(GetGenresAsync), HttpContext);
 
-            // todo - modify handle once logging decision is made
-            return await ResultHandler.Handle(dal.GetGenresAsync(), myLogger).ConfigureAwait(false);
+            var res = await ResultHandler.Handle(App.CosmosDal.GetGenresAsync(), myLogger).ConfigureAwait(false);
+
+            // use cache dal on Cosmos 429 errors
+            if (res is JsonResult jres && jres.StatusCode == 429)
+            {
+                res = await ResultHandler.Handle(App.CacheDal.GetGenresAsync(), myLogger).ConfigureAwait(false);
+            }
+
+            return res;
 
             // TODO - ILogger - Leave this for now as an example
             //Microsoft.AspNetCore.Http.HttpContext context = HttpContext;

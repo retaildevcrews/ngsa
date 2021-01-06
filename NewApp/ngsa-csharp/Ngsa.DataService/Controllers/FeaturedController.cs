@@ -55,7 +55,15 @@ namespace Ngsa.DataService.Controllers
                 string movieId = featuredMovies[rand.Next(0, featuredMovies.Count - 1)];
 
                 // get movie by movieId
-                return await ResultHandler.Handle(dal.GetMovieAsync(movieId), myLogger).ConfigureAwait(false);
+                var res = await ResultHandler.Handle(dal.GetMovieAsync(movieId), myLogger).ConfigureAwait(false);
+
+                // use cache dal on Cosmos 429 errors
+                if (res is JsonResult jres && jres.StatusCode == 429)
+                {
+                    res = await ResultHandler.Handle(App.CacheDal.GetMovieAsync(movieId), myLogger).ConfigureAwait(false);
+                }
+
+                return res;
             }
 
             return NotFound();

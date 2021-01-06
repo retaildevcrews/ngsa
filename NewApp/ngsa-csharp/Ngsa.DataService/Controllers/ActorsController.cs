@@ -51,7 +51,15 @@ namespace Ngsa.DataService.Controllers
 
             NgsaLog myLogger = Logger.GetLogger(nameof(GetActorsAsync), HttpContext);
 
-            return await ResultHandler.Handle(dal.GetActorsAsync(actorQueryParameters), myLogger).ConfigureAwait(false);
+            var res = await ResultHandler.Handle(dal.GetActorsAsync(actorQueryParameters), myLogger).ConfigureAwait(false);
+
+            // use cache dal on Cosmos 429 errors
+            if (res is JsonResult jres && jres.StatusCode == 429)
+            {
+                res = await ResultHandler.Handle(App.CacheDal.GetActorsAsync(actorQueryParameters), myLogger).ConfigureAwait(false);
+            }
+
+            return res;
         }
 
         /// <summary>
@@ -71,7 +79,15 @@ namespace Ngsa.DataService.Controllers
             NgsaLog myLogger = Logger.GetLogger(nameof(GetActorByIdAsync), HttpContext);
 
             // return result
-            return await ResultHandler.Handle(dal.GetActorAsync(actorIdParameter.ActorId), myLogger).ConfigureAwait(false);
+            var res = await ResultHandler.Handle(dal.GetActorAsync(actorIdParameter.ActorId), myLogger).ConfigureAwait(false);
+
+            // use cache dal on Cosmos 429 errors
+            if (res is JsonResult jres && jres.StatusCode == 429)
+            {
+                res = await ResultHandler.Handle(App.CacheDal.GetActorAsync(actorIdParameter.ActorId), myLogger).ConfigureAwait(false);
+            }
+
+            return res;
         }
     }
 }
