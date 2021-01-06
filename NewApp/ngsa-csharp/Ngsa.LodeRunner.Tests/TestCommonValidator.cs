@@ -207,27 +207,27 @@ namespace CSE.LodeRunner.Tests
                 Config cfg = null;
 
                 try
-                { _ = new Test(cfg); }
+                { _ = new ValidationTest(cfg); }
                 catch (ArgumentNullException) { }
                 cfg = new Config();
                 try
-                { _ = new Test(cfg); }
+                { _ = new ValidationTest(cfg); }
                 catch (ArgumentNullException) { }
                 cfg.Files = new List<string>();
                 try
-                { _ = new Test(cfg); }
+                { _ = new ValidationTest(cfg); }
                 catch (ArgumentNullException) { }
                 cfg.Server = new List<string>();
                 try
-                { _ = new Test(cfg); }
+                { _ = new ValidationTest(cfg); }
                 catch (ArgumentNullException) { }
                 cfg.Server = new List<string> { "localhost", "bluebell" };
                 try
-                { _ = new Test(cfg); }
+                { _ = new ValidationTest(cfg); }
                 catch (ArgumentException) { }
 
                 cfg.Files = new List<string> { "baseline.json" };
-                _ = new Test(cfg);
+                _ = new ValidationTest(cfg);
                 
             }
         }
@@ -269,7 +269,7 @@ namespace CSE.LodeRunner.Tests
                 cfg.Files.Add("baseline.json");
 
                 // load and validate all of our test files
-                Test wv = new Test(cfg);
+                ValidationTest wv = new ValidationTest(cfg);
 
                 // file not found test
                 Assert.Null(wv.ReadJson("bad-file-name"));
