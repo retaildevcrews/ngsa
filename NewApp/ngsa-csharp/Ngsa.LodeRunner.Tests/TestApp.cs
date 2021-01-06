@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Ngsa.LodeRunner;
 using Xunit;
 
-namespace CSE.WebValidate.Tests.Unit
+namespace CSE.LodeRunner.Tests
 {
     public class TestApp
     {

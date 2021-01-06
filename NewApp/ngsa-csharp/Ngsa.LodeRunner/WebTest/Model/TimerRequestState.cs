@@ -60,9 +60,9 @@ namespace Ngsa.LodeRunner
         public object Lock { get; } = new object();
 
         /// <summary>
-        /// gets or sets the WebV object
+        /// gets or sets the lode runner object
         /// </summary>
-        public WebV Test { get; set; }
+        public Test Test { get; set; }
 
         /// <summary>
         /// gets or sets the current date time
@@ -99,7 +99,7 @@ namespace Ngsa.LodeRunner
             // verify http client
             if (Client == null)
             {
-                Console.WriteLine($"{WebV.Now}\tError\tTimerState http client is null");
+                Console.WriteLine($"{Test.Now}\tError\tTimerState http client is null");
                 return;
             }
 
@@ -153,7 +153,7 @@ namespace Ngsa.LodeRunner
             catch (Exception ex)
             {
                 // log and ignore any error
-                Console.WriteLine($"{WebV.Now}\tWebvException\t{ex.Message}");
+                Console.WriteLine($"{Test.Now}\tLodeRunnerException\t{ex.Message}");
             }
 
             // make sure to release the semaphore

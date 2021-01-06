@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CSE.WebValidate.Tests
+namespace CSE.LodeRunner.Tests
 {
     /// <summary>
     /// Environment Variable Keys

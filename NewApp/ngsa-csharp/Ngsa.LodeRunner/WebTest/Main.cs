@@ -17,9 +17,9 @@ using Ngsa.Middleware;
 namespace Ngsa.LodeRunner
 {
     /// <summary>
-    /// Web Validation Test
+    /// LodeRunner Test
     /// </summary>
-    public partial class WebV
+    public partial class Test
     {
         /// <summary>
         /// Correlation Vector http header name
@@ -35,10 +35,10 @@ namespace Ngsa.LodeRunner
         private Config config;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WebV"/> class
+        /// Initializes a new instance of the <see cref="Test"/> class
         /// </summary>
         /// <param name="config">Config</param>
-        public WebV(Config config)
+        public Test(Config config)
         {
             if (config == null || config.Files == null || config.Server == null || config.Server.Count == 0)
             {
