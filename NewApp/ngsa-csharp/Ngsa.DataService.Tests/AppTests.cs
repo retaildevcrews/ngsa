@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.CommandLine;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -20,14 +23,11 @@ namespace Tests
             // run the web server for integration test
             if (!string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
-                Console.WriteLine("Starting web server");
-
-                string[] args = new string[] { "--log-level", "Error" };
-
-                Task t = App.Main(args);
+                Task t = App.Main(new string[] { "--log-level", "Error" });
 
                 await Task.Delay(10000);
 
+                // test in memory DAL
                 if (App.InMemory)
                 {
                     InMemoryDal dal = new InMemoryDal();
@@ -95,10 +95,22 @@ namespace Tests
                     d.Dispose();
                 }
 
-                // end the app
-                t.Wait(App.InMemory ? 5000 : 35000);
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
 
-                Console.WriteLine("Web server stopped");
+                // wait up to 45 seconds for the file semaphore
+                while (sw.ElapsedMilliseconds < 45000)
+                {
+                    if (File.Exists("../../../../tests-complete"))
+                    {
+                        break;
+                    }
+
+                    await Task.Delay(1000);
+                }
+
+                // end the app
+                t.Wait(1);
             }
         }
     }

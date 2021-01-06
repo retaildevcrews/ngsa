@@ -1,5 +1,7 @@
 using System;
 using System.CommandLine;
+using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using Ngsa.App;
 using Xunit;
@@ -14,15 +16,24 @@ namespace Tests
             // run the web server for 30 seconds for integration test
             if (!string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
-                Console.WriteLine("Starting web server");
                 Task t = App.Main(null);
 
-                // let the service run for 30 seconds
-                await Task.Delay(40000);
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+
+                // wait up to 45 seconds for the file semaphore
+                while (sw.ElapsedMilliseconds < 45000)
+                {
+                    if (File.Exists("../../../../tests-complete"))
+                    {
+                        break;
+                    }
+
+                    await Task.Delay(1000);
+                }
 
                 // stop the service
-                t.Wait(10);
-                Console.WriteLine("Web server stopped");
+                t.Wait(1);
             }
         }
 
