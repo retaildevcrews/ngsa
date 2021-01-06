@@ -116,9 +116,9 @@ namespace Ngsa.App
             catch (Exception ex)
             {
                 // end app on error
-                if (logger != null)
+                if (Logger != null)
                 {
-                    logger.LogError($"Exception: {ex}");
+                    Logger.LogError($"Exception: {ex}");
                 }
                 else
                 {

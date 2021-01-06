@@ -23,7 +23,7 @@ namespace Ngsa.App
     public sealed partial class App
     {
         // ILogger instance
-        private static ILogger<App> logger;
+        private static readonly NgsaLog Logger = new NgsaLog { Name = typeof(App).FullName, Method = "Main" };
 
         // web host
         private static IWebHost host;
@@ -89,19 +89,6 @@ namespace Ngsa.App
         }
 
         /// <summary>
-        /// Display the ASCII art file if it exists
-        /// </summary>
-        private static void DisplayAsciiArt()
-        {
-            const string file = "App/ascii-art.txt";
-
-            if (File.Exists(file))
-            {
-                Console.WriteLine(File.ReadAllText(file));
-            }
-        }
-
-        /// <summary>
         /// Creates a CancellationTokenSource that cancels on ctl-c pressed
         /// </summary>
         /// <returns>CancellationTokenSource</returns>
@@ -114,7 +101,9 @@ namespace Ngsa.App
                 e.Cancel = true;
                 ctCancel.Cancel();
 
-                Console.WriteLine("Ctl-C Pressed - Starting shutdown ...");
+                Logger.Method = "CtlCHandler";
+                Logger.Data.Clear();
+                Logger.LogInformation("Ctl-C Pressed");
 
                 // trigger graceful shutdown for the webhost
                 // force shutdown after timeout, defined in UseShutdownTimeout within BuildHost() method
@@ -132,12 +121,9 @@ namespace Ngsa.App
         /// </summary>
         private static void LogStartup()
         {
-            // get the logger service
-            logger = host.Services.GetRequiredService<ILogger<App>>();
-
-            DisplayAsciiArt();
-
-            Console.WriteLine($"\nVersion: {Ngsa.Middleware.VersionExtension.Version}");
+            Logger.Data.Add("version", Ngsa.Middleware.VersionExtension.Version);
+            Logger.LogInformation("Web Server Started");
+            Logger.Data.Clear();
         }
 
         /// <summary>
@@ -159,7 +145,8 @@ namespace Ngsa.App
             catch (Exception ex)
             {
                 // log and fail
-                Console.WriteLine($"{ex}\nBuildConfig:Exception: {ex.Message}");
+                Logger.Method = nameof(BuildConfig);
+                Logger.LogError($"Exception: {ex.Message}", ex);
                 Environment.Exit(-1);
             }
 
@@ -191,17 +178,19 @@ namespace Ngsa.App
             // configure logger based on command line
             builder.ConfigureLogging(logger =>
             {
+                LogLevel logLevel = AppLogLevel <= LogLevel.Information ? AppLogLevel : LogLevel.Information;
+
                 logger.ClearProviders();
-                logger.AddConsole();
+                logger.AddNgsaLogger(config => { config.LogLevel = logLevel; });
 
                 // if you specify the --log-level option, it will override the appsettings.json options
                 // remove any or all of the code below that you don't want to override
                 if (App.IsLogLevelSet)
                 {
-                    logger.AddFilter("Microsoft", AppLogLevel)
-                    .AddFilter("System", AppLogLevel)
-                    .AddFilter("Default", AppLogLevel)
-                    .AddFilter("Ngsa.App", AppLogLevel);
+                    logger.AddFilter("Microsoft", LogLevel.Error)
+                    .AddFilter("System", LogLevel.Error)
+                    .AddFilter("Default", LogLevel.Error)
+                    .AddFilter("Ngsa.App", logLevel);
                 }
             });
 

@@ -18,18 +18,13 @@ namespace Ngsa.App.Controllers
     [ApiController]
     public class ActorsController : Controller
     {
-        private readonly ILogger logger;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ActorsController"/> class.
-        /// </summary>
-        /// <param name="logger">log instance</param>
-        /// <param name="dal">data access layer instance</param>
-        public ActorsController(ILogger<ActorsController> logger)
+        private static readonly NgsaLog Logger = new NgsaLog
         {
-            // save to local for use in handlers
-            this.logger = logger;
-        }
+            Name = typeof(ActorsController).FullName,
+            LogLevel = App.AppLogLevel,
+            ErrorMessage = "ActorControllerException",
+            NotFoundError = "Actor Not Found",
+        };
 
         /// <summary>
         /// Returns a JSON array of Actor objects based on query parameters
@@ -39,6 +34,10 @@ namespace Ngsa.App.Controllers
         [HttpGet]
         public async Task<IActionResult> GetActorsAsync([FromQuery] ActorQueryParameters actorQueryParameters)
         {
+            NgsaLog myLogger = Logger.GetLogger(nameof(GetActorsAsync), HttpContext);
+
+            myLogger.LogInformation("Web Request");
+
             if (actorQueryParameters == null)
             {
                 throw new ArgumentNullException(nameof(actorQueryParameters));
@@ -56,12 +55,14 @@ namespace Ngsa.App.Controllers
         [HttpGet("{actorId}")]
         public async Task<IActionResult> GetActorByIdAsync([FromRoute] ActorIdParameter actorIdParameter)
         {
+            NgsaLog myLogger = Logger.GetLogger(nameof(GetActorByIdAsync), HttpContext);
+
+            myLogger.LogInformation("Web Request");
+
             if (actorIdParameter == null)
             {
                 throw new ArgumentNullException(nameof(actorIdParameter));
             }
-
-            string method = nameof(GetActorByIdAsync) + actorIdParameter.ActorId;
 
             // return result
             return await DataService.Read<Actor>(Request).ConfigureAwait(false);

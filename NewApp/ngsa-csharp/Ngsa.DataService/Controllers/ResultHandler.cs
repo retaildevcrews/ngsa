@@ -20,7 +20,7 @@ namespace Ngsa.DataService.Controllers
         public static async Task<IActionResult> HandleOld<T>(Task<T> task, string method, string errorMessage, ILogger logger)
         {
             // log the request
-            logger.LogInformation(method);
+            logger.LogInformation("DS request");
 
             // return exception if task is null
             if (task == null)

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Ngsa.Middleware;
 
 namespace Ngsa.App.Controllers
 {
@@ -14,17 +15,14 @@ namespace Ngsa.App.Controllers
     [Route("api/[controller]")]
     public class GenresController : Controller
     {
-        private readonly ILogger logger;
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="logger">log instance</param>
-        /// <param name="dal">data access layer instance</param>
-        public GenresController(ILogger<GenresController> logger)
+        private static readonly NgsaLog Logger = new NgsaLog
         {
-            this.logger = logger;
-        }
+            Name = typeof(GenresController).FullName,
+            LogLevel = App.AppLogLevel,
+            ErrorMessage = "GenresControllerException",
+            NotFoundError = "Movie Not Found",
+            Method = nameof(GetGenresAsync),
+        };
 
         /// <summary>
         /// Returns a JSON string array of Genre
@@ -34,7 +32,10 @@ namespace Ngsa.App.Controllers
         [HttpGet]
         public async Task<IActionResult> GetGenresAsync()
         {
-            logger.LogInformation("GetGenresAsync");
+            NgsaLog myLogger = Logger.GetLogger(nameof(GetGenresAsync), HttpContext);
+
+            myLogger.LogInformation("Web Request");
+
             return await DataService.Read<List<string>>(Request).ConfigureAwait(false);
         }
     }
