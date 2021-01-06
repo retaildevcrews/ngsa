@@ -90,8 +90,6 @@ namespace Tests
                     catch (ArgumentNullException)
                     {
                     }
-
-                    d.Dispose();
                 }
 
                 Stopwatch sw = new Stopwatch();
