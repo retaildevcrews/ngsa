@@ -65,7 +65,9 @@ namespace Ngsa.Middleware
             {
                 Dictionary<string, object> d = GetDictionary(message, logLevel);
 
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine(JsonSerializer.Serialize(d));
+                Console.ResetColor();
             }
         }
 

@@ -117,8 +117,6 @@ namespace Ngsa.DataService
                 // force shutdown after timeout, defined in UseShutdownTimeout within BuildHost() method
                 await host.StopAsync().ConfigureAwait(false);
 
-                Console.ResetColor();
-
                 // end the app
                 Environment.Exit(0);
             };
@@ -133,8 +131,9 @@ namespace Ngsa.DataService
         {
             if (Logger != null)
             {
-                Logger.Data.Add("version", { Ngsa.Middleware.VersionExtension.Version});
+                Logger.Data.Add("version", Ngsa.Middleware.VersionExtension.Version);
                 Logger.LogInformation("Web Server Started");
+                Logger.Data.Clear();
             }
         }
 
@@ -199,15 +198,15 @@ namespace Ngsa.DataService
                 LogLevel logLevel = AppLogLevel <= LogLevel.Information ? AppLogLevel : LogLevel.Information;
 
                 logger.ClearProviders();
-                // logger.AddNgsaLogger(config => { config.LogLevel = logLevel; });
+                logger.AddNgsaLogger(config => { config.LogLevel = logLevel; });
 
                 // if you specify the --log-level option, it will override the appsettings.json options
                 // remove any or all of the code below that you don't want to override
                 if (App.IsLogLevelSet)
                 {
-                    logger.AddFilter("Microsoft", AppLogLevel)
-                    .AddFilter("System", AppLogLevel)
-                    .AddFilter("Default", AppLogLevel)
+                    logger.AddFilter("Microsoft", LogLevel.Error)
+                    .AddFilter("System", LogLevel.Error)
+                    .AddFilter("Default", LogLevel.Error)
                     .AddFilter("Ngsa.DataService", logLevel);
                 }
             });

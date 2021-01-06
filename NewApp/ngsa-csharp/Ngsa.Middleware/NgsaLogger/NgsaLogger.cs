@@ -115,14 +115,14 @@ namespace Ngsa.Middleware
             }
             else
             {
-                Console.ForegroundColor = logLevel == LogLevel.Warning ? ConsoleColor.Yellow : ConsoleColor.Green;
+                Console.ForegroundColor = logLevel == LogLevel.Warning ? ConsoleColor.Yellow : Console.ForegroundColor;
                 Console.WriteLine(JsonSerializer.Serialize(d));
             }
 
+            Console.ResetColor();
+
             // free the memory for GC
             d.Clear();
-
-            Console.ForegroundColor = origColor;
         }
     }
 }
