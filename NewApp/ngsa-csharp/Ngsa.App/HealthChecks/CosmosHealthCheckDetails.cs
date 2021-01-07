@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Imdb.Model;
-using Microsoft.AspNetCore.Http;
-using Microsoft.CorrelationVector;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Ngsa.App.Controllers;
 using Ngsa.App.Model;

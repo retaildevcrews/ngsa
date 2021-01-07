@@ -4,7 +4,6 @@
 using System.Threading.Tasks;
 using Imdb.Model;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Ngsa.Middleware;
 
 namespace Ngsa.App.Controllers

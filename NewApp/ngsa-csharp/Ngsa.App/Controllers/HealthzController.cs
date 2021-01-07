@@ -83,8 +83,10 @@ namespace Ngsa.App.Controllers
         /// <returns>HealthCheckResult</returns>
         private async Task<HealthCheckResult> RunCosmosHealthCheck()
         {
-            CosmosHealthCheck chk = new CosmosHealthCheck(hcLogger);
-            chk.CVector = Middleware.CorrelationVectorExtensions.GetCorrelationVectorFromContext(HttpContext);
+            CosmosHealthCheck chk = new CosmosHealthCheck(hcLogger)
+            {
+                CVector = Middleware.CorrelationVectorExtensions.GetCorrelationVectorFromContext(HttpContext)
+            };
 
             return await chk.CheckHealthAsync(new HealthCheckContext()).ConfigureAwait(false);
         }
