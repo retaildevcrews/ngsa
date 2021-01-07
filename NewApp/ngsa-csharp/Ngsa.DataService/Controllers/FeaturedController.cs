@@ -44,7 +44,7 @@ namespace Ngsa.DataService.Controllers
         [HttpGet("movie")]
         public async Task<IActionResult> GetFeaturedMovieAsync()
         {
-            NgsaLog myLogger = Logger.GetLogger(nameof(GetFeaturedMovieAsync), HttpContext);
+            NgsaLog myLogger = Logger.GetLogger(nameof(GetFeaturedMovieAsync), HttpContext).EnrichLog();
 
             List<string> featuredMovies = await App.CacheDal.GetFeaturedMovieListAsync().ConfigureAwait(false);
 

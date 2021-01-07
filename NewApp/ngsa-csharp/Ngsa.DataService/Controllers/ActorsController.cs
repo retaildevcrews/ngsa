@@ -48,7 +48,7 @@ namespace Ngsa.DataService.Controllers
                 throw new ArgumentNullException(nameof(actorQueryParameters));
             }
 
-            NgsaLog myLogger = Logger.GetLogger(nameof(GetActorsAsync), HttpContext);
+            NgsaLog myLogger = Logger.GetLogger(nameof(GetActorsAsync), HttpContext).EnrichLog();
 
             IActionResult res = await ResultHandler.Handle(dal.GetActorsAsync(actorQueryParameters), myLogger).ConfigureAwait(false);
 
@@ -75,7 +75,7 @@ namespace Ngsa.DataService.Controllers
                 throw new ArgumentNullException(nameof(actorIdParameter));
             }
 
-            NgsaLog myLogger = Logger.GetLogger(nameof(GetActorByIdAsync), HttpContext);
+            NgsaLog myLogger = Logger.GetLogger(nameof(GetActorByIdAsync), HttpContext).EnrichLog();
 
             // return result
             IActionResult res = await ResultHandler.Handle(dal.GetActorAsync(actorIdParameter.ActorId), myLogger).ConfigureAwait(false);

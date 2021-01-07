@@ -32,7 +32,7 @@ namespace Ngsa.App.Controllers
         [HttpGet("movie")]
         public async Task<IActionResult> GetFeaturedMovieAsync()
         {
-            NgsaLog myLogger = Logger.GetLogger(nameof(GetFeaturedMovieAsync), HttpContext);
+            NgsaLog myLogger = Logger.GetLogger(nameof(GetFeaturedMovieAsync), HttpContext).EnrichLog();
 
             myLogger.LogInformation("Web Request");
 

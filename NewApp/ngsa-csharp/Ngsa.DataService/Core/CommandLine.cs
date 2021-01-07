@@ -169,7 +169,17 @@ namespace Ngsa.DataService
 
             if (string.IsNullOrEmpty(PodType))
             {
-                PodType = "ngsa-ds";
+                PodType = "Ngsa.DataService";
+            }
+
+            if (string.IsNullOrEmpty(Region))
+            {
+                Region = "dev";
+            }
+
+            if (string.IsNullOrEmpty(Zone))
+            {
+                Zone = "dev";
             }
 
             if (InMemory)

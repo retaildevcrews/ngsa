@@ -34,7 +34,7 @@ namespace Ngsa.App.Controllers
         [HttpGet]
         public async Task<IActionResult> GetActorsAsync([FromQuery] ActorQueryParameters actorQueryParameters)
         {
-            NgsaLog myLogger = Logger.GetLogger(nameof(GetActorsAsync), HttpContext);
+            NgsaLog myLogger = Logger.GetLogger(nameof(GetActorsAsync), HttpContext).EnrichLog();
 
             myLogger.LogInformation("Web Request");
 
@@ -55,7 +55,7 @@ namespace Ngsa.App.Controllers
         [HttpGet("{actorId}")]
         public async Task<IActionResult> GetActorByIdAsync([FromRoute] ActorIdParameter actorIdParameter)
         {
-            NgsaLog myLogger = Logger.GetLogger(nameof(GetActorByIdAsync), HttpContext);
+            NgsaLog myLogger = Logger.GetLogger(nameof(GetActorByIdAsync), HttpContext).EnrichLog();
 
             myLogger.LogInformation("Web Request");
 

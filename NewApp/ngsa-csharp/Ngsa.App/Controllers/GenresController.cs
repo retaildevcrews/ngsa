@@ -32,7 +32,7 @@ namespace Ngsa.App.Controllers
         [HttpGet]
         public async Task<IActionResult> GetGenresAsync()
         {
-            NgsaLog myLogger = Logger.GetLogger(nameof(GetGenresAsync), HttpContext);
+            NgsaLog myLogger = Logger.GetLogger(nameof(GetGenresAsync), HttpContext).EnrichLog();
 
             myLogger.LogInformation("Web Request");
 

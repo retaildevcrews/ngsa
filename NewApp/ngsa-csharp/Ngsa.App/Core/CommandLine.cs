@@ -76,7 +76,17 @@ namespace Ngsa.App
 
                 if (string.IsNullOrEmpty(PodType))
                 {
-                    PodType = "ngsa";
+                    PodType = "Ngsa.App";
+                }
+
+                if (string.IsNullOrEmpty(Region))
+                {
+                    Region = "dev";
+                }
+
+                if (string.IsNullOrEmpty(Zone))
+                {
+                    Zone = "dev";
                 }
 
                 // setup ctl c handler

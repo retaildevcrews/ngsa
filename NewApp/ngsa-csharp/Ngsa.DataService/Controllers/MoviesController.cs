@@ -47,7 +47,7 @@ namespace Ngsa.DataService.Controllers
                 throw new ArgumentNullException(nameof(movieQueryParameters));
             }
 
-            NgsaLog myLogger = Logger.GetLogger(nameof(GetMoviesAsync), HttpContext);
+            NgsaLog myLogger = Logger.GetLogger(nameof(GetMoviesAsync), HttpContext).EnrichLog();
 
             // get the result
             IActionResult res = await ResultHandler.Handle(dal.GetMoviesAsync(movieQueryParameters), myLogger).ConfigureAwait(false);
@@ -74,7 +74,7 @@ namespace Ngsa.DataService.Controllers
                 throw new ArgumentNullException(nameof(movieIdParameter));
             }
 
-            NgsaLog myLogger = Logger.GetLogger(nameof(GetMovieByIdAsync), HttpContext);
+            NgsaLog myLogger = Logger.GetLogger(nameof(GetMovieByIdAsync), HttpContext).EnrichLog();
 
             IActionResult res = await ResultHandler.Handle(dal.GetMovieAsync(movieIdParameter.MovieId), myLogger).ConfigureAwait(false);
 

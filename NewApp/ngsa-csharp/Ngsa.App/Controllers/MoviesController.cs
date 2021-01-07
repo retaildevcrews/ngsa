@@ -39,7 +39,7 @@ namespace Ngsa.App.Controllers
                 throw new ArgumentNullException(nameof(movieQueryParameters));
             }
 
-            NgsaLog myLogger = Logger.GetLogger(nameof(GetMoviesAsync), HttpContext);
+            NgsaLog myLogger = Logger.GetLogger(nameof(GetMoviesAsync), HttpContext).EnrichLog();
 
             myLogger.LogInformation("Web Request");
 
@@ -59,7 +59,7 @@ namespace Ngsa.App.Controllers
                 throw new ArgumentNullException(nameof(movieIdParameter));
             }
 
-            NgsaLog myLogger = Logger.GetLogger(nameof(GetMovieByIdAsync), HttpContext);
+            NgsaLog myLogger = Logger.GetLogger(nameof(GetMovieByIdAsync), HttpContext).EnrichLog();
 
             myLogger.LogInformation("Web Request");
 
