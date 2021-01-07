@@ -217,9 +217,6 @@ namespace Ngsa.DataService
                 // set the Cosmos server name for logging
                 CosmosName = Secrets.CosmosServer.Replace("https://", string.Empty, StringComparison.OrdinalIgnoreCase).Replace("http://", string.Empty, StringComparison.OrdinalIgnoreCase);
 
-                // todo - get this from cosmos query
-                CosmosQueryId = "todo";
-
                 int ndx = CosmosName.IndexOf('.', StringComparison.OrdinalIgnoreCase);
 
                 if (ndx > 0)

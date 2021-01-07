@@ -43,7 +43,6 @@ namespace Ngsa.DataService
         public static IDAL CosmosDal { get; set; }
 
         public static string CosmosName { get; set; } = string.Empty;
-        public static string CosmosQueryId { get; set; } = string.Empty;
         public static string Region { get; set; } = string.Empty;
         public static string Zone { get; set; } = string.Empty;
         public static string PodType { get; set; }
@@ -131,7 +130,6 @@ namespace Ngsa.DataService
         {
             if (Logger != null)
             {
-                // todo - add pod info?
                 Logger.Data.Add("Version", Ngsa.Middleware.VersionExtension.Version);
                 Logger.LogInformation("Data Service Started");
                 Logger.Data.Clear();

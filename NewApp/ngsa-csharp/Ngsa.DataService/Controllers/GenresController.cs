@@ -39,23 +39,6 @@ namespace Ngsa.DataService.Controllers
             }
 
             return res;
-
-            // TODO - ILogger - Leave this for now as an example
-            //Microsoft.AspNetCore.Http.HttpContext context = HttpContext;
-            //string message = "Test Error";
-            //string key1 = "value1";
-            //string key2 = "value2";
-
-            //logger.LogError(
-            //    new EventId(123, nameof(GetGenresAsync)),
-            //    "{message} {context} {key1} {key2}",
-            //    message,
-            //    context,
-            //    key1,
-            //    key2);
-
-            //// get list of genres as list of string
-            //return await ResultHandler.Handle(HttpContext, dal.GetGenresAsync(), nameof(GetGenresAsync), Constants.GenresControllerException, logger).ConfigureAwait(false);
         }
     }
 }

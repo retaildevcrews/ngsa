@@ -18,49 +18,6 @@ namespace Ngsa.DataService.Controllers
     /// </summary>
     public static class ResultHandler
     {
-        // todo - remove once logging decision is final
-        public static async Task<IActionResult> HandleOld<T>(Task<T> task, string method, string errorMessage, ILogger logger)
-        {
-            // log the request
-            logger.LogInformation("DS request");
-
-            // return exception if task is null
-            if (task == null)
-            {
-                logger.LogError("Exception: task is null");
-
-                return CreateResult(errorMessage, HttpStatusCode.InternalServerError);
-            }
-
-            try
-            {
-                // return an OK object result
-                return new OkObjectResult(await task.ConfigureAwait(false));
-            }
-            catch (CosmosException ce)
-            {
-                // log and return Cosmos status code
-                if (ce.StatusCode == System.Net.HttpStatusCode.NotFound)
-                {
-                    logger.LogWarning($"CosmosNotFound: {method}");
-                }
-                else
-                {
-                    logger.LogError($"{ce}\nCosmosException:{method}:{ce.StatusCode}:{ce.ActivityId}:{ce.Message}");
-                }
-
-                return CreateResult(errorMessage, ce.StatusCode);
-            }
-            catch (Exception ex)
-            {
-                // log and return exception
-                logger.LogError($"{ex}\nException:{method}:{ex.Message}");
-
-                // return 500 error
-                return CreateResult("Internal Server Error", HttpStatusCode.InternalServerError);
-            }
-        }
-
         /// <summary>
         /// Handle an IActionResult request from a controller
         /// </summary>
