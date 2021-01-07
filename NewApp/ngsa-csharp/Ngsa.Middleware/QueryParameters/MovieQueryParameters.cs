@@ -20,6 +20,11 @@ namespace Ngsa.Middleware
         public int Year { get; set; }
         public double Rating { get; set; }
 
+        /// <summary>
+        /// Validate a movieId
+        /// </summary>
+        /// <param name="movieId">id to validate</param>
+        /// <returns>empty list on valid</returns>
         public static List<ValidationError> ValidateMovieId(string movieId)
         {
             List<ValidationError> errors = new List<ValidationError>();
@@ -38,10 +43,19 @@ namespace Ngsa.Middleware
             return errors;
         }
 
+        /// <summary>
+        /// Get the Cosmos DB offset from page size / number
+        /// </summary>
+        /// <returns>offset for Cosmos query</returns>
         public int GetOffset()
         {
             return PageSize * (PageNumber > 1 ? PageNumber - 1 : 0);
         }
+
+        /// <summary>
+        /// Validate this object
+        /// </summary>
+        /// <returns>list of validation errors or empty list</returns>
 
         public List<ValidationError> Validate()
         {
@@ -89,6 +103,10 @@ namespace Ngsa.Middleware
             return errors;
         }
 
+        /// <summary>
+        /// Get the cache key for this request
+        /// </summary>
+        /// <returns>cache key</returns>
         public string GetKey()
         {
             string key = "/api/movies";

@@ -15,6 +15,11 @@ namespace Ngsa.Middleware
         public int PageSize { get; set; } = 100;
         public string Q { get; set; }
 
+        /// <summary>
+        /// Validate an actorId
+        /// </summary>
+        /// <param name="actorId">id to validate</param>
+        /// <returns>empty list on valid</returns>
         public static List<ValidationError> ValidateActorId(string actorId)
         {
             List<ValidationError> errors = new List<ValidationError>();
@@ -33,11 +38,19 @@ namespace Ngsa.Middleware
             return errors;
         }
 
+        /// <summary>
+        /// Get the Cosmos DB offset from page size / number
+        /// </summary>
+        /// <returns>offset for Cosmos query</returns>
         public int GetOffset()
         {
             return PageSize * (PageNumber > 1 ? PageNumber - 1 : 0);
         }
 
+        /// <summary>
+        /// Validate this object
+        /// </summary>
+        /// <returns>list of validation errors or empty list</returns>
         public List<ValidationError> Validate()
         {
             List<ValidationError> errors = new List<ValidationError>();
@@ -61,6 +74,10 @@ namespace Ngsa.Middleware
             return errors;
         }
 
+        /// <summary>
+        /// Get the cache key for this request
+        /// </summary>
+        /// <returns>cache key</returns>
         public string GetKey()
         {
             return $"/api/actors/{PageNumber}/{PageNumber}/{(string.IsNullOrWhiteSpace(Q) ? string.Empty : Q.ToUpperInvariant().Trim())}";

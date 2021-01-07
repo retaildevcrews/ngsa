@@ -55,7 +55,7 @@ namespace Ngsa.Middleware
                 counter++;
             }
 
-            // todo - recycle loggers
+            // todo - reuse loggers
             // use iDisposable?
             //Loggers.Add(counter, logger);
 
