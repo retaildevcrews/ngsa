@@ -50,7 +50,7 @@ namespace Ngsa.App.Controllers
 
             if (!string.IsNullOrWhiteSpace(queryString))
             {
-                fullPath += $"?{queryString.Trim()}";
+                fullPath += queryString.Trim();
             }
 
             try
