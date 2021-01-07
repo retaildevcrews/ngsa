@@ -37,17 +37,17 @@ cd ..
 
 echo "done" > tests-complete
 timeout /T 3 /nobreak
-del tests-complete
 
 set RUN_TEST_COVERAGE=
 set IN_MEMORY=
 
 dotnet test Ngsa.App.Tests/Ngsa.App.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json
-dotnet test Ngsa.DataService.Tests/Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json
 dotnet test Ngsa.LodeRunner.Tests/Ngsa.LodeRunner.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json /p:CoverletOutputFormat=opencover
+dotnet test Ngsa.DataService.Tests/Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json
+
+del tests-complete
 
 cd TestResults
 reportgenerator -reports:coverage.opencover.xml -targetdir:rpt -reporttypes:Html
 rpt\index.html
-
 cd ..
