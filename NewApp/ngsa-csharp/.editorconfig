@@ -230,6 +230,9 @@ dotnet_diagnostic.SA1208.severity = suggestion
 # SA1401: Fields should be private
 dotnet_diagnostic.SA1401.severity = suggestion
 
+# SA 1413: Use trailing comma in multi-line initializers
+dotnet_diagnostic.SA1413.severity = suggestion
+
 # SA1502: Element should not be on a single line
 dotnet_diagnostic.SA1502.severity = suggestion
 
