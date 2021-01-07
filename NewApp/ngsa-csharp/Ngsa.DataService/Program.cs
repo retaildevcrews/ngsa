@@ -78,9 +78,6 @@ namespace Ngsa.DataService
         /// <returns>IActionResult</returns>
         public static async Task<int> Main(string[] args)
         {
-            // add pod, region, zone info to logger
-            Logger.EnrichLog();
-
             // build the System.CommandLine.RootCommand
             RootCommand root = BuildRootCommand();
             root.Handler = CommandHandler.Create<string, LogLevel, bool, bool, bool, int, int>(RunApp);

@@ -128,6 +128,9 @@ namespace Ngsa.DataService
                 RequestLogger.Region = Region;
                 RequestLogger.Zone = Zone;
 
+                // add pod, region, zone info to logger
+                Logger.EnrichLog();
+
                 // build the host
                 host = BuildHost();
 
