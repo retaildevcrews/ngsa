@@ -45,5 +45,29 @@ namespace Ngsa.Middleware.Validation
                 _ => $"Unknown parameter: {key}",
             };
         }
+
+        public static string GetErrorLink(string path)
+        {
+            string s = "https://github.com/retaildevcrews/ngsa/blob/main/docs/ParameterValidation.md";
+
+            if (path.StartsWith("/api/movies?") || path.StartsWith("/api/movies/?"))
+            {
+                s += "#movies-api";
+            }
+            else if (path.StartsWith("/api/movies"))
+            {
+                s += "#movies-direct-read";
+            }
+            else if (path.StartsWith("/api/actors?") || path.StartsWith("/api/actors/?"))
+            {
+                s += "#actors-api";
+            }
+            else if (path.StartsWith("/api/actors"))
+            {
+                s += "#actors-direct-read";
+            }
+
+            return s;
+        }
     }
 }
