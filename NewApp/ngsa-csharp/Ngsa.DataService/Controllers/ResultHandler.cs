@@ -133,21 +133,21 @@ namespace Ngsa.DataService.Controllers
             return res;
         }
 
-        public static JsonResult CreateResult(List<Middleware.Validation.ValidationError> errorList, string path)
+        public static JsonResult CreateResult(List<ValidationError> errorList, string path)
         {
             Dictionary<string, object> data = new Dictionary<string, object>
             {
                 { "type", ValidationError.GetErrorLink(path) },
                 { "title", "Parameter validation error" },
                 { "detail", "One or more invalid parameters were specified." },
-                { "status", 400 },
+                { "status", (int)HttpStatusCode.BadRequest },
                 { "instance", path },
                 { "validationErrors", errorList },
             };
 
             var res = new JsonResult(data)
             {
-                StatusCode = 400,
+                StatusCode = (int)HttpStatusCode.BadRequest,
                 ContentType = "application/problem+json",
             };
 

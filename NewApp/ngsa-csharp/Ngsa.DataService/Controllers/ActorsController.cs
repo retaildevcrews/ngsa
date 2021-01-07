@@ -2,8 +2,10 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Ngsa.DataService.DataAccessLayer;
 using Ngsa.Middleware;
 
@@ -54,6 +56,10 @@ namespace Ngsa.DataService.Controllers
 
             if (list.Count > 0)
             {
+                myLogger.Data.Clear();
+                myLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
+                myLogger.LogWarning($"Invalid query string");
+
                 return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.ToString() : string.Empty));
             }
 
@@ -88,6 +94,10 @@ namespace Ngsa.DataService.Controllers
 
             if (list.Count > 0)
             {
+                myLogger.Data.Clear();
+                myLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
+                myLogger.LogWarning($"Invalid Actor Id");
+
                 return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.ToString() : string.Empty));
             }
 
