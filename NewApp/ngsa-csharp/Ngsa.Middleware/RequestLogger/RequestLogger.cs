@@ -124,7 +124,7 @@ namespace Ngsa.Middleware
             Dictionary<string, object> log = new Dictionary<string, object>
             {
                 { "Date", dt },
-                { "logName", "Ngsa.RequestLog" },
+                { "LogName", "Ngsa.RequestLog" },
                 { "StatusCode", context.Response.StatusCode },
                 { "TTFB", ttfb },
                 { "Duration", duration },
@@ -135,8 +135,6 @@ namespace Ngsa.Middleware
                 { "UserAgent", context.Request.Headers["User-Agent"].ToString() },
                 { "CVector", cv.Value },
                 { "CVectorBase", cv.GetBase() },
-
-                // todo - need to encapsulate
                 { "Region", Region },
                 { "Zone", Zone },
                 { "PodType", PodType },
