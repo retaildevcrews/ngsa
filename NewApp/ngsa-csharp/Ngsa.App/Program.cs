@@ -34,8 +34,6 @@ namespace Ngsa.App
         private static CancellationTokenSource ctCancel;
 
         public static string DataService { get; set; }
-        public static string CosmosName { get; set; } = string.Empty;
-        public static string CosmosQueryId { get; set; } = string.Empty;
         public static string Region { get; set; } = string.Empty;
         public static string Zone { get; set; } = string.Empty;
         public static string PodType { get; set; }
