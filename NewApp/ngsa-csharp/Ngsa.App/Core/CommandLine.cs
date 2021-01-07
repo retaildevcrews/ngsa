@@ -93,16 +93,20 @@ namespace Ngsa.App
                 ctCancel = SetupCtlCHandler();
 
                 AppLogLevel = logLevel;
-
-                // todo - validate params
                 DataService = dataService;
 
                 // set the logger info
                 RequestLogger.CosmosName = string.Empty;
-                RequestLogger.DataService = DataService;
                 RequestLogger.PodType = PodType;
                 RequestLogger.Region = Region;
                 RequestLogger.Zone = Zone;
+
+                // remove prefix and suffix
+                RequestLogger.DataService = DataService;
+                RequestLogger.DataService = RequestLogger.DataService.Replace("https://", string.Empty).Replace("http://", string.Empty);
+
+                // add pod, region, zone info to logger
+                Logger.EnrichLog();
 
                 // build the host
                 host = BuildHost();
