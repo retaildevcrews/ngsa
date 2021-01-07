@@ -47,9 +47,10 @@ namespace Ngsa.Middleware
         public static string Region { get; set; } = string.Empty;
         public static string Zone { get; set; } = string.Empty;
         public static string PodType { get; set; } = string.Empty;
+        public static string DataService { get; set; } = string.Empty;
         public static string CosmosName { get; set; } = string.Empty;
-        public static string CosmosQueryId { get; set; } = "todo";
-        public static double CosmosRUs { get; set; } = 1.23;
+        public static string CosmosQueryId { get; set; } = string.Empty;
+        public static double CosmosRUs { get; set; } = 0;
 
         public static int RequestsPerSecond => RPS.Count > 0 ? RPS[0] : counter;
 
@@ -123,6 +124,7 @@ namespace Ngsa.Middleware
             Dictionary<string, object> log = new Dictionary<string, object>
             {
                 { "Date", dt },
+                { "logName", "Ngsa.RequestLog" },
                 { "StatusCode", context.Response.StatusCode },
                 { "TTFB", ttfb },
                 { "Duration", duration },
@@ -138,10 +140,27 @@ namespace Ngsa.Middleware
                 { "Region", Region },
                 { "Zone", Zone },
                 { "PodType", PodType },
-                { "CosmosName", CosmosName },
-                { "CosmosQueryId", CosmosQueryId },
-                { "CosmosRUs", CosmosRUs },
             };
+
+            if (!string.IsNullOrEmpty(CosmosName))
+            {
+                log.Add("CosmosName", CosmosName);
+            }
+
+            if (!string.IsNullOrEmpty(CosmosQueryId))
+            {
+                log.Add("CosmosQueryId", CosmosQueryId);
+            }
+
+            if (CosmosRUs > 0)
+            {
+                log.Add("CosmosRUs", CosmosRUs);
+            }
+
+            if (!string.IsNullOrEmpty(DataService))
+            {
+                log.Add("DataService", DataService);
+            }
 
             Interlocked.Increment(ref counter);
 

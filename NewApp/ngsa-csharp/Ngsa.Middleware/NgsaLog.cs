@@ -123,6 +123,7 @@ namespace Ngsa.Middleware
         {
             Dictionary<string, object> data = new Dictionary<string, object>
             {
+                { "date", DateTime.UtcNow },
                 { "logName", Name },
                 { "method", Method },
                 { "message", message },
@@ -141,12 +142,7 @@ namespace Ngsa.Middleware
 
             if (Context != null && Context.Items != null)
             {
-                data.Add("path", Context.Request.Path.ToString());
-
-                if (!string.IsNullOrEmpty(Context.Request.QueryString.ToString()))
-                {
-                    data.Add("queryString", Context.Request.QueryString.ToString()[1..]);
-                }
+                data.Add("path", Context.Request.Path + (string.IsNullOrEmpty(Context.Request.QueryString.ToString()) ? string.Empty : Context.Request.QueryString.ToString()));
 
                 if (Context.Items != null)
                 {
