@@ -48,19 +48,19 @@ namespace Ngsa.App.Controllers
         /// <summary>
         /// Returns a single JSON Actor by actorId
         /// </summary>
-        /// <param name="actorIdParameter">The actorId</param>
+        /// <param name="actorId">The actorId</param>
         /// <response code="404">actorId not found</response>
         /// <returns>IActionResult</returns>
         [HttpGet("{actorId}")]
-        public async Task<IActionResult> GetActorByIdAsync([FromRoute] ActorIdParameter actorIdParameter)
+        public async Task<IActionResult> GetActorByIdAsync([FromRoute] string actorId)
         {
             NgsaLog myLogger = Logger.GetLogger(nameof(GetActorByIdAsync), HttpContext).EnrichLog();
 
             myLogger.LogInformation("Web Request");
 
-            if (actorIdParameter == null)
+            if (string.IsNullOrEmpty(actorId))
             {
-                throw new ArgumentNullException(nameof(actorIdParameter));
+                throw new ArgumentNullException(nameof(actorId));
             }
 
             // return result

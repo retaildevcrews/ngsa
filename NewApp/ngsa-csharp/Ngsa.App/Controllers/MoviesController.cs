@@ -48,14 +48,14 @@ namespace Ngsa.App.Controllers
         /// <summary>
         /// Returns a single JSON Movie by movieIdParameter
         /// </summary>
-        /// <param name="movieIdParameter">Movie ID</param>
+        /// <param name="movieId">Movie ID</param>
         /// <returns>IActionResult</returns>
         [HttpGet("{movieId}")]
-        public async Task<IActionResult> GetMovieByIdAsync([FromRoute] MovieIdParameter movieIdParameter)
+        public async Task<IActionResult> GetMovieByIdAsync([FromRoute] string movieId)
         {
-            if (movieIdParameter == null)
+            if (string.IsNullOrEmpty(movieId))
             {
-                throw new ArgumentNullException(nameof(movieIdParameter));
+                throw new ArgumentNullException(nameof(movieId));
             }
 
             NgsaLog myLogger = Logger.GetLogger(nameof(GetMovieByIdAsync), HttpContext).EnrichLog();
