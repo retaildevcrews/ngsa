@@ -51,7 +51,7 @@ namespace Ngsa.DataService.Controllers
 
             NgsaLog myLogger = Logger.GetLogger(nameof(GetMoviesAsync), HttpContext).EnrichLog();
 
-            var list = movieQueryParameters.Validate();
+            System.Collections.Generic.List<Middleware.Validation.ValidationError> list = movieQueryParameters.Validate();
 
             if (list.Count > 0)
             {
@@ -89,7 +89,7 @@ namespace Ngsa.DataService.Controllers
 
             NgsaLog myLogger = Logger.GetLogger(nameof(GetMovieByIdAsync), HttpContext).EnrichLog();
 
-            var list = MovieQueryParameters.ValidateMovieId(movieId);
+            System.Collections.Generic.List<Middleware.Validation.ValidationError> list = MovieQueryParameters.ValidateMovieId(movieId);
 
             if (list.Count > 0)
             {

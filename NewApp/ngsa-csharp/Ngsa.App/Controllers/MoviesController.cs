@@ -43,7 +43,7 @@ namespace Ngsa.App.Controllers
                 throw new ArgumentNullException(nameof(movieQueryParameters));
             }
 
-            var list = movieQueryParameters.Validate();
+            List<Middleware.Validation.ValidationError> list = movieQueryParameters.Validate();
 
             if (list.Count > 0)
             {
@@ -73,7 +73,7 @@ namespace Ngsa.App.Controllers
                 throw new ArgumentNullException(nameof(movieId));
             }
 
-            var list = MovieQueryParameters.ValidateMovieId(movieId);
+            List<Middleware.Validation.ValidationError> list = MovieQueryParameters.ValidateMovieId(movieId);
 
             if (list.Count > 0)
             {

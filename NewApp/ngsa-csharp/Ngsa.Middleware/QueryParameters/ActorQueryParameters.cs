@@ -51,7 +51,7 @@ namespace Ngsa.Middleware
             if (PageNumber < 1 || PageNumber > 10000)
             {
                 errors.Add(new ValidationError { Target = "pageNumber", Message = ValidationError.GetErrorMessage("PageNumber") });
-        }
+            }
 
             if (PageSize < 1 || PageSize > 1000)
             {

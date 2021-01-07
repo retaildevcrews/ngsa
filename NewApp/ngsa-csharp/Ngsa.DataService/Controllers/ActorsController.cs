@@ -52,7 +52,7 @@ namespace Ngsa.DataService.Controllers
 
             NgsaLog myLogger = Logger.GetLogger(nameof(GetActorsAsync), HttpContext).EnrichLog();
 
-            var list = actorQueryParameters.Validate();
+            System.Collections.Generic.List<Middleware.Validation.ValidationError> list = actorQueryParameters.Validate();
 
             if (list.Count > 0)
             {
@@ -90,7 +90,7 @@ namespace Ngsa.DataService.Controllers
 
             NgsaLog myLogger = Logger.GetLogger(nameof(GetActorByIdAsync), HttpContext).EnrichLog();
 
-            var list = ActorQueryParameters.ValidateActorId(actorId);
+            System.Collections.Generic.List<Middleware.Validation.ValidationError> list = ActorQueryParameters.ValidateActorId(actorId);
 
             if (list.Count > 0)
             {

@@ -125,7 +125,7 @@ namespace Ngsa.DataService.Controllers
         /// <returns>JsonResult</returns>
         public static JsonResult CreateResult(string message, HttpStatusCode statusCode)
         {
-            var res = new JsonResult(new ErrorResult { Error = statusCode, Message = message })
+            JsonResult res = new JsonResult(new ErrorResult { Error = statusCode, Message = message })
             {
                 StatusCode = (int)statusCode,
             };
@@ -145,7 +145,7 @@ namespace Ngsa.DataService.Controllers
                 { "validationErrors", errorList },
             };
 
-            var res = new JsonResult(data)
+            JsonResult res = new JsonResult(data)
             {
                 StatusCode = (int)HttpStatusCode.BadRequest,
                 ContentType = "application/problem+json",

@@ -43,7 +43,7 @@ namespace Ngsa.App.Controllers
                 throw new ArgumentNullException(nameof(actorQueryParameters));
             }
 
-            var list = actorQueryParameters.Validate();
+            List<Middleware.Validation.ValidationError> list = actorQueryParameters.Validate();
 
             if (list.Count > 0)
             {
@@ -74,7 +74,7 @@ namespace Ngsa.App.Controllers
                 throw new ArgumentNullException(nameof(actorId));
             }
 
-            var list = ActorQueryParameters.ValidateActorId(actorId);
+            List<Middleware.Validation.ValidationError> list = ActorQueryParameters.ValidateActorId(actorId);
 
             if (list.Count > 0)
             {
