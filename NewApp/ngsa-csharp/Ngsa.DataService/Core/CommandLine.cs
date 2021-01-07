@@ -113,6 +113,13 @@ namespace Ngsa.DataService
                     CosmosDal = new DataAccessLayer.CosmosDal(new Uri(Secrets.CosmosServer), Secrets.CosmosKey, Secrets.CosmosDatabase, Secrets.CosmosCollection);
                 }
 
+                // set the logger info
+                RequestLogger.CosmosName = Secrets.CosmosServer;
+                RequestLogger.DataService = string.Empty;
+                RequestLogger.PodType = PodType;
+                RequestLogger.Region = Region;
+                RequestLogger.Zone = Zone;
+
                 // build the host
                 host = BuildHost();
 
@@ -162,7 +169,6 @@ namespace Ngsa.DataService
         // load secrets
         private static void LoadSecrets(string secretsVolume)
         {
-            // todo - add to command line
             Region = Environment.GetEnvironmentVariable("Region");
             Zone = Environment.GetEnvironmentVariable("Zone");
             PodType = Environment.GetEnvironmentVariable("PodType");

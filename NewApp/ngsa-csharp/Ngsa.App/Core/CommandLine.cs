@@ -97,6 +97,13 @@ namespace Ngsa.App
                 // todo - validate params
                 DataService = dataService;
 
+                // set the logger info
+                RequestLogger.CosmosName = string.Empty;
+                RequestLogger.DataService = DataService;
+                RequestLogger.PodType = PodType;
+                RequestLogger.Region = Region;
+                RequestLogger.Zone = Zone;
+
                 // build the host
                 host = BuildHost();
 
