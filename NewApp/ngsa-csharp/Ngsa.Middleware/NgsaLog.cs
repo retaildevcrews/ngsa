@@ -13,6 +13,11 @@ namespace Ngsa.Middleware
     public class NgsaLog
     {
         private static readonly Dictionary<int, NgsaLog> Loggers = new Dictionary<int, NgsaLog>();
+        private static readonly JsonSerializerOptions Options = new JsonSerializerOptions
+        {
+            IgnoreNullValues = true,
+        };
+
         private static int counter = 0;
 
         public string Name { get; set; } = string.Empty;
@@ -66,7 +71,7 @@ namespace Ngsa.Middleware
                 Dictionary<string, object> d = GetDictionary(message, logLevel);
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine(JsonSerializer.Serialize(d));
+                Console.WriteLine(JsonSerializer.Serialize(d, Options));
                 Console.ResetColor();
             }
         }
@@ -83,7 +88,7 @@ namespace Ngsa.Middleware
             Dictionary<string, object> d = GetDictionary(message, logLevel);
 
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(JsonSerializer.Serialize(d));
+            Console.WriteLine(JsonSerializer.Serialize(d, Options));
             Console.ResetColor();
         }
 
@@ -100,22 +105,22 @@ namespace Ngsa.Middleware
 
             if (ex != null)
             {
-                d.Add("exceptionType", ex.GetType());
-                d.Add("exceptionMessage", ex.Message);
+                d.Add("ExceptionType", ex.GetType());
+                d.Add("ExceptionMessage", ex.Message);
 
                 //d.Add("exceptionText", ex.ToString());
             }
             else if (Exception != null)
             {
-                d.Add("exceptionType", Exception.GetType().FullName);
-                d.Add("exceptionMessage", Exception.Message);
+                d.Add("ExceptionType", Exception.GetType().FullName);
+                d.Add("ExceptionMessage", Exception.Message);
 
                 //d.Add("exceptionText", Exception.ToString());
             }
 
             // display the error
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.Error.WriteLine(JsonSerializer.Serialize(d));
+            Console.Error.WriteLine(JsonSerializer.Serialize(d, Options));
             Console.ResetColor();
         }
 
@@ -123,26 +128,26 @@ namespace Ngsa.Middleware
         {
             Dictionary<string, object> data = new Dictionary<string, object>
             {
-                { "date", DateTime.UtcNow },
-                { "logName", Name },
-                { "method", Method },
-                { "message", message },
-                { "logLevel", logLevel.ToString() },
+                { "Date", DateTime.UtcNow },
+                { "LogName", Name },
+                { "Method", Method },
+                { "Message", message },
+                { "LogLevel", logLevel.ToString() },
             };
 
             if (EventId.Id > 0)
             {
-                data.Add("eventId", EventId.Id);
+                data.Add("EventId", EventId.Id);
             }
 
             if (!string.IsNullOrEmpty(EventId.Name))
             {
-                data.Add("eventName", EventId.Name);
+                data.Add("EventName", EventId.Name);
             }
 
             if (Context != null && Context.Items != null)
             {
-                data.Add("path", Context.Request.Path + (string.IsNullOrEmpty(Context.Request.QueryString.ToString()) ? string.Empty : Context.Request.QueryString.ToString()));
+                data.Add("Path", Context.Request.Path + (string.IsNullOrEmpty(Context.Request.QueryString.ToString()) ? string.Empty : Context.Request.QueryString.ToString()));
 
                 if (Context.Items != null)
                 {
