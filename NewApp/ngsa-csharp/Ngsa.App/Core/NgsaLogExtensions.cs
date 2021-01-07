@@ -9,6 +9,10 @@ namespace Ngsa.App
     {
         public static NgsaLog EnrichLog(this NgsaLog log)
         {
+            log.Data.Remove("podType");
+            log.Data.Remove("region");
+            log.Data.Remove("zone");
+
             log.Data.Add("podType", App.PodType);
             log.Data.Add("region", App.Region);
             log.Data.Add("zone", App.Zone);
