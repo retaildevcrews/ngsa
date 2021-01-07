@@ -143,11 +143,7 @@ namespace Ngsa.DataService
 
         /// <summary>
         /// Builds the config for the web server
-        ///
-        /// Uses Key Vault via Managed Identity (MI)
         /// </summary>
-        /// <param name="kvClient">Key Vault Client</param>
-        /// <param name="kvUrl">Key Vault URL</param>
         /// <returns>Root Configuration</returns>
         private static IConfigurationRoot BuildConfig()
         {

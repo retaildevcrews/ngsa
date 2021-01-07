@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -123,10 +124,56 @@ namespace Ngsa.DataService.Controllers
         /// <returns>JsonResult</returns>
         public static JsonResult CreateResult(string message, HttpStatusCode statusCode)
         {
-            return new JsonResult(new ErrorResult { Error = statusCode, Message = message })
+            var res = new JsonResult(new ErrorResult { Error = statusCode, Message = message })
             {
                 StatusCode = (int)statusCode,
             };
+
+            return res;
+        }
+
+        public static JsonResult CreateResult(List<Middleware.Validation.ValidationError> errorList, string path)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+
+            data.Add("type", GetErrorLink(path));
+            data.Add("title", "Parameter validation error");
+            data.Add("detail", "One or more invalid parameters were specified.");
+            data.Add("status", 400);
+            data.Add("instance", path);
+            data.Add("validationErrors", errorList);
+
+            var res = new JsonResult(data)
+            {
+                StatusCode = 400,
+                ContentType = "application/problem+json",
+            };
+
+            return res;
+        }
+
+        private static string GetErrorLink(string path)
+        {
+            string s = "https://github.com/retaildevcrews/ngsa/blob/main/docs/ParameterValidation.md";
+
+            if (path.StartsWith("/api/movies?") || path.StartsWith("/api/movies/?"))
+            {
+                s += "#movies-api";
+            }
+            else if (path.StartsWith("/api/movies"))
+            {
+                s += "#movies-direct-read";
+            }
+            else if (path.StartsWith("/api/actors?") || path.StartsWith("/api/actors/?"))
+            {
+                s += "#actors-api";
+            }
+            else if (path.StartsWith("/api/actors"))
+            {
+                s += "#actors-direct-read";
+            }
+
+            return s;
         }
     }
 }

@@ -49,6 +49,13 @@ namespace Ngsa.DataService.Controllers
 
             NgsaLog myLogger = Logger.GetLogger(nameof(GetMoviesAsync), HttpContext).EnrichLog();
 
+            var list = movieQueryParameters.Validate();
+
+            if (list.Count > 0)
+            {
+                return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.ToString() : string.Empty));
+            }
+
             // get the result
             IActionResult res = await ResultHandler.Handle(dal.GetMoviesAsync(movieQueryParameters), myLogger).ConfigureAwait(false);
 
@@ -64,24 +71,31 @@ namespace Ngsa.DataService.Controllers
         /// <summary>
         /// Returns a single JSON Movie by movieIdParameter
         /// </summary>
-        /// <param name="movieIdParameter">Movie ID</param>
+        /// <param name="movieId">Movie ID</param>
         /// <returns>IActionResult</returns>
         [HttpGet("{movieId}")]
-        public async Task<IActionResult> GetMovieByIdAsync([FromRoute] MovieIdParameter movieIdParameter)
+        public async Task<IActionResult> GetMovieByIdAsync([FromRoute] string movieId)
         {
-            if (movieIdParameter == null)
+            if (string.IsNullOrWhiteSpace(movieId))
             {
-                throw new ArgumentNullException(nameof(movieIdParameter));
+                throw new ArgumentNullException(nameof(movieId));
             }
 
             NgsaLog myLogger = Logger.GetLogger(nameof(GetMovieByIdAsync), HttpContext).EnrichLog();
 
-            IActionResult res = await ResultHandler.Handle(dal.GetMovieAsync(movieIdParameter.MovieId), myLogger).ConfigureAwait(false);
+            var list = MovieQueryParameters.ValidateMovieId(movieId);
+
+            if (list.Count > 0)
+            {
+                return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.ToString() : string.Empty));
+            }
+
+            IActionResult res = await ResultHandler.Handle(dal.GetMovieAsync(movieId), myLogger).ConfigureAwait(false);
 
             // use cache dal on Cosmos 429 errors
             if (res is JsonResult jres && jres.StatusCode == 429)
             {
-                res = await ResultHandler.Handle(App.CacheDal.GetMovieAsync(movieIdParameter.MovieId), myLogger).ConfigureAwait(false);
+                res = await ResultHandler.Handle(App.CacheDal.GetMovieAsync(movieId), myLogger).ConfigureAwait(false);
             }
 
             return res;

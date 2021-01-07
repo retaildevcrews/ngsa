@@ -94,10 +94,6 @@ namespace Ngsa.DataService
         {
             // set json serialization defaults and api behavior
             services.AddControllers()
-                .ConfigureApiBehaviorOptions(o =>
-                {
-                    o.InvalidModelStateResponseFactory = ctx => new ValidationResult();
-                })
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.IgnoreNullValues = true;

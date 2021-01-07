@@ -50,6 +50,13 @@ namespace Ngsa.DataService.Controllers
 
             NgsaLog myLogger = Logger.GetLogger(nameof(GetActorsAsync), HttpContext).EnrichLog();
 
+            var list = actorQueryParameters.Validate();
+
+            if (list.Count > 0)
+            {
+                return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.ToString() : string.Empty));
+            }
+
             IActionResult res = await ResultHandler.Handle(dal.GetActorsAsync(actorQueryParameters), myLogger).ConfigureAwait(false);
 
             // use cache dal on Cosmos 429 errors
@@ -64,26 +71,33 @@ namespace Ngsa.DataService.Controllers
         /// <summary>
         /// Returns a single JSON Actor by actorId
         /// </summary>
-        /// <param name="actorIdParameter">The actorId</param>
+        /// <param name="actorId">The actorId</param>
         /// <response code="404">actorId not found</response>
         /// <returns>IActionResult</returns>
         [HttpGet("{actorId}")]
-        public async Task<IActionResult> GetActorByIdAsync([FromRoute] ActorIdParameter actorIdParameter)
+        public async Task<IActionResult> GetActorByIdAsync([FromRoute] string actorId)
         {
-            if (actorIdParameter == null)
+            if (actorId == null)
             {
-                throw new ArgumentNullException(nameof(actorIdParameter));
+                throw new ArgumentNullException(nameof(actorId));
             }
 
             NgsaLog myLogger = Logger.GetLogger(nameof(GetActorByIdAsync), HttpContext).EnrichLog();
 
+            var list = ActorQueryParameters.ValidateActorId(actorId);
+
+            if (list.Count > 0)
+            {
+                return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.ToString() : string.Empty));
+            }
+
             // return result
-            IActionResult res = await ResultHandler.Handle(dal.GetActorAsync(actorIdParameter.ActorId), myLogger).ConfigureAwait(false);
+            IActionResult res = await ResultHandler.Handle(dal.GetActorAsync(actorId), myLogger).ConfigureAwait(false);
 
             // use cache dal on Cosmos 429 errors
             if (res is JsonResult jres && jres.StatusCode == 429)
             {
-                res = await ResultHandler.Handle(App.CacheDal.GetActorAsync(actorIdParameter.ActorId), myLogger).ConfigureAwait(false);
+                res = await ResultHandler.Handle(App.CacheDal.GetActorAsync(actorId), myLogger).ConfigureAwait(false);
             }
 
             return res;
