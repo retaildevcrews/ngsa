@@ -19,90 +19,97 @@ namespace Ngsa.Middleware
         /// <returns>Task</returns>
         public static async Task DisplayAsciiArt(string file, ConsoleColor color, Animation animation = Animation.None)
         {
-            if (File.Exists(file))
+            try
             {
-                string txt = File.ReadAllText(file);
-
-                if (animation == Animation.None)
+                if (File.Exists(file))
                 {
-                    DisplayArt(txt, color);
-                    Console.ResetColor();
+                    string txt = File.ReadAllText(file);
 
-                    return;
-                }
-
-                string[] lines = File.ReadAllLines(file);
-
-                Console.CursorVisible = false;
-
-                // scroll the window
-                for (int i = 0; i < Console.WindowHeight; i++)
-                {
-                    Console.WriteLine();
-                }
-
-                // determine top of screen
-                int top = Console.CursorTop - Console.WindowHeight;
-                int row = top + Console.WindowHeight - lines.Length - 5;
-
-                int key = 0;
-                Random rnd = new Random(DateTime.Now.Millisecond);
-
-                SortedList<int, ConsoleCharacter> lrandom = new SortedList<int, ConsoleCharacter>();
-                List<ConsoleCharacter> list = new List<ConsoleCharacter>();
-
-                // create the random list
-                for (int r = 0; r < lines.Length; r++)
-                {
-                    string line = lines[r];
-
-                    for (int c = 0; c < line.Length; c++)
+                    if (animation == Animation.None)
                     {
-                        if (!char.IsWhiteSpace(line[c]))
+                        DisplayArt(txt, color);
+                        Console.ResetColor();
+
+                        return;
+                    }
+
+                    string[] lines = File.ReadAllLines(file);
+
+                    Console.CursorVisible = false;
+
+                    // scroll the window
+                    for (int i = 0; i < Console.WindowHeight; i++)
+                    {
+                        Console.WriteLine();
+                    }
+
+                    // determine top of screen
+                    int top = Console.CursorTop - Console.WindowHeight;
+                    int row = top + Console.WindowHeight - lines.Length - 5;
+
+                    int key = 0;
+                    Random rnd = new Random(DateTime.Now.Millisecond);
+
+                    SortedList<int, ConsoleCharacter> lrandom = new SortedList<int, ConsoleCharacter>();
+                    List<ConsoleCharacter> list = new List<ConsoleCharacter>();
+
+                    // create the random list
+                    for (int r = 0; r < lines.Length; r++)
+                    {
+                        string line = lines[r];
+
+                        for (int c = 0; c < line.Length; c++)
                         {
-                            while (key < 1 || lrandom.ContainsKey(key))
+                            if (!char.IsWhiteSpace(line[c]))
                             {
-                                key = rnd.Next(1, int.MaxValue);
+                                while (key < 1 || lrandom.ContainsKey(key))
+                                {
+                                    key = rnd.Next(1, int.MaxValue);
+                                }
+
+                                ConsoleCharacter l = new ConsoleCharacter
+                                {
+                                    Color = color,
+                                    Row = top + r,
+                                    Col = c,
+                                    Value = line[c],
+                                };
+
+                                // add to random list and in-order list
+                                list.Add(l);
+                                lrandom.Add(key, l);
                             }
-
-                            ConsoleCharacter l = new ConsoleCharacter
-                            {
-                                Color = color,
-                                Row = top + r,
-                                Col = c,
-                                Value = line[c],
-                            };
-
-                            // add to random list and in-order list
-                            list.Add(l);
-                            lrandom.Add(key, l);
                         }
                     }
-                }
 
-                switch (animation)
-                {
-                    case Animation.None:
-                        break;
-                    case Animation.Dissolve:
-                        await Dissolve(lrandom).ConfigureAwait(false);
-                        break;
-                    case Animation.Fade:
-                        await Fade(txt, lines, top).ConfigureAwait(false);
-                        break;
-                    case Animation.Scroll:
-                        await Scroll(txt, color, lines, top).ConfigureAwait(false);
-                        break;
-                    case Animation.TwoColor:
-                        await TwoColor(list).ConfigureAwait(false);
-                        break;
-                    default:
-                        break;
-                }
+                    switch (animation)
+                    {
+                        case Animation.None:
+                            break;
+                        case Animation.Dissolve:
+                            await Dissolve(lrandom).ConfigureAwait(false);
+                            break;
+                        case Animation.Fade:
+                            await Fade(txt, lines, top).ConfigureAwait(false);
+                            break;
+                        case Animation.Scroll:
+                            await Scroll(txt, color, lines, top).ConfigureAwait(false);
+                            break;
+                        case Animation.TwoColor:
+                            await TwoColor(list).ConfigureAwait(false);
+                            break;
+                        default:
+                            break;
+                    }
 
-                Console.SetCursorPosition(0, top + lines.Length + 1);
-                Console.CursorVisible = true;
-                Console.ResetColor();
+                    Console.SetCursorPosition(0, top + lines.Length + 1);
+                    Console.CursorVisible = true;
+                    Console.ResetColor();
+                }
+            }
+            catch
+            {
+                // ignore any errors
             }
         }
 
