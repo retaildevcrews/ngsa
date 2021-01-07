@@ -1,0 +1,22 @@
+apiVersion: kuma.io/v1alpha1
+kind: TrafficRoute
+mesh: default
+metadata:
+  name: route-example
+spec:
+  sources:
+    - match:
+        kuma.io/service: "*"
+  destinations:
+    - match:
+        kuma.io/service: ngsa-memory_kuma-spike_svc_4120
+  conf:
+    split:
+      - weight: 100
+        destination:
+          kuma.io/service: ngsa-memory_kuma-spike_svc_4120
+          kuma-zone: "remote1"
+      - weight: 0
+        destination:
+          kuma.io/service: ngsa-memory_kuma-spike_svc_4120
+          kuma-zone: "remote2"

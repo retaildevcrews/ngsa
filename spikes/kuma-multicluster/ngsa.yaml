@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ngsa-memory
+  namespace: kuma-spike
+  labels:
+    app: ngsa-memory
+spec:
+  containers:
+  - name: ngsa
+    imagePullPolicy: Always
+    image: retaildevcrew/ngsa:${NGSA_IMAGE_TAG}
+    args: [ "--in-memory" ]
+    ports:
+    - containerPort: 4120
+    env:
+    - name: Zone
+      value: debug
+    - name: Region
+      value: debug
+    - name: PodType
+      value: ngsa-memory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ngsa-memory
+  namespace: kuma-spike
+  labels:
+    app: ngsa-memory
+spec:
+  ports:
+  - port: 4120
+    protocol: TCP
+    targetPort: 4120
+  selector:
+    app: ngsa-memory
+  sessionAffinity: None
+  type: ClusterIP
