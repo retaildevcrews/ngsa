@@ -114,7 +114,7 @@ namespace Ngsa.DataService
                 }
 
                 // set the logger info
-                RequestLogger.CosmosName = Secrets.CosmosServer;
+                RequestLogger.CosmosName = Secrets.CosmosServer.Substring(0, Secrets.CosmosServer.IndexOf(".")).Replace("https://", string.Empty);
                 RequestLogger.DataService = string.Empty;
                 RequestLogger.PodType = PodType;
                 RequestLogger.Region = Region;
