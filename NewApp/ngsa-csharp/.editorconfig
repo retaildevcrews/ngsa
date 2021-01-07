@@ -233,6 +233,9 @@ dotnet_diagnostic.SA1401.severity = suggestion
 # SA1502: Element should not be on a single line
 dotnet_diagnostic.SA1502.severity = suggestion
 
+# SA1507: Code should not contain multiple blank lines in a row
+dotnet_diagnostic.SA1507.severity = suggestion
+
 # SA1512: Single-line comments should not be followed by blank line
 dotnet_diagnostic.SA1512.severity = none
 
