@@ -36,10 +36,9 @@ namespace Ngsa.App.Controllers
         /// </summary>
         /// <typeparam name="T">Result Type</typeparam>
         /// <param name="path">path</param>
-        /// <param name="queryString">query string</param>
         /// <param name="cVector">Correlation Vector</param>
         /// <returns>IActionResult</returns>
-        public static async Task<IActionResult> Read<T>(string path, string queryString, CorrelationVector cVector)
+        public static async Task<IActionResult> Read<T>(string path, CorrelationVector cVector)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -47,11 +46,6 @@ namespace Ngsa.App.Controllers
             }
 
             string fullPath = path.Trim();
-
-            if (!string.IsNullOrWhiteSpace(queryString))
-            {
-                fullPath += queryString.Trim();
-            }
 
             try
             {
@@ -91,7 +85,19 @@ namespace Ngsa.App.Controllers
         /// <returns>IActionResult</returns>
         public static async Task<IActionResult> Read<T>(HttpRequest request)
         {
-            return await Read<T>(request?.Path.ToString(), request?.QueryString.ToString(), Middleware.CorrelationVectorExtensions.GetCorrelationVectorFromContext(request.HttpContext)).ConfigureAwait(false);
+            if (request == null || !request.Path.HasValue)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            string path = request.Path.ToString().Trim();
+
+            if (request.QueryString.HasValue)
+            {
+                path += request.QueryString.Value;
+            }
+
+            return await Read<T>(path, Middleware.CorrelationVectorExtensions.GetCorrelationVectorFromContext(request.HttpContext)).ConfigureAwait(false);
         }
 
         /// <summary>
