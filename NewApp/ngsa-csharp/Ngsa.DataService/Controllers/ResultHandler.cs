@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using Ngsa.Middleware;
+using Ngsa.Middleware.Validation;
 
 namespace Ngsa.DataService.Controllers
 {
@@ -26,7 +27,7 @@ namespace Ngsa.DataService.Controllers
             // return exception if task is null
             if (task == null)
             {
-                logger.LogError($"Exception:{method} task is null");
+                logger.LogError("Exception: task is null");
 
                 return CreateResult(errorMessage, HttpStatusCode.InternalServerError);
             }
@@ -41,7 +42,7 @@ namespace Ngsa.DataService.Controllers
                 // log and return Cosmos status code
                 if (ce.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
-                    logger.LogWarning($"CosmosNotFound:{method}");
+                    logger.LogWarning($"CosmosNotFound: {method}");
                 }
                 else
                 {
@@ -90,16 +91,16 @@ namespace Ngsa.DataService.Controllers
             catch (CosmosException ce)
             {
                 // log and return Cosmos status code
-                if (ce.StatusCode == System.Net.HttpStatusCode.NotFound)
+                if (ce.StatusCode == HttpStatusCode.NotFound)
                 {
                     logger.EventId = new EventId((int)ce.StatusCode, string.Empty);
-                    logger.LogWarning($"CosmosNotFound: {ce.StatusCode}");
+                    logger.LogWarning(logger.NotFoundError);
                     return CreateResult(logger.NotFoundError, ce.StatusCode);
                 }
 
                 logger.Exception = ce;
                 logger.EventId = new EventId((int)ce.StatusCode, "CosmosException");
-                logger.Data.Add("cosmosActivityId", ce.ActivityId);
+                logger.Data.Add("CosmosActivityId", ce.ActivityId);
                 logger.LogError($"CosmosException: {ce.Message}");
 
                 return CreateResult(logger.ErrorMessage, ce.StatusCode);
@@ -134,14 +135,15 @@ namespace Ngsa.DataService.Controllers
 
         public static JsonResult CreateResult(List<Middleware.Validation.ValidationError> errorList, string path)
         {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-
-            data.Add("type", GetErrorLink(path));
-            data.Add("title", "Parameter validation error");
-            data.Add("detail", "One or more invalid parameters were specified.");
-            data.Add("status", 400);
-            data.Add("instance", path);
-            data.Add("validationErrors", errorList);
+            Dictionary<string, object> data = new Dictionary<string, object>
+            {
+                { "type", ValidationError.GetErrorLink(path) },
+                { "title", "Parameter validation error" },
+                { "detail", "One or more invalid parameters were specified." },
+                { "status", 400 },
+                { "instance", path },
+                { "validationErrors", errorList },
+            };
 
             var res = new JsonResult(data)
             {
@@ -150,30 +152,6 @@ namespace Ngsa.DataService.Controllers
             };
 
             return res;
-        }
-
-        private static string GetErrorLink(string path)
-        {
-            string s = "https://github.com/retaildevcrews/ngsa/blob/main/docs/ParameterValidation.md";
-
-            if (path.StartsWith("/api/movies?") || path.StartsWith("/api/movies/?"))
-            {
-                s += "#movies-api";
-            }
-            else if (path.StartsWith("/api/movies"))
-            {
-                s += "#movies-direct-read";
-            }
-            else if (path.StartsWith("/api/actors?") || path.StartsWith("/api/actors/?"))
-            {
-                s += "#actors-api";
-            }
-            else if (path.StartsWith("/api/actors"))
-            {
-                s += "#actors-direct-read";
-            }
-
-            return s;
         }
     }
 }

@@ -135,7 +135,7 @@ namespace Ngsa.DataService
             if (Logger != null)
             {
                 // todo - add pod info?
-                Logger.Data.Add("version", Ngsa.Middleware.VersionExtension.Version);
+                Logger.Data.Add("Version", Ngsa.Middleware.VersionExtension.Version);
                 Logger.LogInformation("Data Service Started");
                 Logger.Data.Clear();
             }

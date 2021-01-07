@@ -114,7 +114,15 @@ namespace Ngsa.DataService
                 }
 
                 // set the logger info
-                RequestLogger.CosmosName = Secrets.CosmosServer.Substring(0, Secrets.CosmosServer.IndexOf(".")).Replace("https://", string.Empty);
+                RequestLogger.CosmosName = Secrets.CosmosServer;
+
+                // remove prefix and suffix
+                RequestLogger.CosmosName = RequestLogger.CosmosName.Replace("https://", string.Empty);
+                if (RequestLogger.CosmosName.IndexOf(".documents.azure.com") > 0)
+                {
+                    RequestLogger.CosmosName = RequestLogger.CosmosName.Substring(0, RequestLogger.CosmosName.IndexOf(".documents.azure.com"));
+                }
+
                 RequestLogger.DataService = string.Empty;
                 RequestLogger.PodType = PodType;
                 RequestLogger.Region = Region;
