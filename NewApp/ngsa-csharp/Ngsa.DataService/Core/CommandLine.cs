@@ -169,8 +169,7 @@ namespace Ngsa.DataService
                 if (Logger != null)
                 {
                     Logger.Method = nameof(RunApp);
-                    Logger.Exception = ex;
-                    Logger.LogError($"Exception: {ex.Message}");
+                    Logger.LogError($"Exception: {ex.Message}", ex);
                 }
 
                 return -1;

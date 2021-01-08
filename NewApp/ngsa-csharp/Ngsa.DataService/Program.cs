@@ -156,8 +156,7 @@ namespace Ngsa.DataService
             {
                 // log and fail
                 Logger.Method = nameof(BuildConfig);
-                Logger.Exception = ex;
-                Logger.LogError($"Exception: {ex.Message}");
+                Logger.LogError($"Exception: {ex.Message}", ex);
 
                 Environment.Exit(-1);
             }
