@@ -18,7 +18,7 @@ namespace CSE.LodeRunner.Tests
         [Fact]
         public void PathTest()
         {
-            if (string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
+            if (string.IsNullOrWhiteSpace(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
 
                 ValidationResult res;
@@ -36,7 +36,7 @@ namespace CSE.LodeRunner.Tests
         [Fact]
         public void CommonBoundariesTest()
         {
-            if (string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
+            if (string.IsNullOrWhiteSpace(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
                 ValidationResult res;
 
@@ -69,7 +69,7 @@ namespace CSE.LodeRunner.Tests
                 // > 0
                 v.MaxMilliseconds = 0;
 
-                // ! isnullorempty
+                // ! IsNullOrWhiteSpace
                 v.ExactMatch = string.Empty;
                 v.ContentType = string.Empty;
 
@@ -85,7 +85,7 @@ namespace CSE.LodeRunner.Tests
         [Fact]
         public void PerfTargetTest()
         {
-            if (string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
+            if (string.IsNullOrWhiteSpace(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
                 ValidationResult res;
 
@@ -109,7 +109,7 @@ namespace CSE.LodeRunner.Tests
         [Fact]
         public void ResponseNullTest()
         {
-            if (string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
+            if (string.IsNullOrWhiteSpace(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
                 Request r = new Request();
 
@@ -139,7 +139,7 @@ namespace CSE.LodeRunner.Tests
         [Fact]
         public void ParameterValidatorTest()
         {
-            if (string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
+            if (string.IsNullOrWhiteSpace(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
                 Assert.NotEmpty(ParameterValidator.Validate((Request)null).ValidationErrors);
 
@@ -158,7 +158,7 @@ namespace CSE.LodeRunner.Tests
         [Fact]
         public void ResponseValidatorTest()
         {
-            if (string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
+            if (string.IsNullOrWhiteSpace(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
                 Assert.NotEmpty(ResponseValidator.ValidateStatusCode(400, 200).ValidationErrors);
 
@@ -202,7 +202,7 @@ namespace CSE.LodeRunner.Tests
         [Fact]
         public void ConfigTest()
         {
-            if (string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
+            if (string.IsNullOrWhiteSpace(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
                 Config cfg = null;
 
@@ -235,7 +235,7 @@ namespace CSE.LodeRunner.Tests
         [Fact]
         public async Task CommandArgsTest()
         {
-            if (string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
+            if (string.IsNullOrWhiteSpace(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
                 // no params displays usage
                 Assert.Equal(1, await App.Main(null).ConfigureAwait(false));
@@ -257,7 +257,7 @@ namespace CSE.LodeRunner.Tests
         [Fact]
         public async Task ValidateAllJsonFilesTest()
         {
-            if (string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
+            if (string.IsNullOrWhiteSpace(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
                 // test all files
                 Config cfg = new Config
@@ -282,7 +282,7 @@ namespace CSE.LodeRunner.Tests
         [Fact]
         public void EnvironmentVariableTest()
         {
-            if (string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
+            if (string.IsNullOrWhiteSpace(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
                 RootCommand root = App.BuildRootCommand();
                 ParseResult parse;
@@ -344,7 +344,7 @@ namespace CSE.LodeRunner.Tests
         [Fact]
         public void FlagTest()
         {
-            if (string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
+            if (string.IsNullOrWhiteSpace(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
                 RootCommand root = App.BuildRootCommand();
                 ParseResult parse;

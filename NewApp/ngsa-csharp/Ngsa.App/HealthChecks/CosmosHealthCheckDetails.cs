@@ -57,7 +57,7 @@ namespace Ngsa.App
             }
 
             // add the results to the dictionary
-            if (data != null && !string.IsNullOrEmpty(testName))
+            if (data != null && !string.IsNullOrWhiteSpace(testName))
             {
                 data.Add(testName + ":responseTime", result);
             }

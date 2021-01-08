@@ -55,7 +55,7 @@ namespace Ngsa.Middleware
         {
             List<ValidationError> errors = new List<ValidationError>();
 
-            if (!string.IsNullOrEmpty(Q) &&
+            if (!string.IsNullOrWhiteSpace(Q) &&
                 (Q.Length < 2 || Q.Length > 20))
             {
                 errors.Add(new ValidationError { Target = "q", Message = ValidationError.GetErrorMessage("Q") });

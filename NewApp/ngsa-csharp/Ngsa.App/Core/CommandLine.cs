@@ -74,17 +74,17 @@ namespace Ngsa.App
                 Zone = Environment.GetEnvironmentVariable("Zone");
                 PodType = Environment.GetEnvironmentVariable("PodType");
 
-                if (string.IsNullOrEmpty(PodType))
+                if (string.IsNullOrWhiteSpace(PodType))
                 {
                     PodType = "Ngsa.App";
                 }
 
-                if (string.IsNullOrEmpty(Region))
+                if (string.IsNullOrWhiteSpace(Region))
                 {
                     Region = "dev";
                 }
 
-                if (string.IsNullOrEmpty(Zone))
+                if (string.IsNullOrWhiteSpace(Zone))
                 {
                     Zone = "dev";
                 }

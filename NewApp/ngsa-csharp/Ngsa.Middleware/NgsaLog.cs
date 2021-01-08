@@ -140,14 +140,14 @@ namespace Ngsa.Middleware
                 data.Add("EventId", EventId.Id);
             }
 
-            if (!string.IsNullOrEmpty(EventId.Name))
+            if (!string.IsNullOrWhiteSpace(EventId.Name))
             {
                 data.Add("EventName", EventId.Name);
             }
 
             if (Context != null && Context.Items != null)
             {
-                data.Add("Path", Context.Request.Path + (string.IsNullOrEmpty(Context.Request.QueryString.ToString()) ? string.Empty : Context.Request.QueryString.ToString()));
+                data.Add("Path", Context.Request.Path + (string.IsNullOrWhiteSpace(Context.Request.QueryString.Value) ? string.Empty : Context.Request.QueryString.Value));
 
                 if (Context.Items != null)
                 {

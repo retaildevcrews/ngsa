@@ -328,7 +328,7 @@ namespace Ngsa.LodeRunner.Validators
         {
             ValidationResult res = new ValidationResult();
 
-            if (!string.IsNullOrEmpty(verb))
+            if (!string.IsNullOrWhiteSpace(verb))
             {
                 verb = verb.Trim().ToUpperInvariant();
             }
@@ -360,7 +360,7 @@ namespace Ngsa.LodeRunner.Validators
             // validate each value
             foreach (string c in contains)
             {
-                if (string.IsNullOrEmpty(c))
+                if (string.IsNullOrWhiteSpace(c))
                 {
                     res.ValidationErrors.Add("contains: values cannot be empty");
                 }
@@ -413,7 +413,7 @@ namespace Ngsa.LodeRunner.Validators
             // validate each value
             foreach (string c in notcontains)
             {
-                if (string.IsNullOrEmpty(c))
+                if (string.IsNullOrWhiteSpace(c))
                 {
                     res.Failed = true;
                     res.ValidationErrors.Add("notContains: values cannot be empty");

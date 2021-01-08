@@ -51,7 +51,7 @@ namespace Ngsa.App.Controllers
                 nLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
                 nLogger.LogWarning($"Invalid query string");
 
-                return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.ToString() : string.Empty));
+                return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.Value : string.Empty));
             }
 
             return await DataService.Read<List<Actor>>(Request).ConfigureAwait(false);
@@ -69,7 +69,7 @@ namespace Ngsa.App.Controllers
             NgsaLog nLogger = Logger.GetLogger(nameof(GetActorByIdAsync), HttpContext).EnrichLog();
             nLogger.LogInformation("Web Request");
 
-            if (string.IsNullOrEmpty(actorId))
+            if (string.IsNullOrWhiteSpace(actorId))
             {
                 throw new ArgumentNullException(nameof(actorId));
             }
@@ -82,7 +82,7 @@ namespace Ngsa.App.Controllers
                 nLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
                 nLogger.LogWarning($"Invalid Actor Id");
 
-                return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.ToString() : string.Empty));
+                return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.Value : string.Empty));
             }
 
             // return result

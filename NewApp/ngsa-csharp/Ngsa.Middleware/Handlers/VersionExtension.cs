@@ -28,7 +28,7 @@ namespace Ngsa.Middleware
             get
             {
                 // use reflection to get the version
-                if (string.IsNullOrEmpty(version))
+                if (string.IsNullOrWhiteSpace(version))
                 {
                     if (Attribute.GetCustomAttribute(Assembly.GetEntryAssembly(), typeof(AssemblyInformationalVersionAttribute)) is AssemblyInformationalVersionAttribute v)
                     {

@@ -51,7 +51,7 @@ namespace Ngsa.App.Controllers
                 nLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
                 nLogger.LogWarning($"Invalid query string");
 
-                return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.ToString() : string.Empty));
+                return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.Value : string.Empty));
             }
 
             return await DataService.Read<List<Movie>>(Request).ConfigureAwait(false);
@@ -68,7 +68,7 @@ namespace Ngsa.App.Controllers
             NgsaLog nLogger = Logger.GetLogger(nameof(GetMovieByIdAsync), HttpContext).EnrichLog();
             nLogger.LogInformation("Web Request");
 
-            if (string.IsNullOrEmpty(movieId))
+            if (string.IsNullOrWhiteSpace(movieId))
             {
                 throw new ArgumentNullException(nameof(movieId));
             }
@@ -81,7 +81,7 @@ namespace Ngsa.App.Controllers
                 nLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
                 nLogger.LogWarning($"Invalid Movie Id");
 
-                return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.ToString() : string.Empty));
+                return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.Value : string.Empty));
             }
 
             return await DataService.Read<Movie>(Request).ConfigureAwait(false);

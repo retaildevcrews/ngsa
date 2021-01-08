@@ -336,7 +336,7 @@ namespace Ngsa.DataService.DataAccessLayer
             }
 
             // nothing found
-            if (string.IsNullOrEmpty(ids))
+            if (string.IsNullOrWhiteSpace(ids))
             {
                 return string.Empty;
             }

@@ -353,9 +353,9 @@ namespace Ngsa.LodeRunner
                 req.Headers.Add(CorrelationVector.HeaderName, cv.Value);
 
                 // add the body to the http request
-                if (!string.IsNullOrEmpty(request.Body))
+                if (!string.IsNullOrWhiteSpace(request.Body))
                 {
-                    if (!string.IsNullOrEmpty(request.ContentMediaType))
+                    if (!string.IsNullOrWhiteSpace(request.ContentMediaType))
                     {
                         req.Content = new StringContent(request.Body, Encoding.UTF8, request.ContentMediaType);
                     }
@@ -436,7 +436,7 @@ namespace Ngsa.LodeRunner
                 PerfTarget target = targets[log.Category];
 
                 if (target != null &&
-                    !string.IsNullOrEmpty(target.Category) &&
+                    !string.IsNullOrWhiteSpace(target.Category) &&
                     target.Quartiles != null &&
                     target.Quartiles.Count == 3)
                 {

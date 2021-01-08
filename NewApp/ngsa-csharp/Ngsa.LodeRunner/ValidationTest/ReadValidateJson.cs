@@ -30,10 +30,10 @@ namespace Ngsa.LodeRunner
                 throw new ArgumentNullException(nameof(file));
             }
 
-            if (string.IsNullOrEmpty(config.BaseUrl))
+            if (string.IsNullOrWhiteSpace(config.BaseUrl))
             {
                 // check for file exists
-                if (string.IsNullOrEmpty(file) || !File.Exists(file))
+                if (string.IsNullOrWhiteSpace(file) || !File.Exists(file))
                 {
                     Console.WriteLine($"File Not Found: {file}");
                     return null;
@@ -43,7 +43,7 @@ namespace Ngsa.LodeRunner
                 content = File.ReadAllText(file);
 
                 // check for empty file
-                if (string.IsNullOrEmpty(content))
+                if (string.IsNullOrWhiteSpace(content))
                 {
                     Console.WriteLine($"Unable to read file {file}");
                     return null;
@@ -60,7 +60,7 @@ namespace Ngsa.LodeRunner
                     content = client.GetStringAsync(new Uri(path)).Result;
 
                     // check for empty file
-                    if (string.IsNullOrEmpty(content))
+                    if (string.IsNullOrWhiteSpace(content))
                     {
                         Console.WriteLine($"Unable to read file {path}");
                         return null;

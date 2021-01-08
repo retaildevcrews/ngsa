@@ -20,7 +20,7 @@ namespace Tests
         public async Task RunApp()
         {
             // run the web server for integration test
-            if (!string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
+            if (!string.IsNullOrWhiteSpace(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
                 Task t = App.Main(new string[] { "--log-level", "Error" });
 

@@ -47,8 +47,8 @@ namespace Ngsa.LodeRunner
             Region = Environment.GetEnvironmentVariable("Region");
             Zone = Environment.GetEnvironmentVariable("Zone");
 
-            Region = string.IsNullOrEmpty(Region) ? "dev" : Region;
-            Zone = string.IsNullOrEmpty(Zone) ? "dev" : Zone;
+            Region = string.IsNullOrWhiteSpace(Region) ? "dev" : Region;
+            Zone = string.IsNullOrWhiteSpace(Zone) ? "dev" : Zone;
 
             // add ctl-c handler
             AddControlCHandler();

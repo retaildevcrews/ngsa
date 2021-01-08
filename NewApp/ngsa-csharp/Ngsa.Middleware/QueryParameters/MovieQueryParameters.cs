@@ -61,7 +61,7 @@ namespace Ngsa.Middleware
         {
             List<ValidationError> errors = new List<ValidationError>();
 
-            if (!string.IsNullOrEmpty(Q) &&
+            if (!string.IsNullOrWhiteSpace(Q) &&
                 (Q.Length < 2 || Q.Length > 20))
             {
                 errors.Add(new ValidationError { Target = "q", Message = ValidationError.GetErrorMessage("Q") });
@@ -77,12 +77,12 @@ namespace Ngsa.Middleware
                 errors.Add(new ValidationError { Target = "pageSize", Message = ValidationError.GetErrorMessage("PageSize") });
             }
 
-            if (!string.IsNullOrEmpty(ActorId) && ActorQueryParameters.ValidateActorId(ActorId).Count > 0)
+            if (!string.IsNullOrWhiteSpace(ActorId) && ActorQueryParameters.ValidateActorId(ActorId).Count > 0)
             {
                 errors.Add(new ValidationError { Target = "actorId", Message = ValidationError.GetErrorMessage("ActorId") });
             }
 
-            if (!string.IsNullOrEmpty(Genre) &&
+            if (!string.IsNullOrWhiteSpace(Genre) &&
                 (Genre != Genre.Trim() ||
                  Genre.Length < 3 ||
                  Genre.Length > 20))

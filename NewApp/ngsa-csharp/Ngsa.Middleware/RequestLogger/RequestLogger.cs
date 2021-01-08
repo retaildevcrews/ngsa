@@ -140,12 +140,12 @@ namespace Ngsa.Middleware
                 { "PodType", PodType },
             };
 
-            if (!string.IsNullOrEmpty(CosmosName))
+            if (!string.IsNullOrWhiteSpace(CosmosName))
             {
                 log.Add("CosmosName", CosmosName);
             }
 
-            if (!string.IsNullOrEmpty(CosmosQueryId))
+            if (!string.IsNullOrWhiteSpace(CosmosQueryId))
             {
                 log.Add("CosmosQueryId", CosmosQueryId);
             }
@@ -155,7 +155,7 @@ namespace Ngsa.Middleware
                 log.Add("CosmosRUs", CosmosRUs);
             }
 
-            if (!string.IsNullOrEmpty(DataService))
+            if (!string.IsNullOrWhiteSpace(DataService))
             {
                 log.Add("DataService", DataService);
             }
@@ -188,7 +188,7 @@ namespace Ngsa.Middleware
         /// <returns>string</returns>
         private static string GetPathAndQuerystring(HttpRequest request)
         {
-            return request?.Path.ToString() + request?.QueryString.ToString();
+            return request?.Path.ToString() + request?.QueryString.Value;
         }
     }
 }
