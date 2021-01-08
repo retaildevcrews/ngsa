@@ -34,7 +34,7 @@ namespace Ngsa.DataService.Controllers
             if (task == null)
             {
                 logger.EventId = new EventId((int)HttpStatusCode.InternalServerError, "Exception");
-                logger.LogError("Exception: task is null", new ArgumentNullException(nameof(task));
+                logger.LogError("Exception: task is null", new ArgumentNullException(nameof(task)));
 
                 return CreateResult(logger.ErrorMessage, HttpStatusCode.InternalServerError);
             }
@@ -64,7 +64,7 @@ namespace Ngsa.DataService.Controllers
             {
                 // log and return exception
                 logger.EventId = new EventId((int)HttpStatusCode.InternalServerError, "Exception");
-                logger.LogError($"Exception: {ex.Message}", ce);
+                logger.LogError($"Exception: {ex.Message}", ex);
 
                 // return 500 error
                 return CreateResult("Internal Server Error", HttpStatusCode.InternalServerError);
