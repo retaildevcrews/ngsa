@@ -19,7 +19,7 @@ namespace Ngsa.App.Controllers
             Name = typeof(GenresController).FullName,
             LogLevel = App.AppLogLevel,
             ErrorMessage = "GenresControllerException",
-            NotFoundError = "Movie Not Found",
+            NotFoundError = "Genre Not Found",
             Method = nameof(GetGenresAsync),
         };
 
