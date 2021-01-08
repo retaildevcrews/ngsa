@@ -58,18 +58,22 @@ namespace Ngsa.App.Controllers
 
                 HttpResponseMessage resp = await Client.SendAsync(req);
 
+                JsonResult json;
+
+                // todo - can we return the byte array directly?
                 if (resp.IsSuccessStatusCode)
                 {
                     T obj = JsonSerializer.Deserialize<T>(await resp.Content.ReadAsByteArrayAsync().ConfigureAwait(false), Options);
-                    return new JsonResult(obj, Options);
+                    json = new JsonResult(obj, Options);
+                }
+                else
+                {
+                    dynamic err = JsonSerializer.Deserialize<dynamic>(await resp.Content.ReadAsByteArrayAsync().ConfigureAwait(false), Options);
+
+                    json = new JsonResult(err, Options) { StatusCode = (int)resp.StatusCode };
                 }
 
-                dynamic err = JsonSerializer.Deserialize<dynamic>(await resp.Content.ReadAsByteArrayAsync().ConfigureAwait(false), Options);
-
-                return new JsonResult(err, Options)
-                {
-                    StatusCode = (int)resp.StatusCode,
-                };
+                return json;
             }
             catch (Exception ex)
             {
