@@ -188,7 +188,7 @@ namespace Ngsa.App
 
             try
             {
-                _ = await DataService.Read<List<Actor>>(path, null).ConfigureAwait(false);
+                _ = await DataService.Read<List<Actor>>(path, CVector).ConfigureAwait(false);
 
                 return BuildHealthzCheck(path, MaxResponseTime, null, data, name);
             }
