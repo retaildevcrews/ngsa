@@ -35,8 +35,8 @@ namespace Ngsa.App.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMoviesAsync([FromQuery] MovieQueryParameters movieQueryParameters)
         {
-            NgsaLog myLogger = Logger.GetLogger(nameof(GetMoviesAsync), HttpContext).EnrichLog();
-            myLogger.LogInformation("Web Request");
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetMoviesAsync), HttpContext).EnrichLog();
+            nLogger.LogInformation("Web Request");
 
             if (movieQueryParameters == null)
             {
@@ -47,9 +47,9 @@ namespace Ngsa.App.Controllers
 
             if (list.Count > 0)
             {
-                myLogger.Data.Clear();
-                myLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
-                myLogger.LogWarning($"Invalid query string");
+                nLogger.Data.Clear();
+                nLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
+                nLogger.LogWarning($"Invalid query string");
 
                 return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.ToString() : string.Empty));
             }
@@ -65,8 +65,8 @@ namespace Ngsa.App.Controllers
         [HttpGet("{movieId}")]
         public async Task<IActionResult> GetMovieByIdAsync([FromRoute] string movieId)
         {
-            NgsaLog myLogger = Logger.GetLogger(nameof(GetMovieByIdAsync), HttpContext).EnrichLog();
-            myLogger.LogInformation("Web Request");
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetMovieByIdAsync), HttpContext).EnrichLog();
+            nLogger.LogInformation("Web Request");
 
             if (string.IsNullOrEmpty(movieId))
             {
@@ -77,9 +77,9 @@ namespace Ngsa.App.Controllers
 
             if (list.Count > 0)
             {
-                myLogger.Data.Clear();
-                myLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
-                myLogger.LogWarning($"Invalid Movie Id");
+                nLogger.Data.Clear();
+                nLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
+                nLogger.LogWarning($"Invalid Movie Id");
 
                 return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.ToString() : string.Empty));
             }

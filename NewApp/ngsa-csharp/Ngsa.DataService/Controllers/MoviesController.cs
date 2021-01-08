@@ -49,26 +49,26 @@ namespace Ngsa.DataService.Controllers
                 throw new ArgumentNullException(nameof(movieQueryParameters));
             }
 
-            NgsaLog myLogger = Logger.GetLogger(nameof(GetMoviesAsync), HttpContext).EnrichLog();
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetMoviesAsync), HttpContext).EnrichLog();
 
             System.Collections.Generic.List<Middleware.Validation.ValidationError> list = movieQueryParameters.Validate();
 
             if (list.Count > 0)
             {
-                myLogger.Data.Clear();
-                myLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
-                myLogger.LogWarning($"Invalid query string");
+                nLogger.Data.Clear();
+                nLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
+                nLogger.LogWarning($"Invalid query string");
 
                 return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.ToString() : string.Empty));
             }
 
             // get the result
-            IActionResult res = await ResultHandler.Handle(dal.GetMoviesAsync(movieQueryParameters), myLogger).ConfigureAwait(false);
+            IActionResult res = await ResultHandler.Handle(dal.GetMoviesAsync(movieQueryParameters), nLogger).ConfigureAwait(false);
 
             // use cache dal on Cosmos 429 errors
             if (res is JsonResult jres && jres.StatusCode == 429)
             {
-                res = await ResultHandler.Handle(App.CacheDal.GetMoviesAsync(movieQueryParameters), myLogger).ConfigureAwait(false);
+                res = await ResultHandler.Handle(App.CacheDal.GetMoviesAsync(movieQueryParameters), nLogger).ConfigureAwait(false);
             }
 
             return res;
@@ -87,25 +87,25 @@ namespace Ngsa.DataService.Controllers
                 throw new ArgumentNullException(nameof(movieId));
             }
 
-            NgsaLog myLogger = Logger.GetLogger(nameof(GetMovieByIdAsync), HttpContext).EnrichLog();
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetMovieByIdAsync), HttpContext).EnrichLog();
 
             System.Collections.Generic.List<Middleware.Validation.ValidationError> list = MovieQueryParameters.ValidateMovieId(movieId);
 
             if (list.Count > 0)
             {
-                myLogger.Data.Clear();
-                myLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
-                myLogger.LogWarning($"Invalid Movie Id");
+                nLogger.Data.Clear();
+                nLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
+                nLogger.LogWarning($"Invalid Movie Id");
 
                 return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.ToString() : string.Empty));
             }
 
-            IActionResult res = await ResultHandler.Handle(dal.GetMovieAsync(movieId), myLogger).ConfigureAwait(false);
+            IActionResult res = await ResultHandler.Handle(dal.GetMovieAsync(movieId), nLogger).ConfigureAwait(false);
 
             // use cache dal on Cosmos 429 errors
             if (res is JsonResult jres && jres.StatusCode == 429)
             {
-                res = await ResultHandler.Handle(App.CacheDal.GetMovieAsync(movieId), myLogger).ConfigureAwait(false);
+                res = await ResultHandler.Handle(App.CacheDal.GetMovieAsync(movieId), nLogger).ConfigureAwait(false);
             }
 
             return res;

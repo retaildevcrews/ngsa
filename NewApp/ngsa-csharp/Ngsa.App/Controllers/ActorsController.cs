@@ -35,8 +35,8 @@ namespace Ngsa.App.Controllers
         [HttpGet]
         public async Task<IActionResult> GetActorsAsync([FromQuery] ActorQueryParameters actorQueryParameters)
         {
-            NgsaLog myLogger = Logger.GetLogger(nameof(GetActorsAsync), HttpContext).EnrichLog();
-            myLogger.LogInformation("Web Request");
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetActorsAsync), HttpContext).EnrichLog();
+            nLogger.LogInformation("Web Request");
 
             if (actorQueryParameters == null)
             {
@@ -47,9 +47,9 @@ namespace Ngsa.App.Controllers
 
             if (list.Count > 0)
             {
-                myLogger.Data.Clear();
-                myLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
-                myLogger.LogWarning($"Invalid query string");
+                nLogger.Data.Clear();
+                nLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
+                nLogger.LogWarning($"Invalid query string");
 
                 return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.ToString() : string.Empty));
             }
@@ -66,8 +66,8 @@ namespace Ngsa.App.Controllers
         [HttpGet("{actorId}")]
         public async Task<IActionResult> GetActorByIdAsync([FromRoute] string actorId)
         {
-            NgsaLog myLogger = Logger.GetLogger(nameof(GetActorByIdAsync), HttpContext).EnrichLog();
-            myLogger.LogInformation("Web Request");
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetActorByIdAsync), HttpContext).EnrichLog();
+            nLogger.LogInformation("Web Request");
 
             if (string.IsNullOrEmpty(actorId))
             {
@@ -78,9 +78,9 @@ namespace Ngsa.App.Controllers
 
             if (list.Count > 0)
             {
-                myLogger.Data.Clear();
-                myLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
-                myLogger.LogWarning($"Invalid Actor Id");
+                nLogger.Data.Clear();
+                nLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
+                nLogger.LogWarning($"Invalid Actor Id");
 
                 return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.ToString() : string.Empty));
             }

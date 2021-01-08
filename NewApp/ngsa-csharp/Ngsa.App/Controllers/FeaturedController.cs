@@ -31,9 +31,9 @@ namespace Ngsa.App.Controllers
         [HttpGet("movie")]
         public async Task<IActionResult> GetFeaturedMovieAsync()
         {
-            NgsaLog myLogger = Logger.GetLogger(nameof(GetFeaturedMovieAsync), HttpContext).EnrichLog();
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetFeaturedMovieAsync), HttpContext).EnrichLog();
 
-            myLogger.LogInformation("Web Request");
+            nLogger.LogInformation("Web Request");
 
             return await DataService.Read<Movie>(Request).ConfigureAwait(false);
         }

@@ -31,9 +31,9 @@ namespace Ngsa.App.Controllers
         [HttpGet]
         public async Task<IActionResult> GetGenresAsync()
         {
-            NgsaLog myLogger = Logger.GetLogger(nameof(GetGenresAsync), HttpContext).EnrichLog();
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetGenresAsync), HttpContext).EnrichLog();
 
-            myLogger.LogInformation("Web Request");
+            nLogger.LogInformation("Web Request");
 
             return await DataService.Read<List<string>>(Request).ConfigureAwait(false);
         }
