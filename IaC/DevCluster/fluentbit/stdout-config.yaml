@@ -29,7 +29,7 @@ data:
         Name              tail
         Tag               kube.*
         Path              /var/log/containers/ngsa*.log
-        Parser            docker
+        Parser            cri
         DB                /var/log/flb_kube.db
         Mem_Buf_Limit     5MB
         Skip_Long_Lines   On
@@ -50,18 +50,18 @@ data:
         K8S-Logging.Exclude Off
         Annotations         Off
 
+    [FILTER]
+        Name      parser
+        Match     kube.*
+        Key_Name  message
+        Parser    json
+
   parsers.conf: |
     [PARSER]
-        Name   json
-        Format json
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
-
-    [PARSER]
-        Name        docker
+        Name        json
         Format      json
         Time_Key    time
-        Time_Format %Y-%m-%dT%H:%M:%S.%L
+        Time_Format %d/%b/%Y:%H:%M:%S %z
         Time_Keep   Off
 
     [PARSER]
@@ -70,3 +70,10 @@ data:
         Regex       ^\<(?<pri>[0-9]+)\>(?<time>[^ ]* {1,2}[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[a-zA-Z0-9_\/\.\-]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? *(?<message>.*)$
         Time_Key    time
         Time_Format %b %d %H:%M:%S
+
+    [PARSER]
+        Name        cri
+        Format      regex
+        Regex       ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<message>.*)$
+        Time_Key    time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L%z

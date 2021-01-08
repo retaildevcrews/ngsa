@@ -2,23 +2,21 @@ apiVersion: v1
 kind: Pod
 
 metadata:
-  name: l8r
+  name: loderunner-benchmark-cosmos
   labels:
-    app: l8r
+    app: loderunner-benchmark-cosmos
 
 spec:
-  restartPolicy: OnFailure
+  restartPolicy: Always
   containers:
   - name: app
     image: retaildevcrew/loderunner:beta
     imagePullPolicy: Always
-
-    args:
+    args: 
     - -l
-    - "200"
+    - "1000"
     - -r
     - -s
-    - http://ngsa-memory:4120
     - http://ngsa-cosmos:4120
     - -f
     - benchmark.json
@@ -37,4 +35,5 @@ spec:
           key: Region
 
     - name: PodType
-      value: l8r
+      value: loderunner
+
