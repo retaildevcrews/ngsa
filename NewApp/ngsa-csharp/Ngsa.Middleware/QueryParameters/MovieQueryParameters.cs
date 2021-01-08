@@ -60,8 +60,7 @@ namespace Ngsa.Middleware
         {
             List<ValidationError> errors = new List<ValidationError>();
 
-            if (!string.IsNullOrWhiteSpace(Q) &&
-                (Q.Length < 2 || Q.Length > 20))
+            if (!string.IsNullOrWhiteSpace(Q) && (Q.Length < 2 || Q.Length > 20))
             {
                 errors.Add(new ValidationError { Target = "q", Message = ValidationError.GetErrorMessage("Q") });
             }
@@ -82,9 +81,7 @@ namespace Ngsa.Middleware
             }
 
             if (!string.IsNullOrWhiteSpace(Genre) &&
-                (Genre != Genre.Trim() ||
-                 Genre.Length < 3 ||
-                 Genre.Length > 20))
+                (Genre != Genre.Trim() || Genre.Length < 3 || Genre.Length > 20))
             {
                 errors.Add(new ValidationError { Target = "genre", Message = ValidationError.GetErrorMessage("Genre") });
             }

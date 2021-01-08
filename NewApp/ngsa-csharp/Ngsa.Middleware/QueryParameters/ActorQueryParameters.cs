@@ -80,7 +80,7 @@ namespace Ngsa.Middleware
         /// <returns>cache key</returns>
         public string GetKey()
         {
-            return $"/api/actors/{PageNumber}/{PageNumber}/{(string.IsNullOrWhiteSpace(Q) ? string.Empty : Q.ToUpperInvariant().Trim())}";
+            return $"/api/actors/{PageNumber}/{PageSize}/{(string.IsNullOrWhiteSpace(Q) ? string.Empty : Q.ToUpperInvariant().Trim())}";
         }
     }
 }

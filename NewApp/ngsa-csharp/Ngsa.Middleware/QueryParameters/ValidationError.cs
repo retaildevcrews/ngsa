@@ -41,7 +41,7 @@ namespace Ngsa.Middleware.Validation
                 "PAGESIZE" => "The parameter 'pageSize' should be between 1 and 1000.",
                 "Q" => "The parameter 'q' should be between 2 and 20 characters.",
                 "RATING" => "The parameter 'rating' should be between 0.0 and 10.0.",
-                "YEAR" => $"The parameter 'year' should be between 1874 and 2025.",
+                "YEAR" => "The parameter 'year' should be between 1874 and 2025.",
                 _ => $"Unknown parameter: {fieldName}",
             };
         }

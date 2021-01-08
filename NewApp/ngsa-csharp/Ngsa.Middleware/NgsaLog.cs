@@ -160,12 +160,9 @@ namespace Ngsa.Middleware
                 }
             }
 
-            if (Data != null)
+            foreach (KeyValuePair<string, string> kvp in Data)
             {
-                foreach (KeyValuePair<string, string> kvp in Data)
-                {
-                    data.Add(kvp.Key, kvp.Value);
-                }
+                data.Add(kvp.Key, kvp.Value);
             }
 
             return data;
