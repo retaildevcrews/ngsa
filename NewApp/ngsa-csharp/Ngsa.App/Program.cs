@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
@@ -12,7 +13,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Ngsa.Middleware.Validation;
+using Ngsa.Middleware;
 
 namespace Ngsa.App
 {
@@ -22,7 +23,7 @@ namespace Ngsa.App
     public sealed partial class App
     {
         // ILogger instance
-        private static ILogger<App> logger;
+        private static readonly NgsaLog Logger = new NgsaLog { Name = typeof(App).FullName, Method = "Main" };
 
         // web host
         private static IWebHost host;
@@ -32,8 +33,7 @@ namespace Ngsa.App
 
         private static CancellationTokenSource ctCancel;
 
-        public static string CosmosName { get; set; } = string.Empty;
-        public static string CosmosQueryId { get; set; } = string.Empty;
+        public static string DataService { get; set; }
         public static string Region { get; set; } = string.Empty;
         public static string Zone { get; set; } = string.Empty;
         public static string PodType { get; set; }
@@ -57,14 +57,25 @@ namespace Ngsa.App
         /// <returns>IActionResult</returns>
         public static async Task<int> Main(string[] args)
         {
+            // add pod, region, zone info to logger
+            Logger.EnrichLog();
+
             // build the System.CommandLine.RootCommand
             RootCommand root = BuildRootCommand();
-            root.Handler = CommandHandler.Create<string, LogLevel, bool, bool>(RunApp);
+            root.Handler = CommandHandler.Create<string, LogLevel, bool>(RunApp);
 
-            string[] cmd = CombineEnvVarsWithCommandLine(args);
+            List<string> cmd = CombineEnvVarsWithCommandLine(args);
+
+            if (cmd.Contains("-h") ||
+                cmd.Contains("--help") ||
+                cmd.Contains("-d") ||
+                cmd.Contains("--dry-run"))
+            {
+                await AsciiArt.DisplayAsciiArt("Core/ascii-art.txt", ConsoleColor.DarkMagenta, AsciiArt.Animation.Fade).ConfigureAwait(false);
+            }
 
             // run the app
-            return await root.InvokeAsync(cmd).ConfigureAwait(false);
+            return await root.InvokeAsync(cmd.ToArray()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -75,19 +86,6 @@ namespace Ngsa.App
             if (ctCancel != null)
             {
                 ctCancel.Cancel(false);
-            }
-        }
-
-        /// <summary>
-        /// Display the ASCII art file if it exists
-        /// </summary>
-        private static void DisplayAsciiArt()
-        {
-            const string file = "App/ascii-art.txt";
-
-            if (File.Exists(file))
-            {
-                Console.WriteLine(File.ReadAllText(file));
             }
         }
 
@@ -104,7 +102,9 @@ namespace Ngsa.App
                 e.Cancel = true;
                 ctCancel.Cancel();
 
-                Console.WriteLine("Ctl-C Pressed - Starting shutdown ...");
+                Logger.Method = "CtlCHandler";
+                Logger.Data.Clear();
+                Logger.LogInformation("Ctl-C Pressed");
 
                 // trigger graceful shutdown for the webhost
                 // force shutdown after timeout, defined in UseShutdownTimeout within BuildHost() method
@@ -122,12 +122,9 @@ namespace Ngsa.App
         /// </summary>
         private static void LogStartup()
         {
-            // get the logger service
-            logger = host.Services.GetRequiredService<ILogger<App>>();
-
-            DisplayAsciiArt();
-
-            Console.WriteLine($"\nVersion: {Ngsa.Middleware.VersionExtension.Version}");
+            Logger.Data.Add("version", Ngsa.Middleware.VersionExtension.Version);
+            Logger.LogInformation("Web Server Started");
+            Logger.Data.Clear();
         }
 
         /// <summary>
@@ -149,7 +146,8 @@ namespace Ngsa.App
             catch (Exception ex)
             {
                 // log and fail
-                Console.WriteLine($"{ex}\nBuildConfig:Exception: {ex.Message}");
+                Logger.Method = nameof(BuildConfig);
+                Logger.LogError($"Exception: {ex.Message}", ex);
                 Environment.Exit(-1);
             }
 
@@ -181,17 +179,19 @@ namespace Ngsa.App
             // configure logger based on command line
             builder.ConfigureLogging(logger =>
             {
+                LogLevel logLevel = AppLogLevel <= LogLevel.Information ? AppLogLevel : LogLevel.Information;
+
                 logger.ClearProviders();
-                logger.AddConsole();
+                logger.AddNgsaLogger(config => { config.LogLevel = logLevel; });
 
                 // if you specify the --log-level option, it will override the appsettings.json options
                 // remove any or all of the code below that you don't want to override
                 if (App.IsLogLevelSet)
                 {
-                    logger.AddFilter("Microsoft", AppLogLevel)
-                    .AddFilter("System", AppLogLevel)
-                    .AddFilter("Default", AppLogLevel)
-                    .AddFilter("Ngsa.App", AppLogLevel);
+                    logger.AddFilter("Microsoft", LogLevel.Error)
+                    .AddFilter("System", LogLevel.Error)
+                    .AddFilter("Default", LogLevel.Error)
+                    .AddFilter("Ngsa.App", logLevel);
                 }
             });
 

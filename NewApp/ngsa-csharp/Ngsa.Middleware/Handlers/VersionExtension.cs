@@ -28,7 +28,7 @@ namespace Ngsa.Middleware
             get
             {
                 // use reflection to get the version
-                if (string.IsNullOrEmpty(version))
+                if (string.IsNullOrWhiteSpace(version))
                 {
                     if (Attribute.GetCustomAttribute(Assembly.GetEntryAssembly(), typeof(AssemblyInformationalVersionAttribute)) is AssemblyInformationalVersionAttribute v)
                     {
@@ -56,19 +56,21 @@ namespace Ngsa.Middleware
                     // cache the version info for performance
                     if (responseBytes == null)
                     {
-                        string swaggerVersion;
+                        // default to 1.0
+                        string swaggerVersion = "1.0";
 
                         try
                         {
-                            // read swagger version from swagger.json
-                            using JsonDocument sw = JsonDocument.Parse(File.ReadAllText("wwwroot/swagger/swagger.json"));
-                            swaggerVersion = sw.RootElement.GetProperty("info").GetProperty("version").ToString();
+                            if (File.Exists("wwwroot/swagger/swagger.json"))
+                            {
+                                // read swagger version from swagger.json
+                                using JsonDocument sw = JsonDocument.Parse(File.ReadAllText("wwwroot/swagger/swagger.json"));
+                                swaggerVersion = sw.RootElement.GetProperty("info").GetProperty("version").ToString();
+                            }
                         }
-                        catch (Exception ex)
+                        catch
                         {
-                            // log and default to 1.0
-                            Console.WriteLine($"UseVersion Exception: {ex.Message}");
-                            swaggerVersion = "1.0";
+                            // ignore
                         }
 
                         // build and cache the json string

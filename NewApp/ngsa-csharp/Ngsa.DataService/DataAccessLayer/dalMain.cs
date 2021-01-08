@@ -131,17 +131,17 @@ namespace Ngsa.DataService.DataAccessLayer
                 throw new ArgumentNullException(nameof(cosmosUrl));
             }
 
-            if (string.IsNullOrEmpty(cosmosKey))
+            if (string.IsNullOrWhiteSpace(cosmosKey))
             {
                 throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, $"CosmosKey not set correctly {cosmosKey}"));
             }
 
-            if (string.IsNullOrEmpty(cosmosDatabase))
+            if (string.IsNullOrWhiteSpace(cosmosDatabase))
             {
                 throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, $"CosmosDatabase not set correctly {cosmosDatabase}"));
             }
 
-            if (string.IsNullOrEmpty(cosmosCollection))
+            if (string.IsNullOrWhiteSpace(cosmosCollection))
             {
                 throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, $"CosmosCollection not set correctly {cosmosCollection}"));
             }

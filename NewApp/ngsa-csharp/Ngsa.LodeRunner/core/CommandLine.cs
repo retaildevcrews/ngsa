@@ -80,7 +80,7 @@ namespace Ngsa.LodeRunner
         private static string ParseString(ArgumentResult result)
         {
             string name = result.Parent?.Symbol.Name.ToUpperInvariant().Replace('-', '_');
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrWhiteSpace(name))
             {
                 result.ErrorMessage = "result.Parent is null";
                 return null;
@@ -137,7 +137,7 @@ namespace Ngsa.LodeRunner
         private static List<string> ParseStringList(ArgumentResult result)
         {
             string name = result.Parent?.Symbol.Name.ToUpperInvariant().Replace('-', '_');
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrWhiteSpace(name))
             {
                 result.ErrorMessage = "result.Parent is null";
                 return null;
@@ -178,7 +178,7 @@ namespace Ngsa.LodeRunner
         {
             string name = result.Parent?.Symbol.Name.ToUpperInvariant().Replace('-', '_');
 
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrWhiteSpace(name))
             {
                 result.ErrorMessage = "result.Parent is null";
                 return false;
@@ -255,7 +255,7 @@ namespace Ngsa.LodeRunner
         {
             string name = result.Parent?.Symbol.Name.ToUpperInvariant().Replace('-', '_');
 
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrWhiteSpace(name))
             {
                 result.ErrorMessage = "result.Parent is null";
                 return -1;

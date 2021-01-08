@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Ngsa.DataService.DataAccessLayer;
+using Ngsa.Middleware;
 
 namespace Ngsa.DataService.Controllers
 {
@@ -16,18 +16,23 @@ namespace Ngsa.DataService.Controllers
     [Route("api/[controller]")]
     public class FeaturedController : Controller
     {
-        private readonly ILogger logger;
+        private static readonly NgsaLog Logger = new NgsaLog
+        {
+            Name = typeof(FeaturedController).FullName,
+            LogLevel = App.AppLogLevel,
+            ErrorMessage = "FeaturedControllerException",
+            NotFoundError = "Movie Not Found",
+        };
+
         private readonly IDAL dal;
         private readonly Random rand = new Random(DateTime.Now.Millisecond);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FeaturedController"/> class.
         /// </summary>
-        /// <param name="logger">log instance</param>
         /// <param name="dal">data access layer instance</param>
-        public FeaturedController(ILogger<FeaturedController> logger)
+        public FeaturedController()
         {
-            this.logger = logger;
             dal = App.CosmosDal;
         }
 
@@ -37,11 +42,9 @@ namespace Ngsa.DataService.Controllers
         /// <response code="200">OK</response>
         /// <returns>IActionResult</returns>
         [HttpGet("movie")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Security", "CA5394:Do not use insecure randomness", Justification = "not used for security")]
         public async Task<IActionResult> GetFeaturedMovieAsync()
         {
-            string method = nameof(GetFeaturedMovieAsync);
-            logger.LogInformation(method);
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetFeaturedMovieAsync), HttpContext).EnrichLog();
 
             List<string> featuredMovies = await App.CacheDal.GetFeaturedMovieListAsync().ConfigureAwait(false);
 
@@ -51,7 +54,15 @@ namespace Ngsa.DataService.Controllers
                 string movieId = featuredMovies[rand.Next(0, featuredMovies.Count - 1)];
 
                 // get movie by movieId
-                return await ResultHandler.Handle(dal.GetMovieAsync(movieId), method, Constants.FeaturedControllerException, logger).ConfigureAwait(false);
+                IActionResult res = await ResultHandler.Handle(dal.GetMovieAsync(movieId), nLogger).ConfigureAwait(false);
+
+                // use cache dal on Cosmos 429 errors
+                if (res is JsonResult jres && jres.StatusCode == 429)
+                {
+                    res = await ResultHandler.Handle(App.CacheDal.GetMovieAsync(movieId), nLogger).ConfigureAwait(false);
+                }
+
+                return res;
             }
 
             return NotFound();

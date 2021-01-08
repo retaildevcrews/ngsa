@@ -11,11 +11,6 @@ namespace Ngsa.DataService
         // if port is changed, also update value in the Dockerfiles
         public const string Port = "4122";
 
-        public const string ActorsControllerException = "ActorsControllerException";
-        public const string GenresControllerException = "GenresControllerException";
-        public const string MoviesControllerException = "MoviesControllerException";
-        public const string FeaturedControllerException = "FeaturedControllerException";
-
         public const int DefaultPageSize = 100;
         public const int MaxPageSize = 1000;
         public const int MaxReqSecBeforeCache = 50;

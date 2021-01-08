@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: debug
+  namespace: kuma-spike
+  labels:
+    app: debug
+spec:
+  containers:
+    - name: debug
+      image: alpine
+      ports:
+        - containerPort: 8080
+      command:
+        - "/bin/sh"
+        - "-c"
+        - "while true; do sleep 5; done;"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: debug
+  namespace: kuma-spike
+  labels:
+    app: debug
+spec:
+  selector:
+    app: debug
+  type: ClusterIP
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080

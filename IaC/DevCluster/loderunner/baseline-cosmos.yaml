@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: loderunner-baseline-cosmos
+  labels:
+    app: loderunner-baseline-cosmos
+
+spec:
+  restartPolicy: Never
+  containers:
+  - name: app
+    image: retaildevcrew/loderunner:beta
+    imagePullPolicy: Always
+
+    args:
+    - -s
+    - http://ngsa-cosmos:4120
+    - -f
+    - baseline.json
+
+    env:
+    - name: Zone
+      valueFrom:
+        configMapKeyRef:
+          name: ngsa-config
+          key: Zone
+
+    - name: Region
+      valueFrom:
+        configMapKeyRef:
+          name: ngsa-config
+          key: Region
+
+    - name: PodType
+      value: loderunner

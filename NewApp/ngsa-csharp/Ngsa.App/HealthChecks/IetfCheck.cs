@@ -37,7 +37,7 @@ namespace Ngsa.App.Model
             Time = hzCheck.Time;
             Message = hzCheck.Message;
 
-            if (hzCheck.Status != HealthStatus.Healthy && !string.IsNullOrEmpty(hzCheck.Endpoint))
+            if (hzCheck.Status != HealthStatus.Healthy && !string.IsNullOrWhiteSpace(hzCheck.Endpoint))
             {
                 AffectedEndpoints = new List<string> { hzCheck.Endpoint };
             }

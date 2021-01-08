@@ -57,7 +57,7 @@ namespace Ngsa.App
             }
 
             // add the results to the dictionary
-            if (data != null && !string.IsNullOrEmpty(testName))
+            if (data != null && !string.IsNullOrWhiteSpace(testName))
             {
                 data.Add(testName + ":responseTime", result);
             }
@@ -69,7 +69,7 @@ namespace Ngsa.App
         /// Get Genres Healthcheck
         /// </summary>
         /// <returns>HealthzCheck</returns>
-        private async Task<HealthzCheck> GetGenresAsync(Dictionary<string, object> data = null)
+        private async Task<HealthzCheck> GetGenresAsync(Dictionary<string, object> data)
         {
             const string name = "getGenres";
             const string path = "/api/genres";
@@ -78,7 +78,7 @@ namespace Ngsa.App
 
             try
             {
-                _ = await DataService.Read<List<string>>(path, string.Empty).ConfigureAwait(false);
+                _ = await DataService.Read<List<string>>(path, CVector).ConfigureAwait(false);
 
                 return BuildHealthzCheck(path, MaxResponseTime, null, data, name);
             }
@@ -95,7 +95,7 @@ namespace Ngsa.App
         /// Get Movie by Id Healthcheck
         /// </summary>
         /// <returns>HealthzCheck</returns>
-        private async Task<HealthzCheck> GetMovieByIdAsync(string movieId, Dictionary<string, object> data = null)
+        private async Task<HealthzCheck> GetMovieByIdAsync(string movieId, Dictionary<string, object> data)
         {
             const string name = "getMovieById";
             string path = "/api/movies/" + movieId;
@@ -104,7 +104,7 @@ namespace Ngsa.App
 
             try
             {
-                _ = await DataService.Read<Movie>(path, string.Empty).ConfigureAwait(false);
+                _ = await DataService.Read<Movie>(path, CVector).ConfigureAwait(false);
 
                 return BuildHealthzCheck(path, MaxResponseTime / 2, null, data, name);
             }
@@ -121,7 +121,7 @@ namespace Ngsa.App
         /// Search Movies Healthcheck
         /// </summary>
         /// <returns>HealthzCheck</returns>
-        private async Task<HealthzCheck> SearchMoviesAsync(string query, Dictionary<string, object> data = null)
+        private async Task<HealthzCheck> SearchMoviesAsync(string query, Dictionary<string, object> data)
         {
             const string name = "searchMovies";
 
@@ -133,7 +133,7 @@ namespace Ngsa.App
 
             try
             {
-                _ = await DataService.Read<List<Movie>>(path, string.Empty).ConfigureAwait(false);
+                _ = await DataService.Read<List<Movie>>(path, CVector).ConfigureAwait(false);
 
                 return BuildHealthzCheck(path, MaxResponseTime, null, data, name);
             }
@@ -150,7 +150,7 @@ namespace Ngsa.App
         /// Get Actor By Id Healthcheck
         /// </summary>
         /// <returns>HealthzCheck</returns>
-        private async Task<HealthzCheck> GetActorByIdAsync(string actorId, Dictionary<string, object> data = null)
+        private async Task<HealthzCheck> GetActorByIdAsync(string actorId, Dictionary<string, object> data)
         {
             const string name = "getActorById";
             string path = "/api/actors/" + actorId;
@@ -159,7 +159,7 @@ namespace Ngsa.App
 
             try
             {
-                _ = await DataService.Read<Actor>(path, string.Empty).ConfigureAwait(false);
+                _ = await DataService.Read<Actor>(path, CVector).ConfigureAwait(false);
 
                 return BuildHealthzCheck(path, MaxResponseTime / 2, null, data, name);
             }
@@ -176,7 +176,7 @@ namespace Ngsa.App
         /// Search Actors Healthcheck
         /// </summary>
         /// <returns>HealthzCheck</returns>
-        private async Task<HealthzCheck> SearchActorsAsync(string query, Dictionary<string, object> data = null)
+        private async Task<HealthzCheck> SearchActorsAsync(string query, Dictionary<string, object> data)
         {
             const string name = "searchActors";
 
@@ -188,7 +188,7 @@ namespace Ngsa.App
 
             try
             {
-                _ = await DataService.Read<List<Actor>>(path, string.Empty).ConfigureAwait(false);
+                _ = await DataService.Read<List<Actor>>(path, CVector).ConfigureAwait(false);
 
                 return BuildHealthzCheck(path, MaxResponseTime, null, data, name);
             }
