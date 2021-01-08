@@ -95,7 +95,7 @@ namespace Ngsa.Middleware
                 errors.Add(new ValidationError { Target = "rating", Message = ValidationError.GetErrorMessage("Rating") });
             }
 
-            if (Year != 0 && !(Year >= 1874 && Year <= DateTime.UtcNow.Year + 5))
+            if (Year != 0 && !(Year >= 1874 && Year <= 2025))
             {
                 errors.Add(new ValidationError { Target = "year", Message = ValidationError.GetErrorMessage("Year") });
             }
