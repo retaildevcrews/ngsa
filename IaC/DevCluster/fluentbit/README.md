@@ -5,7 +5,7 @@ Setup Fluent Bit on a dev cluster by sending everything to stdout and then to Az
 ```bash
 
 # start in the fluentbit directory
-# assumes you were in the app directory
+#   assumes you were in the app directory
 cd ../fluentbit
 
 ### Create secrets if necessary
@@ -81,7 +81,7 @@ az account set -s YourSubscriptionName
 
 ```
 
-### Setup Log Analytics
+### Setup Azure Log Analytics
 
 ```bash
 
@@ -112,6 +112,7 @@ kubectl get secret ngsa-secrets -o jsonpath='{.data}'
 ### Deploy to Kubernetes
 
 ```bash
+
 # create app pod
 kubectl apply -f ../app/in-memory.yaml
 
