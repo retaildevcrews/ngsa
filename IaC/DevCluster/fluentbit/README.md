@@ -43,7 +43,7 @@ kubectl get pods
 kubectl logs fluentb
 
 # save the cluster IP
-export ngsa=http://$(kubectl get service | grep ngsa-memory | awk '{print $3}'):4120
+export ngsa=http://$(kubectl get service ngsa-memory -o jsonpath="{.spec.clusterIP}"):4120
 
 # check the version and genres endpoints
 http $ngsa/version
