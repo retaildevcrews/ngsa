@@ -25,7 +25,7 @@ namespace Ngsa.DataService
         /// </summary>
         /// <param name="args">command line args</param>
         /// <returns>string[]</returns>
-        public static string[] CombineEnvVarsWithCommandLine(string[] args)
+        public static List<string> CombineEnvVarsWithCommandLine(string[] args)
         {
             if (args == null)
             {
@@ -45,7 +45,7 @@ namespace Ngsa.DataService
             // was log level set
             IsLogLevelSet = cmd.Contains("--log-level") || cmd.Contains("-l");
 
-            return cmd.ToArray();
+            return cmd;
         }
 
         /// <summary>
@@ -113,6 +113,24 @@ namespace Ngsa.DataService
                     CosmosDal = new DataAccessLayer.CosmosDal(new Uri(Secrets.CosmosServer), Secrets.CosmosKey, Secrets.CosmosDatabase, Secrets.CosmosCollection);
                 }
 
+                // set the logger info
+                RequestLogger.CosmosName = Secrets.CosmosServer;
+
+                // remove prefix and suffix
+                RequestLogger.CosmosName = RequestLogger.CosmosName.Replace("https://", string.Empty);
+                if (RequestLogger.CosmosName.IndexOf(".documents.azure.com") > 0)
+                {
+                    RequestLogger.CosmosName = RequestLogger.CosmosName.Substring(0, RequestLogger.CosmosName.IndexOf(".documents.azure.com"));
+                }
+
+                RequestLogger.DataService = string.Empty;
+                RequestLogger.PodType = PodType;
+                RequestLogger.Region = Region;
+                RequestLogger.Zone = Zone;
+
+                // add pod, region, zone info to logger
+                Logger.EnrichLog();
+
                 // build the host
                 host = BuildHost();
 
@@ -137,7 +155,7 @@ namespace Ngsa.DataService
                 Task w = host.RunAsync();
 
                 // start request count timer
-                Ngsa.Middleware.Logger.StartCounterTime(5000, 1000);
+                Ngsa.Middleware.RequestLogger.StartCounterTime(5000, 1000);
 
                 // this doesn't return except on ctl-c
                 await w.ConfigureAwait(false);
@@ -148,13 +166,10 @@ namespace Ngsa.DataService
             catch (Exception ex)
             {
                 // end app on error
-                if (logger != null)
+                if (Logger != null)
                 {
-                    logger.LogError($"Exception: {ex}");
-                }
-                else
-                {
-                    Console.WriteLine($"Error in Main() {ex.Message}");
+                    Logger.Method = nameof(RunApp);
+                    Logger.LogError($"Exception: {ex.Message}", ex);
                 }
 
                 return -1;
@@ -164,14 +179,23 @@ namespace Ngsa.DataService
         // load secrets
         private static void LoadSecrets(string secretsVolume)
         {
-            // todo - add to command line
             Region = Environment.GetEnvironmentVariable("Region");
             Zone = Environment.GetEnvironmentVariable("Zone");
             PodType = Environment.GetEnvironmentVariable("PodType");
 
-            if (string.IsNullOrEmpty(PodType))
+            if (string.IsNullOrWhiteSpace(PodType))
             {
-                PodType = "ngsa-ds";
+                PodType = "Ngsa.DataService";
+            }
+
+            if (string.IsNullOrWhiteSpace(Region))
+            {
+                Region = "dev";
+            }
+
+            if (string.IsNullOrWhiteSpace(Zone))
+            {
+                Zone = "dev";
             }
 
             if (InMemory)
@@ -191,9 +215,6 @@ namespace Ngsa.DataService
 
                 // set the Cosmos server name for logging
                 CosmosName = Secrets.CosmosServer.Replace("https://", string.Empty, StringComparison.OrdinalIgnoreCase).Replace("http://", string.Empty, StringComparison.OrdinalIgnoreCase);
-
-                // todo - get this from cosmos query
-                CosmosQueryId = "todo";
 
                 int ndx = CosmosName.IndexOf('.', StringComparison.OrdinalIgnoreCase);
 

@@ -15,7 +15,7 @@ namespace Ngsa.Middleware
     /// <summary>
     /// Simple aspnet core middleware that logs requests to the console
     /// </summary>
-    public class Logger
+    public class RequestLogger
     {
         private const string IpHeader = "X-Client-IP";
 
@@ -24,14 +24,14 @@ namespace Ngsa.Middleware
 
         // next action to Invoke
         private readonly RequestDelegate next;
-        private readonly LoggerOptions options;
+        private readonly RequestLoggerOptions options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Logger"/> class.
+        /// Initializes a new instance of the <see cref="RequestLogger"/> class.
         /// </summary>
         /// <param name="next">RequestDelegate</param>
         /// <param name="options">LoggerOptions</param>
-        public Logger(RequestDelegate next, IOptions<LoggerOptions> options)
+        public RequestLogger(RequestDelegate next, IOptions<RequestLoggerOptions> options)
         {
             // save for later
             this.next = next;
@@ -40,16 +40,17 @@ namespace Ngsa.Middleware
             if (this.options == null)
             {
                 // use default
-                this.options = new LoggerOptions();
+                this.options = new RequestLoggerOptions();
             }
         }
 
         public static string Region { get; set; } = string.Empty;
         public static string Zone { get; set; } = string.Empty;
         public static string PodType { get; set; } = string.Empty;
+        public static string DataService { get; set; } = string.Empty;
         public static string CosmosName { get; set; } = string.Empty;
-        public static string CosmosQueryId { get; set; } = "todo";
-        public static double CosmosRUs { get; set; } = 1.23;
+        public static string CosmosQueryId { get; set; } = string.Empty;
+        public static double CosmosRUs { get; set; } = 0;
 
         public static int RequestsPerSecond => RPS.Count > 0 ? RPS[0] : counter;
 
@@ -123,6 +124,7 @@ namespace Ngsa.Middleware
             Dictionary<string, object> log = new Dictionary<string, object>
             {
                 { "Date", dt },
+                { "LogName", "Ngsa.RequestLog" },
                 { "StatusCode", context.Response.StatusCode },
                 { "TTFB", ttfb },
                 { "Duration", duration },
@@ -133,15 +135,30 @@ namespace Ngsa.Middleware
                 { "UserAgent", context.Request.Headers["User-Agent"].ToString() },
                 { "CVector", cv.Value },
                 { "CVectorBase", cv.GetBase() },
-
-                // todo - need to encapsulate
                 { "Region", Region },
                 { "Zone", Zone },
                 { "PodType", PodType },
-                { "CosmosName", CosmosName },
-                { "CosmosQueryId", CosmosQueryId },
-                { "CosmosRUs", CosmosRUs },
             };
+
+            if (!string.IsNullOrWhiteSpace(CosmosName))
+            {
+                log.Add("CosmosName", CosmosName);
+            }
+
+            if (!string.IsNullOrWhiteSpace(CosmosQueryId))
+            {
+                log.Add("CosmosQueryId", CosmosQueryId);
+            }
+
+            if (CosmosRUs > 0)
+            {
+                log.Add("CosmosRUs", CosmosRUs);
+            }
+
+            if (!string.IsNullOrWhiteSpace(DataService))
+            {
+                log.Add("DataService", DataService);
+            }
 
             Interlocked.Increment(ref counter);
 
@@ -171,7 +188,7 @@ namespace Ngsa.Middleware
         /// <returns>string</returns>
         private static string GetPathAndQuerystring(HttpRequest request)
         {
-            return request?.Path.ToString() + request?.QueryString.ToString();
+            return request?.Path.ToString() + request?.QueryString.Value;
         }
     }
 }

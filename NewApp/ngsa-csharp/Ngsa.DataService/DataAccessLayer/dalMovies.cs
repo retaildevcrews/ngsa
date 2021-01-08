@@ -70,7 +70,7 @@ namespace Ngsa.DataService.DataAccessLayer
             List<Movie> movies = new List<Movie>();
 
             // retrieve the items
-            if (!string.IsNullOrEmpty(sql))
+            if (!string.IsNullOrWhiteSpace(sql))
             {
                 movies = (List<Movie>)await InternalCosmosDBSqlQuery<Movie>(sql).ConfigureAwait(false);
             }

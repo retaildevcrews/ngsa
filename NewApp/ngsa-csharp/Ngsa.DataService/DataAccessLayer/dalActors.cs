@@ -76,7 +76,7 @@ namespace Ngsa.DataService.DataAccessLayer
             string sql = App.SearchService.GetActorIds(actorQueryParameters);
             List<Actor> res;
 
-            if (!string.IsNullOrEmpty(sql))
+            if (!string.IsNullOrWhiteSpace(sql))
             {
                 res = (List<Actor>)await InternalCosmosDBSqlQuery<Actor>(sql).ConfigureAwait(false);
             }

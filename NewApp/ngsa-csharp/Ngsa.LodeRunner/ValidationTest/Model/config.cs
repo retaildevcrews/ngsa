@@ -125,7 +125,7 @@ namespace Ngsa.LodeRunner
             }
 
             // add a trailing slash if necessary
-            if (!string.IsNullOrEmpty(BaseUrl) && !BaseUrl.EndsWith('/'))
+            if (!string.IsNullOrWhiteSpace(BaseUrl) && !BaseUrl.EndsWith('/'))
             {
                 BaseUrl += "/";
             }

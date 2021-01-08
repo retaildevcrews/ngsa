@@ -155,7 +155,7 @@ namespace Ngsa.LodeRunner.Validators
 
                 foreach (JsonItem property in properties)
                 {
-                    if (!string.IsNullOrEmpty(property.Field) && dict.ContainsKey(property.Field))
+                    if (!string.IsNullOrWhiteSpace(property.Field) && dict.ContainsKey(property.Field))
                     {
                         if (property.Validation != null)
                         {
@@ -274,7 +274,7 @@ namespace Ngsa.LodeRunner.Validators
         {
             ValidationResult result = new ValidationResult();
 
-            if (!string.IsNullOrEmpty(expected))
+            if (!string.IsNullOrWhiteSpace(expected))
             {
                 if (actual != null && !actual.StartsWith(expected, StringComparison.OrdinalIgnoreCase))
                 {
@@ -408,7 +408,7 @@ namespace Ngsa.LodeRunner.Validators
             ValidationResult result = new ValidationResult();
 
             // nothing to validate
-            if (notContainsList == null || notContainsList.Count == 0 || string.IsNullOrEmpty(body))
+            if (notContainsList == null || notContainsList.Count == 0 || string.IsNullOrWhiteSpace(body))
             {
                 return result;
             }
@@ -562,7 +562,7 @@ namespace Ngsa.LodeRunner.Validators
                         // validate recursively
                         result.Add(Validate(property.Validation, fieldBody));
                     }
-                    else if (!string.IsNullOrEmpty(property.Field) && property.Value != null)
+                    else if (!string.IsNullOrWhiteSpace(property.Field) && property.Value != null)
                     {
                         // null values check for the existance of the field in the payload
                         // used when values are not known

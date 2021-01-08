@@ -36,7 +36,7 @@ namespace Imdb.Model
         public static string ComputePartitionKey(string id)
         {
             // validate id
-            if (!string.IsNullOrEmpty(id) &&
+            if (!string.IsNullOrWhiteSpace(id) &&
                 id.Length > 5 &&
                 id.StartsWith("tt", StringComparison.OrdinalIgnoreCase) &&
                 int.TryParse(id.Substring(2), out int idInt))

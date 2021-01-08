@@ -4,7 +4,7 @@
 using System.Threading.Tasks;
 using Imdb.Model;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Ngsa.Middleware;
 
 namespace Ngsa.App.Controllers
 {
@@ -14,17 +14,14 @@ namespace Ngsa.App.Controllers
     [Route("api/[controller]")]
     public class FeaturedController : Controller
     {
-        private readonly ILogger logger;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FeaturedController"/> class.
-        /// </summary>
-        /// <param name="logger">log instance</param>
-        /// <param name="dal">data access layer instance</param>
-        public FeaturedController(ILogger<FeaturedController> logger)
+        private static readonly NgsaLog Logger = new NgsaLog
         {
-            this.logger = logger;
-        }
+            Name = typeof(FeaturedController).FullName,
+            LogLevel = App.AppLogLevel,
+            ErrorMessage = "FeaturedControllerException",
+            NotFoundError = "Movie Not Found",
+            Method = nameof(GetFeaturedMovieAsync),
+        };
 
         /// <summary>
         /// Returns a random movie from the featured movie list as a JSON Movie
@@ -34,8 +31,9 @@ namespace Ngsa.App.Controllers
         [HttpGet("movie")]
         public async Task<IActionResult> GetFeaturedMovieAsync()
         {
-            string method = nameof(GetFeaturedMovieAsync);
-            logger.LogInformation(method);
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetFeaturedMovieAsync), HttpContext).EnrichLog();
+
+            nLogger.LogInformation("Web Request");
 
             return await DataService.Read<Movie>(Request).ConfigureAwait(false);
         }

@@ -9,7 +9,7 @@ namespace CSE.LodeRunner.Tests
         [Fact]
         public async Task IntegrationTest()
         {
-            if (!string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
+            if (!string.IsNullOrWhiteSpace(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
                 string[] args = new string[]
                 {

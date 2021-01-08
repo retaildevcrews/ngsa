@@ -21,7 +21,7 @@ namespace Ngsa.App
         /// </summary>
         /// <param name="args">command line args</param>
         /// <returns>string[]</returns>
-        public static string[] CombineEnvVarsWithCommandLine(string[] args)
+        public static List<string> CombineEnvVarsWithCommandLine(string[] args)
         {
             if (args == null)
             {
@@ -35,7 +35,7 @@ namespace Ngsa.App
 
             IsLogLevelSet = cmd.Contains("--log-level") || cmd.Contains("-l");
 
-            return cmd.ToArray();
+            return cmd;
         }
 
         /// <summary>
@@ -74,18 +74,39 @@ namespace Ngsa.App
                 Zone = Environment.GetEnvironmentVariable("Zone");
                 PodType = Environment.GetEnvironmentVariable("PodType");
 
-                if (string.IsNullOrEmpty(PodType))
+                if (string.IsNullOrWhiteSpace(PodType))
                 {
-                    PodType = "ngsa";
+                    PodType = "Ngsa.App";
+                }
+
+                if (string.IsNullOrWhiteSpace(Region))
+                {
+                    Region = "dev";
+                }
+
+                if (string.IsNullOrWhiteSpace(Zone))
+                {
+                    Zone = "dev";
                 }
 
                 // setup ctl c handler
                 ctCancel = SetupCtlCHandler();
 
                 AppLogLevel = logLevel;
-
-                // todo - validate params
                 DataService = dataService;
+
+                // set the logger info
+                RequestLogger.CosmosName = string.Empty;
+                RequestLogger.PodType = PodType;
+                RequestLogger.Region = Region;
+                RequestLogger.Zone = Zone;
+
+                // remove prefix and suffix
+                RequestLogger.DataService = DataService;
+                RequestLogger.DataService = RequestLogger.DataService.Replace("https://", string.Empty).Replace("http://", string.Empty);
+
+                // add pod, region, zone info to logger
+                Logger.EnrichLog();
 
                 // build the host
                 host = BuildHost();
@@ -116,9 +137,9 @@ namespace Ngsa.App
             catch (Exception ex)
             {
                 // end app on error
-                if (logger != null)
+                if (Logger != null)
                 {
-                    logger.LogError($"Exception: {ex}");
+                    Logger.LogError($"Exception: {ex}");
                 }
                 else
                 {

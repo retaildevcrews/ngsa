@@ -15,6 +15,7 @@ dotnet build
 
 # remove existing test results
 rm -rf TestResults
+rm tests-complete
 
 # set environment variables
 export RUN_TEST_COVERAGE=true

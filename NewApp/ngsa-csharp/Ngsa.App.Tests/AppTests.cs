@@ -13,7 +13,7 @@ namespace Tests
         public async Task RunApp()
         {
             // run the web server for 30 seconds for integration test
-            if (!string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
+            if (!string.IsNullOrWhiteSpace(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
                 Task t = App.Main(null);
 
@@ -39,7 +39,7 @@ namespace Tests
         [Fact]
         public async Task CommandLineTests()
         {
-            if (string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
+            if (string.IsNullOrWhiteSpace(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
                 // test dry run, help and version
                 Assert.Equal(0, await App.Main(new string[] { "-l", "Error", "--data-service", "http://localhost:4122/", "--help" }));
