@@ -2,9 +2,9 @@ apiVersion: v1
 kind: Pod
 
 metadata:
-  name: l8r-stress
+  name: l8r-load-100
   labels:
-    app: l8r-stress
+    app: l8r-load-100
 
 spec:
   restartPolicy: OnFailure
@@ -17,8 +17,8 @@ spec:
     - "10"
     - -r
     - -s
-    - http://ngsa-aks.ngsamem.svc.cluster.local:4120
-    - http://ngsa-aks.ngsacos.svc.cluster.local:4120
+    - http://ngsa-memory.ngsa.svc.cluster.local:4120
+    - http://ngsa-cosmos.ngsa.svc.cluster.local:4120
     - -f
     - benchmark.json
 
@@ -36,4 +36,4 @@ spec:
           key: Region
 
     - name: PodType
-      value: l8r-stress
+      value: l8r-load-100

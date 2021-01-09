@@ -2,9 +2,9 @@ apiVersion: v1
 kind: Pod
 
 metadata:
-  name: l8r
+  name: l8r-load-500
   labels:
-    app: l8r
+    app: l8r-load-500
 
 spec:
   restartPolicy: OnFailure
@@ -14,11 +14,11 @@ spec:
     imagePullPolicy: Always
     args:
     - -l
-    - "100"
+    - "2"
     - -r
     - -s
-    - http://ngsa-aks.ngsamem.svc.cluster.local:4120
-    - http://ngsa-aks.ngsacos.svc.cluster.local:4120
+    - http://ngsa-memory.ngsa.svc.cluster.local:4120
+    - http://ngsa-cosmos.ngsa.svc.cluster.local:4120
     - -f
     - benchmark.json
 
@@ -36,4 +36,4 @@ spec:
           key: Region
 
     - name: PodType
-      value: l8r
+      value: l8r-load-500
