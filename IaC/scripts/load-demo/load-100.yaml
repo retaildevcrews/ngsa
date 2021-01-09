@@ -17,8 +17,8 @@ spec:
     - "10"
     - -r
     - -s
-    - http://ngsa-aks.ngsamem.svc.cluster.local:4120
-    - http://ngsa-aks.ngsacos.svc.cluster.local:4120
+    - http://ngsa-memory.ngsa.svc.cluster.local:4120
+    - http://ngsa-cosmos.ngsa.svc.cluster.local:4120
     - -f
     - benchmark.json
 
