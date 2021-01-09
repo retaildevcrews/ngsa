@@ -125,11 +125,9 @@ namespace Ngsa.DataService
 
                 RequestLogger.DataService = string.Empty;
                 RequestLogger.PodType = PodType;
-                RequestLogger.Region = Region;
-                RequestLogger.Zone = Zone;
 
-                // add pod, region, zone info to logger
-                Logger.EnrichLog();
+                // add podtype to logger
+                Logger.AddPodType();
 
                 // build the host
                 host = BuildHost();
@@ -179,23 +177,11 @@ namespace Ngsa.DataService
         // load secrets
         private static void LoadSecrets(string secretsVolume)
         {
-            Region = Environment.GetEnvironmentVariable("Region");
-            Zone = Environment.GetEnvironmentVariable("Zone");
             PodType = Environment.GetEnvironmentVariable("PodType");
 
             if (string.IsNullOrWhiteSpace(PodType))
             {
                 PodType = "Ngsa.DataService";
-            }
-
-            if (string.IsNullOrWhiteSpace(Region))
-            {
-                Region = "dev";
-            }
-
-            if (string.IsNullOrWhiteSpace(Zone))
-            {
-                Zone = "dev";
             }
 
             if (InMemory)

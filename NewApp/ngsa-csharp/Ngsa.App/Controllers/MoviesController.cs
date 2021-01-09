@@ -35,7 +35,7 @@ namespace Ngsa.App.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMoviesAsync([FromQuery] MovieQueryParameters movieQueryParameters)
         {
-            NgsaLog nLogger = Logger.GetLogger(nameof(GetMoviesAsync), HttpContext).EnrichLog();
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetMoviesAsync), HttpContext).AddPodType();
             nLogger.LogInformation("Web Request");
 
             if (movieQueryParameters == null)
@@ -65,7 +65,7 @@ namespace Ngsa.App.Controllers
         [HttpGet("{movieId}")]
         public async Task<IActionResult> GetMovieByIdAsync([FromRoute] string movieId)
         {
-            NgsaLog nLogger = Logger.GetLogger(nameof(GetMovieByIdAsync), HttpContext).EnrichLog();
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetMovieByIdAsync), HttpContext).AddPodType();
             nLogger.LogInformation("Web Request");
 
             if (string.IsNullOrWhiteSpace(movieId))

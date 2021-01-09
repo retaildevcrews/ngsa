@@ -21,9 +21,6 @@ namespace Ngsa.LodeRunner
     {
         public const string PodType = "l8r";
 
-        public static string Region { get; set; } = string.Empty;
-        public static string Zone { get; set; } = string.Empty;
-
         /// <summary>
         /// Gets or sets json serialization options
         /// </summary>
@@ -44,12 +41,6 @@ namespace Ngsa.LodeRunner
         /// <returns>0 on success</returns>
         public static async Task<int> Main(string[] args)
         {
-            Region = Environment.GetEnvironmentVariable("Region");
-            Zone = Environment.GetEnvironmentVariable("Zone");
-
-            Region = string.IsNullOrWhiteSpace(Region) ? "dev" : Region;
-            Zone = string.IsNullOrWhiteSpace(Zone) ? "dev" : Zone;
-
             // add ctl-c handler
             AddControlCHandler();
 
