@@ -28,11 +28,11 @@ data:
     [INPUT]
         Name              tail
         Tag               kube.*
-        Path              /var/log/containers/ngsa*.log
+        Path              /var/log/containers/*.log
         Parser            cri
         DB                /var/log/flb_kube.db
         Mem_Buf_Limit     5MB
-        Skip_Long_Lines   On
+        Skip_Long_Lines   Off
         Refresh_Interval  10
 
   filter-kubernetes.conf: |
@@ -49,12 +49,7 @@ data:
         K8S-Logging.Parser  On
         K8S-Logging.Exclude Off
         Annotations         Off
-
-    [FILTER]
-        Name      parser
-        Match     kube.*
-        Key_Name  message
-        Parser    json
+        Labels              On
 
   parsers.conf: |
     [PARSER]
@@ -74,6 +69,13 @@ data:
     [PARSER]
         Name        cri
         Format      regex
-        Regex       ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<message>.*)$
+        Regex       ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<log>.*)$
         Time_Key    time
         Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+
+    [PARSER]
+        Name docker
+        Format json
+        Time_Key time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L
+        Time_Keep Off
