@@ -44,6 +44,18 @@ spec:
             name: ngsa-config
             key: lodeLog
 
+      - name: Zone
+        valueFrom:
+          configMapKeyRef:
+            name: ngsa-config
+            key: Zone
+
+      - name: Region
+        valueFrom:
+          configMapKeyRef:
+            name: ngsa-config
+            key: Region
+
       volumeMounts:
       - name: varlog
         mountPath: /var/log

@@ -51,6 +51,12 @@ data:
         Annotations         Off
         Labels              On
 
+    [FILTER]
+        Name      modify
+        Match     kube.*
+        Add       Zone2   ${Zone}
+        Add       Region2 ${Region}
+
   parsers.conf: |
     [PARSER]
         Name        json
