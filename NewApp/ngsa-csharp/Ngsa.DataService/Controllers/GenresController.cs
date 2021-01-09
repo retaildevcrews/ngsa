@@ -3,8 +3,7 @@
 
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Ngsa.DataService.DataAccessLayer;
+using Ngsa.Middleware;
 
 namespace Ngsa.DataService.Controllers
 {
@@ -14,19 +13,12 @@ namespace Ngsa.DataService.Controllers
     [Route("api/[controller]")]
     public class GenresController : Controller
     {
-        private readonly ILogger logger;
-        private readonly IDAL dal;
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="logger">log instance</param>
-        /// <param name="dal">data access layer instance</param>
-        public GenresController(ILogger<GenresController> logger)
+        private static readonly NgsaLog Logger = new NgsaLog
         {
-            this.logger = logger;
-            dal = App.CacheDal;
-        }
+            Name = typeof(GenresController).FullName,
+            LogLevel = App.AppLogLevel,
+            ErrorMessage = "GenreControllerException",
+        };
 
         /// <summary>
         /// Returns a JSON string array of Genre
@@ -36,8 +28,17 @@ namespace Ngsa.DataService.Controllers
         [HttpGet]
         public async Task<IActionResult> GetGenresAsync()
         {
-            // get list of genres as list of string
-            return await ResultHandler.Handle(dal.GetGenresAsync(), nameof(GetGenresAsync), Constants.GenresControllerException, logger).ConfigureAwait(false);
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetGenresAsync), HttpContext).EnrichLog();
+
+            IActionResult res = await ResultHandler.Handle(App.CosmosDal.GetGenresAsync(), nLogger).ConfigureAwait(false);
+
+            // use cache dal on Cosmos 429 errors
+            if (res is JsonResult jres && jres.StatusCode == 429)
+            {
+                res = await ResultHandler.Handle(App.CacheDal.GetGenresAsync(), nLogger).ConfigureAwait(false);
+            }
+
+            return res;
         }
     }
 }

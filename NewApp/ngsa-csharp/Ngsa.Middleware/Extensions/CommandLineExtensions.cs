@@ -12,7 +12,7 @@ namespace Ngsa.Middleware
         public static void AddFromEnvironment(this List<string> cmd, string key, string shortKey = "")
         {
             // command line takes precedence
-            if (!cmd.Contains(key) && (string.IsNullOrEmpty(shortKey) || !cmd.Contains(shortKey)))
+            if (!cmd.Contains(key) && (string.IsNullOrWhiteSpace(shortKey) || !cmd.Contains(shortKey)))
             {
                 // convert key to ENV_KEY_FORMAT
                 string envKey = key.ToUpperInvariant().Replace("--", string.Empty).Replace('-', '_');
@@ -21,7 +21,7 @@ namespace Ngsa.Middleware
                 string value = Environment.GetEnvironmentVariable(envKey);
 
                 // add the value (validation is handled by system.commandline)
-                if (!string.IsNullOrEmpty(value))
+                if (!string.IsNullOrWhiteSpace(value))
                 {
                     cmd.Add(key);
                     cmd.Add(value);

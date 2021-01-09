@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CorrelationVector;
 using Ngsa.Middleware;
 
 namespace Ngsa.App.Controllers
@@ -27,7 +28,7 @@ namespace Ngsa.App.Controllers
         // http client used to call data layer
         private static readonly HttpClient Client = new HttpClient
         {
-            BaseAddress = new Uri("http://localhost:4122"),
+            BaseAddress = new Uri(App.DataService),
         };
 
         /// <summary>
@@ -35,9 +36,9 @@ namespace Ngsa.App.Controllers
         /// </summary>
         /// <typeparam name="T">Result Type</typeparam>
         /// <param name="path">path</param>
-        /// <param name="queryString">query string</param>
+        /// <param name="cVector">Correlation Vector</param>
         /// <returns>IActionResult</returns>
-        public static async Task<IActionResult> Read<T>(string path, string queryString = "")
+        public static async Task<IActionResult> Read<T>(string path, CorrelationVector cVector)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -46,23 +47,37 @@ namespace Ngsa.App.Controllers
 
             string fullPath = path.Trim();
 
-            if (!string.IsNullOrWhiteSpace(queryString))
-            {
-                fullPath += $"?{queryString.Trim()}";
-            }
-
             try
             {
-                string res = await Client.GetStringAsync(fullPath).ConfigureAwait(false);
+                HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, fullPath);
 
-                T obj = System.Text.Json.JsonSerializer.Deserialize<T>(res, Options);
+                if (cVector != null)
+                {
+                    req.Headers.Add(CorrelationVector.HeaderName, cVector.Value);
+                }
 
-                return new JsonResult(obj, Options);
+                HttpResponseMessage resp = await Client.SendAsync(req);
+
+                JsonResult json;
+
+                // todo - can we return the byte array directly?
+                if (resp.IsSuccessStatusCode)
+                {
+                    T obj = JsonSerializer.Deserialize<T>(await resp.Content.ReadAsByteArrayAsync().ConfigureAwait(false), Options);
+                    json = new JsonResult(obj, Options);
+                }
+                else
+                {
+                    dynamic err = JsonSerializer.Deserialize<dynamic>(await resp.Content.ReadAsByteArrayAsync().ConfigureAwait(false), Options);
+
+                    json = new JsonResult(err, Options) { StatusCode = (int)resp.StatusCode };
+                }
+
+                return json;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                return new BadRequestResult();
+                return CreateResult(ex.Message, HttpStatusCode.InternalServerError);
             }
         }
 
@@ -74,19 +89,19 @@ namespace Ngsa.App.Controllers
         /// <returns>IActionResult</returns>
         public static async Task<IActionResult> Read<T>(HttpRequest request)
         {
-            try
+            if (request == null || !request.Path.HasValue)
             {
-                string res = await Client.GetStringAsync(request?.Path.ToString() + request?.QueryString.ToString()).ConfigureAwait(false);
-
-                T obj = System.Text.Json.JsonSerializer.Deserialize<T>(res, Options);
-
-                return new JsonResult(obj, Options);
+                throw new ArgumentNullException(nameof(request));
             }
-            catch (Exception ex)
+
+            string path = request.Path.ToString().Trim();
+
+            if (request.QueryString.HasValue)
             {
-                Console.WriteLine(ex.Message);
-                return CreateResult(ex.Message, HttpStatusCode.BadRequest);
+                path += request.QueryString.Value;
             }
+
+            return await Read<T>(path, Middleware.CorrelationVectorExtensions.GetCorrelationVectorFromContext(request.HttpContext)).ConfigureAwait(false);
         }
 
         /// <summary>

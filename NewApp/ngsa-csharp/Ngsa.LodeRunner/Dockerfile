@@ -1,12 +1,8 @@
 ### build the app
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS test
 
 # Copy the source
 COPY NewApp/ngsa-csharp /src
-
-### Run the unit tests
-#WORKDIR /src/tests
-#RUN dotnet test
 
 ### Build the release app
 WORKDIR /src/Ngsa.LodeRunner
@@ -27,7 +23,7 @@ RUN addgroup -S ngsa && \
     chown -R ngsa:ngsa /home/ngsa
 
 WORKDIR /app
-COPY --from=build /app .
+COPY --from=test /app .
 RUN mkdir -p /app/TestFiles && \
     cp *.json TestFiles && \
     cp perfTargets.txt TestFiles && \

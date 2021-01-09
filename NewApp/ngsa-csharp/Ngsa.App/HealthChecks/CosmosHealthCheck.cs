@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CorrelationVector;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Ngsa.App.Model;
@@ -18,6 +19,7 @@ namespace Ngsa.App
     {
         public static readonly string ServiceId = "ngsa";
         public static readonly string Description = "NGSA Health Check";
+        public CorrelationVector CVector { get; set; }
 
         private static JsonSerializerOptions jsonOptions;
 

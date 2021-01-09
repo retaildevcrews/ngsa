@@ -35,65 +35,80 @@ namespace Ngsa.DataService.DataAccessLayer
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             };
 
-            // load the data from the json file
-            Actors = JsonSerializer.Deserialize<List<Actor>>(File.ReadAllText("data/actors.json"), settings);
-
-            // sort by Name
-            Actors.Sort(Actor.NameCompare);
-
-            // Loads an O(1) dictionary for retrieving by ID
-            // Could also use a binary search to reduce memory usage
-            foreach (Actor a in Actors)
+            if (Actors?.Count == null)
             {
-                ActorsIndex.Add(a.ActorId, a);
+                // load the data from the json file
+                Actors = JsonSerializer.Deserialize<List<Actor>>(File.ReadAllText("data/actors.json"), settings);
+
+                // sort by Name
+                Actors.Sort(Actor.NameCompare);
             }
 
-            // load the data from the json file
-            Movies = JsonSerializer.Deserialize<List<Movie>>(File.ReadAllText("data/movies.json"), settings);
-
-            // sort by Title
-            Movies.Sort(Movie.TitleCompare);
-
-            string ge;
-
-            foreach (Movie m in Movies)
+            if (ActorsIndex.Count == 0)
             {
                 // Loads an O(1) dictionary for retrieving by ID
                 // Could also use a binary search to reduce memory usage
-                MoviesIndex.Add(m.MovieId, m);
-
-                // Add to by year dictionary
-                if (!YearIndex.ContainsKey(m.Year))
+                foreach (Actor a in Actors)
                 {
-                    YearIndex.Add(m.Year, new List<Movie>());
+                    ActorsIndex.Add(a.ActorId, a);
                 }
+            }
 
-                YearIndex[m.Year].Add(m);
+            if (Movies?.Count == null)
+            {
+                // load the data from the json file
+                Movies = JsonSerializer.Deserialize<List<Movie>>(File.ReadAllText("data/movies.json"), settings);
 
-                // Add to by Genre dictionary
-                foreach (string g in m.Genres)
+                // sort by Title
+                Movies.Sort(Movie.TitleCompare);
+            }
+
+            string ge;
+
+            if (MoviesIndex.Count == 0)
+            {
+                foreach (Movie m in Movies)
                 {
-                    ge = g.ToLowerInvariant().Trim();
+                    // Loads an O(1) dictionary for retrieving by ID
+                    // Could also use a binary search to reduce memory usage
+                    MoviesIndex.Add(m.MovieId, m);
 
-                    if (!GenreIndex.ContainsKey(ge))
+                    // Add to by year dictionary
+                    if (!YearIndex.ContainsKey(m.Year))
                     {
-                        GenreIndex.Add(ge, new List<Movie>());
+                        YearIndex.Add(m.Year, new List<Movie>());
                     }
 
-                    GenreIndex[ge].Add(m);
+                    YearIndex[m.Year].Add(m);
+
+                    // Add to by Genre dictionary
+                    foreach (string g in m.Genres)
+                    {
+                        ge = g.ToLowerInvariant().Trim();
+
+                        if (!GenreIndex.ContainsKey(ge))
+                        {
+                            GenreIndex.Add(ge, new List<Movie>());
+                        }
+
+                        GenreIndex[ge].Add(m);
+                    }
                 }
             }
 
-            // load the data from the json file
-            List<Genre> list = JsonSerializer.Deserialize<List<Genre>>(File.ReadAllText("data/genres.json"), settings);
-
-            // Convert Genre object to List<string> per API spec
-            foreach (Genre g in list)
+            if (Genres.Count == 0)
             {
-                Genres.Add(g.Name);
-            }
+                // load the data from the json file
+                List<Genre> list = JsonSerializer.Deserialize<List<Genre>>(File.ReadAllText("data/genres.json"), settings);
 
-            Genres.Sort();
+                // Convert Genre object to List<string> per API spec
+                foreach (Genre g in list)
+                {
+                    Genres.Add(g.Name);
+                }
+
+                Genres.Sort();
+            }
         }
 
         public static List<Actor> Actors { get; set; }
@@ -321,7 +336,7 @@ namespace Ngsa.DataService.DataAccessLayer
             }
 
             // nothing found
-            if (string.IsNullOrEmpty(ids))
+            if (string.IsNullOrWhiteSpace(ids))
             {
                 return string.Empty;
             }
@@ -472,11 +487,5 @@ namespace Ngsa.DataService.DataAccessLayer
             // do nothing
             return Task.CompletedTask;
         }
-    }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:File may only contain a single type", Justification = "simplicity")]
-    internal class ReadGenre
-    {
-        public string Genre { get; set; }
     }
 }

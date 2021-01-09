@@ -11,7 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Ngsa.Middleware;
-using Ngsa.Middleware.Validation;
 
 namespace Ngsa.DataService
 {
@@ -56,7 +55,7 @@ namespace Ngsa.DataService
             // this should be first as it "wraps" all requests
             if (App.AppLogLevel != LogLevel.None)
             {
-                app.UseLogger(new LoggerOptions
+                app.UseRequestLogger(new RequestLoggerOptions
                 {
                     Log2xx = App.AppLogLevel <= LogLevel.Information,
                     Log3xx = App.AppLogLevel <= LogLevel.Information,
@@ -94,10 +93,6 @@ namespace Ngsa.DataService
         {
             // set json serialization defaults and api behavior
             services.AddControllers()
-                .ConfigureApiBehaviorOptions(o =>
-                {
-                    o.InvalidModelStateResponseFactory = ctx => new ValidationResult();
-                })
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.IgnoreNullValues = true;

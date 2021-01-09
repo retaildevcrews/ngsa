@@ -25,7 +25,7 @@ namespace Ngsa.DataService
         /// <returns>Secrets or null</returns>
         public static Secrets GetSecretsFromVolume(string volume)
         {
-            if (string.IsNullOrEmpty(volume))
+            if (string.IsNullOrWhiteSpace(volume))
             {
                 throw new ArgumentNullException(nameof(volume));
             }
@@ -59,22 +59,22 @@ namespace Ngsa.DataService
                 throw new Exception($"Unable to read secrets from volume: {volume}");
             }
 
-            if (string.IsNullOrEmpty(sec.CosmosCollection))
+            if (string.IsNullOrWhiteSpace(sec.CosmosCollection))
             {
                 throw new Exception($"CosmosCollection cannot be empty");
             }
 
-            if (string.IsNullOrEmpty(sec.CosmosDatabase))
+            if (string.IsNullOrWhiteSpace(sec.CosmosDatabase))
             {
                 throw new Exception($"CosmosDatabase cannot be empty");
             }
 
-            if (string.IsNullOrEmpty(sec.CosmosKey))
+            if (string.IsNullOrWhiteSpace(sec.CosmosKey))
             {
                 throw new Exception($"CosmosKey cannot be empty");
             }
 
-            if (string.IsNullOrEmpty(sec.CosmosServer))
+            if (string.IsNullOrWhiteSpace(sec.CosmosServer))
             {
                 throw new Exception($"CosmosUrl cannot be empty");
             }

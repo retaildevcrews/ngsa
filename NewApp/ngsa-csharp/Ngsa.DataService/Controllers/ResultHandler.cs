@@ -2,12 +2,14 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using Ngsa.Middleware;
+using Ngsa.Middleware.Validation;
 
 namespace Ngsa.DataService.Controllers
 {
@@ -21,21 +23,20 @@ namespace Ngsa.DataService.Controllers
         /// </summary>
         /// <typeparam name="T">type of result</typeparam>
         /// <param name="task">async task (usually the Cosmos query)</param>
-        /// <param name="method">method name for logging</param>
-        /// <param name="errorMessage">error message to log on error</param>
-        /// <param name="logger">ILogger</param>
+        /// <param name="logger">NgsaLog</param>
         /// <returns>IActionResult</returns>
-        public static async Task<IActionResult> Handle<T>(Task<T> task, string method, string errorMessage, ILogger logger)
+        public static async Task<IActionResult> Handle<T>(Task<T> task, NgsaLog logger)
         {
             // log the request
-            logger.LogInformation(method);
+            logger.LogInformation("DS request");
 
             // return exception if task is null
             if (task == null)
             {
-                logger.LogError($"Exception:{method} task is null");
+                logger.EventId = new EventId((int)HttpStatusCode.InternalServerError, "Exception");
+                logger.LogError("Exception: task is null", new ArgumentNullException(nameof(task)));
 
-                return CreateResult(errorMessage, HttpStatusCode.InternalServerError);
+                return CreateResult(logger.ErrorMessage, HttpStatusCode.InternalServerError);
             }
 
             try
@@ -46,21 +47,24 @@ namespace Ngsa.DataService.Controllers
             catch (CosmosException ce)
             {
                 // log and return Cosmos status code
-                if (ce.StatusCode == System.Net.HttpStatusCode.NotFound)
+                if (ce.StatusCode == HttpStatusCode.NotFound)
                 {
-                    logger.LogWarning($"CosmosNotFound:{method}");
-                }
-                else
-                {
-                    logger.LogError($"{ce}\nCosmosException:{method}:{ce.StatusCode}:{ce.ActivityId}:{ce.Message}");
+                    logger.EventId = new EventId((int)ce.StatusCode, string.Empty);
+                    logger.LogWarning(logger.NotFoundError);
+                    return CreateResult(logger.NotFoundError, ce.StatusCode);
                 }
 
-                return CreateResult(errorMessage, ce.StatusCode);
+                logger.EventId = new EventId((int)ce.StatusCode, "CosmosException");
+                logger.Data.Add("CosmosActivityId", ce.ActivityId);
+                logger.LogError($"CosmosException: {ce.Message}", ce);
+
+                return CreateResult(logger.ErrorMessage, ce.StatusCode);
             }
             catch (Exception ex)
             {
                 // log and return exception
-                logger.LogError($"{ex}\nException:{method}:{ex.Message}");
+                logger.EventId = new EventId((int)HttpStatusCode.InternalServerError, "Exception");
+                logger.LogError($"Exception: {ex.Message}", ex);
 
                 // return 500 error
                 return CreateResult("Internal Server Error", HttpStatusCode.InternalServerError);
@@ -75,10 +79,33 @@ namespace Ngsa.DataService.Controllers
         /// <returns>JsonResult</returns>
         public static JsonResult CreateResult(string message, HttpStatusCode statusCode)
         {
-            return new JsonResult(new ErrorResult { Error = statusCode, Message = message })
+            JsonResult res = new JsonResult(new ErrorResult { Error = statusCode, Message = message })
             {
                 StatusCode = (int)statusCode,
             };
+
+            return res;
+        }
+
+        public static JsonResult CreateResult(List<ValidationError> errorList, string path)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>
+            {
+                { "type", ValidationError.GetErrorLink(path) },
+                { "title", "Parameter validation error" },
+                { "detail", "One or more invalid parameters were specified." },
+                { "status", (int)HttpStatusCode.BadRequest },
+                { "instance", path },
+                { "validationErrors", errorList },
+            };
+
+            JsonResult res = new JsonResult(data)
+            {
+                StatusCode = (int)HttpStatusCode.BadRequest,
+                ContentType = "application/problem+json",
+            };
+
+            return res;
         }
     }
 }

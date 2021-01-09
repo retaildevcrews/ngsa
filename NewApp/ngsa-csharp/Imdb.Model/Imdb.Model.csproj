@@ -3,17 +3,21 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>Imdb.Model</RootNamespace>
-    <VersionPrefix>0.0.1</VersionPrefix>
+    <VersionPrefix>0.0.8</VersionPrefix>
     <VersionSuffix>$([System.DateTime]::UtcNow.ToString(`MMdd-HHmm`))</VersionSuffix>
     <Copyright>Copyright (c) Microsoft Corporation. All rights reserved.</Copyright>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>Latest</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-  </PropertyGroup> 
+  </PropertyGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="../stylecop.json" />
+    <AdditionalFiles Include="..\stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
   <ItemGroup>

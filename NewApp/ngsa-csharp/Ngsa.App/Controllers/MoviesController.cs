@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Imdb.Model;
 using Microsoft.AspNetCore.Mvc;
@@ -18,17 +19,13 @@ namespace Ngsa.App.Controllers
     [ApiController]
     public class MoviesController : Controller
     {
-        private readonly ILogger logger;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MoviesController"/> class.
-        /// </summary>
-        /// <param name="logger">log instance</param>
-        /// <param name="dal">data access layer instance</param>
-        public MoviesController(ILogger<MoviesController> logger)
+        private static readonly NgsaLog Logger = new NgsaLog
         {
-            this.logger = logger;
-        }
+            Name = typeof(MoviesController).FullName,
+            LogLevel = App.AppLogLevel,
+            ErrorMessage = "MoviesControllerException",
+            NotFoundError = "Movie Not Found",
+        };
 
         /// <summary>
         /// Returns a JSON array of Movie objects
@@ -38,38 +35,56 @@ namespace Ngsa.App.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMoviesAsync([FromQuery] MovieQueryParameters movieQueryParameters)
         {
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetMoviesAsync), HttpContext).EnrichLog();
+            nLogger.LogInformation("Web Request");
+
             if (movieQueryParameters == null)
             {
                 throw new ArgumentNullException(nameof(movieQueryParameters));
             }
 
-            return await DataService.Read<List<Movie>>(Request).ConfigureAwait(false);
+            List<Middleware.Validation.ValidationError> list = movieQueryParameters.Validate();
 
-            //return await ResultHandler.Handle(
-            //    dal.GetMoviesAsync(movieQueryParameters), movieQueryParameters.GetMethodText(HttpContext), Constants.MoviesControllerException, logger)
-            //    .ConfigureAwait(false);
+            if (list.Count > 0)
+            {
+                nLogger.Data.Clear();
+                nLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
+                nLogger.LogWarning($"Invalid query string");
+
+                return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.Value : string.Empty));
+            }
+
+            return await DataService.Read<List<Movie>>(Request).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Returns a single JSON Movie by movieIdParameter
         /// </summary>
-        /// <param name="movieIdParameter">Movie ID</param>
+        /// <param name="movieId">Movie ID</param>
         /// <returns>IActionResult</returns>
         [HttpGet("{movieId}")]
-        public async Task<IActionResult> GetMovieByIdAsync([FromRoute] MovieIdParameter movieIdParameter)
+        public async Task<IActionResult> GetMovieByIdAsync([FromRoute] string movieId)
         {
-            if (movieIdParameter == null)
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetMovieByIdAsync), HttpContext).EnrichLog();
+            nLogger.LogInformation("Web Request");
+
+            if (string.IsNullOrWhiteSpace(movieId))
             {
-                throw new ArgumentNullException(nameof(movieIdParameter));
+                throw new ArgumentNullException(nameof(movieId));
             }
 
-            string method = nameof(GetMovieByIdAsync) + movieIdParameter.MovieId;
+            List<Middleware.Validation.ValidationError> list = MovieQueryParameters.ValidateMovieId(movieId);
+
+            if (list.Count > 0)
+            {
+                nLogger.Data.Clear();
+                nLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
+                nLogger.LogWarning($"Invalid Movie Id");
+
+                return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.Value : string.Empty));
+            }
 
             return await DataService.Read<Movie>(Request).ConfigureAwait(false);
-
-            //return await ResultHandler.Handle(
-            //    dal.GetMovieAsync(movieIdParameter.MovieId), method, "Movie Not Found", logger)
-            //    .ConfigureAwait(false);
         }
     }
 }

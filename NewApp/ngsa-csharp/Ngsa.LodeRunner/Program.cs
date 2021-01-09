@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Ngsa.Middleware;
 
 namespace Ngsa.LodeRunner
 {
@@ -46,8 +47,8 @@ namespace Ngsa.LodeRunner
             Region = Environment.GetEnvironmentVariable("Region");
             Zone = Environment.GetEnvironmentVariable("Zone");
 
-            Region = string.IsNullOrEmpty(Region) ? "Central" : Region;
-            Zone = string.IsNullOrEmpty(Zone) ? "BR-Austin" : Zone;
+            Region = string.IsNullOrWhiteSpace(Region) ? "dev" : Region;
+            Zone = string.IsNullOrWhiteSpace(Zone) ? "dev" : Zone;
 
             // add ctl-c handler
             AddControlCHandler();
@@ -63,9 +64,10 @@ namespace Ngsa.LodeRunner
 
             if (args.Contains("-h") ||
                 args.Contains("--help") ||
-                args.Contains("--version"))
+                args.Contains("-d") ||
+                args.Contains("--dry-run"))
             {
-                DisplayAsciiArt();
+                await AsciiArt.DisplayAsciiArt("Core/ascii-art.txt", ConsoleColor.DarkMagenta, AsciiArt.Animation.Dissolve).ConfigureAwait(false);
             }
 
             int ret = await root.InvokeAsync(args).ConfigureAwait(false);
@@ -121,7 +123,7 @@ namespace Ngsa.LodeRunner
             // create the test
             try
             {
-                WebV webv = new WebV(config);
+                ValidationTest lrt = new ValidationTest(config);
 
                 if (config.DelayStart > 0)
                 {
@@ -134,12 +136,12 @@ namespace Ngsa.LodeRunner
                 if (config.RunLoop)
                 {
                     // run in a loop
-                    return webv.RunLoop(config, TokenSource.Token);
+                    return lrt.RunLoop(config, TokenSource.Token);
                 }
                 else
                 {
                     // run one iteration
-                    return await webv.RunOnce(config, TokenSource.Token).ConfigureAwait(false);
+                    return await lrt.RunOnce(config, TokenSource.Token).ConfigureAwait(false);
                 }
             }
             catch (TaskCanceledException tce)

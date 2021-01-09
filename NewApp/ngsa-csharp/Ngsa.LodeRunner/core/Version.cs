@@ -46,7 +46,7 @@ namespace Ngsa.LodeRunner
         /// </summary>
         private static void SetVersion()
         {
-            if (string.IsNullOrEmpty(version))
+            if (string.IsNullOrWhiteSpace(version))
             {
                 if (Attribute.GetCustomAttribute(Assembly.GetEntryAssembly(), typeof(AssemblyInformationalVersionAttribute)) is AssemblyInformationalVersionAttribute v)
                 {
