@@ -61,10 +61,10 @@ data:
         Annotations         Off
 
     [FILTER]
-        Name      parser
+        Name      modify
         Match     kube.*
-        Key_Name  message
-        Parser    json
+        Add       Zone   ${Zone}
+        Add       Region ${Region}
 
   parsers.conf: |
     [PARSER]
@@ -84,6 +84,13 @@ data:
     [PARSER]
         Name        cri
         Format      regex
-        Regex       ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<message>.*)$
+        Regex       ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<log>.*)$
         Time_Key    time
         Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+
+    [PARSER]
+        Name docker
+        Format json
+        Time_Key time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L
+        Time_Keep Off

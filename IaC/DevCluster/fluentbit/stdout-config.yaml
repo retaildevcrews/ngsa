@@ -54,8 +54,8 @@ data:
     [FILTER]
         Name      modify
         Match     kube.*
-        Add       Zone2   ${Zone}
-        Add       Region2 ${Region}
+        Add       Zone   ${Zone}
+        Add       Region ${Region}
 
   parsers.conf: |
     [PARSER]
