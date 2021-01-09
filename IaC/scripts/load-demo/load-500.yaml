@@ -2,9 +2,9 @@ apiVersion: v1
 kind: Pod
 
 metadata:
-  name: l8r-stress
+  name: l8r-load-500
   labels:
-    app: l8r-stress
+    app: l8r-load-500
 
 spec:
   restartPolicy: OnFailure
@@ -14,7 +14,7 @@ spec:
     imagePullPolicy: Always
     args:
     - -l
-    - "10"
+    - "2"
     - -r
     - -s
     - http://ngsa-aks.ngsamem.svc.cluster.local:4120
@@ -36,4 +36,4 @@ spec:
           key: Region
 
     - name: PodType
-      value: l8r-stress
+      value: l8r-load-500
