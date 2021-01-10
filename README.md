@@ -38,9 +38,9 @@ The NGSA solution is a combination of a Kubernetes based infrastructure, a platf
 
 To that end we suggest that you follow these steps to get started:
 
-1. [Setup local dev environment](./IaC/DevCluster)
-2. [Running the app locally](./NewApp/ngsa-csharp)
-3. [Deploy to dev cluster](./Iac/DevCluster)
+1. [Run the app locally](./NewApp/ngsa-csharp)
+2. [Setup local Dev Cluster](./IaC/DevCluster)
+3. [Deploy to Dev Cluster](./Iac/DevCluster)
 
 ### Contributing
 
