@@ -10,7 +10,7 @@ Understanding how infrastructure changes will impact application capabilities.  
 
 At it's culmination the project will be a collection of guidance for deployment topologies based on capability maturity, a platform validation application, and a load generation tool.
 
-### Table of Contents
+## Table of Contents
 
 1. [Getting Started](#getting-started)
 2. [Contributing](#contributing)
@@ -41,6 +41,17 @@ We suggest that you follow these steps to get started:
 1. [Run the app locally](./src/ngsa-csharp)
 2. [Setup local Dev Cluster](./IaC/DevCluster)
 3. [Deploy to Dev Cluster](./IaC/DevCluster)
+
+### GitHub Templates and Workflows
+
+- Templates
+  - [Pull Request Tempate](PULL_REQUEST_TEMPLATE.md)
+  - [Issue Templates](ISSUE_TEMPLATE)
+
+- GitHub Actions (ci-cd pipelines)
+  - [ci-cd](./workflows/NewApp.yaml)
+  - [MD Link Checks](./workflows/mdlinkcheck.yaml)
+  - [MD Link Checks (scheduled)](./workflows/scheduled_mdlinkcheck.yaml)
 
 ### Contributing
 
