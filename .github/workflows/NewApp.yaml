@@ -7,16 +7,16 @@ on:
       - main
 
     paths:
-    - 'NewApp/ngsa-csharp/**'
-    - '.github/workflows/NewApp.yaml'
+    - 'src/ngsa-csharp/**'
+    - '.github/workflows/ngsa.yaml'
 
   push:
     branches:
       - main
 
     paths:
-    - 'NewApp/ngsa-csharp/**'
-    - '.github/workflows/NewApp.yaml'
+    - 'src/ngsa-csharp/**'
+    - '.github/workflows/ngsa.yaml'
 
     tags:
       - v*
@@ -56,8 +56,8 @@ jobs:
           echo '${{ secrets.CosmosKey }}' > src/ngsa/app/secrets/CosmosKey
 
           # TODO - remove after merge
-          echo '${{ secrets.CosmosUrl }}' > NewApp/ngsa-csharp/Ngsa.DataService/secrets/CosmosUrl
-          echo '${{ secrets.CosmosKey }}' > NewApp/ngsa-csharp/Ngsa.DataService/secrets/CosmosKey
+          echo '${{ secrets.CosmosUrl }}' > src/ngsa-csharp/Ngsa.DataService/secrets/CosmosUrl
+          echo '${{ secrets.CosmosKey }}' > src/ngsa-csharp/Ngsa.DataService/secrets/CosmosKey
 
           echo "COSMOS_SET=true" >> $GITHUB_ENV
         fi
@@ -99,28 +99,28 @@ jobs:
     - name: Build All
       if: ${{ env.BUILD == 'true' }}
       run: |
-        cd NewApp/ngsa-csharp
+        cd src/ngsa-csharp
         
         dotnet build
 
     - name: Test App
       if: ${{ env.BUILD == 'true' }}
       run: |
-        cd NewApp/ngsa-csharp
+        cd src/ngsa-csharp
 
         dotnet test Ngsa.App.Tests/Ngsa.App.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json
 
     - name: Test Data Service
       if: ${{ env.BUILD == 'true' }}
       run: |
-        cd NewApp/ngsa-csharp
+        cd src/ngsa-csharp
 
         dotnet test Ngsa.DataService.Tests/Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json
 
     - name: Test In Memory
       if: ${{ env.BUILD == 'true' }}
       run: |
-        cd NewApp/ngsa-csharp
+        cd src/ngsa-csharp
         export RUN_TEST_COVERAGE=true
         export IN_MEMORY=true
 
@@ -143,7 +143,7 @@ jobs:
     - name: Test Cosmos DB
       if: ${{ env.COSMOS_SET == 'true' }}
       run: |
-        cd NewApp/ngsa-csharp
+        cd src/ngsa-csharp
 
         # set env vars
         export RUN_TEST_COVERAGE=true
@@ -166,7 +166,7 @@ jobs:
     - name: Test LoadRunner
       if: ${{ env.BUILD == 'true' }}
       run: |
-        cd NewApp/ngsa-csharp
+        cd src/ngsa-csharp
 
         # clear env vars
         unset RUN_TEST_COVERAGE
@@ -180,7 +180,7 @@ jobs:
     - name: Test Coverage
       if: ${{ env.BUILD == 'true' }}
       run: |
-        tail -n 25 NewApp/ngsa-csharp/test.out
+        tail -n 25 src/ngsa-csharp/test.out
 
     - name: Docker Login
       if: ${{ env.DOCKER_SET == 'true' }}
@@ -201,9 +201,9 @@ jobs:
       run: |
         if [[ "${{ github.ref }}" == "refs/tags/"* ]]
         then
-          docker build . -t lr -f NewApp/ngsa-csharp/Ngsa.LodeRunner/Dockerfile --build-arg TAG=true
+          docker build . -t lr -f src/ngsa-csharp/Ngsa.LodeRunner/Dockerfile --build-arg TAG=true
         else
-          docker build . -t lr -f NewApp/ngsa-csharp/Ngsa.LodeRunner/Dockerfile
+          docker build . -t lr -f src/ngsa-csharp/Ngsa.LodeRunner/Dockerfile
         fi
 
     - name: Docker Build App
@@ -212,9 +212,9 @@ jobs:
         # build image
         if [[ "${{ github.ref }}" == "refs/tags/"* ]]
         then
-          docker build . -t app -f NewApp/ngsa-csharp/Ngsa.App/Dockerfile --build-arg TAG=true
+          docker build . -t app -f src/ngsa-csharp/Ngsa.App/Dockerfile --build-arg TAG=true
         else
-          docker build . -t app -f NewApp/ngsa-csharp/Ngsa.App/Dockerfile
+          docker build . -t app -f src/ngsa-csharp/Ngsa.App/Dockerfile
         fi
 
     - name: Docker Build Data Service
@@ -223,9 +223,9 @@ jobs:
         # build image
         if [[ "${{ github.ref }}" == "refs/tags/"* ]]
         then
-          docker build . -t ds -f NewApp/ngsa-csharp/Ngsa.DataService/Dockerfile --build-arg TAG=true
+          docker build . -t ds -f src/ngsa-csharp/Ngsa.DataService/Dockerfile --build-arg TAG=true
         else
-          docker build . -t ds -f NewApp/ngsa-csharp/Ngsa.DataService/Dockerfile
+          docker build . -t ds -f src/ngsa-csharp/Ngsa.DataService/Dockerfile
         fi
 
     - name: Get Version
