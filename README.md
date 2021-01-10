@@ -15,42 +15,58 @@ At it's culmination the project will be a collection of guidance for deployment 
 1. [Getting Started](#getting-started)
 2. [Contributing](#contributing)
 3. Cluster Setup Guides
-   1. [Bare Metal](./IaC/BareMetal/README.md)
-   2. [AKS](./IaC/AKS/README.md)
-4. [Developer Guide](./src/README.md)
+   1. [Developer Cluster](./IaC/DevCluster)
+   2. [AKS](./IaC/AKS)
+4. [Developer Guide](./src/ngsa-csharp)
 5. Applications
-   1. [NGSA App](./src/ngsa/README.md)
-   2. [Load Generator](./src/loderunner/README.md)
+   1. [Web API](./src/ngsa-csharp)
+   2. [Data Service](./src/ngsa-csharp)
+   3. [Load Generator](./src/ngsa-csharp)
 6. Design, Practices, and Conventions
    1. [Architecture](./docs/ApplicationArch.md)
-   2. [CI/CD](./docs/CICD.md)
-   3. [HTTP Error Responses](./docs/HttpErrorResponses.md)
-   4. [Engineering Practices](./docs/EngineeringPractices.md)
-   5. [Observability](./docs/Observability.md)
-   6. [Parameter Validation](./docs/ParameterValidation.md)
-   7. [Naming Conventions](./docs/NamingConvention.md)
+   2. [Engineering Practices](./docs/EngineeringPractices.md)
+      1. [Naming Conventions](./docs/NamingConvention.md)
+      2. [CI/CD](./docs/CICD.md)
+      3. [Observability](./docs/Observability.md)
+   3. Web API Specification
+      1. [Parameter Validation](./docs/ParameterValidation.md)
+      2. [HTTP Error Responses](./docs/HttpErrorResponses.md)
 
-## Getting Started
+### Getting Started
 
-The NGSA solution is a combination of a Kubernetes based infrastructure, a platform validation application ([ngsa](./src/ngsa/README.md)), and the load client ([loderunner](./src/loderunner/README.md)).
+The NGSA solution is a combination of a Kubernetes based infrastructure and a `Platform Validation Application`.
 
-To that end we suggest that you follow these steps to get started:
+We suggest that you follow these steps to get started:
 
-1. [Setup local dev environment](./IaC/BareMetal/README.md)
-2. [Running the app locally](./src/README.md)
-3. TODO - deploying the app to dev cluster
+1. [Run the app locally](./src/ngsa-csharp)
+2. [Setup local Dev Cluster](./IaC/DevCluster)
+3. [Deploy to Dev Cluster](./IaC/DevCluster)
 
-## Contributing
+### GitHub Templates and Workflows
 
-This project welcomes contributions and suggestions. Most contributions require you to agree to a
-Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit [Microsoft Contributor License Agreement](https://cla.opensource.microsoft.com).
+- Templates
+  - [Pull Request Tempate](./.github/PULL_REQUEST_TEMPLATE.md)
+  - [Issue Templates](./.github/ISSUE_TEMPLATE)
 
-When you submit a pull request, a CLA bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
+- GitHub Actions (ci-cd pipelines)
+  - [ci-cd](./.github/workflows/ngsa.yaml)
+  - [MD Link Checks](./.github/workflows/mdlinkcheck.yaml)
+  - [MD Link Checks (scheduled)](./.github/workflows/scheduled_mdlinkcheck.yaml)
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+### Contributing
 
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments
+This project welcomes contributions and suggestions.  Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. For details, visit <https://cla.opensource.microsoft.com>
+
+When you submit a pull request, a CLA bot will automatically determine whether you need to provide a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions provided by the bot. You will only need to do this once across all repos using our CLA.
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+### Trademarks
+
+This project may contain trademarks or logos for projects, products, or services.
+
+Authorized use of Microsoft trademarks or logos is subject to and must follow [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
+
+Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
+
+Any use of third-party trademarks or logos are subject to those third-party's policies.

@@ -475,7 +475,7 @@ helm upgrade ngsa-aks ngsa -f ./ngsa/helm-config.yaml  --namespace ngsa --set ce
 
 Run the Validation Test
 
-> For more information on the validation test tool, see [Lode Runner](../../src/loderunner/).
+> For more information on the validation test tool, see [Lode Runner](https://github.com/retaildevcrews/ngsa/tree/main/src/ngsa-csharp/Ngsa.LodeRunner).
 
 ```bash
 
@@ -490,7 +490,7 @@ TODO
 
 ## Smoke Tests
 
-Deploy Lode Runner to drive consistent traffic to the AKS cluster for monitoring.
+Deploy Loderunner to drive consistent traffic to the AKS cluster for monitoring.
 
 ```bash
 
@@ -533,7 +533,7 @@ kubectl get pod --namespace fluentbit
 
 With this script a cluster can be deployed in AKS (uses the same steps above).
 The script is self-contained, meaning, it won't change the user-environment (e.g. selected Azure Subscription or ubernetes context) unless it's explicitly specified.
-It is located [here](../scripts/create-cluster-env.bash).
+It is located [here](./scripts/create-cluster-env.bash).
 Script Usage:
 
 ```bash

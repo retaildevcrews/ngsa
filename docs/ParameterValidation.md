@@ -1,6 +1,6 @@
-# Helium Parameter Validation
+# API Parameter Validation
 
-The following documentation describes the types of Query String and route parameters available in the Helium REST API. The categories are broken down by [Common Query Parameters](##Common-Query-Parameters), the [Movies API](##Movies-API), and the [Actors API](##Actors-API).
+The following documentation describes the types of Query String and route parameters available in the REST API. The categories are broken down by [Common Query Parameters](##Common-Query-Parameters), the [Movies API](##Movies-API), and the [Actors API](##Actors-API).
 
 ## Overview
 
