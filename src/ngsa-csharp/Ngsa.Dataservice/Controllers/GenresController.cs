@@ -28,7 +28,7 @@ namespace Ngsa.DataService.Controllers
         [HttpGet]
         public async Task<IActionResult> GetGenresAsync()
         {
-            NgsaLog nLogger = Logger.GetLogger(nameof(GetGenresAsync), HttpContext).EnrichLog();
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetGenresAsync), HttpContext).AddPodType();
 
             IActionResult res = await ResultHandler.Handle(App.CosmosDal.GetGenresAsync(), nLogger).ConfigureAwait(false);
 

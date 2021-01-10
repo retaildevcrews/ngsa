@@ -50,7 +50,7 @@ namespace Ngsa.DataService.Controllers
                 throw new ArgumentNullException(nameof(actorQueryParameters));
             }
 
-            NgsaLog nLogger = Logger.GetLogger(nameof(GetActorsAsync), HttpContext).EnrichLog();
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetActorsAsync), HttpContext).AddPodType();
 
             System.Collections.Generic.List<Middleware.Validation.ValidationError> list = actorQueryParameters.Validate();
 
@@ -88,7 +88,7 @@ namespace Ngsa.DataService.Controllers
                 throw new ArgumentNullException(nameof(actorId));
             }
 
-            NgsaLog nLogger = Logger.GetLogger(nameof(GetActorByIdAsync), HttpContext).EnrichLog();
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetActorByIdAsync), HttpContext).AddPodType();
 
             System.Collections.Generic.List<Middleware.Validation.ValidationError> list = ActorQueryParameters.ValidateActorId(actorId);
 

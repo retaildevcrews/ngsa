@@ -43,8 +43,6 @@ namespace Ngsa.DataService
         public static IDAL CosmosDal { get; set; }
 
         public static string CosmosName { get; set; } = string.Empty;
-        public static string Region { get; set; } = string.Empty;
-        public static string Zone { get; set; } = string.Empty;
         public static string PodType { get; set; }
 
         public static bool UseCache => Cache || Ngsa.Middleware.RequestLogger.RequestsPerSecond > Constants.MaxReqSecBeforeCache;
@@ -83,12 +81,17 @@ namespace Ngsa.DataService
 
             List<string> cmd = CombineEnvVarsWithCommandLine(args);
 
-            if (cmd.Contains("-h") ||
+            if (!cmd.Contains("--version") &&
+                (cmd.Contains("-h") ||
                 cmd.Contains("--help") ||
                 cmd.Contains("-d") ||
-                cmd.Contains("--dry-run"))
+                cmd.Contains("--dry-run")))
             {
+#if DEBUG
                 await AsciiArt.DisplayAsciiArt("Core/ascii-art.txt", ConsoleColor.DarkMagenta, AsciiArt.Animation.TwoColor).ConfigureAwait(false);
+#else
+                await AsciiArt.DisplayAsciiArt("Core/ascii-art.txt", ConsoleColor.DarkMagenta, AsciiArt.Animation.None).ConfigureAwait(false);
+#endif
             }
 
             // run the app

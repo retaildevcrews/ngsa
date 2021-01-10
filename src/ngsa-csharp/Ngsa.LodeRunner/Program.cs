@@ -21,9 +21,6 @@ namespace Ngsa.LodeRunner
     {
         public const string PodType = "l8r";
 
-        public static string Region { get; set; } = string.Empty;
-        public static string Zone { get; set; } = string.Empty;
-
         /// <summary>
         /// Gets or sets json serialization options
         /// </summary>
@@ -44,12 +41,6 @@ namespace Ngsa.LodeRunner
         /// <returns>0 on success</returns>
         public static async Task<int> Main(string[] args)
         {
-            Region = Environment.GetEnvironmentVariable("Region");
-            Zone = Environment.GetEnvironmentVariable("Zone");
-
-            Region = string.IsNullOrWhiteSpace(Region) ? "dev" : Region;
-            Zone = string.IsNullOrWhiteSpace(Zone) ? "dev" : Zone;
-
             // add ctl-c handler
             AddControlCHandler();
 
@@ -62,12 +53,17 @@ namespace Ngsa.LodeRunner
                 args = Array.Empty<string>();
             }
 
-            if (args.Contains("-h") ||
+            if (!args.Contains("--version") &&
+                (args.Contains("-h") ||
                 args.Contains("--help") ||
                 args.Contains("-d") ||
-                args.Contains("--dry-run"))
+                args.Contains("--dry-run")))
             {
+#if DEBUG
                 await AsciiArt.DisplayAsciiArt("Core/ascii-art.txt", ConsoleColor.DarkMagenta, AsciiArt.Animation.Dissolve).ConfigureAwait(false);
+#else
+                await AsciiArt.DisplayAsciiArt("Core/ascii-art.txt", ConsoleColor.DarkMagenta, AsciiArt.Animation.None).ConfigureAwait(false);
+#endif
             }
 
             int ret = await root.InvokeAsync(args).ConfigureAwait(false);
