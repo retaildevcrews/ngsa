@@ -24,13 +24,13 @@ At it's culmination the project will be a collection of guidance for deployment 
    3. [Load Generator](./NewApp/ngsa-csharp)
 6. Design, Practices, and Conventions
    1. [Architecture](./docs/ApplicationArch.md)
-   2. [CI/CD](./docs/CICD.md)
+   2. [Engineering Practices](./docs/EngineeringPractices.md)
+      1. [Naming Conventions](./docs/NamingConvention.md)
+      2. [CI/CD](./docs/CICD.md)
+      3. [Observability](./docs/Observability.md)
    3. Web API Specification
       1. [Parameter Validation](./docs/ParameterValidation.md)
       2. [HTTP Error Responses](./docs/HttpErrorResponses.md)
-   4. [Engineering Practices](./docs/EngineeringPractices.md)
-   5. [Observability](./docs/Observability.md)
-   6. [Naming Conventions](./docs/NamingConvention.md)
 
 ### Getting Started
 
