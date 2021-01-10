@@ -36,7 +36,7 @@ At it's culmination the project will be a collection of guidance for deployment 
 
 The NGSA solution is a combination of a Kubernetes based infrastructure and a `Platform Validation Application`.
 
-To that end we suggest that you follow these steps to get started:
+We suggest that you follow these steps to get started:
 
 1. [Run the app locally](./NewApp/ngsa-csharp)
 2. [Setup local Dev Cluster](./IaC/DevCluster)
