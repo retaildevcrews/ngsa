@@ -1,6 +1,6 @@
 # Source Code Layout
 
-- [ngsa-typescript](./ngsa-typescipt)
+- [ngsa-typescript](./ngsa-typescript)
   - typescript version of the Web API
 
 - [ngsa-csharp](./ngsa-csharp)
