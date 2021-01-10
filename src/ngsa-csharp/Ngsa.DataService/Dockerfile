@@ -9,7 +9,7 @@ ARG TAG=false
 EXPOSE 4120
 
 ### copy the source and tests
-COPY NewApp/ngsa-csharp /src
+COPY src/ngsa-csharp /src
 
 WORKDIR /src/Ngsa.DataService
 
