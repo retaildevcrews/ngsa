@@ -6,4 +6,4 @@
 - [ngsa-csharp](./ngsa-csharp)
   - C# version of the Web API
   - DataService (required by Web API)
-  - LodeRunner (load service)
+  - LodeRunner (end-to-end test and load service)
