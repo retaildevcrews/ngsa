@@ -34,7 +34,7 @@ At it's culmination the project will be a collection of guidance for deployment 
 
 ### Getting Started
 
-The NGSA solution is a combination of a Kubernetes based infrastructure, a platform validation application ([ngsa](./NewApp/ngsa-csharp)), and the load client ([loderunner](./NewApp/ngsa-csharp)).
+The NGSA solution is a combination of a Kubernetes based infrastructure and a `Platform Validation Application`.
 
 To that end we suggest that you follow these steps to get started:
 
