@@ -6,6 +6,6 @@ Infrastructure as Code to deploy NGSA
 
 ## Table of Contents
 
+- [AKS Cluster Setup](./AKS/)
 - [Dev Cluster Setup](./DevCluster)
-- [AKS Setup](./AKS/)
 - [Load Test Demo](./LoadDemo)
