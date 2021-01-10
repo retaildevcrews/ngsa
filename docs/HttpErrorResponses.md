@@ -1,4 +1,4 @@
-# Helium HTTP/400 Error Response Design
+# HTTP/400 Error Response Design
 
 This design guide covers the types of responses and format used when an HTTP/400 error occurs. Aligning with [RFC 7807](https://tools.ietf.org/html/rfc7807), the error responses adhere to this specification with additional extension members containing a collection of parameter validation errors.
 

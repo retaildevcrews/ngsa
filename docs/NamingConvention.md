@@ -55,7 +55,7 @@ K8s namespace will follow the format: `[Team Name]-[Application Name]`
 Examples:
 
 - `rdc-ngsa`
-- `rdc-helium`
+- `rdc-loderunner`
 - `team2-app2`
 
 ## Resources
