@@ -1,13 +1,9 @@
-# Source Code Hierarchy
+# Source Code Layout
 
-- ngsa-typescript
-  - typescript version of the ngsa application
-- ngsa-csharp
-  - C# version of the ngsa application
-  - DataService (required by ngsa app)
-  - LodeRunner (load service)
+- [ngsa-typescript](./ngsa-typescipt)
+  - typescript version of the Web API
 
-## Running the Applications
-
-1. To reduce setup complexity we suggest that you follow the directions for running the application in In-memory mode as detailed in the [NGSA App Readme](./ngsa-csharp/README.md)
-2. Once the app is running locally you may run tests against it using [Loderunner](https://github.com/retaildevcrews/ngsa/blob/main/src/loderunner/README.md)
+- [ngsa-csharp](./ngsa-csharp)
+  - C# version of the Web APIn
+  - Data Service (required by ngsa app)
+  - Lode Runner (end-to-end validation and load service)
