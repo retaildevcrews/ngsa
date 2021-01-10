@@ -1,4 +1,4 @@
-name: New Build
+name: NGSA Build
 
 on:
   pull_request:
