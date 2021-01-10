@@ -17,11 +17,11 @@ At it's culmination the project will be a collection of guidance for deployment 
 3. Cluster Setup Guides
    1. [Developer Cluster](./IaC/DevCluster)
    2. [AKS](./IaC/AKS)
-4. [Developer Guide](./NewApp/ngsa-csharp)
+4. [Developer Guide](./src/ngsa-csharp)
 5. Applications
-   1. [Web API](./NewApp/ngsa-csharp)
-   2. [Data Service](./NewApp/ngsa-csharp)
-   3. [Load Generator](./NewApp/ngsa-csharp)
+   1. [Web API](./src/ngsa-csharp)
+   2. [Data Service](./src/ngsa-csharp)
+   3. [Load Generator](./src/ngsa-csharp)
 6. Design, Practices, and Conventions
    1. [Architecture](./docs/ApplicationArch.md)
    2. [Engineering Practices](./docs/EngineeringPractices.md)
@@ -38,7 +38,7 @@ The NGSA solution is a combination of a Kubernetes based infrastructure and a `P
 
 We suggest that you follow these steps to get started:
 
-1. [Run the app locally](./NewApp/ngsa-csharp)
+1. [Run the app locally](./src/ngsa-csharp)
 2. [Setup local Dev Cluster](./IaC/DevCluster)
 3. [Deploy to Dev Cluster](./IaC/DevCluster)
 
