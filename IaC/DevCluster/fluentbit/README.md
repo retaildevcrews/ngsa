@@ -18,6 +18,10 @@ kubectl create secret generic log-secrets \
 # create the fluentbit service account
 kubectl apply -f account.yaml
 
+# apply env vars
+kubectl apply -f log.yaml
+
+
 # apply fluentbit config to log to stdout
 kubectl apply -f stdout-config.yaml
 
