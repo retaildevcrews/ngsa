@@ -53,11 +53,11 @@ namespace Ngsa.LodeRunner
                 args = Array.Empty<string>();
             }
 
-            if (!cmd.Contains("--version") &&
-                (cmd.Contains("-h") ||
-                cmd.Contains("--help") ||
-                cmd.Contains("-d") ||
-                cmd.Contains("--dry-run")))
+            if (!args.Contains("--version") &&
+                (args.Contains("-h") ||
+                args.Contains("--help") ||
+                args.Contains("-d") ||
+                args.Contains("--dry-run")))
             {
                 await AsciiArt.DisplayAsciiArt("Core/ascii-art.txt", ConsoleColor.DarkMagenta, AsciiArt.Animation.Dissolve).ConfigureAwait(false);
             }
