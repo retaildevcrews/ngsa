@@ -11,12 +11,16 @@ cd ../fluentbit
 ### Create secrets if necessary
 ###   fluentbit won't run without these secrets
 ###   skip this step if already set
-kubectl create secret generic ngsa-secrets \
+kubectl create secret generic log-secrets \
   --from-literal=WorkspaceId=unused \
   --from-literal=SharedKey=unused
 
 # create the fluentbit service account
 kubectl apply -f account.yaml
+
+# apply env vars
+kubectl apply -f log.yaml
+
 
 # apply fluentbit config to log to stdout
 kubectl apply -f stdout-config.yaml
@@ -96,16 +100,16 @@ az extension add --name log-analytics
 # create Log Analytics instance
 az monitor log-analytics workspace create -g $Ngsa_Log_RG -n $Ngsa_Log_Name -l $Ngsa_Log_Loc
 
-# delete ngsa-secrets
-kubectl delete secret ngsa-secrets
+# delete log-secrets
+kubectl delete secret log-secrets
 
 # add Log Analytics secrets
-kubectl create secret generic ngsa-secrets \
+kubectl create secret generic log-secrets \
   --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_RG -n $Ngsa_Log_Name --query customerId -o tsv) \
   --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_RG -n $Ngsa_Log_Name --query primarySharedKey -o tsv)
 
 # display the secrets (base 64 encoded)
-kubectl get secret ngsa-secrets -o jsonpath='{.data}'
+kubectl get secret log-secrets -o jsonpath='{.data}'
 
 ```
 

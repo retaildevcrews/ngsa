@@ -1,4 +1,4 @@
-name: ngsa Build
+name: NGSA Build
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
       - main
 
     paths:
-    - 'src/ngsa/**'
+    - 'src/ngsa-csharp/**'
     - '.github/workflows/ngsa.yaml'
 
   push:
@@ -15,7 +15,7 @@ on:
       - main
 
     paths:
-    - 'src/ngsa/**'
+    - 'src/ngsa-csharp/**'
     - '.github/workflows/ngsa.yaml'
 
     tags:
@@ -30,7 +30,9 @@ jobs:
       # copy the config value to environment variables
       # do not copy the actual secrets!
 
-      DOCKER_REPO: retaildevcrew/ngsa
+      APP_REPO: retaildevcrew/ngsa-app
+      DS_REPO: retaildevcrew/ngsa-dataservice
+      LR_REPO: retaildevcrew/ngsa-loderunner
 
       # These are used in if: conditions
       DOCKER_SET: false
@@ -43,21 +45,21 @@ jobs:
     - name: Set conditions
       run: |
         # check that all Docker secrets are set
-        if [[ "${{ secrets.DOCKER_PAT }}" != "" && "${{ secrets.DOCKER_REPO }}" != "" && "${{ secrets.DOCKER_USER }}" != "" ]];
+        if [[ "${{ secrets.DOCKER_PAT }}" != "" && "${{ secrets.DOCKER_USER }}" != "" ]];
         then
           echo "DOCKER_SET=true" >> $GITHUB_ENV
         fi
         
         if [[ "${{ secrets.CosmosUrl }}" != "" && "${{ secrets.CosmosKey }}" != "" ]];
         then
-          echo '${{ secrets.CosmosUrl }}' > src/ngsa/app/secrets/CosmosUrl
-          echo '${{ secrets.CosmosKey }}' > src/ngsa/app/secrets/CosmosKey
+          echo '${{ secrets.CosmosUrl }}' > src/ngsa-csharp/Ngsa.DataService/secrets/CosmosUrl
+          echo '${{ secrets.CosmosKey }}' > src/ngsa-csharp/Ngsa.DataService/secrets/CosmosKey
+
           echo "COSMOS_SET=true" >> $GITHUB_ENV
         fi
 
     - name: PR Closed
       if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && ! github.event.pull_request.merged }}
-
       run: |
 
         # handle PR Closed event by building / pushing main branch
@@ -70,7 +72,6 @@ jobs:
 
     - name: PR Merged
       if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged }}
-
       run: |
 
         # Do not build on PR Merged
@@ -80,132 +81,188 @@ jobs:
         echo "COSMOS_SET=false" >> $GITHUB_ENV
         echo "BUILD=false" >> $GITHUB_ENV
 
+    - name: Draft PR
+      if: ${{ github.event_name == 'pull_request' && github.event.pull_request.draft }}
+      run: |
+
+        # Do not build on Draft PR
+
+        # Skip remaining steps
+        echo "DOCKER_SET=false" >> $GITHUB_ENV
+        echo "COSMOS_SET=false" >> $GITHUB_ENV
+        echo "BUILD=false" >> $GITHUB_ENV
+
+    - name: Build All
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        cd src/ngsa-csharp
+        
+        dotnet build
+
+    - name: Test App
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        cd src/ngsa-csharp
+
+        dotnet test Ngsa.App.Tests/Ngsa.App.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json
+
+    - name: Test Data Service
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        cd src/ngsa-csharp
+
+        dotnet test Ngsa.DataService.Tests/Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json
+
+    - name: Test In Memory
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        cd src/ngsa-csharp
+        export RUN_TEST_COVERAGE=true
+        export IN_MEMORY=true
+
+        # start data service (in memory)
+        nohup dotnet test Ngsa.DataService.Tests/Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json &
+        sleep 5
+
+        # start app
+        nohup dotnet test Ngsa.App.Tests/Ngsa.App.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:MergeWith=../TestResults/coverage.json &
+        sleep 10
+
+        # run LodeRunner
+        dotnet test Ngsa.LodeRunner.Tests/Ngsa.LodeRunner.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json
+
+        # signal tests with file semaphore
+        touch tests-complete
+        sleep 3
+        rm tests-complete
+
+    - name: Test Cosmos DB
+      if: ${{ env.COSMOS_SET == 'true' }}
+      run: |
+        cd src/ngsa-csharp
+
+        # set env vars
+        export RUN_TEST_COVERAGE=true
+        unset IN_MEMORY
+
+        # start data service (Cosmos DB)
+        nohup dotnet test Ngsa.DataService.Tests/Ngsa.DataService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json &
+        sleep 15
+
+        # run LoadRunner
+        cd Ngsa.LodeRunner
+        dotnet run -- -s localhost:4122 -f dataservice.json --maxerrors 1
+        cd ..
+
+        # signal tests with file semaphore
+        touch tests-complete
+        sleep 3
+        rm tests-complete
+
+    - name: Test LoadRunner
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        cd src/ngsa-csharp
+
+        # clear env vars
+        unset RUN_TEST_COVERAGE
+        unset IN_MEMORY
+
+        # this should be last as it summarizes the results
+        dotnet test Ngsa.LodeRunner.Tests/Ngsa.LodeRunner.Tests.csproj /p:CollectCoverage=true /p:CoverletOutput=../TestResults/  /p:MergeWith=../TestResults/coverage.json /p:CoverletOutputFormat=opencover > test.out
+
+        cat test.out
+
+    - name: Test Coverage
+      if: ${{ env.BUILD == 'true' }}
+      run: |
+        tail -n 25 src/ngsa-csharp/test.out
+
     - name: Docker Login
       if: ${{ env.DOCKER_SET == 'true' }}
       run: |
         # login to dockerhub
         echo "${{ secrets.DOCKER_PAT }}" | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
 
-    - name: Docker Pull Test
-      if: ${{ env.BUILD == 'true' }}
+    - name: Docker Pull Images
+      if: ${{ env.DOCKER_SET == 'true' }}
       run: |
         # Pull the latest image if needed
         # This doesn't have to be a separate step, but makes the output easier to read and debug
         docker pull mcr.microsoft.com/dotnet/core/sdk:3.1
-
-    - name: Docker Build Test
-      if: ${{ env.BUILD == 'true' }}
-      run: |
-        # build test image
-        docker build . -t test -f src/ngsa/Dockerfile --target test
-
-    - name: Build LodeRunner
-      if: ${{ env.COSMOS_SET == 'true' }}
-      run: |
-        # build the validation test
-        pushd src/loderunner/app
-        dotnet build
-        popd
-
-    - name: Start NGSA container
-      if: ${{ env.COSMOS_SET == 'true' }}
-      run: |
-        # run the app
-        docker run -d --name ngsa -p 4120:4120 test
-        
-        echo "Waiting for web server to start ..."
-        
-        wait_time=10        
-        sleep $wait_time
-
-        # wait up to 30 seconds for web server to start
-        while true
-        do
-            if curl localhost:4120/version ; then
-                echo -e "\n web server is running"
-                break
-            fi
-            if [ $wait_time -gt 30 ] ; then
-              echo -e "\n timeout waiting for web server to start"
-              exit 1
-            fi
-            
-            sleep 1
-            ((wait_time=wait_time+1))
-        done
-
-    - name: Run LodeRunner
-      if: ${{ env.COSMOS_SET == 'true' }}
-      run: |
-        # run loderunner validation test
-        # fail on any validation errors
-        pushd src/loderunner/app/bin/Debug/netcoreapp3.1
-        ./loderunner -s localhost:4120 --max-errors 1 -f baseline.json
-        popd
-
-    - name: Display failed docker logs
-      if: ${{ failure() }}
-      run: |
-        # display the results
-        docker logs ngsa
-
-    - name: Display coverage results
-      if: ${{ env.COSMOS_SET == 'true' }}
-      run: |
-        # wait for NGSA to shutdown
-        sleep 15
-
-        # display the results
-        docker logs ngsa | tail -n 15
-
-    - name: Display full test results
-      if: ${{ env.COSMOS_SET == 'true' }}
-      run: |
-        # display the results
-        docker logs ngsa
-
-    - name: Docker Pull Release
-      if: ${{ env.BUILD == 'true' }}
-      run: |
-        # Pull the latest image if needed
         docker pull mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine
 
-    - name: Docker Build Release
-      if: ${{ env.BUILD == 'true' }}
+    - name: Docker Build LoadRunner
+      if: ${{ env.DOCKER_SET == 'true' }}
+      run: |
+        if [[ "${{ github.ref }}" == "refs/tags/"* ]]
+        then
+          docker build . -t lr -f src/ngsa-csharp/Ngsa.LodeRunner/Dockerfile --build-arg TAG=true
+        else
+          docker build . -t lr -f src/ngsa-csharp/Ngsa.LodeRunner/Dockerfile
+        fi
+
+    - name: Docker Build App
+      if: ${{ env.DOCKER_SET == 'true' }}
       run: |
         # build image
         if [[ "${{ github.ref }}" == "refs/tags/"* ]]
         then
-          docker build . -t image -f src/ngsa/Dockerfile --build-arg TAG=true
+          docker build . -t app -f src/ngsa-csharp/Ngsa.App/Dockerfile --build-arg TAG=true
         else
-          docker build . -t image -f src/ngsa/Dockerfile
+          docker build . -t app -f src/ngsa-csharp/Ngsa.App/Dockerfile
         fi
-    - name: Get App Version
-      run: |
-        echo APP_VERSION=`docker run image --version` >> $GITHUB_ENV
-  
-    - name: Docker Tag and Push
+
+    - name: Docker Build Data Service
       if: ${{ env.DOCKER_SET == 'true' }}
       run: |
-        if [[ -z "${APP_VERSION}" ]]; then
-          echo "APP_VERSION not set, cannot proceed with docker tag and push"
-          exit 1
+        # build image
+        if [[ "${{ github.ref }}" == "refs/tags/"* ]]
+        then
+          docker build . -t ds -f src/ngsa-csharp/Ngsa.DataService/Dockerfile --build-arg TAG=true
+        else
+          docker build . -t ds -f src/ngsa-csharp/Ngsa.DataService/Dockerfile
         fi
+
+    - name: Get Version
+      if: ${{ env.DOCKER_SET == 'true' }}
+      run: |
+        echo DS_VERSION=`docker run --rm ds --version` >> $GITHUB_ENV
+        echo APP_VERSION=`docker run --rm app --version` >> $GITHUB_ENV
+        echo LR_VERSION=`docker run --rm lr --version` >> $GITHUB_ENV
         
+    - name: Docker Tag
+      if: ${{ env.DOCKER_SET == 'true' }}
+      run: |
         # Tag the image with :beta and semver
-        semver=$APP_VERSION-${{ github.run_number }}
-        docker tag image $DOCKER_REPO:beta
-        docker tag image $DOCKER_REPO:beta-$semver
+        docker tag app $APP_REPO:beta
+        docker tag app $APP_REPO:beta-$APP_VERSION-${{ github.run_number }}
+
+        docker tag ds $DS_REPO:beta
+        docker tag ds $DS_REPO:beta-$DS_VERSION-${{ github.run_number }}
+
+        docker tag lr $LR_REPO:beta
+        docker tag lr $LR_REPO:beta-$LR_VERSION-${{ github.run_number }}
 
         # Tag image based on repo tag if a github label
         if [[ "${{ github.ref }}" == "refs/tags/"* ]]
         then
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,'  | sed -e 's/^v//')
+
           # tag the image with :version and :latest
-          docker tag image $DOCKER_REPO:$VERSION
-          docker tag image $DOCKER_REPO:latest
+          docker tag app $APP_REPO:$VERSION
+          docker tag app $APP_REPO:latest
+          docker tag ds $DS_REPO:$VERSION
+          docker tag ds $DS_REPO:latest
+          docker tag lr $LR_REPO:$VERSION
+          docker tag lr $LR_REPO:latest
         fi
 
+    - name: Docker Push
+      if: ${{ env.DOCKER_SET == 'true' }}
+      run: |
         # Push to the repo
-        docker push $DOCKER_REPO
+        docker push $APP_REPO
+        docker push $DS_REPO
+        docker push $LR_REPO

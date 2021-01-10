@@ -59,12 +59,27 @@ data:
         K8S-Logging.Parser  On
         K8S-Logging.Exclude Off
         Annotations         Off
+        Labels              On
 
     [FILTER]
-        Name      parser
+        Name      modify
         Match     kube.*
-        Key_Name  message
-        Parser    json
+        Add       Zone   ${Zone}
+        Add       Region ${Region}
+
+    [FILTER]
+        Name          nest
+        Match         kube.*
+        Operation     lift
+        Nested_under  kubernetes
+        Add_prefix    kubernetes_
+
+    [FILTER]
+        Name          nest
+        Match         kube.*
+        Operation     lift
+        Nested_under  kubernetes_labels
+        Add_prefix    kubernetes_labels_
 
   parsers.conf: |
     [PARSER]
@@ -84,6 +99,13 @@ data:
     [PARSER]
         Name        cri
         Format      regex
-        Regex       ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<message>.*)$
+        Regex       ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<log>.*)$
         Time_Key    time
         Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+
+    [PARSER]
+        Name docker
+        Format json
+        Time_Key time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L
+        Time_Keep Off

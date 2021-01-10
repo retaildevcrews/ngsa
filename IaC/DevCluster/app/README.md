@@ -3,15 +3,12 @@
 ```bash
 
 # set temporary Log Analytics secrets
-kubectl create secret generic ngsa-secrets \
+kubectl create secret generic log-secrets \
   --from-literal=WorkspaceId=dev \
   --from-literal=SharedKey=dev
 
 # display the secrets (base 64 encoded)
-kubectl get secret ngsa-secrets -o jsonpath='{.data}'
-
-# add app configmap to cluster
-kubectl apply -f config.yaml
+kubectl get secret log-secrets -o jsonpath='{.data}'
 
 # deploy ngsa-memory app
 kubectl apply -f in-memory.yaml
