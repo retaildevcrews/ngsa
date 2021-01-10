@@ -2,16 +2,27 @@
 
 ## Overview
 
-- describe app
-- describe modalities (in-memory, CosmosDB)
+- There are 3 applications that make up the solution
+- Ngsa.App
+  - Web API
+  - Requires Ngsa.DataService
+- Ngsa.DataService
+  - Data Service
+    - Cosmos DB
+    - in-memory (for testing)
+- Ngsa.LodeRunner
+  - End-to-end testing and load generation service
+    - Can test Ngsa.App and/or Ngsa.DataService
 
 ### Pre-requisites
 
 #### In-memory
 
-The in-memory execution requires no external dependencies as the data served back is loaded from static files in the project.
+- The in-memory data service requires no external dependencies as the data is loaded from data files in the project.
 
 #### CosmosDB
+
+> The files are mounted automatically by Kubernetes from the `ngsa-secrets` created during setup
 
 - In order to run locally, you need to create 2 files in the src/app/secrets directory
   - CosmosUrl
@@ -19,13 +30,13 @@ The in-memory execution requires no external dependencies as the data served bac
 
 > The file names are case sensitive and are ignored in .gitignore
 
-### Running NGSA Locally
+### Running NGSA Data Service
 
 - Running In-memory
 
 ```bash
 
-# from src/ngsa-csharp/Ngsa.App
+# from src/ngsa-csharp/Ngsa.DataService
 dotnet run -- --in-memory
 
 ```
@@ -34,21 +45,54 @@ dotnet run -- --in-memory
 
 ```bash
 
+# from src/ngsa-csharp/Ngsa.DataService
+dotnet run
+
+```
+
+### Verify the data service is running
+
+```bash
+
+curl http://localhost:4122/version
+
+curl http://localhost:4122/api/genres
+
+# from src/ngsa-csharp/Ngsa.LodeRunner
+dotnet run -- -s http://localhost:4122 -f dataservice.json
+
+```
+
+### Run the Web API
+
+> The Web API requires the data service
+
+```bash
+
 # from src/ngsa-csharp/Ngsa.App
 dotnet run
 
 ```
 
-### Run tests
+### Verify the Web API is running
 
 ```bash
 
-# from src/ngsa-csharp/Ngsa.App.Tests
-dotnet test
+curl http://localhost:4120/version
+
+curl http://localhost:4120/api/genres
+
+# from src/ngsa-csharp/Ngsa.LodeRunner
+dotnet run -- -s http://localhost:4120 -f baseline.json
+
+# longer end-to-end test
+dotnet run -- -s http://localhost:4120 -f benchmark.json
 
 ```
 
 ### Run coverage tests
+
+> Stop any running instances or the test will fail
 
 ```bash
 
