@@ -34,8 +34,6 @@ namespace Ngsa.App
         private static CancellationTokenSource ctCancel;
 
         public static string DataService { get; set; }
-        public static string Region { get; set; } = string.Empty;
-        public static string Zone { get; set; } = string.Empty;
         public static string PodType { get; set; }
 
         /// <summary>
@@ -57,8 +55,8 @@ namespace Ngsa.App
         /// <returns>IActionResult</returns>
         public static async Task<int> Main(string[] args)
         {
-            // add pod, region, zone info to logger
-            Logger.EnrichLog();
+            // add podtype to logger
+            Logger.AddPodType();
 
             // build the System.CommandLine.RootCommand
             RootCommand root = BuildRootCommand();
@@ -66,12 +64,17 @@ namespace Ngsa.App
 
             List<string> cmd = CombineEnvVarsWithCommandLine(args);
 
-            if (cmd.Contains("-h") ||
+            if (!cmd.Contains("--version") &&
+                (cmd.Contains("-h") ||
                 cmd.Contains("--help") ||
                 cmd.Contains("-d") ||
-                cmd.Contains("--dry-run"))
+                cmd.Contains("--dry-run")))
             {
+#if DEBUG
                 await AsciiArt.DisplayAsciiArt("Core/ascii-art.txt", ConsoleColor.DarkMagenta, AsciiArt.Animation.Fade).ConfigureAwait(false);
+#else
+                await AsciiArt.DisplayAsciiArt("Core/ascii-art.txt", ConsoleColor.DarkMagenta, AsciiArt.Animation.None).ConfigureAwait(false);
+#endif
             }
 
             // run the app

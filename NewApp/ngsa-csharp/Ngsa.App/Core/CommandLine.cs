@@ -70,23 +70,11 @@ namespace Ngsa.App
         {
             try
             {
-                Region = Environment.GetEnvironmentVariable("Region");
-                Zone = Environment.GetEnvironmentVariable("Zone");
                 PodType = Environment.GetEnvironmentVariable("PodType");
 
                 if (string.IsNullOrWhiteSpace(PodType))
                 {
                     PodType = "Ngsa.App";
-                }
-
-                if (string.IsNullOrWhiteSpace(Region))
-                {
-                    Region = "dev";
-                }
-
-                if (string.IsNullOrWhiteSpace(Zone))
-                {
-                    Zone = "dev";
                 }
 
                 // setup ctl c handler
@@ -98,15 +86,13 @@ namespace Ngsa.App
                 // set the logger info
                 RequestLogger.CosmosName = string.Empty;
                 RequestLogger.PodType = PodType;
-                RequestLogger.Region = Region;
-                RequestLogger.Zone = Zone;
 
                 // remove prefix and suffix
                 RequestLogger.DataService = DataService;
                 RequestLogger.DataService = RequestLogger.DataService.Replace("https://", string.Empty).Replace("http://", string.Empty);
 
-                // add pod, region, zone info to logger
-                Logger.EnrichLog();
+                // add podtype info to logger
+                Logger.AddPodType();
 
                 // build the host
                 host = BuildHost();

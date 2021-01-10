@@ -597,8 +597,6 @@ namespace Ngsa.LodeRunner
                     { "Tag", perfLog.Tag },
                     { "Quartile", perfLog.Quartile },
                     { "Category", perfLog.Category },
-                    { "Region", App.Region },
-                    { "Zone", App.Zone },
                     { "PodType", App.PodType },
                 };
 
