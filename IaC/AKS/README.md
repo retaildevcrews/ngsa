@@ -533,7 +533,7 @@ kubectl get pod --namespace fluentbit
 
 With this script a cluster can be deployed in AKS (uses the same steps above).
 The script is self-contained, meaning, it won't change the user-environment (e.g. selected Azure Subscription or ubernetes context) unless it's explicitly specified.
-It is located [here](../scripts/create-cluster-env.bash).
+It is located [here](./scripts/create-cluster-env.bash).
 Script Usage:
 
 ```bash

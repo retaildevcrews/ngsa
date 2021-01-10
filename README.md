@@ -40,7 +40,7 @@ We suggest that you follow these steps to get started:
 
 1. [Run the app locally](./NewApp/ngsa-csharp)
 2. [Setup local Dev Cluster](./IaC/DevCluster)
-3. [Deploy to Dev Cluster](./Iac/DevCluster)
+3. [Deploy to Dev Cluster](./IaC/DevCluster)
 
 ### Contributing
 
