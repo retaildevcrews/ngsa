@@ -59,12 +59,27 @@ data:
         K8S-Logging.Parser  On
         K8S-Logging.Exclude Off
         Annotations         Off
+        Labels              On
 
     [FILTER]
         Name      modify
         Match     kube.*
         Add       Zone   ${Zone}
         Add       Region ${Region}
+
+    [FILTER]
+        Name          nest
+        Match         kube.*
+        Operation     lift
+        Nested_under  kubernetes
+        Add_prefix    kubernetes_
+
+    [FILTER]
+        Name          nest
+        Match         kube.*
+        Operation     lift
+        Nested_under  kubernetes_labels
+        Add_prefix    kubernetes_labels_
 
   parsers.conf: |
     [PARSER]
