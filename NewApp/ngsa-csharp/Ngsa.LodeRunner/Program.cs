@@ -59,7 +59,11 @@ namespace Ngsa.LodeRunner
                 args.Contains("-d") ||
                 args.Contains("--dry-run")))
             {
+#if DEBUG
                 await AsciiArt.DisplayAsciiArt("Core/ascii-art.txt", ConsoleColor.DarkMagenta, AsciiArt.Animation.Dissolve).ConfigureAwait(false);
+#else
+                await AsciiArt.DisplayAsciiArt("Core/ascii-art.txt", ConsoleColor.DarkMagenta, AsciiArt.Animation.None).ConfigureAwait(false);
+#endif
             }
 
             int ret = await root.InvokeAsync(args).ConfigureAwait(false);

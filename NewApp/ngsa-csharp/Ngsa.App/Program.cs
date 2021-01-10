@@ -70,7 +70,11 @@ namespace Ngsa.App
                 cmd.Contains("-d") ||
                 cmd.Contains("--dry-run")))
             {
+#if DEBUG
                 await AsciiArt.DisplayAsciiArt("Core/ascii-art.txt", ConsoleColor.DarkMagenta, AsciiArt.Animation.Fade).ConfigureAwait(false);
+#else
+                await AsciiArt.DisplayAsciiArt("Core/ascii-art.txt", ConsoleColor.DarkMagenta, AsciiArt.Animation.None).ConfigureAwait(false);
+#endif
             }
 
             // run the app
