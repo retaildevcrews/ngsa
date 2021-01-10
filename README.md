@@ -19,9 +19,9 @@ At it's culmination the project will be a collection of guidance for deployment 
    2. [AKS](./IaC/AKS)
 4. [Developer Guide](./NewApp/ngsa-csharp)
 5. Applications
-   1. [Web API](./NewApp/ngsa-csharp/Ngsa.App)
-   2. [Data Service](./NewApp/ngsa-csharp/Ngsa.LodeRunner)
-   3. [Load Generator](./NewApp/ngsa-csharp/Ngsa.LodeRunner)
+   1. [Web API](./NewApp/ngsa-csharp)
+   2. [Data Service](./NewApp/ngsa-csharp)
+   3. [Load Generator](./NewApp/ngsa-csharp)
 6. Design, Practices, and Conventions
    1. [Architecture](./docs/ApplicationArch.md)
    2. [CI/CD](./docs/CICD.md)
