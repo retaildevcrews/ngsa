@@ -1,8 +1,10 @@
-# GitHub Docs
+# GitHub Templates and Workflows
 
-- TODO - Should we have a readme in the issue_template dir?
-  - I don't think we should as it would appear in the list of items when you try to create
+- Templates
+  - [Pull Request Tempate](PULL_REQUEST_TEMPLATE.md)
+  - [Issue Templates](ISSUE_TEMPLATE)
 
-- TODO - table of contents
-  - issue templates
-  - github actions / ci-cd
+- GitHub Actions (ci-cd pipelines)
+  - [ci-cd](./workflows/NewApp.yaml)
+  - [MD Link Checks](./workflows/mdlinkcheck.yaml)
+  - [MD Link Checks (scheduled)](./workflows/scheduled_mdlinkcheck.yaml)
