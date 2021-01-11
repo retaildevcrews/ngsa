@@ -2,7 +2,7 @@
 
 This file will describe various design aspects and capabilities that are part of the NGSA Platform Validation Application.  This application is meant to act as a production level service that is intended to deployed to a Kubernetes cluster and used for various forms of validation testing.
 
-## High Level Architecture
+## High-level Architecture
 
 The application is made of several components that are intended to validate the platform deployment and help identify issues with platform changes by running a continuous battery of tests.
 
