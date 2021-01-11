@@ -1,4 +1,4 @@
-# Naming Convention [Proposal]
+# Naming Convention
 
 ## Common naming criteria for all resources
 

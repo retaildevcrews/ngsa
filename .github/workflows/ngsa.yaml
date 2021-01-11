@@ -133,7 +133,7 @@ jobs:
 
         # signal tests with file semaphore
         touch tests-complete
-        sleep 3
+        sleep 5
         rm tests-complete
 
     - name: Test Cosmos DB
