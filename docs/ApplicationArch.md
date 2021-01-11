@@ -8,7 +8,7 @@ The application is made of several components that are intended to validate the 
 
 <!-- markdownlint-disable MD033 -->
 <!-- couldn't get sizing to work in standard markdown -->
-<img src="./images/ngsa-request-sequence.png" width="550" height="600"/>
+<img src="./images/ngsa-request-sequence.png" width="800" height="600"/>
 
 `NGSA Request Sequence`
 
