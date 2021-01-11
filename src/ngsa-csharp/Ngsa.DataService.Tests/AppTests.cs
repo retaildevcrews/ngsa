@@ -24,7 +24,7 @@ namespace Tests
             {
                 Task t = App.Main(new string[] { "--log-level", "Information" });
 
-                await Task.Delay(10000);
+                await Task.Delay(1000);
 
                 // test in memory DAL
                 if (App.InMemory)
@@ -77,7 +77,7 @@ namespace Tests
 
                     try
                     {
-                        await d.GetActorAsync(null);
+                        await d.GetMoviesAsync(null);
                     }
                     catch (ArgumentNullException)
                     {
