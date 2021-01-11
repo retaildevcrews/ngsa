@@ -12,10 +12,10 @@ namespace Tests
         [Fact]
         public async Task RunApp()
         {
-            // run the web server for 30 seconds for integration test
+            // run the web server for 45 seconds for integration test
             if (!string.IsNullOrWhiteSpace(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
-                Task t = App.Main(null);
+                Task t = App.Main(new string[]{ "--log-level", "Information" });
 
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
@@ -31,8 +31,8 @@ namespace Tests
                     await Task.Delay(1000);
                 }
 
-                // stop the service
-                t.Wait(1);
+                // give the coverage.json time to update
+                t.Wait(1000);
             }
         }
 
@@ -43,8 +43,8 @@ namespace Tests
             {
                 // test dry run, help and version
                 Assert.Equal(0, await App.Main(new string[] { "-l", "Error", "--data-service", "http://localhost:4122/", "--help" }));
-                Assert.Equal(0, await App.Main(new string[] { "--log-level", "Error", "-s", "http://localhost:4122/", "-d" }));
-                Assert.Equal(0, await App.Main(new string[] { "-l", "Error", "--version" }));
+                Assert.Equal(0, await App.Main(new string[] { "--log-level", "Warning", "-s", "http://localhost:4122/", "-d" }));
+                Assert.Equal(0, await App.Main(new string[] { "-l", "None", "--version" }));
 
                 // test invalid command line options
                 RootCommand root = App.BuildRootCommand();
