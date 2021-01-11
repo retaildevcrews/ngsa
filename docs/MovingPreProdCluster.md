@@ -155,9 +155,9 @@ We need to make sure the secret name (ngsa-cert in this case) is the same in ngs
 
 Create helm-config.yaml and modify ngsa-cd helm chart (in values: ingress.hosts) to add the old host (pre.cse.ms) 
 
-**[TODO]We want to make sure flux changes to new cluster happens without affecting old cluster**
+**We want to make sure flux changes to new cluster happens without affecting old cluster**
 
-**[TODO]Ask Joaquin about Flux changes**
+**Need to coordinate GitOps changes**
 
 - To create ngsa-app follow this guide [IaC-Readme-DeployNGSA] (it should be accepting traffic from newpre.cse.ms)
 - Test with l8r (for http and https) 
