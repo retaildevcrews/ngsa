@@ -28,7 +28,7 @@ namespace Tests
                         break;
                     }
 
-                    await Task.Delay(2000);
+                    await Task.Delay(3000);
                 }
 
                 // stop the service
