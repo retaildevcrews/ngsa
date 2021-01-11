@@ -23,7 +23,7 @@ Azure resources consists of four parts: `( project-short-form )-[ environment-ty
 - Examples:
   - `ngsa-dev-grafana-kv`
   - `ngsa-pre-istio-cosmos`
-  - `ngsa-prod-grafana-appi`
+  - `ngsa-prod-grafana-app`
 
 ## Kubernetes Labels
 
