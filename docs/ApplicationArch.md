@@ -53,6 +53,4 @@ All errors (e.g., 500 returns) are sent to `stderr`.
 
 ### Correlation Vectors
 
-### Deployment YAML
-
 [TODO]
