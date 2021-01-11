@@ -15,7 +15,7 @@ namespace Tests
             // run the web server for 30 seconds for integration test
             if (!string.IsNullOrWhiteSpace(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
-                Task t = App.Main(null);
+                Task t = App.Main(new string[]{ "-l", "Information" });
 
                 Stopwatch sw = new Stopwatch();
                 sw.Start();

@@ -22,7 +22,7 @@ namespace Tests
             // run the web server for integration test
             if (!string.IsNullOrWhiteSpace(System.Environment.GetEnvironmentVariable("RUN_TEST_COVERAGE")))
             {
-                Task t = App.Main(new string[] { "--log-level", "Error" });
+                Task t = App.Main(new string[] { "--log-level", "Information" });
 
                 await Task.Delay(10000);
 
