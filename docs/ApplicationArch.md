@@ -2,9 +2,17 @@
 
 This file will describe various design aspects and capabilities that are part of the NGSA Platform Validation Application.  This application is meant to act as a production level service that is intended to deployed to a Kubernetes cluster and used for various forms of validation testing.
 
-## High Level Architecture
+## High-level Architecture
 
-TODO
+The application is made of several components that are intended to validate the platform deployment and help identify issues with platform changes by running a continuous battery of tests.
+
+<!-- markdownlint-disable MD033 -->
+<!-- couldn't get sizing to work in standard markdown -->
+<img src="./images/ngsa-request-sequence.png" width="550" height="600"/>
+
+`NGSA Request Sequence`
+
+The sequence above illustrates the flow from the test tool (LodeRunner) through the platform and application.  In addition, it depicts the continual collection of log information by Fluent Bit which is shaped and sent to Log Analytics.  Of note, the Correlation Vector (CVector) that is passed from caller into the services is used throughout the call chain and recorded in the logs so that single requests chains may be identified and inspected during research.
 
 ## Data Service Design
 
