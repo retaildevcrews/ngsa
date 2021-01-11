@@ -121,7 +121,7 @@ export INGRESS_PIP=$(kubectl --namespace istio-system get svc -l istio=ingressga
 
 ```
 
-#### Install App
+#### Install NGSA App
 
 ```bash
 
