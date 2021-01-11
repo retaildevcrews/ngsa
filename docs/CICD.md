@@ -1,10 +1,12 @@
-# Continuous Integration and Continuous Delivery
+# CI-CD
 
-## Overview
+## Continuous Integration
 
-1. Add descriptive text
-2. Add sequence diagram
+- GitHub actions are used for CI
+- Action publishes the Docker containers to GitHub Container Registry
+- GitHub Actions are [here](../.github/workflows)
 
-## Resources
+## Continuous Delivery
 
-1. Annotated Resource list of links
+- CD uses Flux and GitOps
+- Instructions for setting up GitOps are [here](https://github.com/retaildevcrews/ngsa-cd)
