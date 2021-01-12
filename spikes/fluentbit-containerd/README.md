@@ -6,7 +6,7 @@ With the move to `containerd` as the runtime for Kubernetes, the log format chan
 
 This is what the logs look like with the docker shim. All of the fields are top level fields. This is what we need in order to not break our logging.
 
-```json
+```
 
 [
     1610418623.542875065, 
@@ -39,7 +39,7 @@ This is what it looks like with the cri parser per the docs:
 
 [1-fluentbit-sample.yaml](./1-fluentbit-sample.yaml)
 
-```json
+```
 
 [
     1610418076.918769493, 
@@ -74,7 +74,7 @@ If you change 'message' in cri filter to 'log', this is what it looks like:
 
 [2-log-map.yaml](./2-log-map.yaml)
 
-```json
+```
 
 [
     1610418355.606844040, 
@@ -109,7 +109,7 @@ If you add a lift on Kubernetes and a lift on labels, you get the same as before
 
 [3-working-log.yaml](./3-working-log.yaml)
 
-```json
+```
 
 [
     1610418623.542875065, 
