@@ -8,7 +8,7 @@ The application is made of several components that are intended to validate the 
 
 <!-- markdownlint-disable MD033 -->
 <!-- couldn't get sizing to work in standard markdown -->
-<img src="./images/ngsa-request-sequence.png" width="550" height="600"/>
+<img src="./images/ngsa-request-sequence.png" width="1027" height="768"/>
 
 `NGSA Request Sequence`
 
@@ -52,7 +52,5 @@ All expected logs are sent to `stdout`.
 All errors (e.g., 500 returns) are sent to `stderr`.
 
 ### Correlation Vectors
-
-### Deployment YAML
 
 [TODO]
