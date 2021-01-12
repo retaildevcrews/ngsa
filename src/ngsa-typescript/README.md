@@ -1,22 +1,25 @@
-# Node.js and Restify Web API application
+# NGSA Typescript Application
 
-> Build a Node.js and Restify Web API application that calls a data service running on localhost:4122
+## Overview
 
-## Prerequisites
+- This project implements the Web API described in [/src/ngsa-csharp/README.md](/src/ngsa-csharp/README.md) in Node.js.
+- It calls the [Ngsa.Dataservice](/src/ngsa-csharp/Ngsa.DataService) which either queries an in-memory database or a Cosmos DB instance.
+- [Ngsa.LodeRunner](/src/ngsa-csharp/Ngsa.LodeRunner) is used for end-to-end testing and load generation.
+
+## Pre-requisites
 
 - Bash shell (tested on Visual Studio Codespaces, Mac, Ubuntu, Windows with WSL2)
   - Will not work with WSL1 or Cloud Shell
 - Node.js 12.14.1+ ([download](https://nodejs.org/en/download/))
 - npm 6.14.4+ (comes with Node.js)
+- .NET Core SDK 3.1 ([download](https://dotnet.microsoft.com/download))
 - Visual Studio Code (optional) ([download](https://code.visualstudio.com/download))
 
-## Setup
+## Start the NGSA Data Service
 
-### Make sure the data service is running on localhost:4122
+Complete the steps in [Pre-requisites](/src/ngsa-csharp/README.md#pre-requisites), [Running NGSA Data Service](/src/ngsa-csharp/README.md#running-ngsa-data-service), and [Verify the data service is running](/src/ngsa-csharp/README.md#verify-the-data-service-is-running).
 
-> TODO: Add instructions
-
-### Using bash shell
+## Run the Web API
 
 > This will work from a terminal in Visual Studio Codespaces as well
 
@@ -42,7 +45,7 @@ npm start
 # optionally, set the logging level verboseness with --log-level (or -l)
 # 'info' is the default
 
-npm start -- --log-level
+npm start -- --log-level warn
 
 # alternatively you can set the following environment variables and run without command line args
 
@@ -50,11 +53,11 @@ export LOG_LEVEL=info # (optional)
 
 npm start
 
+# wait until 'Server is listening on port 4120' is displayed
+
 ```
 
-wait for `Server is listening on port 4120`
-
-### Testing the application
+## Verify the Web API is running
 
 Open a new bash shell
 
@@ -62,69 +65,21 @@ Open a new bash shell
 
 ```bash
 
-# test the application
+curl http://localhost:4120/version
 
-# test using httpie (installed automatically in Codespaces)
-http localhost:4120/version
+curl http://localhost:4120/api/genres
 
-# test using curl
-curl localhost:4120/version
+# from src/ngsa-csharp/Ngsa.LodeRunner
+dotnet run -- -s http://localhost:4120 -f baseline.json
 
-```
-
-Stop the app by typing Ctrl-C or the stop button if run via F5
-
-### Deep Testing
-
-We use [Web Validate](https://github.com/Microsoft/webvalidate) to run deep verification tests on the Web API
-
-If you have dotnet core sdk installed
-
-```bash
-
-# install Web Validate as a dotnet global tool
-# this is automatically installed in CodeSpaces
-dotnet tool install -g webvalidate
-
-# make sure you are in the root of the repository
-
-# run the validation tests
-# validation tests are located in the TestFiles directory
-cd TestFiles
-
-webv -s localhost:4120 -f baseline.json
-
-# there may be a validation error on the /healthz/ietf endpoint test
-#   json: status: warn : Expected: pass
-# the "warn" status indicates a slower than normal response time
-# this is OK and will occasionally occur
-
-# benchmark.json is a 300 request test that covers the entire API
-
-# cd to root of repo
-cd ..
+# longer end-to-end test
+dotnet run -- -s http://localhost:4120 -f benchmark.json
 
 ```
 
-Test using Docker image
+## Run coverage tests
 
-```bash
-
-# make sure you are in the root of the repository
-
-# run the validation tests
-# mount the local TestFiles directory to /app/TestFiles in the container
-# 172.17.0.1 is the docker host IP
-docker run -it --rm -v TestFiles:/app/TestFiles retaildevcrew/webvalidate -s http://172.17.0.1:4120 -f baseline.json
-
-# there may be a validation error on the /healthz/ietf endpoint test
-#   json: status: warn : Expected: pass
-# the "warn" status indicates a slower than normal response time
-# this is OK and will occasionally occur
-
-# benchmark.json is a 300 request test that covers the entire API
-
-```
+> TODO: Implement similar coverage tests as csharp
 
 ## Contributing
 
