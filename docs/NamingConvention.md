@@ -58,6 +58,40 @@ Examples:
 - `rdc-loderunner`
 - `team2-app2`
 
+## DNS
+
+The long form DNS follows the same pattern as other azure resources.
+
+Examples
+
+- `ngsa-mem-pre-west.cse.ms`
+- `ngsa-cos-pre-west.cse.ms`
+
+There is also a short form that uses the first letter of each section in the long form name.
+
+Examples:
+
+- `nmpw.cse.ms`
+- `ncpw.cse.ms`
+
+## Region and Zone
+
+Region is the generic geographic location where the cluster is located. This is the same across cloud providers.
+
+Examples:
+
+- East
+- West
+- Central
+
+Zone contains the cloud provider specific information: `[Cloud Provider Abbreviation]-[Cloud Provder Region]`
+
+Examples:
+
+- Az-EastUS2
+- Az-WestUS2
+- Az-CentralUS
+
 ## Resources
 
 - [Azure resource naming and tagging convention][1]
