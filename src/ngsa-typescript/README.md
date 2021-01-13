@@ -2,9 +2,9 @@
 
 ## Overview
 
-- This project implements the Web API described in [/src/ngsa-csharp/README.md](https://github.com/retaildevcrews/ngsa/blob/main/src/ngsa-csharp/README.md) in Node.js.
-- It calls the Data Service in [./src/ngsa-csharp/Ngsa.Dataservice](https://github.com/retaildevcrews/ngsa/tree/main/src/ngsa-csharp/Ngsa.DataService) which either queries an in-memory database or a Cosmos DB instance.
-- The app in [./src/ngsa-csharp/Ngsa.LodeRunner](https://github.com/retaildevcrews/ngsa/tree/main/src/ngsa-csharp/Ngsa.LodeRunner) is used for end-to-end testing and load generation.
+- This project implements the Web API described in [../ngsa-csharp/README.md](../ngsa-csharp/README.md) in Node.js.
+- It calls the Data Service in [../ngsa-csharp/Ngsa.Dataservice](../ngsa-csharp/Ngsa.DataService) which either queries an in-memory database or a Cosmos DB instance.
+- The app in [../ngsa-csharp/Ngsa.LodeRunner](../ngsa-csharp/Ngsa.LodeRunner) is used for end-to-end testing and load generation.
 
 ## Pre-requisites
 
@@ -17,7 +17,7 @@
 
 ## Start the NGSA Data Service
 
-Complete the steps in [Pre-requisites](https://github.com/retaildevcrews/ngsa/blob/main/src/ngsa-csharp/README.md#pre-requisites), [Running NGSA Data Service](https://github.com/retaildevcrews/ngsa/blob/main/src/ngsa-csharp/README.md#running-ngsa-data-service), and [Verify the data service is running](https://github.com/retaildevcrews/ngsa/blob/main/src/ngsa-csharp/README.md#verify-the-data-service-is-running).
+Complete the steps in [Pre-requisites](../ngsa-csharp/README.md#pre-requisites), [Running NGSA Data Service](../ngsa-csharp/README.md#running-ngsa-data-service), and [Verify the data service is running](../ngsa-csharp/README.md#verify-the-data-service-is-running).
 
 ## Run the Web API
 
