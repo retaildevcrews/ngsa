@@ -6,7 +6,7 @@ With the move to `containerd` as the runtime for Kubernetes, the log format chan
 
 This is what the logs look like with the docker shim. All of the fields are top level fields. This is what we need in order to not break our logging.
 
-```
+```log
 
 [
     1610418623.542875065, 
@@ -39,7 +39,7 @@ This is what it looks like with the cri parser per the docs:
 
 [1-fluentbit-sample.yaml](./1-fluentbit-sample.yaml)
 
-```
+```log
 
 [
     1610418076.918769493, 
@@ -74,7 +74,18 @@ If you change 'message' in cri filter to 'log', this is what it looks like:
 
 [2-log-map.yaml](./2-log-map.yaml)
 
+File Diff (1-fluentbit-sample.yaml)
+
+```diff
+
+-        Regex       ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<message>.*)$
++        Regex       ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<log>.*)$
+
 ```
+
+Output
+
+```log
 
 [
     1610418355.606844040, 
@@ -109,7 +120,31 @@ If you add a lift on Kubernetes and a lift on labels, you get the same as before
 
 [3-working-log.yaml](./3-working-log.yaml)
 
+File Diff (2-log-map.yaml)
+
+```diff
+
+  parsers.conf: |
++
++    [FILTER]
++        Name          nest
++        Match         kube.*
++        Operation     lift
++        Nested_under  kubernetes
++        Add_prefix    kubernetes_
++
++    [FILTER]
++        Name          nest
++        Match         kube.*
++        Operation     lift
++        Nested_under  kubernetes_labels
++        Add_prefix    kubernetes_labels_
+
 ```
+
+Output
+
+```log
 
 [
     1610418623.542875065, 
@@ -137,3 +172,32 @@ If you add a lift on Kubernetes and a lift on labels, you get the same as before
 Instead of renaming 'message' to 'log' in the cri filter, you can call a docker parser filter on message (make sure Reserve_Data is On). Changing to log is the easiest but it works either way and we have logs flowing!
 
 [4-working-message.yaml](./4-working-message.yaml)
+
+File Diff (1-fluentbit-sample.yaml)
+
+```diff
+
+  parsers.conf: |
+
++    [FILTER]
++        Name          nest
++        Match         kube.*
++        Operation     lift
++        Nested_under  kubernetes
++        Add_prefix    kubernetes_
++
++    [FILTER]
++        Name          nest
++        Match         kube.*
++        Operation     lift
++        Nested_under  kubernetes_labels
++        Add_prefix    kubernetes_labels_
++
++    [FILTER]
++        Name          parser
++        Match         kube.*
++        Key_Name      message
++        Reserve_Data  On
++        Parser        docker
+
+```
