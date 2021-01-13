@@ -3,8 +3,8 @@
 ## Overview
 
 - This project implements the Web API described in [/src/ngsa-csharp/README.md](https://github.com/retaildevcrews/ngsa/blob/main/src/ngsa-csharp/README.md) in Node.js.
-- It calls the [Ngsa.Dataservice](https://github.com/retaildevcrews/ngsa/tree/main/src/ngsa-csharp/Ngsa.DataService) which either queries an in-memory database or a Cosmos DB instance.
-- [Ngsa.LodeRunner](https://github.com/retaildevcrews/ngsa/tree/main/src/ngsa-csharp/Ngsa.LodeRunner) is used for end-to-end testing and load generation.
+- It calls the Data Service in [./src/ngsa-csharp/Ngsa.Dataservice](https://github.com/retaildevcrews/ngsa/tree/main/src/ngsa-csharp/Ngsa.DataService) which either queries an in-memory database or a Cosmos DB instance.
+- The app in [./src/ngsa-csharp/Ngsa.LodeRunner](https://github.com/retaildevcrews/ngsa/tree/main/src/ngsa-csharp/Ngsa.LodeRunner) is used for end-to-end testing and load generation.
 
 ## Pre-requisites
 
@@ -12,7 +12,7 @@
   - Will not work with WSL1 or Cloud Shell
 - Node.js 12.14.1+ ([download](https://nodejs.org/en/download/))
 - npm 6.14.4+ (comes with Node.js)
-- .NET Core SDK 3.1 ([download](https://dotnet.microsoft.com/download))
+- .NET Core SDK 3.1 ([download](https://dotnet.microsoft.com/download)) or Docker CLI ([download](https://docs.docker.com/install/))
 - Visual Studio Code (optional) ([download](https://code.visualstudio.com/download))
 
 ## Start the NGSA Data Service
@@ -65,15 +65,26 @@ Open a new bash shell
 
 ```bash
 
+# using curl
+
 curl http://localhost:4120/version
 
 curl http://localhost:4120/api/genres
 
-# from src/ngsa-csharp/Ngsa.LodeRunner
+# using dotnet
+
 dotnet run -- -s http://localhost:4120 -f baseline.json
 
 # longer end-to-end test
+
 dotnet run -- -s http://localhost:4120 -f benchmark.json
+
+# using Docker
+# there is a public LodeRunner image in Docker Hub
+
+docker run -it --rm --net=host  retaildevcrew/ngsa-loderunner:beta -s http://localhost:4120 -f baseline.json
+
+docker run -it --rm --net=host  retaildevcrew/ngsa-loderunner:beta -s http://localhost:4120 -f benchmark.json
 
 ```
 
