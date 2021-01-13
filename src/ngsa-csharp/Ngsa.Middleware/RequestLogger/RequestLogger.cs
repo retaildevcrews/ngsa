@@ -44,7 +44,6 @@ namespace Ngsa.Middleware
             }
         }
 
-        public static string PodType { get; set; } = string.Empty;
         public static string DataService { get; set; } = string.Empty;
         public static string CosmosName { get; set; } = string.Empty;
         public static string CosmosQueryId { get; set; } = string.Empty;
@@ -133,7 +132,6 @@ namespace Ngsa.Middleware
                 { "UserAgent", context.Request.Headers["User-Agent"].ToString() },
                 { "CVector", cv.Value },
                 { "CVectorBase", cv.GetBase() },
-                { "PodType", PodType },
             };
 
             if (!string.IsNullOrWhiteSpace(CosmosName))

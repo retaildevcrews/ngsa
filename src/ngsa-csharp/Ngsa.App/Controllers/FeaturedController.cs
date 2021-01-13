@@ -31,7 +31,7 @@ namespace Ngsa.App.Controllers
         [HttpGet("movie")]
         public async Task<IActionResult> GetFeaturedMovieAsync()
         {
-            NgsaLog nLogger = Logger.GetLogger(nameof(GetFeaturedMovieAsync), HttpContext).AddPodType();
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetFeaturedMovieAsync), HttpContext);
 
             nLogger.LogInformation("Web Request");
 
