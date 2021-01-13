@@ -71,6 +71,12 @@ data:
         Nested_under  kubernetes_labels
         Add_prefix    kubernetes_labels_
 
+    [FILTER]
+        Name modify
+        Match kube.*
+        Add k_instance kubernetes_labels_app_kubernetes_io_instance
+        Add k_container kubernetes_container_name
+
   parsers.conf: |
     [PARSER]
         Name        json
