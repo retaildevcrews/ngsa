@@ -74,8 +74,9 @@ data:
     [FILTER]
         Name modify
         Match kube.*
-        Add k_instance kubernetes_labels_app_kubernetes_io_instance
-        Add k_container kubernetes_container_name
+        Copy kubernetes_labels_app_kubernetes_io_instance k_app
+        Copy kubernetes_labels_app k_app
+        Copy kubernetes_container_name k_container
 
   parsers.conf: |
     [PARSER]
