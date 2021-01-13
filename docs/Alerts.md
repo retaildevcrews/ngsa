@@ -49,13 +49,13 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 
   # Failed Client Requests (ngsa-cosmos)
 
-  fbwebv_CL
+  loderunner_CL
   | where PodType_s == 'l8r' and AppPodType_s == 'ngsa-cosmos' and StatusCode_d >= 400
   | summarize AggregatedValue=count() by bin(TimeGenerated, 5m), Zone_s
 
   # Failed Client Requests (ngsa-memory)
 
-  fbwebv_CL
+  loderunner_CL
   | where PodType_s == 'l8r' and AppPodType_s == 'ngsa-memory' and StatusCode_d >= 400
   | summarize AggregatedValue=count() by bin(TimeGenerated, 5m), Zone_s
 
@@ -105,13 +105,13 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 
   # Too Few Client Requests (ngsa-cosmos)
 
-  fbwebv_CL
+  loderunner_CL
   | where PodType_s == 'l8r' and AppPodType_s == 'ngsa-cosmos'
   | summarize AggregatedValue=count() by bin(TimeGenerated,1m), Zone_s
 
   # Too Few Client Requests (ngsa-memory)
 
-  fbwebv_CL 
+  loderunner_CL 
   | where PodType_s == 'l8r' and AppPodType_s == 'ngsa-memory'
   | summarize AggregatedValue=count() by bin(TimeGenerated,1m), Zone_s
 
@@ -185,25 +185,25 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 
   # High Client Response Time in CentralUS (ngsa-cosmos)
 
-  fbwebv_CL
+  loderunner_CL
   | where AppPodType_s == 'ngsa-cosmos' and Zone_s == "Az-CentralUS"
   | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)
 
   # High Client Response Time in EastUS2 (ngsa-cosmos)
 
-  fbwebv_CL
+  loderunner_CL
   | where AppPodType_s == 'ngsa-cosmos' and Zone_s == "Az-EastUS2"
   | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)
 
   # High Client Response Time in WestUS2 (ngsa-cosmos)
 
-  fbwebv_CL
+  loderunner_CL
   | where AppPodType_s == 'ngsa-cosmos' and Zone_s == "Az-WestUS2"
   | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)
 
   # High Client Response Time (ngsa-memory)
 
-  fbwebv_CL
+  loderunner_CL
   | where AppPodType_s == 'ngsa-memory'
   | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m), Zone_s
 
