@@ -44,10 +44,10 @@ The top section of the dashboard shows three metrics using built-in Cosmos DB us
 
 ### Log Analytics - Query-based
 
-The remaining sections of the dashboard focuses on the performance and reliability of the apps (ngsa-cosmos, ngsa-memory, and webv) running on the clusters. The following queries are used to generate the metrics.
+The remaining sections of the dashboard focuses on the performance and reliability of the apps (ngsa-cosmos, ngsa-memory, and loderunner) running on the clusters. The following queries are used to generate the metrics.
 
 > ngsa-cosmos is the app querying against Cosmos DB and ngsa-memory is the app querying against in-memory data.
-> PodType 'webv' is filtered out in some queries as they are focused on the ngsa apps and webv also logs to the same table.
+> PodType 'loderunner' is filtered out in some queries as they are focused on the ngsa apps and loderunner also logs to the same table.
 
 #### Successful Server Requests
 
@@ -55,7 +55,7 @@ The remaining sections of the dashboard focuses on the performance and reliabili
 
 # summary table of server request success rate for each ngsa app
 ngsa_CL
-| where PodType_s != 'webv'
+| where PodType_s != 'loderunner'
 | summarize RequestSuccessRate = 100.0*countif(StatusCode_d < 400)/count() by PodType_s
 | project-rename PodType=PodType_s
 
@@ -79,7 +79,7 @@ ngsa_CL
 
 # summary table of the number of failed server requests by status code for each app
 ngsa_CL
-| where PodType_s != 'webv'
+| where PodType_s != 'loderunner'
 | where StatusCode_d > 200
 | summarize count() by PodType_s, tostring(toint(StatusCode_d))
 | project-rename PodType=PodType_s,RequestCount=count_,StatusCode=StatusCode_d
@@ -106,7 +106,7 @@ ngsa_CL
 
 # summary table of average server response time (ms) for each app
 ngsa_CL
-| where PodType_s != 'webv'
+| where PodType_s != 'loderunner'
 | summarize avg(Duration_d) by PodType_s
 | project-rename PodType=PodType_s,ResponseTime=avg_Duration_d
 
@@ -130,7 +130,7 @@ ngsa_CL
 
 # summary table of average server requests per minute, per app, per zone
 ngsa_CL
-| where PodType_s != 'webv'
+| where PodType_s != 'loderunner'
 | summarize count() by bin(Date_t,1m), PodType_s, Zone_s
 | summarize avg(count_) by PodType_s, Zone_s
 | project-rename AvgRequests=avg_count_, PodType=PodType_s, Zone=Zone_s
@@ -171,26 +171,26 @@ ngsa_CL
 
 ```
 
-#### WebV Average Response Times
+#### LodeRunner Average Response Times
 
 ```bash
 
 # table of average response times as observed by the client, by server and zone
 ngsa_CL
-| where PodType_s == 'webv'
+| where PodType_s == 'loderunner'
 | summarize avg(Duration_d) by Server_s, Zone_s
 | project-rename ResponseTime=avg_Duration_d, Server=Server_s, Zone=Zone_s
 | order by Server, Zone
 
 ```
 
-#### WebV Failures
+#### LodeRunner Failures
 
 ```bash
 
 # table of failures observed by the client, by server and zone
 ngsa_CL
-| where PodType_s == 'webv'
+| where PodType_s == 'loderunner'
 | summarize countif(StatusCode_d > 200) by Server_s, Zone_s
 | project-rename FailureCount=countif_, Server=Server_s, Zone=Zone_s
 | order by Server, Zone
