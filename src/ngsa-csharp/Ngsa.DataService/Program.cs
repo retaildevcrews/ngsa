@@ -43,8 +43,6 @@ namespace Ngsa.DataService
         public static IDAL CosmosDal { get; set; }
 
         public static string CosmosName { get; set; } = string.Empty;
-        public static string PodType { get; set; }
-
         public static bool UseCache => Cache || Ngsa.Middleware.RequestLogger.RequestsPerSecond > Constants.MaxReqSecBeforeCache;
 
         /// <summary>

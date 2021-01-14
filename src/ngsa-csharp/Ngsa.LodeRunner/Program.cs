@@ -19,8 +19,6 @@ namespace Ngsa.LodeRunner
     /// </summary>
     public sealed partial class App
     {
-        public const string PodType = "l8r";
-
         /// <summary>
         /// Gets or sets json serialization options
         /// </summary>

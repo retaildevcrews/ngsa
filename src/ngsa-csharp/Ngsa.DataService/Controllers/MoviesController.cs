@@ -49,7 +49,7 @@ namespace Ngsa.DataService.Controllers
                 throw new ArgumentNullException(nameof(movieQueryParameters));
             }
 
-            NgsaLog nLogger = Logger.GetLogger(nameof(GetMoviesAsync), HttpContext).AddPodType();
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetMoviesAsync), HttpContext);
 
             System.Collections.Generic.List<Middleware.Validation.ValidationError> list = movieQueryParameters.Validate();
 
@@ -87,7 +87,7 @@ namespace Ngsa.DataService.Controllers
                 throw new ArgumentNullException(nameof(movieId));
             }
 
-            NgsaLog nLogger = Logger.GetLogger(nameof(GetMovieByIdAsync), HttpContext).AddPodType();
+            NgsaLog nLogger = Logger.GetLogger(nameof(GetMovieByIdAsync), HttpContext);
 
             System.Collections.Generic.List<Middleware.Validation.ValidationError> list = MovieQueryParameters.ValidateMovieId(movieId);
 

@@ -34,8 +34,6 @@ namespace Ngsa.App
         private static CancellationTokenSource ctCancel;
 
         public static string DataService { get; set; }
-        public static string PodType { get; set; }
-
         /// <summary>
         /// Gets or sets LogLevel
         /// </summary>
@@ -55,9 +53,6 @@ namespace Ngsa.App
         /// <returns>IActionResult</returns>
         public static async Task<int> Main(string[] args)
         {
-            // add podtype to logger
-            Logger.AddPodType();
-
             // build the System.CommandLine.RootCommand
             RootCommand root = BuildRootCommand();
             root.Handler = CommandHandler.Create<string, LogLevel, bool>(RunApp);

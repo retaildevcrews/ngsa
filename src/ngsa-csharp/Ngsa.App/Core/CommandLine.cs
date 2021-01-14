@@ -70,13 +70,6 @@ namespace Ngsa.App
         {
             try
             {
-                PodType = Environment.GetEnvironmentVariable("PodType");
-
-                if (string.IsNullOrWhiteSpace(PodType))
-                {
-                    PodType = "Ngsa.App";
-                }
-
                 // setup ctl c handler
                 ctCancel = SetupCtlCHandler();
 
@@ -85,14 +78,10 @@ namespace Ngsa.App
 
                 // set the logger info
                 RequestLogger.CosmosName = string.Empty;
-                RequestLogger.PodType = PodType;
 
                 // remove prefix and suffix
                 RequestLogger.DataService = DataService;
                 RequestLogger.DataService = RequestLogger.DataService.Replace("https://", string.Empty).Replace("http://", string.Empty);
-
-                // add podtype info to logger
-                Logger.AddPodType();
 
                 // build the host
                 host = BuildHost();
