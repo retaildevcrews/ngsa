@@ -57,23 +57,30 @@ data:
         K8S-Logging.Exclude Off
         Annotations         Off
 
+    [FILTER]
+        Name    modify
+        Match   kube.*
+        Copy    kubernetes_labels_app_kubernetes_io_instance   k_app
+        Copy    kubernetes_labels_app                          k_app
+        Copy    kubernetes_container_name                      k_container
+
   parsers.conf: |
     [PARSER]
-        Name   json
-        Format json
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
+        Name         json
+        Format       json
+        Time_Key     time
+        Time_Format  %d/%b/%Y:%H:%M:%S %z
 
     [PARSER]
-        Name        docker
-        Format      json
-        Time_Key    time
-        Time_Format %Y-%m-%dT%H:%M:%S.%L
-        Time_Keep   Off
+        Name         docker
+        Format       json
+        Time_Key     time
+        Time_Format  %Y-%m-%dT%H:%M:%S.%L
+        Time_Keep    Off
 
     [PARSER]
-        Name        syslog
-        Format      regex
-        Regex       ^\<(?<pri>[0-9]+)\>(?<time>[^ ]* {1,2}[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[a-zA-Z0-9_\/\.\-]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? *(?<message>.*)$
-        Time_Key    time
-        Time_Format %b %d %H:%M:%S
+        Name         syslog
+        Format       regex
+        Regex        ^\<(?<pri>[0-9]+)\>(?<time>[^ ]* {1,2}[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[a-zA-Z0-9_\/\.\-]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? *(?<message>.*)$
+        Time_Key     time
+        Time_Format  %b %d %H:%M:%S

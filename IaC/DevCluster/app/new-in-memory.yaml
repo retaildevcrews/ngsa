@@ -7,13 +7,13 @@ metadata:
 
 spec:
   containers:
-  - name: ngsa-app
+  - name: app
     imagePullPolicy: Always
     image: retaildevcrew/ngsa-app:beta
     ports:
     - containerPort: 4120
 
-  - name: ngsa-data-service
+  - name: ds
     imagePullPolicy: Always
     image: retaildevcrew/ngsa-dataservice:beta
     args: [ "--in-memory", "-l", "Warning" ]
