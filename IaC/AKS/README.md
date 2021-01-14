@@ -166,7 +166,7 @@ export Ngsa_Log_Analytics_Name="${Ngsa_Name}-log"
 # Add Log Analytics extension
 az extension add -n log-analytics
 
-# create Log Analytics for the webv clients
+# create Log Analytics for the loderunner clients
 az monitor log-analytics workspace create -g $Ngsa_Log_Analytics_RG -l $Ngsa_Location -n $Ngsa_Log_Analytics_Name -o table
 
 ```
