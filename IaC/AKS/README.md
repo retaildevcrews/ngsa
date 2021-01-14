@@ -486,28 +486,9 @@ docker run -it --rm retaildevcrew/loderunner:beta --server $Ngsa_Https_App_Endpo
 
 ## Observability
 
-TODO
+Observability is enabled through a combination of Fluent Bit to forward logs to Azure Log Analytics and queries directly to Log Analytics or via Azure Dashboards.
 
-## Smoke Tests
-
-Deploy Loderunner to drive consistent traffic to the AKS cluster for monitoring.
-
-```bash
-
-cd $REPO_ROOT/IaC/AKS/cluster/charts
-
-kubectl create namespace ngsa-l8r
-
-cp ./loderunner/helm-config.example.yaml ./loderunner/helm-config.yaml
-
-helm install l8r loderunner -f ./loderunner/helm-config.yaml --namespace ngsa-l8r
-
-# Verify the pods are running
-kubectl get pods --namespace ngsa-l8r
-
-```
-
-## Fluent Bit Log Forwarding
+### Fluent Bit Log Forwarding
 
 Deploy Fluent Bit to forward application and smoker logs to the Log Analytics instance.
 
@@ -526,6 +507,29 @@ helm install fluentbit fluentbit --namespace fluentbit
 
 # Verify the fluentbit pod is running
 kubectl get pod --namespace fluentbit
+
+```
+
+### Querying Log Analtyics
+
+[TODO]
+
+## Smoke Tests
+
+Deploy Loderunner to drive consistent traffic to the AKS cluster for monitoring.
+
+```bash
+
+cd $REPO_ROOT/IaC/AKS/cluster/charts
+
+kubectl create namespace ngsa-l8r
+
+cp ./loderunner/helm-config.example.yaml ./loderunner/helm-config.yaml
+
+helm install l8r loderunner -f ./loderunner/helm-config.yaml --namespace ngsa-l8r
+
+# Verify the pods are running
+kubectl get pods --namespace ngsa-l8r
 
 ```
 
