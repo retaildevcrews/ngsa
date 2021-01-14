@@ -53,4 +53,4 @@ All errors (e.g., 500 returns) are sent to `stderr`.
 
 ### Correlation Vectors
 
-[TODO]
+The applications are using the [Microsoft Correlation Vector](https://github.com/Microsoft/CorrelationVector-CSharp) for call tracing through the system.  Each system adds the vector to the headers and adds and(or) increments a suffix.  The correlation token is logged as `CVector` and `CVectorBase`.  `CVectorBase` will have a base identifier such as `8a5d1F7yxEixuG3eLvTEew` while `CVector` will have the base plus a suffix indicating where it is in a chain of calls.  Such that `8a5d1F7yxEixuG3eLvTEew.0` is present in the first call and `8a5d1F7yxEixuG3eLvTEew.0.0` is present in a subsequent call (assuming serial calls).
