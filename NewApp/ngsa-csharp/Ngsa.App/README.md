@@ -1,5 +1,9 @@
 # Web API
 
+## Description
+
+The Ngsa.App represents the end-user facing web API component of the application.  It is dependent on the Ngsa.DataService for communication to a back-end data store.
+
 ## Usage
 
 - ngsa [options]

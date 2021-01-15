@@ -484,10 +484,6 @@ docker run -it --rm retaildevcrew/loderunner:beta --server $Ngsa_Https_App_Endpo
 
 ```
 
-## Observability
-
-TODO
-
 ## Smoke Tests
 
 Deploy Loderunner to drive consistent traffic to the AKS cluster for monitoring.
@@ -507,7 +503,11 @@ kubectl get pods --namespace ngsa-l8r
 
 ```
 
-## Fluent Bit Log Forwarding
+## Observability
+
+Observability is enabled through a combination of Fluent Bit to forward logs to Azure Log Analytics and queries directly to Log Analytics or via Azure Dashboards.
+
+### Fluent Bit Log Forwarding
 
 Deploy Fluent Bit to forward application and smoker logs to the Log Analytics instance.
 
@@ -526,6 +526,34 @@ helm install fluentbit fluentbit --namespace fluentbit
 
 # Verify the fluentbit pod is running
 kubectl get pod --namespace fluentbit
+
+```
+
+### Querying Log Analytics
+
+Navigate to the Log Analytics resource in the Azure portal and go to General -> Logs to explore the logs with KQL queries.
+
+Sample queries:
+
+```bash
+
+# View the latest logs from the data service
+
+ngsa_CL
+| where k_container == "ds"
+   and LogName_s == "Ngsa.RequestLog"
+| project TimeGenerated, CosmosName_s, Zone_s, CVector_s, Duration_d, StatusCode_d, Path_s
+
+# Calculate the 75th and 95th percentiles for the ngsa app response time and compare by app type (in-memory or cosmos) and zone  
+
+ngsa_CL
+| where k_container == "app"
+   and k_app in ('ngsa-cosmos','ngsa-memory')
+   and LogName_s == "Ngsa.RequestLog"
+| summarize percentile(Duration_d, 75), percentile(Duration_d, 95) by Zone_s, k_app
+| extend Zone=Zone_s, 75th=round(percentile_Duration_d_75,2), 95th=round(percentile_Duration_d_95,2), AppType=k_app
+| project AppType, Zone, 75th, 95th
+| order by AppType, Zone asc
 
 ```
 
