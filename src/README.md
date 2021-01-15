@@ -1,9 +1,9 @@
 # Source Code Layout
 
-- [ngsa-typescript](./ngsa-typescript)
-  - typescript version of the Web API
-
 - [ngsa-csharp](./ngsa-csharp)
-  - C# version of the Web APIn
+  - C# version of the Web API
   - Data Service (required by ngsa app)
   - Lode Runner (end-to-end validation and load service)
+
+- [ngsa-typescript (spike)](../spikes/ngsa-typescript)
+  - typescript version of the Web API
