@@ -484,6 +484,25 @@ docker run -it --rm retaildevcrew/loderunner:beta --server $Ngsa_Https_App_Endpo
 
 ```
 
+## Smoke Tests
+
+Deploy Loderunner to drive consistent traffic to the AKS cluster for monitoring.
+
+```bash
+
+cd $REPO_ROOT/IaC/AKS/cluster/charts
+
+kubectl create namespace ngsa-l8r
+
+cp ./loderunner/helm-config.example.yaml ./loderunner/helm-config.yaml
+
+helm install l8r loderunner -f ./loderunner/helm-config.yaml --namespace ngsa-l8r
+
+# Verify the pods are running
+kubectl get pods --namespace ngsa-l8r
+
+```
+
 ## Observability
 
 Observability is enabled through a combination of Fluent Bit to forward logs to Azure Log Analytics and queries directly to Log Analytics or via Azure Dashboards.
@@ -510,26 +529,31 @@ kubectl get pod --namespace fluentbit
 
 ```
 
-### Querying Log Analtyics
+### Querying Log Analytics
 
-[TODO]
+Navigate to the Log Analytics resource in the Azure portal and go to General -> Logs to explore the logs with KQL queries.
 
-## Smoke Tests
-
-Deploy Loderunner to drive consistent traffic to the AKS cluster for monitoring.
+Sample queries:
 
 ```bash
 
-cd $REPO_ROOT/IaC/AKS/cluster/charts
+# View the latest logs from the data service
 
-kubectl create namespace ngsa-l8r
+ngsa_CL
+| where k_container == "ds"
+   and LogName_s == "Ngsa.RequestLog"
+| project TimeGenerated, CosmosName_s, Zone_s, CVector_s, Duration_d, StatusCode_d, Path_s
 
-cp ./loderunner/helm-config.example.yaml ./loderunner/helm-config.yaml
+# Calculate the 75th and 95th percentiles for the ngsa app response time and compare by app type (in-memory or cosmos) and zone  
 
-helm install l8r loderunner -f ./loderunner/helm-config.yaml --namespace ngsa-l8r
-
-# Verify the pods are running
-kubectl get pods --namespace ngsa-l8r
+ngsa_CL
+| where k_container == "app"
+   and k_app in ('ngsa-cosmos','ngsa-memory')
+   and LogName_s == "Ngsa.RequestLog"
+| summarize percentile(Duration_d, 75), percentile(Duration_d, 95) by Zone_s, k_app
+| extend Zone=Zone_s, 75th=round(percentile_Duration_d_75,2), 95th=round(percentile_Duration_d_95,2), AppType=k_app
+| project AppType, Zone, 75th, 95th
+| order by AppType, Zone asc
 
 ```
 
