@@ -52,12 +52,6 @@ data:
         Labels              On
 
     [FILTER]
-        Name                modify
-        Match               kube.*
-        Add                 Zone   ${Zone}
-        Add                 Region ${Region}
-
-    [FILTER]
         Name                nest
         Match               kube.*
         Operation           lift
@@ -74,7 +68,9 @@ data:
     [FILTER]
         Name    modify
         Match   kube.*
-        Copy    kubernetes_labels_app_kubernetes_io_instance   k_app
+        Add     Zone                                           ${Zone}
+        Add     Region                                         ${Region}
+        Copy    kubernetes_labels_app.kubernetes.io/instance   k_app
         Copy    kubernetes_labels_app                          k_app
         Copy    kubernetes_container_name                      k_container
 
