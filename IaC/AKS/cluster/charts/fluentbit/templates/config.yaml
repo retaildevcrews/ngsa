@@ -2,6 +2,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "fluentbit.fullname" . }}
+  labels:
+    k8s-app: fluent-bit
 data:
   fluent-bit.conf: |
     [SERVICE]
@@ -19,27 +21,27 @@ data:
   output.conf: |
     [OUTPUT]
         Name            azure
-        Match           kube.var.log.containers.l8r*.*
-        Customer_ID     ${LOG_ID}
-        Shared_Key      ${LOG_SHARED_KEY}
-        Log_Type        loderunner
+        Match           kube.var.log.containers.lode*.*
+        Customer_ID     ${WorkspaceId}
+        Shared_Key      ${SharedKey}
+        Log_Type        ${lodeLog}
 
     [OUTPUT]
         Name            azure
         Match           kube.var.log.containers.ngsa*.*
-        Customer_ID     ${LOG_ID}
-        Shared_Key      ${LOG_SHARED_KEY}
-        Log_Type        ngsa
+        Customer_ID     ${WorkspaceId}
+        Shared_Key      ${SharedKey}
+        Log_Type        ${ngsaLog}
 
   input-kubernetes.conf: |
     [INPUT]
         Name              tail
         Tag               kube.*
         Path              /var/log/containers/*.log
-        Parser            docker
+        Parser            cri
         DB                /var/log/flb_kube.db
         Mem_Buf_Limit     5MB
-        Skip_Long_Lines   On
+        Skip_Long_Lines   Off
         Refresh_Interval  10
 
   filter-kubernetes.conf: |
@@ -56,11 +58,28 @@ data:
         K8S-Logging.Parser  On
         K8S-Logging.Exclude Off
         Annotations         Off
+        Labels              On
+
+    [FILTER]
+        Name                nest
+        Match               kube.*
+        Operation           lift
+        Nested_under        kubernetes
+        Add_prefix          kubernetes_
+
+    [FILTER]
+        Name                nest
+        Match               kube.*
+        Operation           lift
+        Nested_under        kubernetes_labels
+        Add_prefix          kubernetes_labels_
 
     [FILTER]
         Name    modify
         Match   kube.*
-        Copy    kubernetes_labels_app_kubernetes_io_instance   k_app
+        Add     Zone                                           ${Zone}
+        Add     Region                                         ${Region}
+        Copy    kubernetes_labels_app.kubernetes.io/instance   k_app
         Copy    kubernetes_labels_app                          k_app
         Copy    kubernetes_container_name                      k_container
 
@@ -70,12 +89,6 @@ data:
         Format       json
         Time_Key     time
         Time_Format  %d/%b/%Y:%H:%M:%S %z
-
-    [PARSER]
-        Name         docker
-        Format       json
-        Time_Key     time
-        Time_Format  %Y-%m-%dT%H:%M:%S.%L
         Time_Keep    Off
 
     [PARSER]
@@ -84,3 +97,17 @@ data:
         Regex        ^\<(?<pri>[0-9]+)\>(?<time>[^ ]* {1,2}[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[a-zA-Z0-9_\/\.\-]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? *(?<message>.*)$
         Time_Key     time
         Time_Format  %b %d %H:%M:%S
+
+    [PARSER]
+        Name         cri
+        Format       regex
+        Regex        ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<log>.*)$
+        Time_Key     time
+        Time_Format  %Y-%m-%dT%H:%M:%S.%L%z
+
+    [PARSER]
+        Name         docker
+        Format       json
+        Time_Key     time
+        Time_Format  %Y-%m-%dT%H:%M:%S.%L
+        Time_Keep    Off
