@@ -36,7 +36,7 @@
 
 ```bash
 
-# from src/ngsa-csharp/Ngsa.DataService
+# from src/Ngsa.DataService
 dotnet run -- --in-memory
 
 ```
@@ -45,7 +45,7 @@ dotnet run -- --in-memory
 
 ```bash
 
-# from src/ngsa-csharp/Ngsa.DataService
+# from src/Ngsa.DataService
 dotnet run
 
 ```
@@ -58,7 +58,7 @@ curl http://localhost:4122/version
 
 curl http://localhost:4122/api/genres
 
-# from src/ngsa-csharp/Ngsa.LodeRunner
+# from src/Ngsa.LodeRunner
 dotnet run -- -s http://localhost:4122 -f dataservice.json
 
 ```
@@ -69,7 +69,7 @@ dotnet run -- -s http://localhost:4122 -f dataservice.json
 
 ```bash
 
-# from src/ngsa-csharp/Ngsa.App
+# from src/Ngsa.App
 dotnet run
 
 ```
@@ -82,7 +82,7 @@ curl http://localhost:4120/version
 
 curl http://localhost:4120/api/genres
 
-# from src/ngsa-csharp/Ngsa.LodeRunner
+# from src/Ngsa.LodeRunner
 dotnet run -- -s http://localhost:4120 -f baseline.json
 
 # longer end-to-end test
@@ -96,7 +96,7 @@ dotnet run -- -s http://localhost:4120 -f benchmark.json
 
 ```bash
 
-# from src/ngsa-csharp
+# from src
 
 # bash
 ./run-coverage.sh
@@ -106,4 +106,4 @@ run-coverage.cmd
 
 ```
 
-> Coverage results are available in `src/ngsa-csharp/TestResults`
+> Coverage results are available in `src/TestResults`

@@ -3,13 +3,13 @@
 pushd ../..
 
 # build test containers
-docker build . -t app-test -f src/ngsa-csharp/Ngsa.App/Dockerfile --target test
-docker build . -t ds-test -f src/ngsa-csharp/Ngsa.DataService/Dockerfile --target test
-docker build . -t lr-test -f src/ngsa-csharp/Ngsa.LodeRunner/Dockerfile --target test
+docker build . -t app-test -f src/Ngsa.App/Dockerfile --target test
+docker build . -t ds-test -f src/Ngsa.DataService/Dockerfile --target test
+docker build . -t lr-test -f src/Ngsa.LodeRunner/Dockerfile --target test
 
 # build release containers
-docker build . -t ngsa-lr -f src/ngsa-csharp/Ngsa.LodeRunner/Dockerfile
-docker build . -t ngsa-ds -f src/ngsa-csharp/Ngsa.DataService/Dockerfile
-docker build . -t ngsa-app -f src/ngsa-csharp/Ngsa.App/Dockerfile
+docker build . -t ngsa-lr -f src/Ngsa.LodeRunner/Dockerfile
+docker build . -t ngsa-ds -f src/Ngsa.DataService/Dockerfile
+docker build . -t ngsa-app -f src/Ngsa.App/Dockerfile
 
 popd
