@@ -2,9 +2,9 @@
 
 ## Overview
 
-- This project implements the Web API described in [(../../src/README.md](../../src/README.md) in Node.js.
-- It calls the Data Service in [(../../src/Ngsa.Dataservice]((../../src/Ngsa.DataService) which either queries an in-memory database or a Cosmos DB instance.
-- The app in [(../../src/Ngsa.LodeRunner]((../../src/Ngsa.LodeRunner) is used for end-to-end testing and load generation.
+- This project implements the Web API described in [../../src/README.md](../../src/README.md) in Node.js.
+- It calls the Data Service in [../../src/Ngsa.Dataservice](../../src/Ngsa.DataService) which either queries an in-memory database or a Cosmos DB instance.
+- The app in [../../src/Ngsa.LodeRunner](../../src/Ngsa.LodeRunner) is used for end-to-end testing and load generation.
 
 ## Pre-requisites
 
