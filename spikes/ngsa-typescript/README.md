@@ -2,9 +2,9 @@
 
 ## Overview
 
-- This project implements the Web API described in [(../../src/ngsa-csharp/README.md](../../src/ngsa-csharp/README.md) in Node.js.
-- It calls the Data Service in [(../../src/ngsa-csharp/Ngsa.Dataservice]((../../src/ngsa-csharp/Ngsa.DataService) which either queries an in-memory database or a Cosmos DB instance.
-- The app in [(../../src/ngsa-csharp/Ngsa.LodeRunner]((../../src/ngsa-csharp/Ngsa.LodeRunner) is used for end-to-end testing and load generation.
+- This project implements the Web API described in [../../src/README.md](../../src/README.md) in Node.js.
+- It calls the Data Service in [../../src/Ngsa.Dataservice](../../src/Ngsa.DataService) which either queries an in-memory database or a Cosmos DB instance.
+- The app in [../../src/Ngsa.LodeRunner](../../src/Ngsa.LodeRunner) is used for end-to-end testing and load generation.
 
 ## Pre-requisites
 
@@ -17,7 +17,7 @@
 
 ## Start the NGSA Data Service
 
-Complete the steps in [Pre-requisites](../../src/ngsa-csharp/README.md#pre-requisites), [Running NGSA Data Service](../../src/ngsa-csharp/README.md#running-ngsa-data-service), and [Verify the data service is running](../../src/ngsa-csharp/README.md#verify-the-data-service-is-running).
+Complete the steps in [Pre-requisites](../../src/README.md#pre-requisites), [Running NGSA Data Service](../../src/README.md#running-ngsa-data-service), and [Verify the data service is running](../../src/README.md#verify-the-data-service-is-running).
 
 ## Run the Web API
 

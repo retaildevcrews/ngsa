@@ -2,7 +2,7 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS test
 
 # Copy the source
-COPY src/ngsa-csharp /src
+COPY src /src
 
 ### Build the release app
 WORKDIR /src/Ngsa.LodeRunner

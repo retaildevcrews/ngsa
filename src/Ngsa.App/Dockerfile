@@ -9,14 +9,14 @@ ARG TAG=false
 EXPOSE 4120
 
 ### copy the source and tests
-COPY src/ngsa-csharp /src
+COPY src /src
 
-WORKDIR /src/Ngsa.DataService
+WORKDIR /src/Ngsa.App
 
 # build the app
 RUN if [ "$TAG" == "true" ]; then dotnet publish -c Release -o /app --version-suffix ''; else dotnet publish -c Release -o /app; fi
 
-WORKDIR /src/Ngsa.DataService.Tests
+WORKDIR /src/Ngsa.App.Tests
 ENTRYPOINT [ "./runtests.sh" ]
 
 ###########################################################
@@ -26,7 +26,7 @@ ENTRYPOINT [ "./runtests.sh" ]
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine AS release
 
 ### if port is changed, also update value in Constants.cs
-EXPOSE 4122
+EXPOSE 4120
 WORKDIR /app
 
 ### create a user
@@ -42,4 +42,4 @@ USER ngsa
 ### copy the app
 COPY --from=test /app .
 
-ENTRYPOINT [ "dotnet",  "Ngsa.DataService.dll" ]
+ENTRYPOINT [ "dotnet",  "Ngsa.App.dll" ]
