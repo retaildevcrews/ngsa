@@ -6,18 +6,18 @@ The following instructions to move current pre production AKS cluster to a new c
 
 Order of operations
 
-1. create aks clusters with availability zones for new environments - done
-1. creating new dns names for new environments
-1. install ngsa app in new environments
-   - potential issues with flux ci/cd. how to do this without breaking old environments?
-   - install ngsa without cert-manager certificate. set "cert.enabled" helm variable to "false"
-   - test ngsa app in new environment with new dns names
-1. switch dns records to point IP address from old to new
-   - test ngsa app in new environment with old dns names
-1. move shared resources. cosmos, log analytics
-   - potential issues with dashboard
-   - test ngsa app in new environment with old dns names
-1. shutdown previous environments and resources
+- create aks clusters with availability zones for new environments - done
+- creating new dns names for new environments
+- install ngsa app in new environments
+  - potential issues with flux ci/cd. how to do this without breaking old environments?
+  - install ngsa without cert-manager certificate. set "cert.enabled" helm variable to "false"
+  - test ngsa app in new environment with new dns names
+- switch dns records to point IP address from old to new
+  - test ngsa app in new environment with old dns names
+- move shared resources. cosmos, log analytics
+  - potential issues with dashboard
+  - test ngsa app in new environment with old dns names
+- shutdown previous environments and resources
 
 ### Azure Components in Use
 
@@ -115,7 +115,7 @@ export INGRESS_PIP=$(kubectl --namespace istio-system get svc -l istio=ingressga
 
 ```
 
-#### Install NGSA App
+### Install NGSA App
 
 ```bash
 
