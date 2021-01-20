@@ -119,12 +119,6 @@ export INGRESS_PIP=$(kubectl --namespace istio-system get svc -l istio=ingressga
 
 ```bash
 
-```
-
-#### Install NGSA App
-
-```bash
-
 # Enable Sidecar injection
 
 kubectl create namespace ngsa
