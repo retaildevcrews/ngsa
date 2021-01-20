@@ -7,9 +7,17 @@ metadata:
 
 spec:
   containers:
-  - name: ngsa-data-service
+  - name: app
+    imagePullPolicy: Always
+    image: retaildevcrew/ngsa-app:beta
+    ports:
+    - containerPort: 4120
+
+  - name: ds
     imagePullPolicy: Always
     image: retaildevcrew/ngsa-dataservice:beta
+    args:
+    - --no-cache
     ports:
     - containerPort: 4122
     volumeMounts:
@@ -41,6 +49,6 @@ spec:
   clusterIP:
 
   ports:
-  - port: 4122
+  - port: 4120
     protocol: TCP
-    targetPort: 4122
+    targetPort: 4120
