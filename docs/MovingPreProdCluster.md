@@ -9,7 +9,7 @@ Order of operations
 - create aks clusters with availability zones for new environments - done
 - creating new dns names for new environments
 - install ngsa app in new environments
- - potential issues with flux ci/cd. how to do this without breaking old environments?
+  - potential issues with flux ci/cd. how to do this without breaking old environments?
   - install ngsa without cert-manager certificate. set "cert.enabled" helm variable to "false"
   - test ngsa app in new environment with new dns names
 - switch dns records to point IP address from old to new
@@ -115,7 +115,7 @@ export INGRESS_PIP=$(kubectl --namespace istio-system get svc -l istio=ingressga
 
 ```
 
-#### Install NGSA App
+### Install NGSA App
 
 ```bash
 
