@@ -17,7 +17,7 @@ kubectl apply -f in-memory.yaml
 kubectl get pods
 
 # check local logs
-kubectl logs ngsa-memory
+kubectl logs ngsa-memory -c app
 
 # save the cluster IP
 export ngsa=http://$(kubectl get service ngsa-memory -o jsonpath="{.spec.clusterIP}"):4120
@@ -27,7 +27,7 @@ http $ngsa/version
 http $ngsa/api/genres
 
 # check logs
-kubectl logs ngsa-memory
+kubectl logs ngsa-memory -c app
 
 # setup port forwarding
 # this allows you to access the ngsa-memory service

@@ -32,7 +32,7 @@ kubectl apply -f ../app/in-memory.yaml
 kubectl get pods
 
 # wait for pod to show Running
-kubectl logs ngsa-memory
+kubectl logs ngsa-memory -c app
 
 # start fluentbit pod
 kubectl apply -f fluentbit-pod.yaml

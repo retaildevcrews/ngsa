@@ -10,7 +10,7 @@ spec:
   restartPolicy: Always
   containers:
   - name: app
-    image: retaildevcrew/loderunner:beta
+    image: retaildevcrew/ngsa-loderunner:beta
     imagePullPolicy: Always
     args: 
     - -l
