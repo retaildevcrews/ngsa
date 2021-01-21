@@ -34,10 +34,11 @@ namespace Ngsa.App
         private static CancellationTokenSource ctCancel;
 
         public static string DataService { get; set; }
+
         /// <summary>
         /// Gets or sets LogLevel
         /// </summary>
-        public static LogLevel AppLogLevel { get; set; } = LogLevel.Warning;
+        public static LogLevel AppLogLevel { get; set; } = LogLevel.Error;
 
         /// <summary>
         /// Gets or sets a value indicating whether LogLevel is set in command line or env var
@@ -177,19 +178,19 @@ namespace Ngsa.App
             // configure logger based on command line
             builder.ConfigureLogging(logger =>
             {
-                LogLevel logLevel = AppLogLevel <= LogLevel.Information ? AppLogLevel : LogLevel.Information;
+                AppLogLevel = AppLogLevel <= LogLevel.Information ? LogLevel.Information : AppLogLevel;
 
                 logger.ClearProviders();
-                logger.AddNgsaLogger(config => { config.LogLevel = logLevel; });
+                logger.AddNgsaLogger(config => { config.LogLevel = AppLogLevel; });
 
                 // if you specify the --log-level option, it will override the appsettings.json options
                 // remove any or all of the code below that you don't want to override
                 if (App.IsLogLevelSet)
                 {
-                    logger.AddFilter("Microsoft", LogLevel.Error)
-                    .AddFilter("System", LogLevel.Error)
-                    .AddFilter("Default", LogLevel.Error)
-                    .AddFilter("Ngsa.App", logLevel);
+                    logger.AddFilter("Microsoft", AppLogLevel)
+                    .AddFilter("System", AppLogLevel)
+                    .AddFilter("Default", AppLogLevel)
+                    .AddFilter("Ngsa.App", AppLogLevel);
                 }
             });
 

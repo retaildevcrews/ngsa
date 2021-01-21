@@ -48,7 +48,7 @@ namespace Ngsa.DataService
         /// <summary>
         /// Gets or sets LogLevel
         /// </summary>
-        public static LogLevel AppLogLevel { get; set; } = LogLevel.Warning;
+        public static LogLevel AppLogLevel { get; set; } = LogLevel.Error;
         public static bool InMemory { get; set; }
         public static bool NoCache { get; set; }
         public static int PerfCache { get; set; }
@@ -190,19 +190,19 @@ namespace Ngsa.DataService
             // configure logger based on command line
             builder.ConfigureLogging(logger =>
             {
-                LogLevel logLevel = AppLogLevel <= LogLevel.Information ? AppLogLevel : LogLevel.Information;
+                AppLogLevel = AppLogLevel <= LogLevel.Information ? LogLevel.Information : AppLogLevel;
 
                 logger.ClearProviders();
-                logger.AddNgsaLogger(config => { config.LogLevel = logLevel; });
+                logger.AddNgsaLogger(config => { config.LogLevel = AppLogLevel; });
 
                 // if you specify the --log-level option, it will override the appsettings.json options
                 // remove any or all of the code below that you don't want to override
                 if (App.IsLogLevelSet)
                 {
-                    logger.AddFilter("Microsoft", LogLevel.Error)
-                    .AddFilter("System", LogLevel.Error)
-                    .AddFilter("Default", LogLevel.Error)
-                    .AddFilter("Ngsa.DataService", logLevel);
+                    logger.AddFilter("Microsoft", AppLogLevel)
+                    .AddFilter("System", AppLogLevel)
+                    .AddFilter("Default", AppLogLevel)
+                    .AddFilter("Ngsa.DataService", AppLogLevel);
                 }
             });
 
