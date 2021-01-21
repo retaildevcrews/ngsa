@@ -42,7 +42,7 @@ kubectl apply -f ngsa.yaml
 kubectl get pods
 
 # check local logs
-kubectl logs ngsa-cosmos
+kubectl logs ngsa-cosmos -c app
 
 # save the cluster IP
 export ngsa=http://$(kubectl get service ngsa-cosmos -o jsonpath="{.spec.clusterIP}"):4120
@@ -52,7 +52,7 @@ http $ngsa/version
 http $ngsa/api/genres
 
 # check logs
-kubectl logs ngsa-cosmos
+kubectl logs ngsa-cosmos -c app
 
 # delete ngsa app
 kubectl delete -f ngsa.yaml
