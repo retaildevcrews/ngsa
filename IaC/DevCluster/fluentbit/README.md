@@ -25,9 +25,6 @@ kubectl apply -f log.yaml
 # apply fluentbit config to log to stdout
 kubectl apply -f stdout-config.yaml
 
-# create configmap
-kubectl apply -f ../app/config.yaml
-
 # deploy ngsa app
 kubectl apply -f ../app/in-memory.yaml
 
