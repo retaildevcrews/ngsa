@@ -33,7 +33,7 @@
       "source": {
         "authorizedResources": [],
         "dataSourceId": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourceGroups/%%Ngsa_Log_Analytics_RG%%/providers/Microsoft.OperationalInsights/workspaces/%%Ngsa_Log_Analytics_Name%%",
-        "query": "fbngsa_CL\n| where PodType_s == 'ngsa-cosmos' and Zone_s == 'Az-EastUS2'\n| summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)",
+        "query": "ngsa_CL \n| where k_container_s == 'app' and k_app_s == 'ngsa-cosmos' and Zone_s == 'Az-EastUS2' \n| summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)",
         "queryType": "ResultCount"
       }
     },
