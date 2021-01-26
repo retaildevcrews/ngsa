@@ -12,6 +12,12 @@ spec:
     image: retaildevcrew/ngsa-app:beta
     ports:
     - containerPort: 4120
+    resources:
+      limits:
+        min:
+          cpu: 1
+          memory: 1Gi
+      type: Container
 
   - name: ds
     imagePullPolicy: Always

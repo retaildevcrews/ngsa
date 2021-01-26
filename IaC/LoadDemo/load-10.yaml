@@ -21,6 +21,12 @@ spec:
     - http://ngsa-cosmos.ngsa.svc.cluster.local:4120
     - -f
     - benchmark.json
+    resources:
+      limits:
+        min:
+          cpu: 500m
+          memory: 512Mi
+      type: Container
 
     env:
     - name: Zone

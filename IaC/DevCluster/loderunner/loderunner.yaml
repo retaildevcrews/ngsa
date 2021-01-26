@@ -22,3 +22,10 @@ spec:
     - http://ngsa-cosmos:4120
     - -f
     - benchmark.json
+
+    resources:
+      limits:
+        min:
+          cpu: 1
+          memory: 1Gi
+      type: Container
