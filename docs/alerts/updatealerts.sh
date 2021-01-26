@@ -12,8 +12,11 @@ for filename in ./*.json; do
   sed -i "s/%%Ngsa_Action_Group_Name%%/${Ngsa_Action_Group_Name}/g" $filename-temp.json
 
   # create or update alert
-  az rest --method PUT --url "https://management.azure.com/subscriptions/$(eval ${Ngsa_Sub})/resourceGroups/${Ngsa_Log_Analytics_RG}/providers/microsoft.insights/scheduledqueryrules/${Alert_Name}?api-version=2018-04-16" --body @$filename-temp.json
+  az rest --method PUT --url "https://management.azure.com/subscriptions/$(eval ${Ngsa_Sub})/resourceGroups/${Ngsa_Log_Analytics_RG}/providers/microsoft.insights/scheduledqueryrules/${Alert_Name}?api-version=2018-04-16" --body @$filename-temp.json &> /dev/null
   
   # remove temporary file
   rm $filename-temp.json
+
+  # output status
+  echo "Created/updated $Alert_Name."
 done
