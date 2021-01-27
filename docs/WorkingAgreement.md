@@ -73,7 +73,7 @@ We pledge to follow the [Microsoft Open Source Code of Conduct](https://opensour
 - Thinking too far ahead
 - Interdependent Stories
 - Too many details
-- [Goldplating](https://en.wikipedia.org/wiki/Gold_plating_(project_management))
+- [Gold plating](https://en.wikipedia.org/wiki/Gold_plating_(project_management))
 - Stories are too small
 
 #### Definition of Ready
