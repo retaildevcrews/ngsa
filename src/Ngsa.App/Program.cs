@@ -144,8 +144,7 @@ namespace Ngsa.App
             catch (Exception ex)
             {
                 // log and fail
-                Logger.Method = nameof(BuildConfig);
-                Logger.LogError($"Exception: {ex.Message}", ex);
+                Logger.LogError(nameof(BuildConfig), "Exception: {ex.Message}", ex: ex);
                 Environment.Exit(-1);
             }
 

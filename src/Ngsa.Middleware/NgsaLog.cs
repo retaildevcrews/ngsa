@@ -68,30 +68,23 @@ namespace Ngsa.Middleware
             }
         }
 
-        public void LogError(string message, Exception ex = null)
+        public void LogError(string method, string message, HttpContext context = null, Exception ex = null)
         {
             if (LogLevel >= LogLevel.Error)
             {
-                return;
-            }
+                Dictionary<string, object> d = GetDictionary(method, message, LogLevel.Error, context);
 
-            Dictionary<string, object> d = GetDictionary(message, LogLevel.Error);
+                if (ex != null)
+                {
+                    d.Add("ExceptionType", ex.GetType().FullName);
+                    d.Add("ExceptionMessage", ex.Message);
+                }
 
-            if (ex != null)
-            {
-                d.Add("ExceptionType", ex.GetType().FullName);
-                d.Add("ExceptionMessage", ex.Message);
+                // display the error
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Error.WriteLine(JsonSerializer.Serialize(d, Options));
+                Console.ResetColor();
             }
-            else if (Exception != null)
-            {
-                d.Add("ExceptionType", Exception.GetType().FullName);
-                d.Add("ExceptionMessage", Exception.Message);
-            }
-
-            // display the error
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Error.WriteLine(JsonSerializer.Serialize(d, Options));
-            Console.ResetColor();
         }
 
         private Dictionary<string, object> GetDictionary(string method, string message, LogLevel logLevel, HttpContext context = null)
@@ -122,50 +115,6 @@ namespace Ngsa.Middleware
                 if (context.Items != null)
                 {
                     CorrelationVector cv = CorrelationVectorExtensions.GetCorrelationVectorFromContext(context);
-
-                    if (cv != null)
-                    {
-                        data.Add("CVector", cv.Value);
-                    }
-                }
-            }
-
-            foreach (KeyValuePair<string, string> kvp in Data)
-            {
-                data.Add(kvp.Key, kvp.Value);
-            }
-
-            return data;
-        }
-
-        private Dictionary<string, object> GetDictionary(string message, LogLevel logLevel)
-        {
-            Dictionary<string, object> data = new Dictionary<string, object>
-            {
-                { "Date", DateTime.UtcNow },
-                { "LogName", Name },
-                { "Method", Method },
-                { "Message", message },
-                { "LogLevel", logLevel.ToString() },
-            };
-
-            if (EventId.Id > 0)
-            {
-                data.Add("EventId", EventId.Id);
-            }
-
-            if (!string.IsNullOrWhiteSpace(EventId.Name))
-            {
-                data.Add("EventName", EventId.Name);
-            }
-
-            if (Context != null && Context.Items != null)
-            {
-                data.Add("Path", Context.Request.Path + (string.IsNullOrWhiteSpace(Context.Request.QueryString.Value) ? string.Empty : Context.Request.QueryString.Value));
-
-                if (Context.Items != null)
-                {
-                    CorrelationVector cv = CorrelationVectorExtensions.GetCorrelationVectorFromContext(Context);
 
                     if (cv != null)
                     {

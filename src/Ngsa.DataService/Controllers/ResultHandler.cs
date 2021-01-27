@@ -31,7 +31,7 @@ namespace Ngsa.DataService.Controllers
             if (task == null)
             {
                 logger.EventId = new EventId((int)HttpStatusCode.InternalServerError, "Exception");
-                logger.LogError("Exception: task is null", new ArgumentNullException(nameof(task)));
+                logger.LogError(nameof(Handle), "Exception: task is null", ex: new ArgumentNullException(nameof(task)));
 
                 return CreateResult(logger.ErrorMessage, HttpStatusCode.InternalServerError);
             }
@@ -53,7 +53,7 @@ namespace Ngsa.DataService.Controllers
 
                 logger.EventId = new EventId((int)ce.StatusCode, "CosmosException");
                 logger.Data.Add("CosmosActivityId", ce.ActivityId);
-                logger.LogError($"CosmosException: {ce.Message}", ce);
+                logger.LogError(nameof(Handle), "CosmosException: {ce.Message}", ex: ce);
 
                 return CreateResult(logger.ErrorMessage, ce.StatusCode);
             }
@@ -61,7 +61,7 @@ namespace Ngsa.DataService.Controllers
             {
                 // log and return exception
                 logger.EventId = new EventId((int)HttpStatusCode.InternalServerError, "Exception");
-                logger.LogError($"Exception: {ex.Message}", ex);
+                logger.LogError(nameof(Handle), "Exception: {ex.Message}", ex: ex);
 
                 // return 500 error
                 return CreateResult("Internal Server Error", HttpStatusCode.InternalServerError);
