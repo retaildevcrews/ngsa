@@ -30,8 +30,7 @@ namespace Ngsa.DataService.Controllers
             // return exception if task is null
             if (task == null)
             {
-                logger.EventId = new EventId((int)HttpStatusCode.InternalServerError, "Exception");
-                logger.LogError(nameof(Handle), "Exception: task is null", ex: new ArgumentNullException(nameof(task)));
+                logger.LogError(new EventId((int)HttpStatusCode.InternalServerError, "Exception"), nameof(Handle), "Exception: task is null", ex: new ArgumentNullException(nameof(task)));
 
                 return CreateResult(logger.ErrorMessage, HttpStatusCode.InternalServerError);
             }
@@ -46,22 +45,20 @@ namespace Ngsa.DataService.Controllers
                 // log and return Cosmos status code
                 if (ce.StatusCode == HttpStatusCode.NotFound)
                 {
-                    logger.EventId = new EventId((int)ce.StatusCode, string.Empty);
-                    logger.LogWarning(nameof(Handle), logger.NotFoundError);
+                    logger.LogWarning(new EventId((int)ce.StatusCode, string.Empty), nameof(Handle), logger.NotFoundError);
+
                     return CreateResult(logger.NotFoundError, ce.StatusCode);
                 }
 
-                logger.EventId = new EventId((int)ce.StatusCode, "CosmosException");
                 logger.Data.Add("CosmosActivityId", ce.ActivityId);
-                logger.LogError(nameof(Handle), "CosmosException: {ce.Message}", ex: ce);
+                logger.LogError(new EventId((int)ce.StatusCode, "CosmosException"), nameof(Handle), "CosmosException: {ce.Message}", ex: ce);
 
                 return CreateResult(logger.ErrorMessage, ce.StatusCode);
             }
             catch (Exception ex)
             {
                 // log and return exception
-                logger.EventId = new EventId((int)HttpStatusCode.InternalServerError, "Exception");
-                logger.LogError(nameof(Handle), "Exception: {ex.Message}", ex: ex);
+                logger.LogError(new EventId((int)HttpStatusCode.InternalServerError, "Exception"), nameof(Handle), "Exception: {ex.Message}", ex: ex);
 
                 // return 500 error
                 return CreateResult("Internal Server Error", HttpStatusCode.InternalServerError);

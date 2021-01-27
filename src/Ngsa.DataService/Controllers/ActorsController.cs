@@ -56,8 +56,11 @@ namespace Ngsa.DataService.Controllers
 
             if (list.Count > 0)
             {
-                Logger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
-                Logger.LogWarning(nameof(GetActorsAsync), "Invalid query string", HttpContext);
+                Logger.LogWarning(
+                    new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString()),
+                    nameof(GetActorsAsync),
+                    "Invalid query string",
+                    HttpContext);
 
                 return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.Value : string.Empty));
             }
@@ -91,8 +94,7 @@ namespace Ngsa.DataService.Controllers
 
             if (list.Count > 0)
             {
-                Logger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
-                Logger.LogWarning(nameof(GetActorByIdAsync), "Invalid Actor Id", HttpContext);
+                Logger.LogWarning(new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString()), nameof(GetActorByIdAsync), "Invalid Actor Id", HttpContext);
 
                 return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.Value : string.Empty));
             }
