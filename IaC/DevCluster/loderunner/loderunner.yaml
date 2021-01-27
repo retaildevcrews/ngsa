@@ -27,5 +27,5 @@ spec:
       limits:
         min:
           cpu: 500m
-          memory: 500Mi
+          memory: 512Mi
       type: Container
