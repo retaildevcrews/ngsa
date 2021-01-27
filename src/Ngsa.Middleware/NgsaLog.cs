@@ -32,11 +32,7 @@ namespace Ngsa.Middleware
         {
             if (LogLevel >= LogLevel.Information)
             {
-                Dictionary<string, object> d = GetDictionary(method, message, LogLevel.Information, context);
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine(JsonSerializer.Serialize(d, Options));
-                Console.ResetColor();
+                WriteLog(LogLevel.Information, GetDictionary(method, message, LogLevel.Information, context));
             }
         }
 
@@ -50,11 +46,7 @@ namespace Ngsa.Middleware
         {
             if (LogLevel >= LogLevel.Warning)
             {
-                Dictionary<string, object> d = GetDictionary(method, message, LogLevel.Warning, context);
-
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine(JsonSerializer.Serialize(d, Options));
-                Console.ResetColor();
+                WriteLog(LogLevel.Warning, GetDictionary(method, message, LogLevel.Warning, context));
             }
         }
 
@@ -69,11 +61,7 @@ namespace Ngsa.Middleware
         {
             if (LogLevel >= LogLevel.Warning)
             {
-                Dictionary<string, object> d = GetDictionary(eventId, method, message, LogLevel.Warning, context);
-
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine(JsonSerializer.Serialize(d, Options));
-                Console.ResetColor();
+                WriteLog(LogLevel.Warning, GetDictionary(eventId, method, message, LogLevel.Warning, context));
             }
         }
 
@@ -97,10 +85,8 @@ namespace Ngsa.Middleware
                     d.Add("ExceptionMessage", ex.Message);
                 }
 
-                // display the error
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Error.WriteLine(JsonSerializer.Serialize(d, Options));
-                Console.ResetColor();
+                // log the error
+                WriteLog(LogLevel.Error, d);
             }
         }
 
@@ -123,11 +109,31 @@ namespace Ngsa.Middleware
                     d.Add("ExceptionMessage", ex.Message);
                 }
 
-                // display the error
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Error.WriteLine(JsonSerializer.Serialize(d, Options));
-                Console.ResetColor();
+                // log the error
+                WriteLog(LogLevel.Error, d);
             }
+        }
+
+        // write the log to console or console.error
+        private void WriteLog(LogLevel logLevel, Dictionary<string, object> data)
+        {
+            Console.ForegroundColor = LogLevel switch
+            {
+                LogLevel.Error => ConsoleColor.Red,
+                LogLevel.Warning => ConsoleColor.Yellow,
+                _ => ConsoleColor.Green,
+            };
+
+            if (logLevel == LogLevel.Error)
+            {
+                Console.Error.WriteLine(JsonSerializer.Serialize(data, Options));
+            }
+            else
+            {
+                Console.WriteLine(JsonSerializer.Serialize(data, Options));
+            }
+
+            Console.ResetColor();
         }
 
         // convert log to dictionary
