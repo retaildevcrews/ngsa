@@ -22,26 +22,7 @@ namespace Ngsa.Middleware
         public string ErrorMessage { get; set; } = string.Empty;
         public string NotFoundError { get; set; } = string.Empty;
         public string Method { get; set; } = string.Empty;
-        public string Message { get; set; } = string.Empty;
-        public Exception Exception { get; set; } = null;
-        public HttpContext Context { get; set; } = null;
         public Dictionary<string, string> Data { get; } = new Dictionary<string, string>();
-
-        public NgsaLog GetLogger(string method, HttpContext context = null)
-        {
-            NgsaLog logger = new NgsaLog
-            {
-                Name = Name,
-                ErrorMessage = ErrorMessage,
-                NotFoundError = NotFoundError,
-                LogLevel = LogLevel,
-
-                Method = method,
-                Context = context,
-            };
-
-            return logger;
-        }
 
         public void LogInformation(string method, string message, HttpContext context = null)
         {

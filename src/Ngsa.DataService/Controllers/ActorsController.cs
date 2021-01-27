@@ -50,8 +50,6 @@ namespace Ngsa.DataService.Controllers
                 throw new ArgumentNullException(nameof(actorQueryParameters));
             }
 
-            NgsaLog nLogger = Logger.GetLogger(nameof(GetActorsAsync), HttpContext);
-
             System.Collections.Generic.List<Middleware.Validation.ValidationError> list = actorQueryParameters.Validate();
 
             if (list.Count > 0)
@@ -65,12 +63,12 @@ namespace Ngsa.DataService.Controllers
                 return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.Value : string.Empty));
             }
 
-            IActionResult res = await ResultHandler.Handle(dal.GetActorsAsync(actorQueryParameters), nLogger).ConfigureAwait(false);
+            IActionResult res = await ResultHandler.Handle(dal.GetActorsAsync(actorQueryParameters), Logger).ConfigureAwait(false);
 
             // use cache dal on Cosmos 429 errors
             if (res is JsonResult jres && jres.StatusCode == 429)
             {
-                res = await ResultHandler.Handle(App.CacheDal.GetActorsAsync(actorQueryParameters), nLogger).ConfigureAwait(false);
+                res = await ResultHandler.Handle(App.CacheDal.GetActorsAsync(actorQueryParameters), Logger).ConfigureAwait(false);
             }
 
             return res;
