@@ -21,8 +21,13 @@ namespace Ngsa.Middleware
         public LogLevel LogLevel { get; set; } = LogLevel.Information;
         public string ErrorMessage { get; set; } = string.Empty;
         public string NotFoundError { get; set; } = string.Empty;
-        public Dictionary<string, string> Data { get; } = new Dictionary<string, string>();
 
+        /// <summary>
+        /// Log information message
+        /// </summary>
+        /// <param name="method">method to log</param>
+        /// <param name="message">message to log</param>
+        /// <param name="context">http context</param>
         public void LogInformation(string method, string message, HttpContext context = null)
         {
             if (LogLevel >= LogLevel.Information)
@@ -35,6 +40,12 @@ namespace Ngsa.Middleware
             }
         }
 
+        /// <summary>
+        /// Log warning
+        /// </summary>
+        /// <param name="method">method to log</param>
+        /// <param name="message">message to log</param>
+        /// <param name="context">http context</param>
         public void LogWarning(string method, string message, HttpContext context = null)
         {
             if (LogLevel >= LogLevel.Warning)
@@ -47,6 +58,13 @@ namespace Ngsa.Middleware
             }
         }
 
+        /// <summary>
+        /// Log warning
+        /// </summary>
+        /// <param name="eventId">Event ID</param>
+        /// <param name="method">method to log</param>
+        /// <param name="message">message to log</param>
+        /// <param name="context">http context</param>
         public void LogWarning(EventId eventId, string method, string message, HttpContext context = null)
         {
             if (LogLevel >= LogLevel.Warning)
@@ -59,6 +77,13 @@ namespace Ngsa.Middleware
             }
         }
 
+        /// <summary>
+        /// Log error
+        /// </summary>
+        /// <param name="eventId">Event ID</param>
+        /// <param name="method">method to log</param>
+        /// <param name="message">message to log</param>
+        /// <param name="context">http context</param>
         public void LogError(EventId eventId, string method, string message, HttpContext context = null, Exception ex = null)
         {
             if (LogLevel >= LogLevel.Error)
@@ -78,6 +103,12 @@ namespace Ngsa.Middleware
             }
         }
 
+        /// <summary>
+        /// Log error
+        /// </summary>
+        /// <param name="method">method to log</param>
+        /// <param name="message">message to log</param>
+        /// <param name="context">http context</param>
         public void LogError(string method, string message, HttpContext context = null, Exception ex = null)
         {
             if (LogLevel >= LogLevel.Error)
@@ -97,6 +128,7 @@ namespace Ngsa.Middleware
             }
         }
 
+        // convert log to dictionary
         private Dictionary<string, object> GetDictionary(EventId eventId, string method, string message, LogLevel logLevel, HttpContext context = null)
         {
             Dictionary<string, object> data = GetDictionary(method, message, logLevel, context);
@@ -114,6 +146,7 @@ namespace Ngsa.Middleware
             return data;
         }
 
+        // convert log to dictionary
         private Dictionary<string, object> GetDictionary(string method, string message, LogLevel logLevel, HttpContext context = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>
@@ -138,11 +171,6 @@ namespace Ngsa.Middleware
                         data.Add("CVector", cv.Value);
                     }
                 }
-            }
-
-            foreach (KeyValuePair<string, string> kvp in Data)
-            {
-                data.Add(kvp.Key, kvp.Value);
             }
 
             return data;

@@ -50,8 +50,7 @@ namespace Ngsa.DataService.Controllers
                     return CreateResult(logger.NotFoundError, ce.StatusCode);
                 }
 
-                logger.Data.Add("CosmosActivityId", ce.ActivityId);
-                logger.LogError(new EventId((int)ce.StatusCode, "CosmosException"), nameof(Handle), "CosmosException: {ce.Message}", ex: ce);
+                logger.LogError(new EventId((int)ce.StatusCode, "CosmosException"), nameof(Handle), $"CosmosActivityId: {ce.ActivityId}", ex: ce);
 
                 return CreateResult(logger.ErrorMessage, ce.StatusCode);
             }

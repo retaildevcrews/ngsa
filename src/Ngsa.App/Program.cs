@@ -101,7 +101,6 @@ namespace Ngsa.App
                 e.Cancel = true;
                 ctCancel.Cancel();
 
-                Logger.Data.Clear();
                 Logger.LogInformation("CtlCHandler", "Ctl-C Pressed");
 
                 // trigger graceful shutdown for the webhost
@@ -120,9 +119,7 @@ namespace Ngsa.App
         /// </summary>
         private static void LogStartup()
         {
-            Logger.Data.Add("version", VersionExtension.Version);
-            Logger.LogInformation("Startup", "Web Server Started");
-            Logger.Data.Clear();
+            Logger.LogInformation("Startup", $"Version: {VersionExtension.Version}");
         }
 
         /// <summary>

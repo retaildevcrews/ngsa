@@ -129,9 +129,7 @@ namespace Ngsa.DataService
         {
             if (Logger != null)
             {
-                Logger.Data.Add("Version", VersionExtension.Version);
-                Logger.LogInformation("Startup", "Data Service Started");
-                Logger.Data.Clear();
+                Logger.LogInformation("Startup", $"Version: {VersionExtension.Version}");
             }
         }
 
