@@ -84,6 +84,7 @@ namespace Ngsa.Middleware
         /// <param name="method">method to log</param>
         /// <param name="message">message to log</param>
         /// <param name="context">http context</param>
+        /// <param name="ex">exception</param>
         public void LogError(EventId eventId, string method, string message, HttpContext context = null, Exception ex = null)
         {
             if (LogLevel >= LogLevel.Error)
@@ -109,6 +110,7 @@ namespace Ngsa.Middleware
         /// <param name="method">method to log</param>
         /// <param name="message">message to log</param>
         /// <param name="context">http context</param>
+        /// <param name="ex">exception</param>
         public void LogError(string method, string message, HttpContext context = null, Exception ex = null)
         {
             if (LogLevel >= LogLevel.Error)
