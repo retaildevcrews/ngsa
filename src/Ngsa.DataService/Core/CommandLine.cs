@@ -162,8 +162,7 @@ namespace Ngsa.DataService
                 // end app on error
                 if (Logger != null)
                 {
-                    Logger.Method = nameof(RunApp);
-                    Logger.LogError($"Exception: {ex.Message}", ex);
+                    Logger.LogError(nameof(RunApp), "Exception: {ex.Message}", ex: ex);
                 }
 
                 return -1;
