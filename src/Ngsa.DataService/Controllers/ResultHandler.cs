@@ -47,7 +47,7 @@ namespace Ngsa.DataService.Controllers
                 if (ce.StatusCode == HttpStatusCode.NotFound)
                 {
                     logger.EventId = new EventId((int)ce.StatusCode, string.Empty);
-                    logger.LogWarning(logger.NotFoundError);
+                    logger.LogWarning(nameof(Handle), logger.NotFoundError);
                     return CreateResult(logger.NotFoundError, ce.StatusCode);
                 }
 

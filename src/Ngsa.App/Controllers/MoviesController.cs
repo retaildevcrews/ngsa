@@ -47,7 +47,7 @@ namespace Ngsa.App.Controllers
             if (list.Count > 0)
             {
                 Logger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
-                Logger.LogWarning($"Invalid query string");
+                Logger.LogWarning(nameof(GetMoviesAsync), "Invalid query string", HttpContext);
 
                 return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.Value : string.Empty));
             }
@@ -75,7 +75,7 @@ namespace Ngsa.App.Controllers
             if (list.Count > 0)
             {
                 Logger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
-                Logger.LogWarning($"Invalid Movie Id");
+                Logger.LogWarning(nameof(GetMovieByIdAsync), "Invalid Movie Id", HttpContext);
 
                 return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.Value : string.Empty));
             }

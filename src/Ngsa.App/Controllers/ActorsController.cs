@@ -35,8 +35,7 @@ namespace Ngsa.App.Controllers
         [HttpGet]
         public async Task<IActionResult> GetActorsAsync([FromQuery] ActorQueryParameters actorQueryParameters)
         {
-            NgsaLog nLogger = Logger.GetLogger(nameof(GetActorsAsync), HttpContext);
-            nLogger.LogInformation(nameof(GetActorsAsync), "Web Request", HttpContext);
+            Logger.LogInformation(nameof(GetActorsAsync), "Web Request", HttpContext);
 
             if (actorQueryParameters == null)
             {
@@ -47,9 +46,8 @@ namespace Ngsa.App.Controllers
 
             if (list.Count > 0)
             {
-                nLogger.Data.Clear();
-                nLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
-                nLogger.LogWarning($"Invalid query string");
+                Logger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
+                Logger.LogWarning(nameof(GetActorsAsync), "Invalid query string", HttpContext);
 
                 return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.Value : string.Empty));
             }
@@ -78,7 +76,7 @@ namespace Ngsa.App.Controllers
             if (list.Count > 0)
             {
                 Logger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
-                Logger.LogWarning($"Invalid Actor Id");
+                Logger.LogWarning(nameof(GetActorByIdAsync), "Invalid Actor Id", HttpContext);
 
                 return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.Value : string.Empty));
             }

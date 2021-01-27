@@ -56,18 +56,16 @@ namespace Ngsa.Middleware
             }
         }
 
-        public void LogWarning(string message)
+        public void LogWarning(string method, string message, HttpContext context = null)
         {
             if (LogLevel >= LogLevel.Warning)
             {
-                return;
+                Dictionary<string, object> d = GetDictionary(method, message, LogLevel.Warning, context);
+
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine(JsonSerializer.Serialize(d, Options));
+                Console.ResetColor();
             }
-
-            Dictionary<string, object> d = GetDictionary(message, LogLevel.Warning);
-
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(JsonSerializer.Serialize(d, Options));
-            Console.ResetColor();
         }
 
         public void LogError(string message, Exception ex = null)
