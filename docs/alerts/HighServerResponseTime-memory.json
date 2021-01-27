@@ -20,11 +20,11 @@
             "threshold": 4,
             "thresholdOperator": "GreaterThan"
           },
-          "threshold": 3,
+          "threshold": 9,
           "thresholdOperator": "GreaterThan"
         }
       },
-      "description": "Server response time is  > 3ms",
+      "description": "Server response time is  > 9ms",
       "displayName": "HighServerResponseTime-memory",
       "enabled": "true",
       "schedule": {

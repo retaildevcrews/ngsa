@@ -20,11 +20,11 @@
           "threshold": 4,
           "thresholdOperator": "GreaterThan"
         },
-        "threshold": 7,
+        "threshold": 11,
         "thresholdOperator": "GreaterThan"
       }
     },
-    "description": "Client response time is  > 7ms",
+    "description": "Client response time is  > 11ms",
     "displayName": "HighClientResponseTime-memory",
     "enabled": "true",
     "schedule": {

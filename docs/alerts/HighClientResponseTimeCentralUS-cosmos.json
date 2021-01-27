@@ -19,11 +19,11 @@
           "threshold": 4,
           "thresholdOperator": "GreaterThan"
         },
-        "threshold": 116,
+        "threshold": 30,
         "thresholdOperator": "GreaterThan"
       }
     },
-    "description": "Client response time is  > 116ms",
+    "description": "Client response time is  > 30ms",
     "displayName": "HighClientResponseTimeCentralUS-cosmos",
     "enabled": "true",
     "schedule": {
