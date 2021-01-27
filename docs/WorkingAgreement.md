@@ -90,8 +90,8 @@ We pledge to follow the [Microsoft Open Source Code of Conduct](https://opensour
 
 - Acceptance Criteria are satisfied
 - Appropriate [Pull Request template(s)](https://github.com/retaildevcrews/ngsa/blob/main/.github/PULL_REQUEST_TEMPLATE.md) satisfied
-- [Pull Request](https://github.com/retaildevcrews/ngsa/projects/2) approved and completed
-- [DoD Review & Release](https://github.com/retaildevcrews/ngsa/projects/2?card_filter_query=label%3ARelease) checklist satisfied and completed
+- [Pull Request](https://github.com/orgs/retaildevcrews/projects/4) approved and completed
+- [DoD Review & Release](https://github.com/orgs/retaildevcrews/projects/4?card_filter_query=label%3Arelease) checklist satisfied and completed
 - Demonstration recorded and available to customer (when applicable)
 
 ### Backlogs and (Dash)boards
