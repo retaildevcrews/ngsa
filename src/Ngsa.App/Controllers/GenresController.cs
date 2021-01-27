@@ -20,7 +20,6 @@ namespace Ngsa.App.Controllers
             LogLevel = App.AppLogLevel,
             ErrorMessage = "GenresControllerException",
             NotFoundError = "Genre Not Found",
-            Method = nameof(GetGenresAsync),
         };
 
         /// <summary>

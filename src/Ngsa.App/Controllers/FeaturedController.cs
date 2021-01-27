@@ -20,7 +20,6 @@ namespace Ngsa.App.Controllers
             LogLevel = App.AppLogLevel,
             ErrorMessage = "FeaturedControllerException",
             NotFoundError = "Movie Not Found",
-            Method = nameof(GetFeaturedMovieAsync),
         };
 
         /// <summary>

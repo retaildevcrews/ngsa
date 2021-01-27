@@ -27,7 +27,7 @@ namespace Ngsa.DataService
         private static readonly bool Cache = true;
 
         // ILogger instance
-        private static readonly NgsaLog Logger = new NgsaLog { Name = typeof(App).FullName, Method = "Main" };
+        private static readonly NgsaLog Logger = new NgsaLog { Name = typeof(App).FullName };
 
         // web host
         private static IWebHost host;
