@@ -109,9 +109,7 @@ namespace Ngsa.DataService
                 e.Cancel = true;
                 ctCancel.Cancel();
 
-                Logger.Method = "CtlCHandler";
-                Logger.Data.Clear();
-                Logger.LogInformation("Ctl-C Pressed");
+                Logger.LogInformation("CtlCHandler", "Ctl-C Pressed");
 
                 // trigger graceful shutdown for the webhost
                 // force shutdown after timeout, defined in UseShutdownTimeout within BuildHost() method
@@ -131,8 +129,8 @@ namespace Ngsa.DataService
         {
             if (Logger != null)
             {
-                Logger.Data.Add("Version", Ngsa.Middleware.VersionExtension.Version);
-                Logger.LogInformation("Data Service Started");
+                Logger.Data.Add("Version", VersionExtension.Version);
+                Logger.LogInformation("Startup", "Data Service Started");
                 Logger.Data.Clear();
             }
         }

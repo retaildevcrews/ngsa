@@ -12,13 +12,10 @@ namespace Ngsa.Middleware
 {
     public class NgsaLog
     {
-        private static readonly Dictionary<int, NgsaLog> Loggers = new Dictionary<int, NgsaLog>();
         private static readonly JsonSerializerOptions Options = new JsonSerializerOptions
         {
             IgnoreNullValues = true,
         };
-
-        private static int counter = 0;
 
         public string Name { get; set; } = string.Empty;
         public LogLevel LogLevel { get; set; } = LogLevel.Information;
@@ -44,31 +41,14 @@ namespace Ngsa.Middleware
                 Context = context,
             };
 
-            // get the next key
-            while (Loggers.ContainsKey(counter))
-            {
-                if (counter == int.MaxValue)
-                {
-                    counter = 0;
-                }
-
-                counter++;
-            }
-
-            // todo - reuse loggers
-            // use iDisposable?
-            //Loggers.Add(counter, logger);
-
             return logger;
         }
 
-        public void LogInformation(string message)
+        public void LogInformation(string method, string message, HttpContext context = null)
         {
-            const LogLevel logLevel = LogLevel.Information;
-
-            if (LogLevel <= logLevel)
+            if (LogLevel >= LogLevel.Information)
             {
-                Dictionary<string, object> d = GetDictionary(message, logLevel);
+                Dictionary<string, object> d = GetDictionary(method, message, LogLevel.Information, context);
 
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine(JsonSerializer.Serialize(d, Options));
@@ -78,14 +58,12 @@ namespace Ngsa.Middleware
 
         public void LogWarning(string message)
         {
-            const LogLevel logLevel = LogLevel.Warning;
-
-            if (LogLevel > logLevel)
+            if (LogLevel >= LogLevel.Warning)
             {
                 return;
             }
 
-            Dictionary<string, object> d = GetDictionary(message, logLevel);
+            Dictionary<string, object> d = GetDictionary(message, LogLevel.Warning);
 
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(JsonSerializer.Serialize(d, Options));
@@ -94,14 +72,12 @@ namespace Ngsa.Middleware
 
         public void LogError(string message, Exception ex = null)
         {
-            const LogLevel logLevel = LogLevel.Error;
-
-            if (LogLevel > logLevel)
+            if (LogLevel >= LogLevel.Error)
             {
                 return;
             }
 
-            Dictionary<string, object> d = GetDictionary(message, logLevel);
+            Dictionary<string, object> d = GetDictionary(message, LogLevel.Error);
 
             if (ex != null)
             {
@@ -118,6 +94,50 @@ namespace Ngsa.Middleware
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Error.WriteLine(JsonSerializer.Serialize(d, Options));
             Console.ResetColor();
+        }
+
+        private Dictionary<string, object> GetDictionary(string method, string message, LogLevel logLevel, HttpContext context = null)
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>
+            {
+                { "Date", DateTime.UtcNow },
+                { "LogName", Name },
+                { "Method", method },
+                { "Message", message },
+                { "LogLevel", logLevel.ToString() },
+            };
+
+            if (EventId.Id > 0)
+            {
+                data.Add("EventId", EventId.Id);
+            }
+
+            if (!string.IsNullOrWhiteSpace(EventId.Name))
+            {
+                data.Add("EventName", EventId.Name);
+            }
+
+            if (context != null && context.Items != null)
+            {
+                data.Add("Path", context.Request.Path + (string.IsNullOrWhiteSpace(context.Request.QueryString.Value) ? string.Empty : context.Request.QueryString.Value));
+
+                if (context.Items != null)
+                {
+                    CorrelationVector cv = CorrelationVectorExtensions.GetCorrelationVectorFromContext(context);
+
+                    if (cv != null)
+                    {
+                        data.Add("CVector", cv.Value);
+                    }
+                }
+            }
+
+            foreach (KeyValuePair<string, string> kvp in Data)
+            {
+                data.Add(kvp.Key, kvp.Value);
+            }
+
+            return data;
         }
 
         private Dictionary<string, object> GetDictionary(string message, LogLevel logLevel)
@@ -147,7 +167,7 @@ namespace Ngsa.Middleware
 
                 if (Context.Items != null)
                 {
-                    CorrelationVector cv = Middleware.CorrelationVectorExtensions.GetCorrelationVectorFromContext(Context);
+                    CorrelationVector cv = CorrelationVectorExtensions.GetCorrelationVectorFromContext(Context);
 
                     if (cv != null)
                     {

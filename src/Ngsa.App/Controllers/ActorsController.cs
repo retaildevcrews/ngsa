@@ -36,7 +36,7 @@ namespace Ngsa.App.Controllers
         public async Task<IActionResult> GetActorsAsync([FromQuery] ActorQueryParameters actorQueryParameters)
         {
             NgsaLog nLogger = Logger.GetLogger(nameof(GetActorsAsync), HttpContext);
-            nLogger.LogInformation("Web Request");
+            nLogger.LogInformation(nameof(GetActorsAsync), "Web Request", HttpContext);
 
             if (actorQueryParameters == null)
             {
@@ -66,8 +66,7 @@ namespace Ngsa.App.Controllers
         [HttpGet("{actorId}")]
         public async Task<IActionResult> GetActorByIdAsync([FromRoute] string actorId)
         {
-            NgsaLog nLogger = Logger.GetLogger(nameof(GetActorByIdAsync), HttpContext);
-            nLogger.LogInformation("Web Request");
+            Logger.LogInformation(nameof(GetActorByIdAsync), "Web Request", HttpContext);
 
             if (string.IsNullOrWhiteSpace(actorId))
             {
@@ -78,9 +77,8 @@ namespace Ngsa.App.Controllers
 
             if (list.Count > 0)
             {
-                nLogger.Data.Clear();
-                nLogger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
-                nLogger.LogWarning($"Invalid Actor Id");
+                Logger.EventId = new EventId((int)HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.ToString());
+                Logger.LogWarning($"Invalid Actor Id");
 
                 return ResultHandler.CreateResult(list, Request.Path.ToString() + (Request.QueryString.HasValue ? Request.QueryString.Value : string.Empty));
             }

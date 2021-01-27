@@ -27,9 +27,6 @@ namespace Ngsa.DataService.Controllers
         /// <returns>IActionResult</returns>
         public static async Task<IActionResult> Handle<T>(Task<T> task, NgsaLog logger)
         {
-            // log the request
-            logger.LogInformation("DS request");
-
             // return exception if task is null
             if (task == null)
             {

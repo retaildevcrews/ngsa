@@ -101,9 +101,8 @@ namespace Ngsa.App
                 e.Cancel = true;
                 ctCancel.Cancel();
 
-                Logger.Method = "CtlCHandler";
                 Logger.Data.Clear();
-                Logger.LogInformation("Ctl-C Pressed");
+                Logger.LogInformation("CtlCHandler", "Ctl-C Pressed");
 
                 // trigger graceful shutdown for the webhost
                 // force shutdown after timeout, defined in UseShutdownTimeout within BuildHost() method
@@ -121,8 +120,8 @@ namespace Ngsa.App
         /// </summary>
         private static void LogStartup()
         {
-            Logger.Data.Add("version", Ngsa.Middleware.VersionExtension.Version);
-            Logger.LogInformation("Web Server Started");
+            Logger.Data.Add("version", VersionExtension.Version);
+            Logger.LogInformation("Startup", "Web Server Started");
             Logger.Data.Clear();
         }
 
