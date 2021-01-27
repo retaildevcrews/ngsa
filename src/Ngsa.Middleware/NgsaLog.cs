@@ -21,7 +21,6 @@ namespace Ngsa.Middleware
         public LogLevel LogLevel { get; set; } = LogLevel.Information;
         public string ErrorMessage { get; set; } = string.Empty;
         public string NotFoundError { get; set; } = string.Empty;
-        public string Method { get; set; } = string.Empty;
         public Dictionary<string, string> Data { get; } = new Dictionary<string, string>();
 
         public void LogInformation(string method, string message, HttpContext context = null)
