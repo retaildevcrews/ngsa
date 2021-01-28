@@ -22,3 +22,11 @@ spec:
     - http://ngsa-cosmos:4120
     - -f
     - benchmark.json
+
+    resources:
+      limits:
+        memory: 512Mi
+        cpu: 500m
+      requests:
+        memory: 256Mi
+        cpu: 250m
