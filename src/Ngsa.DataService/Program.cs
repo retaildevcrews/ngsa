@@ -24,10 +24,8 @@ namespace Ngsa.DataService
     /// </summary>
     public sealed partial class App
     {
-        private static readonly bool Cache = true;
-
         // ILogger instance
-        private static readonly NgsaLog Logger = new NgsaLog { Name = typeof(App).FullName, Method = "Main" };
+        private static readonly NgsaLog Logger = new NgsaLog { Name = typeof(App).FullName };
 
         // web host
         private static IWebHost host;
@@ -43,16 +41,17 @@ namespace Ngsa.DataService
         public static IDAL CosmosDal { get; set; }
 
         public static string CosmosName { get; set; } = string.Empty;
-        public static bool UseCache => Cache || Ngsa.Middleware.RequestLogger.RequestsPerSecond > Constants.MaxReqSecBeforeCache;
+
+        // caching config
+        public static bool Cache { get; set; } = true;
+        public static int PerfCache { get; set; }
+        public static int CacheDuration { get; set; }
+        public static bool InMemory { get; set; }
 
         /// <summary>
         /// Gets or sets LogLevel
         /// </summary>
         public static LogLevel AppLogLevel { get; set; } = LogLevel.Error;
-        public static bool InMemory { get; set; }
-        public static bool NoCache { get; set; }
-        public static int PerfCache { get; set; }
-        public static int CacheDuration { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether LogLevel is set in command line or env var
@@ -109,9 +108,7 @@ namespace Ngsa.DataService
                 e.Cancel = true;
                 ctCancel.Cancel();
 
-                Logger.Method = "CtlCHandler";
-                Logger.Data.Clear();
-                Logger.LogInformation("Ctl-C Pressed");
+                Logger.LogInformation("CtlCHandler", "Ctl-C Pressed");
 
                 // trigger graceful shutdown for the webhost
                 // force shutdown after timeout, defined in UseShutdownTimeout within BuildHost() method
@@ -131,9 +128,7 @@ namespace Ngsa.DataService
         {
             if (Logger != null)
             {
-                Logger.Data.Add("Version", Ngsa.Middleware.VersionExtension.Version);
-                Logger.LogInformation("Data Service Started");
-                Logger.Data.Clear();
+                Logger.LogInformation("Startup", $"Version: {VersionExtension.Version}");
             }
         }
 
@@ -156,8 +151,7 @@ namespace Ngsa.DataService
             catch (Exception ex)
             {
                 // log and fail
-                Logger.Method = nameof(BuildConfig);
-                Logger.LogError($"Exception: {ex.Message}", ex);
+                Logger.LogError(nameof(BuildConfig), "Exception: {ex.Message}", ex: ex);
 
                 Environment.Exit(-1);
             }

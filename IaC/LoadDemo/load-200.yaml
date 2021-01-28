@@ -2,9 +2,9 @@ apiVersion: v1
 kind: Pod
 
 metadata:
-  name: l8r-load-100
+  name: l8r-load-200
   labels:
-    app: l8r-load-100
+    app: l8r-load-200
 
 spec:
   restartPolicy: OnFailure
@@ -14,7 +14,9 @@ spec:
     imagePullPolicy: Always
     args:
     - -l
-    - "10"
+    - "5"
+    - --duration
+    - "60"
     - -r
     - -s
     - http://ngsa-memory.ngsa:4120

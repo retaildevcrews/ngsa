@@ -20,7 +20,6 @@ namespace Ngsa.App.Controllers
             LogLevel = App.AppLogLevel,
             ErrorMessage = "FeaturedControllerException",
             NotFoundError = "Movie Not Found",
-            Method = nameof(GetFeaturedMovieAsync),
         };
 
         /// <summary>
@@ -31,9 +30,7 @@ namespace Ngsa.App.Controllers
         [HttpGet("movie")]
         public async Task<IActionResult> GetFeaturedMovieAsync()
         {
-            NgsaLog nLogger = Logger.GetLogger(nameof(GetFeaturedMovieAsync), HttpContext);
-
-            nLogger.LogInformation("Web Request");
+            Logger.LogInformation(nameof(GetFeaturedMovieAsync), "Web Request", HttpContext);
 
             return await DataService.Read<Movie>(Request).ConfigureAwait(false);
         }

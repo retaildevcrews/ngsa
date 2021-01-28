@@ -73,7 +73,7 @@ We pledge to follow the [Microsoft Open Source Code of Conduct](https://opensour
 - Thinking too far ahead
 - Interdependent Stories
 - Too many details
-- Goldplating
+- [Gold plating](https://en.wikipedia.org/wiki/Gold_plating_(project_management))
 - Stories are too small
 
 #### Definition of Ready
@@ -90,8 +90,8 @@ We pledge to follow the [Microsoft Open Source Code of Conduct](https://opensour
 
 - Acceptance Criteria are satisfied
 - Appropriate [Pull Request template(s)](https://github.com/retaildevcrews/ngsa/blob/main/.github/PULL_REQUEST_TEMPLATE.md) satisfied
-- [Pull Request](https://github.com/retaildevcrews/ngsa/projects/2) approved and completed
-- [DoD Review & Release](https://github.com/retaildevcrews/ngsa/projects/2?card_filter_query=label%3ARelease) checklist satisfied and completed
+- [Pull Request](https://github.com/orgs/retaildevcrews/projects/4) approved and completed
+- [DoD Review & Release](https://github.com/orgs/retaildevcrews/projects/4?card_filter_query=label%3Arelease) checklist satisfied and completed
 - Demonstration recorded and available to customer (when applicable)
 
 ### Backlogs and (Dash)boards
@@ -101,17 +101,17 @@ We pledge to follow the [Microsoft Open Source Code of Conduct](https://opensour
 - User Story Board will be used to track User Story progress.
 - Kanban Board will be used to track project progress
   - Board columns:
-    - Triage: All net-new tasks/bugs/features/stories need to be created as an "issue"; things to discuss/notes can be added as a "note"
-    - Backlog: Stories that have been refined, triaged, and prioritized.
-    - Sprint Goals: Stories that have been committed for the current sprint.
-    - Sprint Backlog:  Tasks that have been committed for the current sprint.
+    - **Triage**: All net-new tasks/bugs/features/stories need to be created as an "issue"; things to discuss/notes can be added as a "note"
+    - **Backlog**: Stories that have been refined, triaged, and prioritized.
+    - **Sprint Goals**: Stories that have been committed for the current sprint.
+    - **Sprint Backlog**:  Tasks that have been committed for the current sprint.
     - **In Progress**: A development team member owns the story or bug and begins work.
     - **PR Submitted/In Review**: The owner of the story or bug determines the item meets our Definition of Done and has created a Pull Request. The item will stay in this status through the PR process -- including addressing requested feedback or fixing issues found.
     - **Closed**: The Pull Request/Task has completed, and the work has been committed to the `main` branch of the project repository.
 
 ### Estimating
 
-- We will estimate User Stories with size tagging to help gauge how much we work we commit to within a sprint.
+- We will estimate User Stories with size tagging to help gauge how much work we commit to within a sprint.
 - We will use T-shirts sizing for our estimation -- with XS <1 day, Small is 1-2 days, Medium is 2-3 days, Large is 4-5 days, and XL > week, needs decomposed.
 
 ### Ceremonies
