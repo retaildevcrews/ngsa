@@ -13,13 +13,12 @@ spec:
     ports:
     - containerPort: 4120
     resources:
-      requests:
-        cpu: 2
-        memory: 2Gi
       limits:
-        cpu: 1
         memory: 1Gi
-      type: Container
+        cpu: "1"
+      requests:
+        memory: 256Mi
+        cpu: 250m
 
   - name: ds
     imagePullPolicy: Always
@@ -27,6 +26,13 @@ spec:
     args: [ "--in-memory", "-l", "Warning" ]
     ports:
     - containerPort: 4122
+    resources:
+      limits:
+        memory: 1Gi
+        cpu: "1"
+      requests:
+        memory: 512Mi
+        cpu: 500m
 
 ---
 
