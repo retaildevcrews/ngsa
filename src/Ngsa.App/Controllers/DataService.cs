@@ -60,7 +60,6 @@ namespace Ngsa.App.Controllers
 
                 JsonResult json;
 
-                // todo - can we return the byte array directly?
                 if (resp.IsSuccessStatusCode)
                 {
                     T obj = JsonSerializer.Deserialize<T>(await resp.Content.ReadAsByteArrayAsync().ConfigureAwait(false), Options);

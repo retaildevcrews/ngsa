@@ -23,7 +23,7 @@ namespace Ngsa.App
     public sealed partial class App
     {
         // ILogger instance
-        private static readonly NgsaLog Logger = new NgsaLog { Name = typeof(App).FullName, Method = "Main" };
+        private static readonly NgsaLog Logger = new NgsaLog { Name = typeof(App).FullName };
 
         // web host
         private static IWebHost host;
@@ -101,9 +101,7 @@ namespace Ngsa.App
                 e.Cancel = true;
                 ctCancel.Cancel();
 
-                Logger.Method = "CtlCHandler";
-                Logger.Data.Clear();
-                Logger.LogInformation("Ctl-C Pressed");
+                Logger.LogInformation("CtlCHandler", "Ctl-C Pressed");
 
                 // trigger graceful shutdown for the webhost
                 // force shutdown after timeout, defined in UseShutdownTimeout within BuildHost() method
@@ -121,9 +119,7 @@ namespace Ngsa.App
         /// </summary>
         private static void LogStartup()
         {
-            Logger.Data.Add("version", Ngsa.Middleware.VersionExtension.Version);
-            Logger.LogInformation("Web Server Started");
-            Logger.Data.Clear();
+            Logger.LogInformation("Startup", $"Version: {VersionExtension.Version}");
         }
 
         /// <summary>
@@ -145,8 +141,7 @@ namespace Ngsa.App
             catch (Exception ex)
             {
                 // log and fail
-                Logger.Method = nameof(BuildConfig);
-                Logger.LogError($"Exception: {ex.Message}", ex);
+                Logger.LogError(nameof(BuildConfig), "Exception: {ex.Message}", ex: ex);
                 Environment.Exit(-1);
             }
 

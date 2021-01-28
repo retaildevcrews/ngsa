@@ -16,9 +16,9 @@ Instructions for running a load test demo
 ```bash
 
 # get credentials for each cluster
-az aks get-credentials -g ngsa-pre-central-app-rg -n ngsa-pre-central-aks
-az aks get-credentials -g ngsa-pre-east-app-rg -n ngsa-pre-east-aks
-az aks get-credentials -g ngsa-pre-west-app-rg -n ngsa-pre-west-aks
+az aks get-credentials -g ngsa-pre-app-rg -n ngsa-pre-central-aks
+az aks get-credentials -g ngsa-pre-app-rg -n ngsa-pre-east-aks
+az aks get-credentials -g ngsa-pre-app-rg -n ngsa-pre-west-aks
 
 # check contexts exist
 kubectl config get-contexts
@@ -52,28 +52,48 @@ alias kcw='kubectl config use-context ngsa-pre-west-aks'
 
 ### Start a load test(s)
 
-- For this example we use the `load-10.yaml` which generates approximately 10 additional req/sec
+- For this example we use the `load-50.yaml` which generates approximately 50 additional req/sec
 - You can apply to one or more clusters
 
 ```bash
-# select your cluster (west)
-kcw
+# select your cluster (central)
+kcc
 
 # create the loderunner pod
-k apply -f load-10.yaml
+k apply -f load-50.yaml
 
 # check the logs
-k logs l8r-load-10
+k logs l8r-load-50
 
-# central
-kcc
-k apply -f load-10.yaml
-k logs l8r-load-10
+# west
+kcw
+k apply -f load-50.yaml
+k logs l8r-load-50
 
 # east
 kce
-k apply -f load-10.yaml
-k logs l8r-load-10
+k apply -f load-50.yaml
+k logs l8r-load-50
+
+```
+
+### Exceed Cosmos RUs
+
+Exceeding the Cosmos DB RUs (1000) will cause Cosmos and the app to return 429 errors
+
+```bash
+
+# select your cluster (central)
+kcc
+
+# create the loderunner pod
+k apply -f load-200.yaml
+
+# this test runs for 1 minute and then shows complete
+k get po
+
+# once complete, delete the test
+k delete -f load-200.yaml
 
 ```
 
@@ -85,14 +105,14 @@ k logs l8r-load-10
 kcw
 
 # delete the loderunner pod
-k delete -f load-10.yaml
-
-# central
-kcc
-k delete -f load-10.yaml
+k delete -f load-50.yaml
 
 # east
 kce
-k delete -f load-10.yaml
+k delete -f load-50.yaml
+
+# central
+kcc
+k delete -f load-50.yaml
 
 ```

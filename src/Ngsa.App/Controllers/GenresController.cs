@@ -20,7 +20,6 @@ namespace Ngsa.App.Controllers
             LogLevel = App.AppLogLevel,
             ErrorMessage = "GenresControllerException",
             NotFoundError = "Genre Not Found",
-            Method = nameof(GetGenresAsync),
         };
 
         /// <summary>
@@ -31,9 +30,7 @@ namespace Ngsa.App.Controllers
         [HttpGet]
         public async Task<IActionResult> GetGenresAsync()
         {
-            NgsaLog nLogger = Logger.GetLogger(nameof(GetGenresAsync), HttpContext);
-
-            nLogger.LogInformation("Web Request");
+            Logger.LogInformation(nameof(GetGenresAsync), "Web Request", HttpContext);
 
             return await DataService.Read<List<string>>(Request).ConfigureAwait(false);
         }

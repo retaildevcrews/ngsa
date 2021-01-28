@@ -44,8 +44,6 @@ namespace Ngsa.DataService.Controllers
         [HttpGet("movie")]
         public async Task<IActionResult> GetFeaturedMovieAsync()
         {
-            NgsaLog nLogger = Logger.GetLogger(nameof(GetFeaturedMovieAsync), HttpContext);
-
             List<string> featuredMovies = await App.CacheDal.GetFeaturedMovieListAsync().ConfigureAwait(false);
 
             if (featuredMovies != null && featuredMovies.Count > 0)
@@ -54,12 +52,12 @@ namespace Ngsa.DataService.Controllers
                 string movieId = featuredMovies[rand.Next(0, featuredMovies.Count - 1)];
 
                 // get movie by movieId
-                IActionResult res = await ResultHandler.Handle(dal.GetMovieAsync(movieId), nLogger).ConfigureAwait(false);
+                IActionResult res = await ResultHandler.Handle(dal.GetMovieAsync(movieId), Logger).ConfigureAwait(false);
 
                 // use cache dal on Cosmos 429 errors
-                if (res is JsonResult jres && jres.StatusCode == 429)
+                if (App.Cache && res is JsonResult jres && jres.StatusCode == 429)
                 {
-                    res = await ResultHandler.Handle(App.CacheDal.GetMovieAsync(movieId), nLogger).ConfigureAwait(false);
+                    res = await ResultHandler.Handle(App.CacheDal.GetMovieAsync(movieId), Logger).ConfigureAwait(false);
                 }
 
                 return res;
