@@ -13,10 +13,12 @@ spec:
     ports:
     - containerPort: 4120
     resources:
+      requests:
+        cpu: 2
+        memory: 2Gi
       limits:
-        min:
-          cpu: 1
-          memory: 1Gi
+        cpu: 1
+        memory: 1Gi
       type: Container
 
   - name: ds

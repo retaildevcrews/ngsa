@@ -24,8 +24,10 @@ spec:
     - benchmark.json
 
     resources:
+      requests:
+        cpu: 1
+        memory: 1Gi
       limits:
-        min:
-          cpu: 500m
-          memory: 512Mi
+        cpu: 500m
+        memory: 512Mi
       type: Container
