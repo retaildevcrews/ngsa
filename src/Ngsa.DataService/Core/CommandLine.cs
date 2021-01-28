@@ -95,7 +95,7 @@ namespace Ngsa.DataService
                 AppLogLevel = logLevel;
                 CacheDuration = cacheDuration;
                 InMemory = inMemory;
-                NoCache = noCache;
+                Cache = !noCache;
                 PerfCache = perfCache;
 
                 LoadSecrets(secretsVolume);
@@ -279,7 +279,7 @@ namespace Ngsa.DataService
             Console.WriteLine($"Version            {Ngsa.Middleware.VersionExtension.Version}");
             Console.WriteLine($"Log Level          {AppLogLevel}");
             Console.WriteLine($"In Memory          {InMemory}");
-            Console.WriteLine($"No Cache           {NoCache}");
+            Console.WriteLine($"No Cache           {!Cache}");
             Console.WriteLine($"Perf Cache         {PerfCache}");
             Console.WriteLine($"Secrets Volume     {Secrets.Volume}");
             Console.WriteLine($"Use in memory DB   {Secrets.UseInMemoryDb}");
