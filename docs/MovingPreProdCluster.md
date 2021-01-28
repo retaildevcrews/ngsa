@@ -8,15 +8,19 @@ Order of operations
 
 - create aks clusters with availability zones for new environments - done
 - creating new dns names for new environments
-- install ngsa app in new environments
-  - potential issues with flux ci/cd. how to do this without breaking old environments?
-  - install ngsa without cert-manager certificate. set "cert.enabled" helm variable to "false"
+- create secrets (tls, ngsa, fluentbit etc) in new cluster
+- install ngsa app in new environments (using fluxcd)
+  - sync old cluster to a new branch in ngsa-cd (e.g. `old-preprod`)
+  - install fluxcd in new cluster and sync new cluster to ngsa-cd repo with flux ci/cd
+    - it will install ngsa app, fluentbit and loderunner in new environments
+    - ngsa will be installed without cert-manager certificate.
+    - lookout for potential issues with flux ci/cd. how to do this without breaking old environments?
   - test ngsa app in new environment with new dns names
 - switch dns records to point IP address from old to new
   - test ngsa app in new environment with old dns names
 - move shared resources. cosmos, log analytics
-  - potential issues with dashboard
   - test ngsa app in new environment with old dns names
+- update dashboard and alerts
 - shutdown previous environments and resources
 
 ### Azure Components in Use
@@ -115,7 +119,7 @@ export INGRESS_PIP=$(kubectl --namespace istio-system get svc -l istio=ingressga
 
 ```
 
-### Install NGSA App
+### Create Secrets in the New Cluster
 
 ```bash
 
@@ -142,7 +146,7 @@ kubectl create secret generic fluentbit-secrets --namespace fluentbit --from-lit
 
 ```
 
-DNS Setup [W!ld CARD] **[Action] Remove Cert Manager from ngsa YAMLs**
+DNS Setup [W!ld CARD]
 
 ```bash
 
@@ -154,25 +158,107 @@ az network dns record-set a add-record -g $Ngsa_DNS_RG -z cse.ms -n newpre -a $I
 
 ```
 
-Install the new wildcard certificates (Use the crt and key file, not the CA-bundle)
+Install the new wildcard certificates (obtain the cse.ms wild-card certificate from teammates)
 
 ```bash
 
-# Create TLS secret from file
-kubectl create secret tls ngsa-cert --key=cse_ms.key --cert=cse_ms.txt -n istio-system
+# First combine .crt and .ca-bundle file into one certificate
+cat STAR_cse_ms.crt > STAR_cse_ms_merged.txt && cat STAR_cse_ms.ca-bundle >> STAR_cse_ms_merged.txt
+
+# Then Create TLS secret from cert and key file
+kubectl create secret tls ngsa-cert --key=cse_ms.key --cert=STAR_cse_ms_merged.txt -n istio-system
 
 ```
 
 We need to make sure the secret name (ngsa-cert in this case) is the same in ngsa helm-config variable `cert.name`
 
+### Install NGSA App
+
+Clone the [ngsa-cd repo](https://github.com/retaildevcrews/ngsa-cd/). 
+
+```bash
+
+cd $HOME
+export Git_Url=https://github.com/retaildevcrews/ngsa-cd
+git clone $Git_Url
+export NGSA_CD_REPO=$HOME/ngsa-cd
+cd $NGSA_CD_REPO
+
+```
+
 Create helm-config.yaml and modify ngsa-cd helm chart (in values: ingress.hosts) to add the old host (pre.cse.ms)
 
-**[Action]We want to make sure flux changes to new cluster happens without affecting old cluster**
+#### Sync Old Cluster to a New Branch
 
-**[Action]Potential Flux CI/CD changes**
+Create a new branch and modify the HelmRelease files. We are modifying the branch name (`ref: main`) in each helm release yaml file.
+
+```bash
+export Git_Branch="old-preprod"
+cd $NGSA_CD_REPO
+# Create new branch
+git checkout -b $Git_Branch
+
+# Modify all Helm Release files for each zone
+# In each yaml under `spec:`, there is a `ref: main`, we'll replace that with our branch name `ref: old-preprod`
+cd releases/preprod-old/west/
+sed -i "s/ref: main/ref: $Git_Branch/g" *.yaml
+
+cd releases/preprod-old/east/
+sed -i "s/ref: main/ref: $Git_Branch/g" *.yaml
+
+cd releases/preprod-old/central/
+sed -i "s/ref: main/ref: $Git_Branch/g" *.yaml
+
+# Check modifications
+git diff
+
+# Add, commit and push
+git add -u
+git commit -m 'Message'
+git push -u origin $Git_Branch
+
+```
+
+Now manually update the old pre-prod clusters for each zones (east, west and central) to point to new branch in fluxcd deployment
+
+```bash
+
+# For east
+export Git_Path=releases/preprod/east
+
+# Use the az aks or kubectl config command to set the current kube context to old-east
+az aks get-credentials --resource-group ngsa-pre-east-app-rg --name ngsa-pre-east-aks --context east-old
+
+# or if you already have the context setup:
+kubectl config use-context east-old
+
+# Make sure your env variables are properly set for the next steps
+echo $Git_Url $Git_Branch $Git_Path
+
+```
+
+Then follow the [FluxCD helm instructions]([IAC](https://github.com/retaildevcrews/ngsa-cd/#installation-instructions)) to install and force update the flux cd.
+
+#### Install FluxCD in New Cluster
+
+Switch to the main branch for the new pre-prod environment.
+----------------[UNFINISHED]-----------------------
+```bash
+
+cd $NGSA_CD_REPO
+git checkout main
+
+# Export proper variables for east
+export Git_Url=https://github.com/retaildevcrews/ngsa-cd
+export Git_Branch="old-preprod"
+# For east
+export Git_Path=releases/preprod/east
+
+```
 
 - To deploy the ngsa-app follow this guide [IaC-Readme-DeployNGSA] (it should be accepting traffic from `newpre.cse.ms`)
-- Test with l8r (for http and https)
+- Deploy l8r
+- Check dashboard and log analytics output
 - Switch IP address of old subdomain, pre.cse.ms, to new cluster.
 
 ### Move Cosmos to a new RG
@@ -210,3 +296,5 @@ az resource move --destination-group ngsa-pre-shared-rg –ids {ID_OF_
 
 [IaC-Readme]: ../IaC/AKS/README.md
 [IaC-Readme-DeployNGSA]: ../IaC/AKS/README.md#Deploy_NGSA_with_Helm
+[Ngsa-cd-Readme]: https://github.com/retaildevcrews/ngsa-cd
+[Ngsa-cd-Readme-Install]: https://github.com/retaildevcrews/ngsa-cd/#installation-instructions
