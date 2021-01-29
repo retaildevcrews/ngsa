@@ -1,0 +1,37 @@
+# Bill of Materials
+
+- Network overlay
+  - Flannel
+- Ingress
+  - Istio
+- Mesh
+  - Istio
+- Logging
+  - Fluent Bit
+  - Azure Log Analytics
+  - Azure Monitor for Containers
+- Dashboards
+  - Azure Monitor
+- Alerting
+  - Azure Monitor
+- Metrics
+  - Prometheus
+- Continuous Integration
+  - GitHub actions
+- Continuous Delivery
+  - GitOps via Flux and GitHub
+- Source Repositories
+  - GitHub
+- Networking
+  - public
+  - moving to network setup from [Patterns and Practices](https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/containers/aks/secure-baseline-aks)
+- Container Registry
+  - Docker Hub
+  - Moving to Azure Container Registry
+- Secrets
+  - Kubernetes secrets
+  - moving to Azure Key Vault via Azure Pod Identity
+- Identity
+  - Azure Active Directory
+- Auto Scale
+  - KEDA
