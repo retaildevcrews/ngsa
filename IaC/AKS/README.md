@@ -29,17 +29,6 @@ The following instructions allow the deployment of NGSA application in AKS with 
 - Helm v3 ([Install Instructions](https://helm.sh/docs/intro/install/))
 - Istioctl ([Install Instructions](https://istio.io/latest/docs/setup/getting-started/#download))
 
-### Note on Rate Limits
-
->[Let's Encrypt](https://letsencrypt.org/) is used to issue TLS certificates.  Let's Encrypt has [rate limit policies](https://letsencrypt.org/docs/rate-limits/) that could be triggered if you run multiple deployments in sequence.  Please take note and be careful not to exceed their rate thresholds.
-
-### DNS, SSL/TLS Prerequisites
-
- A domain name and SSL/TLS certificates are required for HTTPS access over the internet.
-
-- Registered domain with permissions to update nameservers
-- Azure subscription with permissions to create a DNS Zone
-
 ### Setup
 
 Fork this repo and clone to your local machine
@@ -78,8 +67,6 @@ az account set -s {subscription name or Id}
 
 This walkthrough will create resource groups, a Cosmos DB instance, Azure DNS entry(if specified) and an Azure Kubernetes Service (AKS) cluster. An automation script is available which can be used instead of this walkthrough. Script usage instruction is found [here](#aks-cluster-using-automated-script)
 
-#### Choose a unique DNS name
-
 ```bash
 
 # this will be the prefix for all resources
@@ -92,13 +79,6 @@ export Ngsa_Env=[your environment name]
 
 # Set main resource name
 export Ngsa_Name="${Ngsa_Base_Name}-${Ngsa_Env}"
-
-# Set email to register with Let's Encrypt
-export Ngsa_Email=[your email address]
-
-# Set your registered domain name.
-# example: export Ngsa_Domain_Name=cse.ms
-export Ngsa_Domain_Name=[your domain name]
 
 ### if true, change Ngsa_Name
 az cosmosdb check-name-exists -n "${Ngsa_Name}-cosmos"
@@ -120,9 +100,6 @@ az cosmosdb check-name-exists -n "${Ngsa_Name}-cosmos"
 
 # set location
 export Ngsa_Location=westus2
-
-# set application endpoint
-export Ngsa_App_Endpoint="${Ngsa_Name}.${Ngsa_Domain_Name}"
 
 # resource group names
 export Imdb_Name="${Ngsa_Name}-cosmos"
@@ -187,7 +164,7 @@ Determine the latest version of Kubernetes supported by AKS. It is recommended t
 
 az aks get-versions -l $Ngsa_Location -o table
 
-export Ngsa_K8S_VER=1.18.8
+export Ngsa_K8S_VER=1.19.6
 
 ```
 
@@ -333,6 +310,12 @@ Get the public IP of the Istio Ingress Gateway.
 
 export INGRESS_PIP=$(kubectl --namespace istio-system  get svc -l istio=ingressgateway -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}')
 
+# Check that istio has an ingress IP. If not, wait a few seconds and run the above command again.
+echo $INGRESS_PIP
+
+# set application endpoint
+export Ngsa_App_Endpoint="${INGRESS_PIP}.nip.io"
+
 ```
 
 ## Install KEDA
@@ -360,65 +343,6 @@ kubectl create secret generic ngsa-secrets \
 
 ```
 
-## Setup SSL/DNS
-
-> Note: A registered domain name is required for this section.
-
-### DNS Setup
-
-Create a DNS A record mapping your domain to the Istio ingress gateway IP address.
-
-This is a setup using Azure DNS. In this setup, update your domain to use Azure DNS Zone nameservers.
-
-```bash
-
-# example: export Ngsa_DNS_RG=dns-rg
-export Ngsa_DNS_RG=[dns resource group name]
-
-# Check if DNS resource group exists
-az group exists -n $Ngsa_DNS_RG
-
-# If false, create DNS resource group
-az group create -n $Ngsa_DNS_RG -l $Ngsa_Location
-
-# Check if DNS Zone exists
-az network dns zone show --name $Ngsa_Domain_Name -g $Ngsa_DNS_RG -o table
-
-# If not found, create the DNS Zone.
-az network dns zone create -g $Ngsa_DNS_RG -n $Ngsa_Domain_Name
-
-# Add DNS A record for the Istio ingress gateway.
-az network dns record-set a add-record -g $Ngsa_DNS_RG -z $Ngsa_Domain_Name -n $Ngsa_Name -a $INGRESS_PIP
-
-# Show the Azure nameservers for your DNS Zone.
-az network dns zone show -n $Ngsa_Domain_Name -g $Ngsa_DNS_RG --query nameServers -o tsv
-
-# Update your domain to use the result entries for nameservers.
-
-```
-
-### Install Cert-Manager
-
-```bash
-
-cd $REPO_ROOT/IaC/AKS/cluster/manifests/cert-manager
-
-export CERT_MANAGER_VERSION=1.0.3
-kubectl create namespace cert-manager
-helm install cert-manager jetstack/cert-manager \
-  --namespace cert-manager \
-  --version "v${CERT_MANAGER_VERSION}" \
-  --set installCRDs=true
-
-# wait for the cert manager pods to be ready
-kubectl get pods --namespace cert-manager
-
-# Create a staging and production ClusterIssuer for cert-manager
-# Use the staging ClusterIssuer for testing. Once ready, use the production resource.
-envsubst < clusterissuer.yaml | kubectl apply -f -
-
-```
-
 ## Deploy NGSA with Helm
 
 The NGSA application has been packed into a Helm chart for deployment into the cluster. The following instructions will walk you through the manual process of deployment of the helm chart and is recommended for development and testing. Alternatively, the helm chart can be deployed in a GitOps CICD approach. GitOps allows the automated deployment of the application to the cluster using FluxCD in which the configuration of the application is stored in Git.([NGSA-CD](https://github.com/retaildevcrews/ngsa-cd)).
@@ -443,33 +367,32 @@ The `helm-config.yaml` file can be used as an override to the default values dur
 
 cd $CHART_REPO/charts/
 
+# create an istio gateway
+
+cat <<EOF | kubectl apply -n ngsa -f -
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: ngsa-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+      - "${Ngsa_App_Endpoint}"
+EOF
+
 # Install NGSA using the upstream ngsa image from Dockerhub
-# Start by using the "letsencrypt-staging" ClusterIssuer to get test certs from the Let's Encrypt staging environment.
-helm install ngsa-aks ngsa -f ./ngsa/helm-config.yaml --namespace ngsa --set cert.issuer=letsencrypt-staging
+helm install ngsa-aks ngsa -f ./ngsa/helm-config.yaml --namespace ngsa --set cert.enabled=false --set gateway.name=ngsa-gateway
 
 # check the version endpoint
 # you may get a timeout error, if so, just retry
 
 http ${Ngsa_App_Endpoint}/version
-
-```
-
-Check that the test certificates have been issued. You can check in the browser, or use curl. With the test certificates, it is expected that you get a privacy error.
-
-```bash
-
-export Ngsa_Https_App_Endpoint="https://${Ngsa_App_Endpoint}"
-
-# Curl the https endpoint. You should see a certificate problem. This is expected with the staging certificates from Let's Encrypt.
-curl $Ngsa_Https_App_Endpoint
-
-```
-
-After verifying that the test certs were issued, update the deployment to use the "letsencrypt-prod" ClusterIssuer to get valid certs from the Let's Encrypt production environment.
-
-```bash
-
-helm upgrade ngsa-aks ngsa -f ./ngsa/helm-config.yaml  --namespace ngsa --set cert.issuer=letsencrypt-prod
 
 ```
 
@@ -480,7 +403,7 @@ Run the Validation Test
 ```bash
 
 # run the tests in a container
-docker run -it --rm retaildevcrew/loderunner:beta --server $Ngsa_Https_App_Endpoint --files baseline.json
+docker run -it --rm retaildevcrew/loderunner:beta --server "http://$Ngsa_App_Endpoint" --files baseline.json
 
 ```
 
@@ -544,7 +467,7 @@ ngsa_CL
    and LogName_s == "Ngsa.RequestLog"
 | project TimeGenerated, CosmosName_s, Zone_s, CVector_s, Duration_d, StatusCode_d, Path_s
 
-# Calculate the 75th and 95th percentiles for the ngsa app response time and compare by app type (in-memory or cosmos) and zone  
+# Calculate the 75th and 95th percentiles for the ngsa app response time and compare by app type (in-memory or cosmos) and zone
 
 ngsa_CL
 | where k_container == "app"
