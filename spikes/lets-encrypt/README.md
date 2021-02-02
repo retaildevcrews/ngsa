@@ -41,6 +41,8 @@ Create a DNS A record mapping your domain to the Istio ingress gateway IP addres
 
 This is a setup using Azure DNS. In this setup, update your domain to use Azure DNS Zone nameservers.
 
+If your domain is added to a existing Azure DNS zone in another subscription, make sure you update the DNS Zone in tha subscription.
+
 ```bash
 
 # example: export Ngsa_DNS_RG=dns-rg

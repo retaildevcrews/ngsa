@@ -389,6 +389,7 @@ EOF
 
 # Install NGSA using the upstream ngsa image from Dockerhub
 helm install ngsa-aks ngsa -f ./ngsa/helm-config.yaml --namespace ngsa --set cert.enabled=false --set gateway.name=ngsa-gateway
+# Note: Above command creates a ngsa cosmos deployment named ngsa-aks
 
 # check the version endpoint
 # you may get a timeout error, if so, just retry
