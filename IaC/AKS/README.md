@@ -348,6 +348,7 @@ kubectl create secret generic ngsa-secrets \
 The NGSA application has been packed into a Helm chart for deployment into the cluster. The following instructions will walk you through the manual process of deployment of the helm chart and is recommended for development and testing. Alternatively, the helm chart can be deployed in a GitOps CICD approach. GitOps allows the automated deployment of the application to the cluster using FluxCD in which the configuration of the application is stored in Git.([NGSA-CD](https://github.com/retaildevcrews/ngsa-cd)).
 
 ```bash
+
 cd $HOME
 
 git clone git@github.com:retaildevcrews/ngsa-cd.git

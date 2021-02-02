@@ -1,21 +1,21 @@
-## Let's Encrypt
+# TLS certificates with Let's Encrypt and cert-manager
 
-### Azure Components in Use
+Setup TLS certificate from Let's Encrypt using cert-manager.
 
-- DNS Zone
+Before starting this spike, follow the instructions [here](../../IaC/AKS/README.md) to setup the NGSA application in AKS.
 
-### DNS, SSL/TLS Prerequisites
+## DNS, SSL/TLS Prerequisites
 
  A domain name and SSL/TLS certificates are required for HTTPS access over the internet.
 
 - Registered domain with permissions to update nameservers
 - Azure subscription with permissions to create a DNS Zone
 
-### Note on Rate Limits
+## Note on Rate Limits
 
 >[Let's Encrypt](https://letsencrypt.org/) is used to issue TLS certificates.  Let's Encrypt has [rate limit policies](https://letsencrypt.org/docs/rate-limits/) that could be triggered if you run multiple deployments in sequence.  Please take note and be careful not to exceed their rate thresholds.
 
-### TODO: need title
+## Set variables
 
 ```bash
 
@@ -25,6 +25,9 @@ export Ngsa_Email=[your email address]
 # Set your registered domain name.
 # example: export Ngsa_Domain_Name=cse.ms
 export Ngsa_Domain_Name=[your domain name]
+
+# DNS name
+export Ngsa_App_Endpoint="${Ngsa_Name}.${Ngsa_Domain_Name}"
 
 ```
 
@@ -87,16 +90,23 @@ envsubst < clusterissuer.yaml | kubectl apply -f -
 
 ```
 
-## Deploy NGSA with Helm
+## Add Let's Encrypt staging certs
 
-The NGSA application has been packed into a Helm chart for deployment into the cluster. The following instructions will walk you through the manual process of deployment of the helm chart and is recommended for development and testing. Alternatively, the helm chart can be deployed in a GitOps CICD approach. GitOps allows the automated deployment of the application to the cluster using FluxCD in which the configuration of the application is stored in Git.([NGSA-CD](https://github.com/retaildevcrews/ngsa-cd)).
+Create the staging certificate and gateway.
 
 ```bash
-cd $HOME
 
-git clone git@github.com:retaildevcrews/ngsa-cd.git
+cd $REPO_ROOT/spikes/lets-encrypt
 
-export CHART_REPO=$HOME/ngsa-cd
+envsubst < staging-gateway.yaml | kubectl apply -n ngsa -f -
+
+envsubst < staging-certificate.yaml |  kubectl apply -n istio-system -f -
+
+```
+
+Update the host field in the helm values file.
+
+```bash
 
 cd $CHART_REPO/charts/ngsa
 
@@ -113,7 +123,7 @@ cd $CHART_REPO/charts/
 
 # Install NGSA using the upstream ngsa image from Dockerhub
 # Start by using the "letsencrypt-staging" ClusterIssuer to get test certs from the Let's Encrypt staging environment.
-helm install ngsa-aks ngsa -f ./ngsa/helm-config.yaml --namespace ngsa --set cert.enabled=letsencrypt-staging
+helm upgrade ngsa-aks ngsa -f ./ngsa/helm-config.yaml --namespace ngsa --set cert.enabled=false --set gateway.name=ngsa-gateway
 
 # check the version endpoint
 # you may get a timeout error, if so, just retry
@@ -128,15 +138,24 @@ Check that the test certificates have been issued. You can check in the browser,
 
 export Ngsa_Https_App_Endpoint="https://${Ngsa_App_Endpoint}"
 
-# Curl the https endpoint. You should see a certificate problem. This is expected with the staging certificates from Let's Encrypt.
-curl $Ngsa_Https_App_Endpoint
+# Send a request to the https endpoint. You should see a certificate problem. This is expected with the staging certificates from Let's Encrypt.
+http $Ngsa_Https_App_Endpoint/version
 
 ```
+
+## Upgrade to Let's Encrypt production certs
 
 After verifying that the test certs were issued, update the deployment to use the "letsencrypt-prod" ClusterIssuer to get valid certs from the Let's Encrypt production environment.
 
 ```bash
 
-helm upgrade ngsa-aks ngsa -f ./ngsa/helm-config.yaml  --namespace ngsa --set cert.issuer=letsencrypt-prod
+cd $REPO_ROOT/spikes/lets-encrypt
+
+envsubst < prod-gateway.yaml | kubectl apply -n ngsa -f -
+
+envsubst < prod-certificate.yaml |  kubectl apply -n istio-system -f -
+
+# Send a request to the https endpoint. You should now get a successful response
+http $Ngsa_Https_App_Endpoint/version
 
 ```
