@@ -98,6 +98,10 @@ namespace Ngsa.DataService
                 Cache = !noCache;
                 PerfCache = perfCache;
 
+                // set log level
+                AppLogLevel = AppLogLevel <= LogLevel.Information ? LogLevel.Information : AppLogLevel;
+                NgsaLog.LogLevel = AppLogLevel;
+
                 LoadSecrets(secretsVolume);
 
                 // load the cache
@@ -149,7 +153,7 @@ namespace Ngsa.DataService
                 Task w = host.RunAsync();
 
                 // start request count timer
-                Ngsa.Middleware.RequestLogger.StartCounterTime(5000, 1000);
+                RequestLogger.StartCounterTime(5000, 1000);
 
                 // this doesn't return except on ctl-c
                 await w.ConfigureAwait(false);
