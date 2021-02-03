@@ -290,7 +290,7 @@ kubectl get all --namespace istio-system
 You should see the following components:
 
 - `istio*` - the Istio components
-- `jaeger-*`, `tracing`, and `zipkin` - tracing addon
+- `tracing` - tracing addon
 - `prometheus` - metrics addon
 - `grafana` - analytics and monitoring dashboard addon
 - `kiali` - service mesh dashboard addon
@@ -438,7 +438,7 @@ Deploy Fluent Bit to forward application and smoker logs to the Log Analytics in
 
 ```bash
 
-cd $REPO_ROOT/IaC/AKS/cluster/charts
+cd $CHART_REPO/charts/
 
 kubectl create namespace fluentbit
 
@@ -447,7 +447,7 @@ kubectl create secret generic fluentbit-secrets \
   --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query customerId -o tsv) \
   --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query primarySharedKey -o tsv)
 
-helm install fluentbit fluentbit --namespace fluentbit
+helm install fluentbit fluentbit --namespace fluentbit --set log.region=DEBUG --set log.zone=DEBUG
 
 # Verify the fluentbit pod is running
 kubectl get pod --namespace fluentbit
@@ -465,18 +465,18 @@ Sample queries:
 # View the latest logs from the data service
 
 ngsa_CL
-| where k_container == "ds"
+| where k_container_s == "ds"
    and LogName_s == "Ngsa.RequestLog"
 | project TimeGenerated, CosmosName_s, Zone_s, CVector_s, Duration_d, StatusCode_d, Path_s
 
 # Calculate the 75th and 95th percentiles for the ngsa app response time and compare by app type (in-memory or cosmos) and zone
 
 ngsa_CL
-| where k_container == "app"
-   and k_app in ('ngsa-cosmos','ngsa-memory')
+| where k_container_s == "app"
+   and k_app_s == "ngsa-aks"
    and LogName_s == "Ngsa.RequestLog"
-| summarize percentile(Duration_d, 75), percentile(Duration_d, 95) by Zone_s, k_app
-| extend Zone=Zone_s, 75th=round(percentile_Duration_d_75,2), 95th=round(percentile_Duration_d_95,2), AppType=k_app
+| summarize percentile(Duration_d, 75), percentile(Duration_d, 95) by Zone_s, k_app_s
+| extend Zone=Zone_s, 75th=round(percentile_Duration_d_75,2), 95th=round(percentile_Duration_d_95,2), AppType=k_app_s
 | project AppType, Zone, 75th, 95th
 | order by AppType, Zone asc
 
