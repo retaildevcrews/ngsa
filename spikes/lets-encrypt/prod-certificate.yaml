@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1alpha3
+kind: Certificate
+metadata:
+  labels:
+    name: ngsa-prod-cert
+  name: ngsa-prod-cert
+spec:
+  dnsNames:
+    - ${Ngsa_App_Endpoint}
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  secretName: ngsa-prod-cert

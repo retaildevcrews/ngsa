@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1alpha3
+kind: Certificate
+metadata:
+  labels:
+    name: ngsa-staging-cert
+  name: ngsa-staging-cert
+spec:
+  dnsNames:
+    - ${Ngsa_App_Endpoint}
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-staging
+  secretName: ngsa-staging-cert
