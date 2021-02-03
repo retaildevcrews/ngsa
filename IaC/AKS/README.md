@@ -290,7 +290,7 @@ kubectl get all --namespace istio-system
 You should see the following components:
 
 - `istio*` - the Istio components
-- `jaeger-*`, `tracing`, and `zipkin` - tracing addon
+- `tracing` - tracing addon
 - `prometheus` - metrics addon
 - `grafana` - analytics and monitoring dashboard addon
 - `kiali` - service mesh dashboard addon
