@@ -17,7 +17,6 @@ namespace Ngsa.App.Controllers
         private static readonly NgsaLog Logger = new NgsaLog
         {
             Name = typeof(FeaturedController).FullName,
-            LogLevel = App.AppLogLevel,
             ErrorMessage = "FeaturedControllerException",
             NotFoundError = "Movie Not Found",
         };
