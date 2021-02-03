@@ -184,8 +184,6 @@ namespace Ngsa.DataService
             // configure logger based on command line
             builder.ConfigureLogging(logger =>
             {
-                AppLogLevel = AppLogLevel <= LogLevel.Information ? LogLevel.Information : AppLogLevel;
-
                 logger.ClearProviders();
                 logger.AddNgsaLogger(config => { config.LogLevel = AppLogLevel; });
 
