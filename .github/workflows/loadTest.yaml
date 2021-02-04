@@ -1,0 +1,47 @@
+name: Load Test
+
+on:
+  push:
+    paths:
+    - '.github/workflows/loadTest.yaml'
+    - 'src/Ngsa.LodeRunner/baseline.json'
+    - 'src/Ngsa.LodeRunner/benchmark.json'
+
+  schedule:
+    # Run daily at 03:00Z
+    - cron: "0 3 * * *"jobs:
+
+  load-test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install WebV
+      run: |
+        dotnet tool install -g webvalidate
+
+    - name: baseline test
+      run: |
+        # run baseline test
+        cd src/Ngsa.LodeRunner
+        webv -s https://ncpc.cse.ms \
+                https://ncpe.cse.ms \
+                https://ncpw.cse.ms \
+                https://nmpc.cse.ms \
+                https://nmpe.cse.ms \
+                https://nmpw.cse.ms \
+                -f baseline.json --max-errors 1 -l 100
+
+    - name: benchmark test
+      run: |
+        # run benchmark test for 5 min
+        cd src/Ngsa.LodeRunner
+        webv -s https://ncpc.cse.ms \
+                https://ncpe.cse.ms \
+                https://ncpw.cse.ms \
+                https://nmpc.cse.ms \
+                https://nmpe.cse.ms \
+                https://nmpw.cse.ms \
+                -f benchmark.json -r --max-errors 100 -l 100 --duration 300
