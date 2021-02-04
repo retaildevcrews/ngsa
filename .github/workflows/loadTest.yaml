@@ -9,7 +9,9 @@ on:
 
   schedule:
     # Run daily at 03:00Z
-    - cron: "0 3 * * *"jobs:
+    - cron: "0 3 * * *"
+    
+jobs:
 
   load-test:
 
