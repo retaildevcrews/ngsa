@@ -43,6 +43,8 @@ spec:
       - WebAPI
       - -s
       - http://ngsa-memory:8080
+      - -l
+      - Warning
     ports:
     - containerPort: 4120
     resources:
