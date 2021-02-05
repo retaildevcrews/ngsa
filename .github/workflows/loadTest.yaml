@@ -4,8 +4,8 @@ on:
   push:
     paths:
     - '.github/workflows/loadTest.yaml'
-    - 'src/Ngsa.LodeRunner/baseline.json'
-    - 'src/Ngsa.LodeRunner/benchmark.json'
+    - 'TestFiles/baseline.json'
+    - 'TestFiles/benchmark.json'
 
   schedule:
     # Run daily at 03:00Z
@@ -27,7 +27,7 @@ jobs:
     - name: benchmark test
       run: |
         # run benchmark test for 5 min
-        cd src/Ngsa.LodeRunner
+        cd TestFiles
         webv -s https://ncpc.cse.ms \
                 https://ncpe.cse.ms \
                 https://ncpw.cse.ms \
