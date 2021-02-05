@@ -68,7 +68,7 @@ namespace Ngsa.DataService
             root.AddOption(new Option<int>(new string[] { "--perf-cache" }, "Cache only when load exceeds value"));
             root.AddOption(new Option<string>(new string[] { "--secrets-volume" }, () => "secrets", "Secrets Volume Path"));
             root.AddOption(new Option<LogLevel>(new string[] { "-l", "--log-level" }, () => LogLevel.Warning, "Log Level"));
-            root.AddOption(new Option<bool>(new string[] { "-d", "--dry-run" }, "Validrates configuration"));
+            root.AddOption(new Option<bool>(new string[] { "-d", "--dry-run" }, "Validates configuration"));
 
             // validate dependencies
             root.AddValidator(ValidateDependencies);
