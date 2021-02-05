@@ -17,7 +17,6 @@ namespace Ngsa.App.Controllers
         private static readonly NgsaLog Logger = new NgsaLog
         {
             Name = typeof(GenresController).FullName,
-            LogLevel = App.AppLogLevel,
             ErrorMessage = "GenresControllerException",
             NotFoundError = "Genre Not Found",
         };

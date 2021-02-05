@@ -17,8 +17,9 @@ namespace Ngsa.Middleware
             IgnoreNullValues = true,
         };
 
+        public static LogLevel LogLevel { get; set; } = LogLevel.Information;
+
         public string Name { get; set; } = string.Empty;
-        public LogLevel LogLevel { get; set; } = LogLevel.Information;
         public string ErrorMessage { get; set; } = string.Empty;
         public string NotFoundError { get; set; } = string.Empty;
 
@@ -30,7 +31,7 @@ namespace Ngsa.Middleware
         /// <param name="context">http context</param>
         public void LogInformation(string method, string message, HttpContext context = null)
         {
-            if (LogLevel >= LogLevel.Information)
+            if (LogLevel <= LogLevel.Information)
             {
                 WriteLog(LogLevel.Information, GetDictionary(method, message, LogLevel.Information, context));
             }
@@ -44,7 +45,7 @@ namespace Ngsa.Middleware
         /// <param name="context">http context</param>
         public void LogWarning(string method, string message, HttpContext context = null)
         {
-            if (LogLevel >= LogLevel.Warning)
+            if (LogLevel <= LogLevel.Warning)
             {
                 WriteLog(LogLevel.Warning, GetDictionary(method, message, LogLevel.Warning, context));
             }
@@ -59,7 +60,7 @@ namespace Ngsa.Middleware
         /// <param name="context">http context</param>
         public void LogWarning(EventId eventId, string method, string message, HttpContext context = null)
         {
-            if (LogLevel >= LogLevel.Warning)
+            if (LogLevel <= LogLevel.Warning)
             {
                 WriteLog(LogLevel.Warning, GetDictionary(eventId, method, message, LogLevel.Warning, context));
             }
@@ -75,7 +76,7 @@ namespace Ngsa.Middleware
         /// <param name="ex">exception</param>
         public void LogError(EventId eventId, string method, string message, HttpContext context = null, Exception ex = null)
         {
-            if (LogLevel >= LogLevel.Error)
+            if (LogLevel <= LogLevel.Error)
             {
                 Dictionary<string, object> d = GetDictionary(eventId, method, message, LogLevel.Error, context);
 
@@ -99,7 +100,7 @@ namespace Ngsa.Middleware
         /// <param name="ex">exception</param>
         public void LogError(string method, string message, HttpContext context = null, Exception ex = null)
         {
-            if (LogLevel >= LogLevel.Error)
+            if (LogLevel <= LogLevel.Error)
             {
                 Dictionary<string, object> d = GetDictionary(method, message, LogLevel.Error, context);
 
@@ -117,7 +118,7 @@ namespace Ngsa.Middleware
         // write the log to console or console.error
         private void WriteLog(LogLevel logLevel, Dictionary<string, object> data)
         {
-            Console.ForegroundColor = LogLevel switch
+            Console.ForegroundColor = logLevel switch
             {
                 LogLevel.Error => ConsoleColor.Red,
                 LogLevel.Warning => ConsoleColor.Yellow,
