@@ -22,7 +22,6 @@ namespace Ngsa.App.Controllers
         private static readonly NgsaLog Logger = new NgsaLog
         {
             Name = typeof(ActorsController).FullName,
-            LogLevel = App.AppLogLevel,
             ErrorMessage = "ActorControllerException",
             NotFoundError = "Actor Not Found",
         };
