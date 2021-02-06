@@ -15,18 +15,10 @@ spec:
 
     args: 
     - -l
-    - "1000"
+    - "500"
     - -r
     - -s
-    - http://ngsa-memory:4120
-    - http://ngsa-cosmos:4120
+    - http://ngsa-memory:8080
     - -f
     - benchmark.json
 
-    resources:
-      limits:
-        memory: 512Mi
-        cpu: 500m
-      requests:
-        memory: 256Mi
-        cpu: 250m
