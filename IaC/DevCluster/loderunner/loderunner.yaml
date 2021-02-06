@@ -5,12 +5,15 @@ metadata:
   name: loderunner
   labels:
     app: loderunner
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '8080'
 
 spec:
   containers:
   - name: app
 
-    image: retaildevcrew/ngsa-loderunner:beta
+    image: retaildevcrew/ngsa-lr:beta
     imagePullPolicy: Always
 
     args: 
@@ -22,3 +25,19 @@ spec:
     - -f
     - benchmark.json
 
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: loderunner
+  labels:
+    app: loderunner
+spec:
+  type: NodePort
+  selector:
+    app: loderunner
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30088
