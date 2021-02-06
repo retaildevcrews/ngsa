@@ -12,7 +12,7 @@ spec:
   containers:
   - name: ds
     imagePullPolicy: Always
-    image: retaildevcrew/ngsa-ds:beta
+    image: ghcr.io/retaildevcrews/ngsa-app:beta
     args:
       - --in-memory
       - -l
