@@ -4,6 +4,9 @@ metadata:
   name: ngsa-memory
   labels:
     app: ngsa-memory
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '8080'
 
 spec:
   containers:
@@ -16,63 +19,6 @@ spec:
       - Warning
     ports:
     - containerPort: 8080
-    resources:
-      limits:
-        memory: 1Gi
-        cpu: "1"
-      requests:
-        memory: 512Mi
-        cpu: 500m
-
----
-
-apiVersion: v1
-kind: Pod
-metadata:
-  name: ngsa-app
-  labels:
-    app: ngsa-app
-
-spec:
-  containers:
-  - name: app
-    imagePullPolicy: Always
-    image: retaildevcrew/ngsa-ds:beta
-    args: 
-      - -a
-      - WebAPI
-      - -s
-      - http://ngsa-memory:8080
-      - -l
-      - Warning
-    ports:
-    - containerPort: 4120
-    resources:
-      limits:
-        memory: 1Gi
-        cpu: "1"
-      requests:
-        memory: 512Mi
-        cpu: 500m
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: ngsa-app
-  labels:
-    app: ngsa-app
-spec:
-  clusterIP:
-  ports:
-  - port: 4120
-    protocol: TCP
-    targetPort: 4120
-  selector:
-    app: ngsa-app
-  sessionAffinity: None
-  type: ClusterIP
 
 ---
 
@@ -83,12 +29,10 @@ metadata:
   labels:
     app: ngsa-memory
 spec:
-  clusterIP:
-  ports:
-  - port: 8080
-    protocol: TCP
-    targetPort: 8080
+  type: NodePort
   selector:
     app: ngsa-memory
-  sessionAffinity: None
-  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30080
