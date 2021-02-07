@@ -5,6 +5,9 @@ metadata:
   name: loderunner-benchmark-memory
   labels:
     app: loderunner-benchmark-memory
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '8080'
 
 spec:
   restartPolicy: Always
@@ -14,9 +17,9 @@ spec:
     imagePullPolicy: Always
     args: 
     - -l
-    - "1000"
+    - "100"
     - -r
     - -s
-    - http://ngsa-memory:4120
+    - http://ngsa-memory:8080
     - -f
     - benchmark.json
