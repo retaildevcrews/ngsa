@@ -1,10 +1,11 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  name: kube-state-metrics
   labels:
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/version: v1.8.0
-  name: kube-state-metrics
+
 rules:
 - apiGroups:
   - ""
@@ -24,6 +25,7 @@ rules:
   verbs:
   - list
   - watch
+
 - apiGroups:
   - extensions
   resources:
@@ -34,6 +36,7 @@ rules:
   verbs:
   - list
   - watch
+
 - apiGroups:
   - apps
   resources:
@@ -44,6 +47,7 @@ rules:
   verbs:
   - list
   - watch
+
 - apiGroups:
   - batch
   resources:
@@ -52,6 +56,7 @@ rules:
   verbs:
   - list
   - watch
+
 - apiGroups:
   - autoscaling
   resources:
@@ -59,18 +64,21 @@ rules:
   verbs:
   - list
   - watch
+
 - apiGroups:
   - authentication.k8s.io
   resources:
   - tokenreviews
   verbs:
   - create
+
 - apiGroups:
   - authorization.k8s.io
   resources:
   - subjectaccessreviews
   verbs:
   - create
+
 - apiGroups:
   - policy
   resources:
@@ -78,6 +86,7 @@ rules:
   verbs:
   - list
   - watch
+
 - apiGroups:
   - certificates.k8s.io
   resources:
@@ -85,6 +94,7 @@ rules:
   verbs:
   - list
   - watch
+
 - apiGroups:
   - storage.k8s.io
   resources:
@@ -93,6 +103,7 @@ rules:
   verbs:
   - list
   - watch
+
 - apiGroups:
   - admissionregistration.k8s.io
   resources:
@@ -101,6 +112,7 @@ rules:
   verbs:
   - list
   - watch
+
 - apiGroups:
   - networking.k8s.io
   resources:
