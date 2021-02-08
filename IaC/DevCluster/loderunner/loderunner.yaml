@@ -5,9 +5,6 @@ metadata:
   name: loderunner
   labels:
     app: loderunner
-  annotations:
-    prometheus.io/scrape: 'true'
-    prometheus.io/port: '8080'
 
 spec:
   containers:
