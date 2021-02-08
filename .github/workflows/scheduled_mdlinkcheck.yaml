@@ -30,6 +30,8 @@ jobs:
       uses: peter-evans/create-or-update-project-card@v1
       with:
         token: ${{ secrets.BOT_PAT }}
-        project-number: '2'
+        project-location: retaildevcrews
+        project-name: NGSA DevX
+        project-number: '4'
         column-name: 'Triage'
         issue-number: ${{ steps.ciff.outputs.issue-number }}
