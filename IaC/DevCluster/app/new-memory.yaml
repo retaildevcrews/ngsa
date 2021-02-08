@@ -15,7 +15,10 @@ spec:
     image: ghcr.io/retaildevcrews/ngsa-app:beta
     args:
       - --in-memory
-      - -l
+      - --prometheus
+      - --log-level
+      - Warning
+      - --request-log-level
       - Warning
     ports:
     - containerPort: 8080
