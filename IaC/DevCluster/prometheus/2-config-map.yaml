@@ -99,6 +99,14 @@ data:
         static_configs:
           - targets: ['kube-state-metrics.kube-system.svc.cluster.local:8080']
 
+      - job_name: 'ngsa-memory'
+        static_configs:
+          - targets: ['ngsa-memory.default.svc.cluster.local:8080']
+
+      - job_name: 'loderunner'
+        static_configs:
+          - targets: ['loderunner.default.svc.cluster.local:8080']
+
       - job_name: 'kubernetes-cadvisor'
 
         scheme: https
