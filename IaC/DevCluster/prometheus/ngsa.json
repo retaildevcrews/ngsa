@@ -17,7 +17,7 @@
   "gnetId": 10915,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1612769482910,
+  "iteration": 1612769939790,
   "links": [],
   "panels": [
     {
@@ -74,15 +74,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(NgsaAppDuration_bucket[1m])) by (category)",
+          "expr": "sum(rate(NgsaAppDuration_bucket{job!~\"kubernetes-pods\"}[1m])) by (category)",
           "interval": "",
           "legendFormat": "{{category}}",
           "refId": "A"
-        },
-        {
-          "expr": "sum(rate(http_requests_received_total{instance =~ \"$instances\", controller = \"\"}[3m]))",
-          "legendFormat": "(None)",
-          "refId": "B"
         }
       ],
       "thresholds": [],
@@ -138,6 +133,7 @@
             "mode": "thresholds"
           },
           "custom": {},
+          "decimals": 1,
           "mappings": [
             {
               "id": 0,
@@ -156,8 +152,12 @@
                 "value": null
               },
               {
+                "color": "#EAB839",
+                "value": 20
+              },
+              {
                 "color": "red",
-                "value": 80
+                "value": 30
               }
             ]
           },
@@ -193,7 +193,7 @@
       "pluginVersion": "7.4.0",
       "targets": [
         {
-          "expr": "sum(rate(NgsaAppDuration_count[1m]))",
+          "expr": "sum(rate(NgsaAppDuration_count{job!~\"kubernetes-pods\"}[1m]))",
           "instant": false,
           "interval": "",
           "legendFormat": "",
@@ -215,6 +215,7 @@
             "mode": "thresholds"
           },
           "custom": {},
+          "decimals": 1,
           "mappings": [
             {
               "id": 0,
@@ -232,8 +233,12 @@
                 "value": null
               },
               {
+                "color": "#EAB839",
+                "value": 20
+              },
+              {
                 "color": "red",
-                "value": 80
+                "value": 30
               }
             ]
           },
@@ -318,7 +323,7 @@
       "reverseYBuckets": false,
       "targets": [
         {
-          "expr": "sum(increase(NgsaAppDuration_bucket[$__interval])) by (le)",
+          "expr": "sum(increase(NgsaAppDuration_bucket{job!~\"kubernetes-pods\"}[1m])) by (le)",
           "format": "heatmap",
           "instant": false,
           "interval": "5m",
@@ -342,7 +347,7 @@
       "xBucketSize": null,
       "yAxis": {
         "decimals": 0,
-        "format": "s",
+        "format": "ms",
         "logBase": 1,
         "max": null,
         "min": null,
@@ -411,11 +416,6 @@
           "interval": "",
           "legendFormat": "{{category}}",
           "refId": "A"
-        },
-        {
-          "expr": "sum(rate(http_requests_received_total{instance =~ \"$instances\", controller = \"\", code =~ \"5\\\\d\\\\d|4\\\\d\\\\d\"}[3m])) by (controller)",
-          "legendFormat": "(None)",
-          "refId": "B"
         }
       ],
       "thresholds": [],
@@ -462,7 +462,7 @@
       }
     }
   ],
-  "refresh": false,
+  "refresh": "5s",
   "schemaVersion": 27,
   "style": "dark",
   "tags": [],
@@ -551,5 +551,5 @@
   "timezone": "",
   "title": "ngsa",
   "uid": "ngsa",
-  "version": 5
+  "version": 7
 }
