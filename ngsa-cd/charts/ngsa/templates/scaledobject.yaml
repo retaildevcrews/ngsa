@@ -1,0 +1,20 @@
+{{- if .Values.autoscaling.enabled -}}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ include "ngsa.fullname" . }}-scaledobject
+spec:
+  scaleTargetRef:
+    name: {{ include "ngsa.fullname" . }}
+  pollingInterval: {{ .Values.autoscaling.pollingInterval }}
+  minReplicaCount: {{ .Values.autoscaling.minReplicas }}
+  maxReplicaCount: {{ .Values.autoscaling.maxReplicas }}
+  cooldownPeriod: {{ .Values.autoscaling.cooldownPeriod }}
+  triggers:
+  - type: prometheus
+    metadata:
+      serverAddress: http://prometheus.istio-system.svc.cluster.local:9090
+      metricName: {{ .Values.autoscaling.metricName }}
+      threshold: '{{ .Values.autoscaling.threshold }}'
+      query: sum(rate(istio_requests_total{pod_name=~"{{ include "ngsa.fullname" . }}.*"}[1m]))
+{{- end }}

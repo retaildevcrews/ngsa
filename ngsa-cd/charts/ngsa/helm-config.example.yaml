@@ -1,0 +1,27 @@
+# Default values for NGSA.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+ingress:
+  hosts:
+    - ${Ngsa_App_Endpoint}
+  paths:
+    - /
+
+app:
+  args: []
+  region: "Debug"
+  zone: "Debug"
+  image:
+    repository: retaildevcrew/ngsa-app
+    tag: beta
+
+ds:
+  args:
+  - --no-cache
+  image:
+    repository: retaildevcrew/ngsa-dataservice
+    tag: beta
+
+cert:
+  name: ngsa-cert

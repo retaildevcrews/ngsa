@@ -1,0 +1,42 @@
+---
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: ngsa-memory
+  namespace: ngsa
+  annotations:
+    fluxcd.io/automated: "true"
+    filter.fluxcd.io/app: glob:beta-*
+    filter.fluxcd.io/ds: glob:beta-*
+spec:
+  releaseName: ngsa-memory
+  chart:
+    git: git@github.com:retaildevcrews/ngsa-cd
+    path: charts/ngsa
+    ref: main
+  values:
+    app:
+      args: []
+      secretName: ngsa-secrets
+      image:
+        repository: retaildevcrew/ngsa-app
+        tag: beta-0.1.1-0205-1555-178
+    ds:
+      args:
+      - --in-memory
+      secretName: ngsa-secrets
+      image:
+        repository: retaildevcrew/ngsa-dataservice
+        tag: beta-0.1.1-0205-1555-178
+    cert:
+      enabled: false
+      name: ngsa-cert
+    ingress:
+      hosts:
+      - ngsa-mem-pre-east.cse.ms
+      - alpha-ngsa-mem-pre-east.cse.ms
+      - nmpe.cse.ms
+      paths:
+      - /
+    gateway:
+      name: wildcard-gateway
