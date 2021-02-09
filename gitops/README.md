@@ -41,7 +41,7 @@ export Git_Url=[your git url]
 export Git_Branch=[your git branch]
 
 # Set your target directory git path. This is the path Flux will look for yaml to be applied in the cluster.
-# example: export Git_Path=ngsa-cd/deployments/preprod/central\\,ngsa-cd/deployments/preprod/common
+# example: export Git_Path=gitops/deployments/preprod/central\\,gitops/deployments/preprod/common
 export Git_Path=[your git path]
 
 
