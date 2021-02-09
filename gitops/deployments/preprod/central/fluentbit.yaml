@@ -1,0 +1,19 @@
+---
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: fluentbit
+  namespace: fluentbit
+spec:
+  releaseName: fluentbit
+  chart:
+    git: git@github.com:retaildevcrews/ngsa-cd
+    path: charts/fluentbit
+    ref: main
+  values:
+    image:
+      repository: fluent/fluent-bit
+      tag: "1.5-debug"
+    log:
+      region: "Central"
+      zone: "Az-CentralUS"

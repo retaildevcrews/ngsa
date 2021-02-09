@@ -1,0 +1,110 @@
+# Default values for ngsa.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+app:
+  image:
+    repository: retaildevcrew/ngsa-app
+    tag: beta
+    pullPolicy: Always
+  args: []
+  port: 4120
+  secretName: ngsa-secrets
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+
+ds:
+  image:
+    repository: retaildevcrew/ngsa-dataservice
+    tag: beta
+    pullPolicy: Always
+  args: []
+  port: 4122
+  secretName: ngsa-secrets
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+livenessProbe:
+  initialDelaySeconds: 120
+  failureThreshold: 1
+  periodSeconds: 10
+
+readinessProbe:
+  failureThreshold: 1
+  periodSeconds: 10
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 4120
+
+ingress:
+  enabled: true
+  hosts:
+    - <INGRESS_PIP>
+
+  paths:
+    - /
+
+  tls: {}
+
+cert:
+  enabled: true
+  name: ngsa-cert
+  issuer: letsencrypt-staging
+  namespace: istio-system
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 10
+  metricName: requests_per_second
+  threshold: 10
+  pollingInterval: 10
+  cooldownPeriod: 300
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+gateway:
+  name: ""
