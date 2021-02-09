@@ -11,8 +11,8 @@ metadata:
 spec:
   releaseName: ngsa-cosmos
   chart:
-    git: git@github.com:retaildevcrews/ngsa-cd
-    path: charts/ngsa
+    git: git@github.com:retaildevcrews/ngsa
+    path: gitops/charts/ngsa
     ref: main
   values:
     app:
