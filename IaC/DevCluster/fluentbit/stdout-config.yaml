@@ -68,8 +68,6 @@ data:
     [FILTER]
         Name    modify
         Match   kube.*
-        Add     Zone                                           ${Zone}
-        Add     Region                                         ${Region}
         Copy    kubernetes_labels_app.kubernetes.io/instance   k_app
         Copy    kubernetes_labels_app                          k_app
         Copy    kubernetes_container_name                      k_container
