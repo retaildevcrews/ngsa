@@ -20,7 +20,7 @@ spec:
       secretName: ngsa-secrets
       image:
         repository: retaildevcrew/ngsa-app
-        tag: beta-0.1.1-0205-1555-178
+        tag: beta-0.1.1-0205-1556-178
     ds:
       args:
       - --in-memory
