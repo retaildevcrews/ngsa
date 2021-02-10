@@ -45,8 +45,8 @@ kubectl get pods
 kubectl logs ngsa-cosmos
 
 # check the version and genres endpoints
-http localhost:30080/version
-http localhost:30080/api/genres
+http localhost:30081/version
+http localhost:30081/api/genres
 
 # check logs
 kubectl logs ngsa-cosmos
