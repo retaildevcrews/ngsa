@@ -17,6 +17,10 @@ spec:
       - Warning
       - --request-log-level
       - Warning
+      - --zone
+      - dev
+      - --region
+      - dev
     ports:
     - containerPort: 8080
 
