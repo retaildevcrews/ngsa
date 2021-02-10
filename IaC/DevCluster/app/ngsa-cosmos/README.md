@@ -6,7 +6,7 @@ Follow the instructions [here](https://github.com/retaildevcrews/imdb) to create
 
 ## Create app secrets
 
-- Make sure the following environment variables are set correction
+- Make sure the following environment variables are set correctly
   - Imdb_DB
   - Imdb_Col
   - Imdb_Name
@@ -42,17 +42,14 @@ kubectl apply -f ngsa.yaml
 kubectl get pods
 
 # check local logs
-kubectl logs ngsa-cosmos -c app
-
-# save the cluster IP
-export ngsa=http://$(kubectl get service ngsa-cosmos -o jsonpath="{.spec.clusterIP}"):4120
+kubectl logs ngsa-cosmos
 
 # check the version and genres endpoints
-http $ngsa/version
-http $ngsa/api/genres
+http localhost:30080/version
+http localhost:30080/api/genres
 
 # check logs
-kubectl logs ngsa-cosmos -c app
+kubectl logs ngsa-cosmos
 
 # delete ngsa app
 kubectl delete -f ngsa.yaml

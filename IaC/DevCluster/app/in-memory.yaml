@@ -16,7 +16,7 @@ spec:
       - --log-level
       - Warning
       - --request-log-level
-      - Warning
+      - Information
       - --zone
       - dev
       - --region

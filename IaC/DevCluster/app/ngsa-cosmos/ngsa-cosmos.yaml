@@ -9,34 +9,19 @@ spec:
   containers:
   - name: app
     imagePullPolicy: Always
-    image: retaildevcrew/ngsa-app:beta
-    ports:
-    - containerPort: 4120
-    resources:
-      limits:
-        memory: 1Gi
-        cpu: "1"
-      requests:
-        memory: 256Mi
-        cpu: 250m
-
-  - name: ds
-    imagePullPolicy: Always
-    image: retaildevcrew/ngsa-dataservice:beta
+    image: ghcr.io/retaildevcrews/ngsa-app:beta
     args:
-    - --no-cache
+      - --prometheus
+      - --log-level
+      - Warning
+      - --request-log-level
+      - Information
+      - --zone
+      - dev
+      - --region
+      - dev
     ports:
-    - containerPort: 4122
-    volumeMounts:
-    - name: secrets
-      mountPath: "/app/secrets"
-    resources:
-      limits:
-        memory: 1Gi
-        cpu: "1"
-      requests:
-        memory: 512Mi
-        cpu: 500m
+    - containerPort: 8080
 
   volumes:
   - name: secrets
@@ -54,15 +39,10 @@ metadata:
     app: ngsa-cosmos
 
 spec:
-  sessionAffinity: None
-  type: ClusterIP
-
+  type: NodePort
   selector:
     app: ngsa-cosmos
-
-  clusterIP:
-
   ports:
-  - port: 4120
-    protocol: TCP
-    targetPort: 4120
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30080

@@ -17,28 +17,14 @@ kubectl apply -f in-memory.yaml
 kubectl get pods
 
 # check local logs
-kubectl logs ngsa-memory -c app
-
-# save the cluster IP
-export ngsa=http://$(kubectl get service ngsa-memory -o jsonpath="{.spec.clusterIP}"):4120
+kubectl logs ngsa-memory
 
 # check the version and genres endpoints
-http $ngsa/version
-http $ngsa/api/genres
+http localhost:30080/version
+http localhost:30080/api/genres
 
 # check logs
-kubectl logs ngsa-memory -c app
-
-# setup port forwarding
-# this allows you to access the ngsa-memory service
-# from your local browser
-kubectl port-forward svc/ngsa-memory 4120:4120
-
-# open your local browser
-http://127.0.0.1:4120/version
-http://127.0.0.1:4120/api/genres
-
-# press ctl-c to stop port forwarding
+kubectl logs ngsa-memory
 
 # delete ngsa-memory
 kubectl delete -f in-memory.yaml
