@@ -10,13 +10,18 @@ spec:
   restartPolicy: Always
   containers:
   - name: app
-    image: retaildevcrew/ngsa-loderunner:beta
+    image: ghcr.io/retaildevcrews/ngsa-lr:beta
     imagePullPolicy: Always
     args: 
     - -l
-    - "1000"
+    - "100"
     - -r
     - -s
-    - http://ngsa-cosmos:4120
+    - http://ngsa-cosmos:8080
     - -f
     - benchmark.json
+    - --prometheus
+    - --zone
+    - dev
+    - --region
+    - dev

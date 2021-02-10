@@ -23,3 +23,8 @@ spec:
     - http://ngsa-memory:8080
     - -f
     - benchmark.json
+    - --prometheus
+    - --zone
+    - dev
+    - --region
+    - dev
