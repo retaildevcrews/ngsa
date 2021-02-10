@@ -7,32 +7,22 @@ metadata:
 
 spec:
   containers:
-  - name: app
-    imagePullPolicy: Always
-    image: retaildevcrew/ngsa-app:beta
-    ports:
-    - containerPort: 4120
-    resources:
-      limits:
-        memory: 1Gi
-        cpu: "1"
-      requests:
-        memory: 256Mi
-        cpu: 250m
-
   - name: ds
     imagePullPolicy: Always
-    image: retaildevcrew/ngsa-dataservice:beta
-    args: [ "--in-memory", "-l", "Warning" ]
+    image: ghcr.io/retaildevcrews/ngsa-app:beta
+    args:
+      - --in-memory
+      - --prometheus
+      - --log-level
+      - Warning
+      - --request-log-level
+      - Warning
+      - --zone
+      - dev
+      - --region
+      - dev
     ports:
-    - containerPort: 4122
-    resources:
-      limits:
-        memory: 1Gi
-        cpu: "1"
-      requests:
-        memory: 512Mi
-        cpu: 500m
+    - containerPort: 8080
 
 ---
 
@@ -43,12 +33,10 @@ metadata:
   labels:
     app: ngsa-memory
 spec:
-  clusterIP:
-  ports:
-  - port: 4120
-    protocol: TCP
-    targetPort: 4120
+  type: NodePort
   selector:
     app: ngsa-memory
-  sessionAffinity: None
-  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30080
