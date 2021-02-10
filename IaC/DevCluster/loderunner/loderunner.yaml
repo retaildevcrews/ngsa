@@ -16,6 +16,7 @@ spec:
     args: 
     - -l
     - "500"
+    - --prometheus
     - -r
     - -s
     - http://ngsa-memory:8080
