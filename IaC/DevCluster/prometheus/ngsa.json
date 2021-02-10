@@ -13,11 +13,10 @@
     ]
   },
   "description": "",
-  "editable": true,
+  "editable": false,
   "gnetId": 10915,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1612769939790,
   "links": [],
   "panels": [
     {
@@ -74,7 +73,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(NgsaAppDuration_bucket{job!~\"kubernetes-pods\"}[1m])) by (category)",
+          "expr": "sum(rate(NgsaAppDuration_bucket[1m])) by (category)",
           "interval": "",
           "legendFormat": "{{category}}",
           "refId": "A"
@@ -157,7 +156,7 @@
               },
               {
                 "color": "red",
-                "value": 30
+                "value": 40
               }
             ]
           },
@@ -193,7 +192,7 @@
       "pluginVersion": "7.4.0",
       "targets": [
         {
-          "expr": "sum(rate(NgsaAppDuration_count{job!~\"kubernetes-pods\"}[1m]))",
+          "expr": "sum(rate(NgsaAppDuration_count{mode != \"Metrics\"}[1m]))",
           "instant": false,
           "interval": "",
           "legendFormat": "",
@@ -238,7 +237,7 @@
               },
               {
                 "color": "red",
-                "value": 30
+                "value": 40
               }
             ]
           },
@@ -323,7 +322,7 @@
       "reverseYBuckets": false,
       "targets": [
         {
-          "expr": "sum(increase(NgsaAppDuration_bucket{job!~\"kubernetes-pods\"}[1m])) by (le)",
+          "expr": "sum(increase(NgsaAppDuration_bucket[1m])) by (le)",
           "format": "heatmap",
           "instant": false,
           "interval": "5m",
@@ -412,7 +411,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(NgsaAppDuration_count{code =~ \"5\\\\d\\\\d|4\\\\d\\\\d\"}[1m])) by (category)",
+          "expr": "sum(rate(NgsaAppDuration_bucket{code =~ \"5\\\\d\\\\d|4\\\\d\\\\d\"}[1m])) by (category)",
           "interval": "",
           "legendFormat": "{{category}}",
           "refId": "A"
@@ -467,70 +466,7 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": [
-      {
-        "allValue": null,
-        "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
-        },
-        "datasource": "prometheus",
-        "definition": "label_values(http_requests_received_total, instance)",
-        "description": null,
-        "error": null,
-        "hide": 0,
-        "includeAll": true,
-        "label": "Instances",
-        "multi": true,
-        "name": "instances",
-        "options": [],
-        "query": {
-          "query": "label_values(http_requests_received_total, instance)",
-          "refId": "prometheus-instances-Variable-Query"
-        },
-        "refresh": 2,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 5,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
-        "allValue": null,
-        "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
-        },
-        "datasource": "prometheus",
-        "definition": "label_values(http_requests_received_total{instance =~ \"$instances\"}, controller)",
-        "description": null,
-        "error": null,
-        "hide": 0,
-        "includeAll": true,
-        "label": "Controllers",
-        "multi": true,
-        "name": "controllers",
-        "options": [],
-        "query": {
-          "query": "label_values(http_requests_received_total{instance =~ \"$instances\"}, controller)",
-          "refId": "prometheus-controllers-Variable-Query"
-        },
-        "refresh": 2,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      }
-    ]
+    "list": []
   },
   "time": {
     "from": "now-15m",
@@ -551,5 +487,5 @@
   "timezone": "",
   "title": "ngsa",
   "uid": "ngsa",
-  "version": 7
+  "version": 14
 }

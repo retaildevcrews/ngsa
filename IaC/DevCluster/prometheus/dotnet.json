@@ -15,8 +15,8 @@
   "editable": true,
   "gnetId": 10427,
   "graphTooltip": 0,
-  "id": 2,
-  "iteration": 1612769379730,
+  "id": 4,
+  "iteration": 1612936079971,
   "links": [],
   "panels": [
     {
@@ -71,7 +71,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(NgsaAppDuration_bucket{job!~\"kubernetes-pods\"}[$interval])) by (le)",
+          "expr": "sum(increase(NgsaAppDuration_bucket[$interval])) by (le)",
           "format": "heatmap",
           "interval": "",
           "intervalFactor": 1,
@@ -175,7 +175,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(dotnet_collection_count_total{job!~\"kubernetes-pods\"}[$interval])) by (job)",
+          "expr": "sum(increase(dotnet_collection_count_total{job!=\"kubernetes-pods\"}[$interval])) by (job)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -203,6 +203,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:731",
           "decimals": 0,
           "format": "short",
           "label": null,
@@ -212,6 +213,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:732",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -279,7 +281,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "dotnet_total_memory_bytes{job!~\"kubernetes-pods\"} /1024/1024",
+          "expr": "dotnet_total_memory_bytes{job!=\"kubernetes-pods\"} /1024/1024",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -307,6 +309,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:787",
           "decimals": 0,
           "format": "short",
           "label": "",
@@ -316,6 +319,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:788",
           "format": "short",
           "label": "",
           "logBase": 1,
@@ -798,5 +802,5 @@
   "timezone": "",
   "title": "dotnet",
   "uid": "dotnet",
-  "version": 5
+  "version": 2
 }
