@@ -12,6 +12,9 @@ data:
         HTTP_Server   On
         HTTP_Listen   0.0.0.0
         HTTP_Port     2020
+        storage.path  /var/log/flb-storage/
+        storage.sync  normal
+        storage.backlog.mem_limit 32MB
     @INCLUDE input-kubernetes.conf
     @INCLUDE filter-kubernetes.conf
     @INCLUDE output.conf
@@ -23,6 +26,7 @@ data:
         Customer_ID     ${WORKSPACE_ID}
         Shared_Key      ${SHARED_KEY}
         Log_Type        ${LODE_LOG}
+        storage.total_limit_size  15M
 
     [OUTPUT]
         Name            azure
@@ -30,6 +34,7 @@ data:
         Customer_ID     ${WORKSPACE_ID}
         Shared_Key      ${SHARED_KEY}
         Log_Type        ${NGSA_LOG}
+        storage.total_limit_size  15M
 
   input-kubernetes.conf: |
     [INPUT]
@@ -38,9 +43,10 @@ data:
         Path              /var/log/containers/*.log
         Parser            cri
         DB                /var/log/flb_kube.db
-        Mem_Buf_Limit     5MB
+        Mem_Buf_Limit     32MB
         Skip_Long_Lines   Off
         Refresh_Interval  10
+        storage.type      filesystem
 
   filter-kubernetes.conf: |
     [FILTER]
