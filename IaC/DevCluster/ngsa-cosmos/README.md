@@ -1,12 +1,14 @@
 # App Setup for Cosmos DB
 
+> From the app/ngsa-cosmos directory in this repo
+
 ## Create Cosmos DB
 
 Follow the instructions [here](https://github.com/retaildevcrews/imdb) to create and load the IMDb data into Cosmos DB
 
 ## Create app secrets
 
-- Make sure the following environment variables are set correction
+- Make sure the following environment variables are set correctly
   - Imdb_DB
   - Imdb_Col
   - Imdb_Name
@@ -14,7 +16,10 @@ Follow the instructions [here](https://github.com/retaildevcrews/imdb) to create
 
 ```bash
 
-# create app secrets
+# check environment variables
+env | grep Imdb_
+
+# create app secrets (if necessary)
 kubectl create secret generic ngsa-secrets \
   --from-literal=CosmosDatabase=$Imdb_DB \
   --from-literal=CosmosCollection=$Imdb_Col \
@@ -36,26 +41,23 @@ kubectl create secret generic log-secrets \
   --from-literal=SharedKey=dev
 
 # deploy ngsa app
-kubectl apply -f ngsa.yaml
+kubectl apply -f ngsa-cosmos.yaml
 
 # check pods until running
 kubectl get pods
 
 # check local logs
-kubectl logs ngsa-cosmos -c app
-
-# save the cluster IP
-export ngsa=http://$(kubectl get service ngsa-cosmos -o jsonpath="{.spec.clusterIP}"):4120
+kubectl logs ngsa-cosmos
 
 # check the version and genres endpoints
-http $ngsa/version
-http $ngsa/api/genres
+http $PIP:30081/version
+http $PIP:30081/api/genres
 
 # check logs
-kubectl logs ngsa-cosmos -c app
+kubectl logs ngsa-cosmos
 
 # delete ngsa app
-kubectl delete -f ngsa.yaml
+kubectl delete -f ngsa-cosmos.yaml
 
 # check pods
 kubectl get pods

@@ -6,35 +6,77 @@
 
 Create your Azure VM per instructions at [Azure Kubernetes Development Cluster](https://github.com/retaildevcrews/akdc)
 
-## SSH into the Azure VM
-
-```bash
-
-# AKDC_IP is set during the previous step
-# the -L allows you to forward your port from the dev cluster via SSH tunneling
-ssh -L 4120:127.0.0.1:4120 akdc@${AKDC_IP}
-
-```
-
-### From the Azure VM
+> From a Dev Cluster bash shell via SSH
 
 ```bash
 
 # clone this repository
 git clone https://github.com/retaildevcrews/ngsa
 
-# change to the correct directory
-cd ngsa/IaC/DevCluster/app
+# change to this directory
+cd ngsa/IaC/DevCluster
 
 # verify kubernetes is running
 kubectl get all --all-namespaces
 
 ```
 
-### Deploy the NGSA app
+### Open firewall ports
 
-Follow the deployment instructions in [app](app/README.md) to deploy ngsa
+> (optional) Allows remote access (via http) to your Dev Cluster
 
-### Deploy Fluent Bit (log forwarding)
+- Prometheus web is on port 30000
+- NGSA-Memory is on port 30080
+- NGSA-Cosmos is on port 30081
+- LodeRunner is on port 30088
+- Grafana web is on port 32000
 
-Follow the deployment instructions in [fluentbit](fluentbit/README.md) to setup Fluent Bit and Azure Log Analytics
+### Deploy NGSA-Memory
+
+- Follow the deployment instructions in [ngsa-memory](ngsa-memory/README.md)
+
+### Deploy LodeRunner
+
+> This requires NGSA-Memory
+
+```bash
+
+kubectl apply -f loderunner/loderunner.yaml
+
+```
+
+### Deploy NGSA-Cosmos
+
+- Follow the deployment instructions in [ngsa-cosmos](ngsa-cosmos/README.md)
+
+### Setup Prometheus
+
+```bash
+
+kubectl apply -f prometheus
+
+```
+
+### Setup Grafana
+
+- Import dashboards
+  - dashboards/dotnet.json
+  - dashboards/ngsa.json
+
+```bash
+
+kubectl apply -f grafana
+
+```
+
+### Setup kube state metrics
+
+```bash
+
+kubectl apply -f kube-state-metrics
+
+```
+
+### Setup  Fluent Bit
+
+- Follow the deployment instructions in [fluentbit](fluentbit/README.md)

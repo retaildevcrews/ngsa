@@ -10,23 +10,36 @@ spec:
   containers:
   - name: app
 
-    image: retaildevcrew/ngsa-loderunner:beta
+    image: ghcr.io/retaildevcrews/ngsa-lr:beta
     imagePullPolicy: Always
 
     args: 
     - -l
     - "1000"
+    - --prometheus
     - -r
     - -s
-    - http://ngsa-memory:4120
-    - http://ngsa-cosmos:4120
+    - http://ngsa-memory:8080
     - -f
     - benchmark.json
+    - --zone
+    - dev
+    - --region
+    - dev
 
-    resources:
-      limits:
-        memory: 512Mi
-        cpu: 500m
-      requests:
-        memory: 256Mi
-        cpu: 250m
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: loderunner
+  labels:
+    app: loderunner
+spec:
+  type: NodePort
+  selector:
+    app: loderunner
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30088
