@@ -6,16 +6,7 @@
 
 Create your Azure VM per instructions at [Azure Kubernetes Development Cluster](https://github.com/retaildevcrews/akdc)
 
-## SSH into the Azure VM
-
-```bash
-
-# AKDC_IP is set during the previous step
-ssh akdc@${AKDC_IP}
-
-```
-
-### From the Azure VM
+> From an Azure VM bash shell via SSH
 
 ```bash
 
@@ -30,22 +21,25 @@ kubectl get all --all-namespaces
 
 ```
 
-### Deploy the NGSA app
+### Open firewall ports
 
-Follow the deployment instructions in [app](app/README.md) to deploy ngsa
+> (optional) Allows remote access (via http) to your Dev Cluster
 
-- Open your VM firewall rule(s) to access remotely
-  - NGSA-App is on port 30080
-  - LodeRunner is on port 30088
+- Prometheus web is on port 30000
+- NGSA-Memory is on port 30080
+- NGSA-Cosmos is on port 30081
+- LodeRunner is on port 30088
+- Grafana web is on port 32000
 
-### Deploy Fluent Bit (log forwarding)
+### Deploy NGSA-Memory
 
-Follow the deployment instructions in [fluentbit](fluentbit/README.md) to setup Fluent Bit and Azure Log Analytics
+Follow the deployment instructions in [ngsa-memory](ngsa-memory/README.md)
 
-### Prometheus Setup
+### Deploy NGSA-Cosmos
 
-- Open your VM firewall rule(s) to access remotely
-  - Prometheus web is on port 30000
+Follow the deployment instructions in [ngsa-cosmos](ngsa-cosmos/README.md)
+
+### Setup Prometheus
 
 ```bash
 
@@ -53,10 +47,19 @@ kubectl apply -f prometheus
 
 ```
 
-### Grafana Setup
+### Setup Grafana
 
-- Open your VM firewall rule(s) to access remotely
-  - Grafana web is on port 32000
+- Import dashboard
+  - dashboards/dotnet.json
+  - dashboards/ngsa.json
+
+```bash
+
+kubectl apply -f kube-state-metrics
+
+```
+
+### Setup kube state metrics
 
 ```bash
 
@@ -64,11 +67,6 @@ kubectl apply -f kube-state-metrics
 
 ```
 
-### kube state metrics setup
+### Setup  Fluent Bit
 
-
-```bash
-
-kubectl apply -f kube-state-metrics
-
-```
+Follow the deployment instructions in [fluentbit](fluentbit/README.md) to setup Fluent Bit and Azure Log Analytics
