@@ -10,6 +10,7 @@ spec:
   - name: app
     imagePullPolicy: Always
     image: ghcr.io/retaildevcrews/ngsa-app:beta
+
     args:
       - --prometheus
       - --log-level
@@ -20,8 +21,13 @@ spec:
       - dev
       - --region
       - dev
+
     ports:
     - containerPort: 8080
+
+    volumeMounts:
+    - name: secrets
+      mountPath: "/app/secrets"
 
   volumes:
   - name: secrets
