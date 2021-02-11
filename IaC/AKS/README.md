@@ -400,7 +400,7 @@ http ${Ngsa_App_Endpoint}/version
 
 Run the Validation Test
 
-> For more information on the validation test tool, see [Lode Runner](../../src/Ngsa.LodeRunner).
+> For more information on the validation test tool, see [Lode Runner](../../spikes/OldSource/src/Ngsa.LodeRunner).
 
 ```bash
 

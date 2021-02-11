@@ -2,9 +2,9 @@
 
 ## Overview
 
-- This project implements the Web API described in [../../src/README.md](../../src/README.md) in Node.js.
-- It calls the Data Service in [../../src/Ngsa.Dataservice](../../src/Ngsa.DataService) which either queries an in-memory database or a Cosmos DB instance.
-- The app in [../../src/Ngsa.LodeRunner](../../src/Ngsa.LodeRunner) is used for end-to-end testing and load generation.
+- This project implements the Web API described in [../../spikes/OldSource/src/README.md](../../spikes/OldSource/src/README.md) in Node.js.
+- It calls the Data Service in [../../src/Ngsa.Dataservice](../../spikes/OldSource/src/Ngsa.DataService) which either queries an in-memory database or a Cosmos DB instance.
+- The app in [../../src/Ngsa.LodeRunner](../../spikes/OldSource/src/Ngsa.LodeRunner) is used for end-to-end testing and load generation.
 
 ## Pre-requisites
 
@@ -17,7 +17,7 @@
 
 ## Start the NGSA Data Service
 
-Complete the steps in [Pre-requisites](../../src/README.md#pre-requisites), [Running NGSA Data Service](../../src/README.md#running-ngsa-data-service), and [Verify the data service is running](../../src/README.md#verify-the-data-service-is-running).
+Complete the steps in [Pre-requisites](../../spikes/OldSource/src/README.md#pre-requisites), [Running NGSA Data Service](../../spikes/OldSource/src/README.md#running-ngsa-data-service), and [Verify the data service is running](../../spikes/OldSource/src/README.md#verify-the-data-service-is-running).
 
 ## Run the Web API
 
