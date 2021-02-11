@@ -17,12 +17,7 @@ At it's culmination the project will be a collection of guidance for deployment 
 3. Cluster Setup Guides
    1. [Developer Cluster](./IaC/DevCluster)
    2. [AKS](./IaC/AKS)
-4. [Developer Guide](./src)
-5. Applications
-   1. [Web API](./src)
-   2. [Data Service](./src)
-   3. [Load Generator](./src)
-6. Design, Practices, and Conventions
+4. Design, Practices, and Conventions
    1. [Architecture](./docs/ApplicationArch.md)
    2. [Engineering Practices](./docs/EngineeringPractices.md)
       1. [Naming Conventions](./docs/NamingConvention.md)
@@ -38,9 +33,8 @@ The NGSA solution is a combination of a Kubernetes based infrastructure and a `P
 
 We suggest that you follow these steps to get started:
 
-1. [Run the app locally](./src)
-2. [Setup local Dev Cluster](./IaC/DevCluster)
-3. [Deploy to Dev Cluster](./IaC/DevCluster)
+1. [Setup local Dev Cluster](./IaC/DevCluster)
+2. [Deploy to Dev Cluster](./IaC/DevCluster)
 
 ### GitHub Templates and Workflows
 
@@ -49,7 +43,6 @@ We suggest that you follow these steps to get started:
   - [Issue Templates](./.github/ISSUE_TEMPLATE)
 
 - GitHub Actions (ci-cd pipelines)
-  - [ci-cd](./.github/workflows/ngsa.yaml)
   - [MD Link Checks](./.github/workflows/mdlinkcheck.yaml)
   - [MD Link Checks (scheduled)](./.github/workflows/scheduled_mdlinkcheck.yaml)
 
