@@ -53,17 +53,29 @@ kubectl apply -f loderunner/loderunner.yaml
 
 ```bash
 
+# create the volume mount directory
+mkdir -p /prometheus    
+chown -R 65534:65534 /prometheus
+
 kubectl apply -f prometheus
 
 ```
 
 ### Setup Grafana
 
+- Default Credentials
+  - user: admin
+  - password: admin
+
 - Import dashboards
   - dashboards/dotnet.json
   - dashboards/ngsa.json
 
 ```bash
+
+# create the volume mount directory
+mkdir -p /grafana
+chown -R 472:472 /grafana
 
 kubectl apply -f grafana
 
