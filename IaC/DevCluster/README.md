@@ -6,14 +6,14 @@
 
 Create your Azure VM per instructions at [Azure Kubernetes Development Cluster](https://github.com/retaildevcrews/akdc)
 
-> From an Azure VM bash shell via SSH
+> From a Dev Cluster bash shell via SSH
 
 ```bash
 
 # clone this repository
 git clone https://github.com/retaildevcrews/ngsa
 
-# change to the correct directory
+# change to this directory
 cd ngsa/IaC/DevCluster
 
 # verify kubernetes is running
@@ -33,11 +33,21 @@ kubectl get all --all-namespaces
 
 ### Deploy NGSA-Memory
 
-Follow the deployment instructions in [ngsa-memory](ngsa-memory/README.md)
+- Follow the deployment instructions in [ngsa-memory](ngsa-memory/README.md)
+
+### Deploy LodeRunner
+
+> This requires NGSA-Memory
+
+```bash
+
+kubectl apply -f loderunner/loderunner.yaml
+
+```
 
 ### Deploy NGSA-Cosmos
 
-Follow the deployment instructions in [ngsa-cosmos](ngsa-cosmos/README.md)
+- Follow the deployment instructions in [ngsa-cosmos](ngsa-cosmos/README.md)
 
 ### Setup Prometheus
 
@@ -49,13 +59,13 @@ kubectl apply -f prometheus
 
 ### Setup Grafana
 
-- Import dashboard
+- Import dashboards
   - dashboards/dotnet.json
   - dashboards/ngsa.json
 
 ```bash
 
-kubectl apply -f kube-state-metrics
+kubectl apply -f grafana
 
 ```
 
@@ -69,4 +79,4 @@ kubectl apply -f kube-state-metrics
 
 ### Setup  Fluent Bit
 
-Follow the deployment instructions in [fluentbit](fluentbit/README.md) to setup Fluent Bit and Azure Log Analytics
+- Follow the deployment instructions in [fluentbit](fluentbit/README.md)
