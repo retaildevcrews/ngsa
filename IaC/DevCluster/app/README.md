@@ -20,8 +20,8 @@ kubectl get pods
 kubectl logs ngsa-memory
 
 # check the version and genres endpoints
-http localhost:30080/version
-http localhost:30080/api/genres
+http $PIP:30080/version
+http $PIP:30080/api/genres
 
 # check logs
 kubectl logs ngsa-memory
