@@ -15,7 +15,7 @@ spec:
 
     args: 
     - -l
-    - "500"
+    - "1000"
     - --prometheus
     - -r
     - -s
