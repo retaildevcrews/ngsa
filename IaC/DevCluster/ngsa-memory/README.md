@@ -1,6 +1,6 @@
 # App Setup
 
-> From the app directory in this repo
+> From the `IaC/DevCluster/ngsa-memory` directory in this repo
 
 ```bash
 

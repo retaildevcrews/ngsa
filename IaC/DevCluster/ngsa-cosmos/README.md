@@ -1,6 +1,6 @@
 # App Setup for Cosmos DB
 
-> From the app/ngsa-cosmos directory in this repo
+> From the `IaC/DevCluster/ngsa-cosmos` directory in this repo
 
 ## Create Cosmos DB
 
@@ -13,6 +13,7 @@ Follow the instructions [here](https://github.com/retaildevcrews/imdb) to create
   - Imdb_Col
   - Imdb_Name
   - Imdb_RG
+- Make sure you have properly setup azure-cli. Simply follow this [section](../../AKS/README.md#login-to-azure-and-select-subscription)
 
 ```bash
 
