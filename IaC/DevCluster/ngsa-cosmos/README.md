@@ -1,6 +1,6 @@
 # App Setup for Cosmos DB
 
-> From the `IaC/DevCluster/ngsa-cosmos` directory in this repo
+> From the `ngsa-cosmos` directory in this repo
 
 ## Create Cosmos DB
 
