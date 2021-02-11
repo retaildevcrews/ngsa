@@ -11,8 +11,7 @@ Create your Azure VM per instructions at [Azure Kubernetes Development Cluster](
 ```bash
 
 # AKDC_IP is set during the previous step
-# the -L allows you to forward your port from the dev cluster via SSH tunneling
-ssh -L 4120:127.0.0.1:4120 akdc@${AKDC_IP}
+ssh akdc@${AKDC_IP}
 
 ```
 
@@ -24,7 +23,7 @@ ssh -L 4120:127.0.0.1:4120 akdc@${AKDC_IP}
 git clone https://github.com/retaildevcrews/ngsa
 
 # change to the correct directory
-cd ngsa/IaC/DevCluster/app
+cd ngsa/IaC/DevCluster
 
 # verify kubernetes is running
 kubectl get all --all-namespaces
@@ -35,6 +34,41 @@ kubectl get all --all-namespaces
 
 Follow the deployment instructions in [app](app/README.md) to deploy ngsa
 
+- Open your VM firewall rule(s) to access remotely
+  - NGSA-App is on port 30080
+  - LodeRunner is on port 30088
+
 ### Deploy Fluent Bit (log forwarding)
 
 Follow the deployment instructions in [fluentbit](fluentbit/README.md) to setup Fluent Bit and Azure Log Analytics
+
+### Prometheus Setup
+
+- Open your VM firewall rule(s) to access remotely
+  - Prometheus web is on port 30000
+
+```bash
+
+kubectl apply -f prometheus
+
+```
+
+### Grafana Setup
+
+- Open your VM firewall rule(s) to access remotely
+  - Grafana web is on port 32000
+
+```bash
+
+kubectl apply -f kube-state-metrics
+
+```
+
+### kube state metrics setup
+
+
+```bash
+
+kubectl apply -f kube-state-metrics
+
+```
