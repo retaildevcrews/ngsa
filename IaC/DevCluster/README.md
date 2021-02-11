@@ -54,8 +54,8 @@ kubectl apply -f loderunner/loderunner.yaml
 ```bash
 
 # create the volume mount directory
-mkdir -p /prometheus    
-chown -R 65534:65534 /prometheus
+sudo mkdir -p /prometheus    
+sudo chown -R 65534:65534 /prometheus
 
 kubectl apply -f prometheus
 
@@ -74,8 +74,8 @@ kubectl apply -f prometheus
 ```bash
 
 # create the volume mount directory
-mkdir -p /grafana
-chown -R 472:472 /grafana
+sudo mkdir -p /grafana
+sudo chown -R 472:472 /grafana
 
 kubectl apply -f grafana
 
