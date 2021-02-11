@@ -1,5 +1,7 @@
 # App Setup
 
+> From the app directory in this repo
+
 ```bash
 
 # set temporary Log Analytics secrets
@@ -11,7 +13,7 @@ kubectl create secret generic log-secrets \
 kubectl get secret log-secrets -o jsonpath='{.data}'
 
 # deploy ngsa-memory app
-kubectl apply -f in-memory.yaml
+kubectl apply -f ngsa-memory.yaml
 
 # check pods until running
 kubectl get pods
@@ -27,7 +29,7 @@ http $PIP:30080/api/genres
 kubectl logs ngsa-memory
 
 # delete ngsa-memory
-kubectl delete -f in-memory.yaml
+kubectl delete -f ngsa-memory.yaml
 
 # check pods
 kubectl get pods
