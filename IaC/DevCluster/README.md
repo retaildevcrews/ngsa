@@ -64,17 +64,13 @@ kubectl apply -f prometheus
 ### Setup Grafana
 
 - Default Credentials
-  - user: admin
-  - password: admin
-
-- Import dashboards
-  - dashboards/dotnet.json
-  - dashboards/ngsa.json
+  - user: ngsa
+  - password: Ngsa512
 
 ```bash
 
 # create the volume mount directory
-sudo mkdir -p /grafana
+sudo cp -R grafanadata /grafana
 sudo chown -R 472:472 /grafana
 
 kubectl apply -f grafana
