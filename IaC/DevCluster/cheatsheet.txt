@@ -15,19 +15,22 @@ sudo rm -rf /grafana
 
 # create new directories
 sudo mkdir -p /prometheus
-sudo chown -R 472:472 /grafana
-sudo mkdir -p /grafana
 sudo chown -R 65534:65534 /prometheus
+sudo mkdir -p /grafana
+sudo chown -R 472:472 /grafana
 
 # optional - copy base dashboards
-sudo cp -R grafanadata /grafana
+sudo cp -R grafanadata/. /grafana
 sudo chown -R 472:472 /grafana
+
+# check az access
+az cosmosdb keys list -n ngsa-pre-cosmos -g ngsa-pre-shared-rg --query primaryReadonlyMasterKey --subscription bartr-wcnp -o tsv
 
 # requires access to bartr-wcnp subscription
 kubectl create secret generic ngsa-secrets \
   --from-literal=CosmosDatabase=imdb \
   --from-literal=CosmosCollection=movies \
-  --from-literal=$(az cosmosdb keys list -n ngsa-pre-cosmos -g ngsa-pre-shared-rg --query primaryReadonlyMasterKey --subscription bartr-wcnp -o tsv) \
+  --from-literal=CosmosKey=$(az cosmosdb keys list -n ngsa-pre-cosmos -g ngsa-pre-shared-rg --query primaryReadonlyMasterKey --subscription bartr-wcnp -o tsv) \
   --from-literal=CosmosUrl=https://ngsa-pre-cosmos.documents.azure.com:443/ \
  
 # dev-logs
@@ -35,7 +38,8 @@ kubectl create secret generic fluentbit-secrets \
   --from-literal=WorkspaceId=dev \
   --from-literal=SharedKey=dev
 
-# apply everything (cd ngsa/IaC/DevCluster first)
+# apply everything
+### cd ngsa/IaC/DevCluster
 kubectl apply -f ngsa-memory
 kubectl apply -f ngsa-cosmos
 kubectl apply -f prometheus
