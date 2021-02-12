@@ -1,6 +1,6 @@
 # App Setup
 
-> From the app directory in this repo
+> From the `ngsa-memory` directory in this repo
 
 ```bash
 
