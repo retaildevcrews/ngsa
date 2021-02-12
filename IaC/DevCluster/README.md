@@ -53,6 +53,9 @@ kubectl apply -f loderunner/loderunner.yaml
 
 ```bash
 
+# (optional) remove all prometheus data
+sudo rm -rf /prometheus
+
 # create the volume mount directory
 sudo mkdir -p /prometheus
 sudo chown -R 65534:65534 /prometheus
@@ -69,7 +72,14 @@ kubectl apply -f prometheus
 
 ```bash
 
+# (optional) remove all grafana data
+sudo rm -rf /grafana
+
 # create the volume mount directory
+sudo mkdir -p /grafana
+sudo chown -R 472:472 /grafana
+
+# (optional) copy the default grafana dashboards
 sudo cp -R grafanadata /grafana
 sudo chown -R 472:472 /grafana
 
