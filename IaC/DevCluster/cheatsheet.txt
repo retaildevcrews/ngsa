@@ -48,6 +48,11 @@ kubectl apply -f loderunner/loderunner.yaml
 
 
 
+######################
+# VM create commands (for convenience)
+# from https://github.com/retaildevcrews/akdc
+######################
+
 # Create AKDC VM (bash)
 # change your resource group name and location if desired
 export AKDC_LOC=westus2
