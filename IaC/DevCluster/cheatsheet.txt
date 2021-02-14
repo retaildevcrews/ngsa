@@ -20,6 +20,7 @@ sudo mkdir -p /grafana
 sudo chown -R 472:472 /grafana
 
 # optional - copy base dashboards
+#### from this repo / directory
 sudo cp -R grafanadata/. /grafana
 sudo chown -R 472:472 /grafana
 
@@ -55,7 +56,7 @@ kubectl apply -f loderunner/loderunner.yaml
 
 # Create AKDC VM (bash)
 # change your resource group name and location if desired
-export AKDC_LOC=westus2
+export AKDC_LOC=centralus
 export AKDC_RG=akdc
 az group create -l $AKDC_LOC -n $AKDC_RG
 
@@ -88,7 +89,7 @@ ssh ${AKDC_IP}
 
 
 # create VM (Windows)
-set AKDC_LOC=westus2
+set AKDC_LOC=centralus
 set AKDC_RG=akdc
 az group create -l %AKDC_LOC% -n %AKDC_RG%
 
