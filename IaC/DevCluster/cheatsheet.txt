@@ -74,6 +74,8 @@ export AKDC_IP=$(az vm create \
   --query publicIpAddress -o tsv \
   --custom-data scripts/auto.sh)
 
+rm akdc.sh
+
 echo $AKDC_IP
 
 # (optional) open NodePort range on NSG
@@ -108,6 +110,10 @@ for /f %f in (' ^
   --query publicIpAddress -o tsv ^
   --custom-data akdc.sh') ^
 do set AKDC_IP=%f
+
+del akdc.sh
+
+echo %AKDC_IP%
 
 # (optional) open NodePort range on NSG
 az network nsg rule create -g %AKDC_RG% ^
