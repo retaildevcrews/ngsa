@@ -1,0 +1,128 @@
+# reset cluster
+sudo kubeadm reset -f
+sudo kubeadm config images pull
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address $PIP --cri-socket /run/containerd/containerd.sock
+sudo rm ~/.kube/config
+sudo cp -i /etc/kubernetes/admin.conf ~/.kube/config
+sudo chown -R ${USER}:${USER} ~/.kube
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml --namespace=kube-system
+kubectl taint nodes --all node-role.kubernetes.io/master-
+
+
+# optional - delete old data
+sudo rm -rf /prometheus
+sudo rm -rf /grafana
+
+# create new directories
+sudo mkdir -p /prometheus
+sudo chown -R 65534:65534 /prometheus
+sudo mkdir -p /grafana
+sudo chown -R 472:472 /grafana
+
+# optional - copy base dashboards
+#### from this repo / directory
+sudo cp -R grafanadata/. /grafana
+sudo chown -R 472:472 /grafana
+
+# check az access
+az cosmosdb keys list -n ngsa-pre-cosmos -g ngsa-pre-shared-rg --query primaryReadonlyMasterKey --subscription bartr-wcnp -o tsv
+
+# requires access to bartr-wcnp subscription
+kubectl create secret generic ngsa-secrets \
+  --from-literal=CosmosDatabase=imdb \
+  --from-literal=CosmosCollection=movies \
+  --from-literal=CosmosKey=$(az cosmosdb keys list -n ngsa-pre-cosmos -g ngsa-pre-shared-rg --query primaryReadonlyMasterKey --subscription bartr-wcnp -o tsv) \
+  --from-literal=CosmosUrl=https://ngsa-pre-cosmos.documents.azure.com:443/ \
+ 
+# dev-logs
+kubectl create secret generic fluentbit-secrets \
+  --from-literal=WorkspaceId=dev \
+  --from-literal=SharedKey=dev
+
+# apply everything
+### cd ngsa/IaC/DevCluster
+kubectl apply -f ngsa-memory
+kubectl apply -f ngsa-cosmos
+kubectl apply -f prometheus
+kubectl apply -f grafana
+kubectl apply -f loderunner/loderunner.yaml
+
+
+
+######################
+# VM create commands (for convenience)
+# from https://github.com/retaildevcrews/akdc
+######################
+
+# Create AKDC VM (bash)
+# change your resource group name and location if desired
+export AKDC_LOC=centralus
+export AKDC_RG=akdc
+az group create -l $AKDC_LOC -n $AKDC_RG
+
+curl https://raw.githubusercontent.com/retaildevcrews/akdc/main/scripts/auto.sh | sed s/ME=akdc/ME=$USER/ > akdc.sh
+
+export AKDC_IP=$(az vm create \
+  -g $AKDC_RG \
+  --admin-username $USER \
+  -n akdc \
+  --size standard_d2s_v3 \
+  --nsg-rule SSH \
+  --image Canonical:UbuntuServer:18.04-LTS:latest \
+  --os-disk-size-gb 128 \
+  --generate-ssh-keys \
+  --query publicIpAddress -o tsv \
+  --custom-data scripts/auto.sh)
+
+rm akdc.sh
+
+echo $AKDC_IP
+
+# (optional) open NodePort range on NSG
+az network nsg rule create -g $AKDC_RG \
+--nsg-name akdcNSG --access allow \
+--description "AKDC Ports" \
+--destination-port-ranges 30000-32767 \
+--protocol tcp \
+-n AkdcPorts --priority 1200
+
+# SSH into the VM
+ssh ${AKDC_IP}
+
+
+# create VM (Windows)
+set AKDC_LOC=centralus
+set AKDC_RG=akdc
+az group create -l %AKDC_LOC% -n %AKDC_RG%
+
+curl https://raw.githubusercontent.com/retaildevcrews/akdc/main/scripts/auto.sh | sed s/ME=akdc/ME=%USERNAME%/ > akdc.sh
+
+for /f %f in (' ^
+  az vm create ^
+  -g %AKDC_RG% ^
+  --admin-username %USERNAME% ^
+  -n akdc ^
+  --size standard_d2s_v3 ^
+  --nsg-rule SSH ^
+  --image Canonical:UbuntuServer:18.04-LTS:latest ^
+  --os-disk-size-gb 128 ^
+  --generate-ssh-keys ^
+  --query publicIpAddress -o tsv ^
+  --custom-data akdc.sh') ^
+do set AKDC_IP=%f
+
+del akdc.sh
+
+echo %AKDC_IP%
+
+# (optional) open NodePort range on NSG
+az network nsg rule create -g %AKDC_RG% ^
+--nsg-name akdcNSG --access allow ^
+--description "AKDC Ports" ^
+--destination-port-ranges 30000-32767 ^
+--protocol tcp ^
+-n AkdcPorts --priority 1200
+
+echo %AKDC_IP%
+
+ssh %AKDC_IP%
