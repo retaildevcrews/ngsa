@@ -361,7 +361,7 @@ http ${Ngsa_App_Endpoint}/version
 ## Running validation
 # run the tests in a container
 echo -e 'Running basic validation (local)'
-docker run -it --rm retaildevcrew/loderunner:beta --server $Ngsa_Https_App_Endpoint --files baseline.json
+docker run -it --rm ghcr.io/retaildevcrews/ngsa-lr:beta --server $Ngsa_Https_App_Endpoint --files baseline.json
 
 ## Loderunner
 cd $REPO_ROOT/IaC/AKS/cluster/charts/
