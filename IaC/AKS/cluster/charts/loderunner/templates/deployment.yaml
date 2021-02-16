@@ -19,7 +19,7 @@ spec:
       serviceAccountName: {{ include "loderunner.serviceAccountName" . }}
       containers:
         - name: l8r
-          image: retaildevcrew/loderunner:beta
+          image: ghcr.io/retaildevcrews/ngsa-lr:beta
           imagePullPolicy: Always
           env:
             - name: Zone

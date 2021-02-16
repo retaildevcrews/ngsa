@@ -405,7 +405,7 @@ Run the Validation Test
 ```bash
 
 # run the tests in a container
-docker run -it --rm retaildevcrew/loderunner:beta --server "http://$Ngsa_App_Endpoint" --files baseline.json
+docker run -it --rm ghcr.io/retaildevcrews/ngsa-lr:beta --server "http://$Ngsa_App_Endpoint" --files baseline.json
 
 ```
 
