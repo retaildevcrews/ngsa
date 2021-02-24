@@ -58,10 +58,17 @@ To use OMS Agent Daemon-set using Secrets, create the secrets first.
    - Create the configMap  by running the following: 
   ``` kubectl create -f container-azm-ms-agentconfig.yaml ``` 
 
-  check for the added config map by kubectl get configmap -A
+  Check for the added config map by kubectl get configmap -A
+
+  Check the OMS agent logs with command and it should indicate the Prometheus config processing
+  ``` kubectl logs -f <omsagent-pod-name> --namespace kube-system ```
+
+  ![Image](agent-logs.png)
 
   * Now go into the logs tab of the Log analytics workspace and type the query below you should be able to see the prometheus metrics in the azure log analytics
 
   ``` InsightsMetrics | where Namespace contains "prometheus"  ```
 
   * Create dashboards with queries . Reference : https://docs.microsoft.com/en-us/azure/azure-monitor/visualize/tutorial-logs-dashboards
+
+  ![Image](workspace-query-results.png)
