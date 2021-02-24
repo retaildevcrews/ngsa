@@ -1,0 +1,219 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: omsagent
+  namespace: kube-system
+  labels:
+    component: oms-agent
+    tier: node
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      component: oms-agent
+      tier: node
+  template:
+    metadata:
+      labels:
+        component: oms-agent
+        tier: node
+      annotations:
+        agentVersion: "1.10.0.1"
+        dockerProviderVersion: "10.0.0-3"
+        schema-versions: "v1"
+    spec:
+      serviceAccountName: omsagent
+      containers:
+        - name: omsagent
+          image: "mcr.microsoft.com/azuremonitor/containerinsights/ciprod:ciprod07152020"
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 150m
+              memory: 600Mi
+            requests:
+              cpu: 75m
+              memory: 225Mi
+          env:
+            # - name: AKS_RESOURCE_ID
+            #   value: "VALUE_AKS_RESOURCE_ID_VALUE"
+            # - name: AKS_REGION
+            #   value: "VALUE_AKS_RESOURCE_REGION_VALUE"
+            #Uncomment below two lines for ACS clusters and set the cluster names manually. Also comment out the above two lines for ACS clusters
+            - name: ACS_RESOURCE_NAME
+              value: "my_acs_cluster_name"
+            - name: CONTROLLER_TYPE
+              value: "DaemonSet"
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            # Update this with the user assigned msi client id for omsagent
+            - name: USER_ASSIGNED_IDENTITY_CLIENT_ID
+              value: ""
+          securityContext:
+            privileged: true
+          ports:
+            - containerPort: 25225
+              protocol: TCP
+            - containerPort: 25224
+              protocol: UDP
+          volumeMounts:
+            - mountPath: /hostfs
+              name: host-root
+              readOnly: true
+            - mountPath: /var/run/host
+              name: docker-sock
+            - mountPath: /var/log
+              name: host-log
+            - mountPath: /var/lib/docker/containers
+              name: containerlog-path
+            - mountPath: /etc/kubernetes/host
+              name: azure-json-path
+            - mountPath: /etc/omsagent-secret
+              name: omsagent-secret
+            - mountPath: /etc/config/settings
+              name: settings-vol-config
+              readOnly: true
+          livenessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - -c
+                - /opt/livenessprobe.sh
+            initialDelaySeconds: 60
+            periodSeconds: 60
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - labelSelector:
+                matchExpressions:
+                  - key: type
+                    operator: NotIn
+                    values:
+                      - virtual-kubelet
+      # Tolerate a NoSchedule taint on master that ACS Engine sets.
+      tolerations:
+        - operator: "Exists"
+          effect: "NoSchedule"
+        - operator: "Exists"
+          effect: "NoExecute"
+        - operator: "Exists"
+          effect: "PreferNoSchedule"
+      volumes:
+        - name: host-root
+          hostPath:
+            path: /
+        - name: docker-sock
+          hostPath:
+            path: /var/run
+        - name: container-hostname
+          hostPath:
+            path: /etc/hostname
+        - name: host-log
+          hostPath:
+            path: /var/log
+        - name: containerlog-path
+          hostPath:
+            path: /var/lib/docker/containers
+        - name: azure-json-path
+          hostPath:
+            path: /etc/kubernetes
+        - name: omsagent-secret
+          secret:
+            secretName: omsagent-secret
+        - name: settings-vol-config
+          configMap:
+            name: container-azm-ms-agentconfig
+            optional: true
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: omsagent-win
+  namespace: kube-system
+  labels:
+    component: oms-agent
+    tier: node
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      component: oms-agent
+      tier: node
+  template:
+    metadata:
+      labels:
+        component: oms-agent
+        tier: node
+      annotations:
+        agentVersion: "1.10.0.1"
+        dockerProviderVersion: "10.0.0-2"
+        schema-versions: "v1"
+    spec:
+      serviceAccountName: omsagent
+      containers:
+        - name: omsagent-win
+          image: "mcr.microsoft.com/azuremonitor/containerinsights/ciprod:win-ciprod05262020-2"
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 150m
+              memory: 600Mi
+            requests:
+              cpu: 75m
+              memory: 225Mi
+          env:
+            # - name: AKS_RESOURCE_ID
+            #   value: "VALUE_AKS_RESOURCE_ID_VALUE"
+            # - name: AKS_REGION
+            #   value: "VALUE_AKS_RESOURCE_REGION_VALUE"
+            - name: ACS_RESOURCE_NAME
+              value: "my_acs_cluster_name"
+            - name: CONTROLLER_TYPE
+              value: "DaemonSet"
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - mountPath: C:\ProgramData\docker\containers
+              name: docker-windows-containers
+              readOnly: true
+            - mountPath: C:\var #Read + Write access on this for position file
+              name: docker-windows-kuberenetes-container-logs
+            - mountPath: C:\etc\config\settings
+              name: settings-vol-config
+              readOnly: true
+            - mountPath: C:\etc\omsagent-secret
+              name: omsagent-secret
+              readOnly: true
+          livenessProbe:
+            exec:
+              command:
+                - cmd
+                - /c
+                - C:\opt\omsagentwindows\scripts\cmd\livenessProbe.cmd
+            periodSeconds: 60
+            initialDelaySeconds: 180
+      nodeSelector:
+        beta.kubernetes.io/os: windows
+      volumes:
+        - name: docker-windows-kuberenetes-container-logs
+          hostPath:
+            path: C:\var
+        - name: docker-windows-containers
+          hostPath:
+            path: C:\ProgramData\docker\containers
+        - name: settings-vol-config
+          configMap:
+            name: container-azm-ms-agentconfig
+            optional: true
+        - name: omsagent-secret
+          secret:
+            secretName: omsagent-secret
