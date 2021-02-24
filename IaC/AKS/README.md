@@ -349,11 +349,9 @@ The NGSA application has been packed into a Helm chart for deployment into the c
 
 ```bash
 
-cd $HOME
+cd $REPO_ROOT/gitops
 
-git clone git@github.com:retaildevcrews/ngsa-cd.git
-
-export CHART_REPO=$HOME/ngsa-cd
+export CHART_REPO=$(pwd)
 
 cd $CHART_REPO/charts/ngsa
 
