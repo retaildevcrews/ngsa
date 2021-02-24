@@ -349,11 +349,9 @@ The NGSA application has been packed into a Helm chart for deployment into the c
 
 ```bash
 
-cd $HOME
+cd $REPO_ROOT/gitops
 
-git clone git@github.com:retaildevcrews/ngsa-cd.git
-
-export CHART_REPO=$HOME/ngsa-cd
+export CHART_REPO=$(pwd)
 
 cd $CHART_REPO/charts/ngsa
 
@@ -387,7 +385,7 @@ spec:
       - "${Ngsa_App_Endpoint}"
 EOF
 
-# Install NGSA using the upstream ngsa image from Dockerhub
+# Install NGSA using the upstream ngsa image from GitHub Container Registry
 helm install ngsa-aks ngsa -f ./ngsa/helm-config.yaml --namespace ngsa --set cert.enabled=false --set gateway.name=ngsa-gateway
 # Note: Above command creates a ngsa cosmos deployment named ngsa-aks
 

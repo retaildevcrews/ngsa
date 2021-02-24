@@ -9,18 +9,12 @@ ingress:
     - /
 
 app:
-  args: []
+  args:
+  - --no-cache
   region: "Debug"
   zone: "Debug"
   image:
-    repository: retaildevcrew/ngsa-app
-    tag: beta
-
-ds:
-  args:
-  - --no-cache
-  image:
-    repository: retaildevcrew/ngsa-dataservice
+    repository: ghcr.io/retaildevcrews/ngsa-app
     tag: beta
 
 cert:

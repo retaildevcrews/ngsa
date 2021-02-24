@@ -55,39 +55,13 @@ spec:
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           resources:
             {{- toYaml .Values.app.resources | nindent 12 }}
-
-        - name: ds
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.ds.image.repository }}:{{ .Values.ds.image.tag }}"
-          imagePullPolicy: {{ .Values.ds.image.pullPolicy }}
-          args: {{ .Values.ds.args }}
-          ports:
-            - name: http
-              containerPort: {{ .Values.ds.port }}
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /version
-              port: http
-            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
-            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
-            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
-          readinessProbe:
-            httpGet:
-              path: /version
-              port: http
-            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
-            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
-          resources:
-            {{- toYaml .Values.ds.resources | nindent 12 }}
           volumeMounts:
             - name: secrets
               mountPath: "/app/secrets"
       volumes:
         - name: secrets
           secret:
-            secretName: {{ .Values.ds.secretName }}
+            secretName: {{ .Values.app.secretName }}
             defaultMode: 444
       {{- with .Values.nodeSelector }}
       nodeSelector:

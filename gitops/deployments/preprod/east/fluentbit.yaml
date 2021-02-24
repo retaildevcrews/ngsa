@@ -7,8 +7,8 @@ metadata:
 spec:
   releaseName: fluentbit
   chart:
-    git: git@github.com:retaildevcrews/ngsa-cd
-    path: charts/fluentbit
+    git: git@github.com:retaildevcrews/ngsa
+    path: gitops/charts/fluentbit
     ref: main
   values:
     image:
