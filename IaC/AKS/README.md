@@ -385,7 +385,7 @@ spec:
       - "${Ngsa_App_Endpoint}"
 EOF
 
-# Install NGSA using the upstream ngsa image from Dockerhub
+# Install NGSA using the upstream ngsa image from GitHub Container Registry
 helm install ngsa-aks ngsa -f ./ngsa/helm-config.yaml --namespace ngsa --set cert.enabled=false --set gateway.name=ngsa-gateway
 # Note: Above command creates a ngsa cosmos deployment named ngsa-aks
 
