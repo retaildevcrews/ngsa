@@ -22,15 +22,15 @@ spec:
     spec:
       containers:
       - name: app
-        image: retaildevcrew/ngsa-loderunner:beta
+        image: ghcr.io/retaildevcrews/ngsa-lr:beta
         imagePullPolicy: Always
         args:
         - -l
         - "1000"
         - -r
         - -s
-        - http://ngsa-memory.ngsa:4120
-        - http://ngsa-cosmos.ngsa:4120
+        - http://ngsa-memory.ngsa:8080
+        - http://ngsa-cosmos.ngsa:8080
         - -f
         - benchmark.json
         resources:

@@ -6,27 +6,11 @@ replicaCount: 1
 
 app:
   image:
-    repository: retaildevcrew/ngsa-app
+    repository: ghcr.io/retaildevcrews/ngsa-app
     tag: beta
     pullPolicy: Always
   args: []
-  port: 4120
-  secretName: ngsa-secrets
-  resources:
-    limits:
-      cpu: 1
-      memory: 1Gi
-    requests:
-      cpu: 250m
-      memory: 256Mi
-
-ds:
-  image:
-    repository: retaildevcrew/ngsa-dataservice
-    tag: beta
-    pullPolicy: Always
-  args: []
-  port: 4122
+  port: 8080
   secretName: ngsa-secrets
   resources:
     limits:
@@ -73,7 +57,7 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 4120
+  port: 8080
 
 ingress:
   enabled: true
