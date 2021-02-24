@@ -1,6 +1,8 @@
 # Prometheus and Log analytics integration using OMS Agent
 Prometheus is a popular open source metric monitoring solution and is a part of the Cloud Native Compute Foundation. Azure Monitor for containers provides a seamless onboarding experience to collect Prometheus metrics. Typically, to use Prometheus, you need to set up and manage a Prometheus server with a store. By integrating with Azure Monitor, a Prometheus server is not required. You just need to expose the Prometheus metrics endpoint through your exporters or pods (application), and the containerized agent for Azure Monitor for containers can scrape the metrics.
 
+Reference Documentation : https://docs.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-prometheus-integration
+
 # Steps to Scrape Metrics into Log Analytics
 
 * Save the Workspace ID and the key for log Analytics work space from the Azure dashboard 
