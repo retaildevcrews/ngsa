@@ -1,8 +1,8 @@
+---
 apiVersion: v1
 kind: Namespace
 metadata:
   name: ngsa-l8r
-
 ---
 
 apiVersion: apps/v1
@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: ghcr.io/retaildevcrews/ngsa-lr:beta-0.1.1-0224-1621-2
+        image: ghcr.io/retaildevcrews/ngsa-lr:beta-0.1.1-0225-0614-3
         imagePullPolicy: Always
         args:
         - -l
