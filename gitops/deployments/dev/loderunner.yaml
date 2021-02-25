@@ -10,6 +10,9 @@ kind: Deployment
 metadata:
   name: l8r
   namespace: ngsa-l8r
+  annotations:
+    fluxcd.io/automated: "true"
+    filter.fluxcd.io/app: glob:beta-*
 spec:
   replicas: 1
   selector:
@@ -22,7 +25,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: ghcr.io/retaildevcrews/ngsa-lr:beta
+        image: ghcr.io/retaildevcrews/ngsa-lr:beta-0.1.1-0224-1621-2
         imagePullPolicy: Always
         args:
         - -l
