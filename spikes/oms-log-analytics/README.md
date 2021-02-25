@@ -7,7 +7,7 @@ Reference Documentation [here](https://docs.microsoft.com/en-us/azure/azure-moni
 ## Steps to Scrape Metrics into Log Analytics
 
 - Save the Workspace ID and the key for log Analytics work space from the Azure dashboard
-- To use OMS Agent Daemonset and deployment: (Skip this step if OMS is already running in the AKS by using command kubectl get pods -A and check if omsagent is running in kube-system namespace)
+- To use OMS Agent Daemonset and deployment: (Skip this step if OMS is already running in the AKS by using command kubectl get pods -A and check if omsagent is running in kube-system namespace and just kubectl apply -f 3-container-azm-ms-agentconfig.yaml)
   - Create the log analytics secrets with kubectl:
 
     ```bash
