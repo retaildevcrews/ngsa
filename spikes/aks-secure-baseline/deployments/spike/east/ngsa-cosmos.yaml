@@ -1,0 +1,23 @@
+---
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: ngsa-cosmos
+  namespace: ngsa
+  annotations:
+    fluxcd.io/automated: "true"
+    filter.fluxcd.io/app: glob:beta-*
+spec:
+  releaseName: ngsa-cosmos
+  chart:
+    git: git@github.com:retaildevcrews/ngsa
+    path: spikes/aks-secure-baseline/charts/ngsa
+    ref: spike/ngsa-pnp
+  values:
+    app:
+      args:
+      - --no-cache
+      secretName: ngsa-secrets
+      image:
+        repository: ghcr.io/retaildevcrews/ngsa-app
+        tag: beta-0.1.1-0225-0620-5

@@ -107,7 +107,7 @@ spec:
         args:
         - --git-url=https://github.com/retaildevcrews/ngsa.git
         - --git-branch=spike/ngsa-pnp
-        - --git-path=spikes/aks-secure-baseline/cluster-manifests
+        - --git-path=spikes/aks-secure-baseline/cluster-manifests,spikes/aks-secure-baseline/deployments/spike/common,spikes/aks-secure-baseline/deployments/spike/east
         # this configuration prevents flux from syncing changes from your cluster to the git repo. If two way sync is required, please take a look at  https://docs.fluxcd.io/en/1.19.0/tutorials/get-started/#giving-write-access
         - --git-readonly
         - --sync-state=secret
