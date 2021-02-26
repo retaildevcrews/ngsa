@@ -75,11 +75,13 @@ Imported images from GitHub container registry into private ACR.
 
 How to handle NGSA docker images? Keep in sync with private registry? Update policies to allow the images? Or something else?
 
+How to handle CD with flux and the private ACR?
+
 Did not install keda. Should it be installed?
 
 Reduced resource limits for deployments.
 
-Update policy to match NGSA defaults, or update NGSA default to match policy.
+Should NGSA defaults and/or azure policies be updated so a default helm install works?
 
 Using https hit URL for the helm release. This was to get around the need to add an SSH key to the repo for this spike.
 
