@@ -460,10 +460,10 @@ Sample queries:
 
 ```bash
 
-# View the latest logs from the data service
+# View the latest logs from the ngsa app
 
 ngsa_CL
-| where k_container_s == "ds"
+| where k_container_s == "app"
    and LogName_s == "Ngsa.RequestLog"
 | project TimeGenerated, CosmosName_s, Zone_s, CVector_s, Duration_d, StatusCode_d, Path_s
 
