@@ -67,7 +67,7 @@ Copied chart from gitops so it could be easily modified for the spike.
 
 ```txt
 
-Removed templates from the chart that are not needed. Template related to istio, cert-manager, keda, etc.
+Removed templates from the chart that are not needed.
 
 Creating NGSA namespace and secrets like normal for this spike.
 
@@ -76,6 +76,8 @@ How to integrate the ngsa secrets with the key vault?
 Imported images from GitHub container registry into private ACR.
 
 How to handle NGSA docker images? Keep in sync with private registry? Update policies to allow the images? Or something else?
+
+Did not install keda. Should it be installed?
 
 ```
 
@@ -129,6 +131,10 @@ helm upgrade -i helm-operator fluxcd/helm-operator --wait \
 --set helm.versions=v3 \
 --set image.repository="${ACR_NAME}.azurecr.io/fluxcd/helm-operator" \
 --set image.tag=1.2.0
+
+# TODO: START HERE
+#   - running into this error
+#   - error="failed to prepare chart for release: chart not ready: git clone --mirror: running git command: git [clone --mirror git@github.com:retaildevcrews/ngsa /tmp/flux-gitclone469897141]: context deadline exceeded"
 
 ```
 

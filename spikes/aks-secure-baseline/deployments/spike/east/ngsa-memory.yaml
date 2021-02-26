@@ -10,7 +10,7 @@ metadata:
 spec:
   releaseName: ngsa-memory
   chart:
-    git: git@github.com:retaildevcrews/ngsa
+    git: https://github.com/retaildevcrews/ngsa.git
     path: spikes/aks-secure-baseline/charts/ngsa
     ref: spike/ngsa-pnp
   values:
@@ -21,3 +21,5 @@ spec:
       image:
         repository: acraksioxqpbmcqokqq.azurecr.io/retaildevcrews/ngsa-app
         tag: beta
+    autoscaling:
+      enabled: false
