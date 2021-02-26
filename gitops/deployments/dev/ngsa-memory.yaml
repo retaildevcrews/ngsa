@@ -17,6 +17,10 @@ spec:
     app:
       args:
       - --in-memory
+      - -z
+      - dev
+      - -r
+      - dev
       secretName: ngsa-secrets
       image:
         repository: ghcr.io/retaildevcrews/ngsa-app

@@ -17,6 +17,10 @@ spec:
     app:
       args:
       - --no-cache
+      - -z
+      - Az-CentralUS
+      - -r
+      - Central
       secretName: ngsa-secrets
       image:
         repository: ghcr.io/retaildevcrews/ngsa-app

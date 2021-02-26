@@ -17,6 +17,10 @@ spec:
     app:
       args:
       - --in-memory
+      - -z
+      - Az-EastUS2
+      - -r
+      - East
       secretName: ngsa-secrets
       image:
         repository: ghcr.io/retaildevcrews/ngsa-app
