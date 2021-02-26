@@ -10,7 +10,7 @@ metadata:
 spec:
   releaseName: ngsa-cosmos
   chart:
-    git: git@github.com:retaildevcrews/ngsa
+    git: https://github.com/retaildevcrews/ngsa.git
     path: spikes/aks-secure-baseline/charts/ngsa
     ref: spike/ngsa-pnp
   values:
