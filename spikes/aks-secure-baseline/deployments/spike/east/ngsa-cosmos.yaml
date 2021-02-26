@@ -19,5 +19,5 @@ spec:
       - --no-cache
       secretName: ngsa-secrets
       image:
-        repository: ghcr.io/retaildevcrews/ngsa-app
-        tag: beta-0.1.1-0225-0620-5
+        repository: acraksioxqpbmcqokqq.azurecr.io/retaildevcrews/ngsa-app
+        tag: beta

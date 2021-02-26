@@ -73,6 +73,10 @@ Creating NGSA namespace and secrets like normal for this spike.
 
 How to integrate the ngsa secrets with the key vault?
 
+Imported images from GitHub container registry into private ACR.
+
+How to handle NGSA docker images? Keep in sync with private registry? Update policies to allow the images? Or something else?
+
 ```
 
 ## Commands
@@ -142,5 +146,8 @@ kubectl create secret generic ngsa-secrets \
   --from-literal=CosmosCollection=$Imdb_Col \
   --from-literal=CosmosKey=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryReadonlyMasterKey -o tsv) \
   --from-literal=CosmosUrl=https://${Imdb_Name}.documents.azure.com:443/
+
+az acr import --source ghcr.io/retaildevcrews/ngsa-app:beta -n $ACR_NAME
+az acr import --source ghcr.io/retaildevcrews/ngsa-lr:beta -n $ACR_NAME
 
 ```
