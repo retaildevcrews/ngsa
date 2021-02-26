@@ -33,13 +33,11 @@ For NGSA, we'll use `ngsa-pre-shared-rg`, and `ngsa-pre-app-rg`.
 
 ### cosmos
 
-Create cosmos in rg-bu0001a0008. Using the first spoke network for simplicity because it is already there. This will be done through the portal so cosmos can be in centralus.
+Create cosmos in rg-bu0001a0008. Using the first spoke network for simplicity because it is already there. This will be in `eastus2` for the spike.
 
 ```txt
 
 For NGSA, cosmos is in centralus.
-
-When a new spoke network is created for centralus, create cosmos there using the cli.
 
 Investigate network configurations for cosmos? Using the default "All networks" option for this spike.
 
@@ -83,6 +81,8 @@ Reduced resource limits for deployments.
 
 Update policy to match NGSA defaults, or update NGSA default to match policy.
 
+Using https hit URL for the helm release. This was to get around the need to add an SSH key to the repo for this spike.
+
 ```
 
 ## Commands
@@ -97,7 +97,7 @@ export Imdb_DB=imdb
 export Imdb_Col=movies
 export Imdb_RW_Key='az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryMasterKey -o tsv'
 
-# az cosmosdb create -g $Imdb_RG -n $Imdb_Name
+az cosmosdb create -g $Imdb_RG -n $Imdb_Name
 az cosmosdb sql database create -a $Imdb_Name -n $Imdb_DB -g $Imdb_RG --throughput 1000
 az cosmosdb sql container create -p /partitionKey -g $Imdb_RG -a $Imdb_Name -d $Imdb_DB -n $Imdb_Col
 
@@ -135,10 +135,6 @@ helm upgrade -i helm-operator fluxcd/helm-operator --wait \
 --set helm.versions=v3 \
 --set image.repository="${ACR_NAME}.azurecr.io/fluxcd/helm-operator" \
 --set image.tag=1.2.0
-
-# TODO: START HERE
-#   - running into this error
-#   - error="failed to prepare chart for release: chart not ready: git clone --mirror: running git command: git [clone --mirror git@github.com:retaildevcrews/ngsa /tmp/flux-gitclone469897141]: context deadline exceeded"
 
 ```
 
