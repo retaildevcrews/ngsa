@@ -79,6 +79,10 @@ How to handle NGSA docker images? Keep in sync with private registry? Update pol
 
 Did not install keda. Should it be installed?
 
+Reduced resource limits for deployments.
+
+Update policy to match NGSA defaults, or update NGSA default to match policy.
+
 ```
 
 ## Commands

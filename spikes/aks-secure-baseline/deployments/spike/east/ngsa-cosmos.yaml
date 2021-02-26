@@ -21,5 +21,9 @@ spec:
       image:
         repository: acraksioxqpbmcqokqq.azurecr.io/retaildevcrews/ngsa-app
         tag: beta
+      resources:
+        limits:
+          cpu: 1
+          memory: 512Mi
     autoscaling:
       enabled: false
