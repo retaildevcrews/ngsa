@@ -17,7 +17,7 @@ spec:
     app:
       args:
       - --no-cache
-      secretName: ngsa-secrets
+      secretName: ngsa-secret
       image:
         repository: acraksioxqpbmcqokqq.azurecr.io/retaildevcrews/ngsa-app
         tag: beta
