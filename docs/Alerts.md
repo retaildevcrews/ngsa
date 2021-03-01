@@ -1,7 +1,7 @@
 
 # Alerts
 
-The following describes the proposed alerts for our ngsa pre-prod environment based off of log analytics queries from `ngsa-pre-west-log`.  The thresholds and triggers will likely need to be adjusted as we understand in practice how often they are actually triggered and how useful they are (i.e. are they false positives, too sensitive, etc.).  
+The following describes the proposed alerts for our ngsa pre-prod environment based off of log analytics queries from `ngsa-pre-log`.  The thresholds and triggers will likely need to be adjusted as we understand in practice how often they are actually triggered and how useful they are (i.e. are they false positives, too sensitive, etc.).  
 
 ## Reliability
 

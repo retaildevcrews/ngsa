@@ -41,6 +41,8 @@ az monitor action-group update -n $Ngsa_Action_Group_Name -g $Ngsa_Log_Analytics
 
 ```bash
 
+# make sure you are in the /docs/alerts folder
+
 # run script to update or create alerts
 ./updatealerts.sh
 
