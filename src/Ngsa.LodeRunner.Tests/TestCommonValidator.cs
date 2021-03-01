@@ -194,8 +194,6 @@ namespace CSE.LodeRunner.Tests
                 Assert.NotEmpty(ResponseValidator.ValidateExactMatch("good", null).ValidationErrors);
                 Assert.NotEmpty(ResponseValidator.ValidateExactMatch("good", "bad").ValidationErrors);
                 Assert.Empty(ResponseValidator.ValidateExactMatch("good", "good").ValidationErrors);
-
-                // TODO validate json array length
             }
         }
 

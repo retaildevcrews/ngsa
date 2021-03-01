@@ -12,153 +12,173 @@ namespace Ngsa.Middleware
 {
     public class NgsaLog
     {
-        private static readonly Dictionary<int, NgsaLog> Loggers = new Dictionary<int, NgsaLog>();
         private static readonly JsonSerializerOptions Options = new JsonSerializerOptions
         {
             IgnoreNullValues = true,
         };
 
-        private static int counter = 0;
-
         public string Name { get; set; } = string.Empty;
         public LogLevel LogLevel { get; set; } = LogLevel.Information;
         public string ErrorMessage { get; set; } = string.Empty;
         public string NotFoundError { get; set; } = string.Empty;
-        public string Method { get; set; } = string.Empty;
-        public string Message { get; set; } = string.Empty;
-        public Exception Exception { get; set; } = null;
-        public EventId EventId { get; set; } = new EventId(-1, string.Empty);
-        public HttpContext Context { get; set; } = null;
-        public Dictionary<string, string> Data { get; } = new Dictionary<string, string>();
 
-        public NgsaLog GetLogger(string method, HttpContext context = null)
+        /// <summary>
+        /// Log information message
+        /// </summary>
+        /// <param name="method">method to log</param>
+        /// <param name="message">message to log</param>
+        /// <param name="context">http context</param>
+        public void LogInformation(string method, string message, HttpContext context = null)
         {
-            NgsaLog logger = new NgsaLog
+            if (LogLevel >= LogLevel.Information)
             {
-                Name = Name,
-                ErrorMessage = ErrorMessage,
-                NotFoundError = NotFoundError,
-                LogLevel = LogLevel,
+                WriteLog(LogLevel.Information, GetDictionary(method, message, LogLevel.Information, context));
+            }
+        }
 
-                Method = method,
-                Context = context,
-            };
-
-            // get the next key
-            while (Loggers.ContainsKey(counter))
+        /// <summary>
+        /// Log warning
+        /// </summary>
+        /// <param name="method">method to log</param>
+        /// <param name="message">message to log</param>
+        /// <param name="context">http context</param>
+        public void LogWarning(string method, string message, HttpContext context = null)
+        {
+            if (LogLevel >= LogLevel.Warning)
             {
-                if (counter == int.MaxValue)
+                WriteLog(LogLevel.Warning, GetDictionary(method, message, LogLevel.Warning, context));
+            }
+        }
+
+        /// <summary>
+        /// Log warning
+        /// </summary>
+        /// <param name="eventId">Event ID</param>
+        /// <param name="method">method to log</param>
+        /// <param name="message">message to log</param>
+        /// <param name="context">http context</param>
+        public void LogWarning(EventId eventId, string method, string message, HttpContext context = null)
+        {
+            if (LogLevel >= LogLevel.Warning)
+            {
+                WriteLog(LogLevel.Warning, GetDictionary(eventId, method, message, LogLevel.Warning, context));
+            }
+        }
+
+        /// <summary>
+        /// Log error
+        /// </summary>
+        /// <param name="eventId">Event ID</param>
+        /// <param name="method">method to log</param>
+        /// <param name="message">message to log</param>
+        /// <param name="context">http context</param>
+        /// <param name="ex">exception</param>
+        public void LogError(EventId eventId, string method, string message, HttpContext context = null, Exception ex = null)
+        {
+            if (LogLevel >= LogLevel.Error)
+            {
+                Dictionary<string, object> d = GetDictionary(eventId, method, message, LogLevel.Error, context);
+
+                if (ex != null)
                 {
-                    counter = 0;
+                    d.Add("ExceptionType", ex.GetType().FullName);
+                    d.Add("ExceptionMessage", ex.Message);
                 }
 
-                counter++;
-            }
-
-            // todo - reuse loggers
-            // use iDisposable?
-            //Loggers.Add(counter, logger);
-
-            return logger;
-        }
-
-        public void LogInformation(string message)
-        {
-            const LogLevel logLevel = LogLevel.Information;
-
-            if (LogLevel <= logLevel)
-            {
-                Dictionary<string, object> d = GetDictionary(message, logLevel);
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine(JsonSerializer.Serialize(d, Options));
-                Console.ResetColor();
+                // log the error
+                WriteLog(LogLevel.Error, d);
             }
         }
 
-        public void LogWarning(string message)
+        /// <summary>
+        /// Log error
+        /// </summary>
+        /// <param name="method">method to log</param>
+        /// <param name="message">message to log</param>
+        /// <param name="context">http context</param>
+        /// <param name="ex">exception</param>
+        public void LogError(string method, string message, HttpContext context = null, Exception ex = null)
         {
-            const LogLevel logLevel = LogLevel.Warning;
-
-            if (LogLevel > logLevel)
+            if (LogLevel >= LogLevel.Error)
             {
-                return;
+                Dictionary<string, object> d = GetDictionary(method, message, LogLevel.Error, context);
+
+                if (ex != null)
+                {
+                    d.Add("ExceptionType", ex.GetType().FullName);
+                    d.Add("ExceptionMessage", ex.Message);
+                }
+
+                // log the error
+                WriteLog(LogLevel.Error, d);
+            }
+        }
+
+        // write the log to console or console.error
+        private void WriteLog(LogLevel logLevel, Dictionary<string, object> data)
+        {
+            Console.ForegroundColor = LogLevel switch
+            {
+                LogLevel.Error => ConsoleColor.Red,
+                LogLevel.Warning => ConsoleColor.Yellow,
+                _ => ConsoleColor.Green,
+            };
+
+            if (logLevel == LogLevel.Error)
+            {
+                Console.Error.WriteLine(JsonSerializer.Serialize(data, Options));
+            }
+            else
+            {
+                Console.WriteLine(JsonSerializer.Serialize(data, Options));
             }
 
-            Dictionary<string, object> d = GetDictionary(message, logLevel);
-
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(JsonSerializer.Serialize(d, Options));
             Console.ResetColor();
         }
 
-        public void LogError(string message, Exception ex = null)
+        // convert log to dictionary
+        private Dictionary<string, object> GetDictionary(EventId eventId, string method, string message, LogLevel logLevel, HttpContext context = null)
         {
-            const LogLevel logLevel = LogLevel.Error;
+            Dictionary<string, object> data = GetDictionary(method, message, logLevel, context);
 
-            if (LogLevel > logLevel)
+            if (eventId.Id > 0)
             {
-                return;
+                data.Add("EventId", eventId.Id);
             }
 
-            Dictionary<string, object> d = GetDictionary(message, logLevel);
-
-            if (ex != null)
+            if (!string.IsNullOrWhiteSpace(eventId.Name))
             {
-                d.Add("ExceptionType", ex.GetType().FullName);
-                d.Add("ExceptionMessage", ex.Message);
-            }
-            else if (Exception != null)
-            {
-                d.Add("ExceptionType", Exception.GetType().FullName);
-                d.Add("ExceptionMessage", Exception.Message);
+                data.Add("EventName", eventId.Name);
             }
 
-            // display the error
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Error.WriteLine(JsonSerializer.Serialize(d, Options));
-            Console.ResetColor();
+            return data;
         }
 
-        private Dictionary<string, object> GetDictionary(string message, LogLevel logLevel)
+        // convert log to dictionary
+        private Dictionary<string, object> GetDictionary(string method, string message, LogLevel logLevel, HttpContext context = null)
         {
             Dictionary<string, object> data = new Dictionary<string, object>
             {
                 { "Date", DateTime.UtcNow },
                 { "LogName", Name },
-                { "Method", Method },
+                { "Method", method },
                 { "Message", message },
                 { "LogLevel", logLevel.ToString() },
             };
 
-            if (EventId.Id > 0)
+            if (context != null && context.Items != null)
             {
-                data.Add("EventId", EventId.Id);
-            }
+                data.Add("Path", context.Request.Path + (string.IsNullOrWhiteSpace(context.Request.QueryString.Value) ? string.Empty : context.Request.QueryString.Value));
 
-            if (!string.IsNullOrWhiteSpace(EventId.Name))
-            {
-                data.Add("EventName", EventId.Name);
-            }
-
-            if (Context != null && Context.Items != null)
-            {
-                data.Add("Path", Context.Request.Path + (string.IsNullOrWhiteSpace(Context.Request.QueryString.Value) ? string.Empty : Context.Request.QueryString.Value));
-
-                if (Context.Items != null)
+                if (context.Items != null)
                 {
-                    CorrelationVector cv = Middleware.CorrelationVectorExtensions.GetCorrelationVectorFromContext(Context);
+                    CorrelationVector cv = CorrelationVectorExtensions.GetCorrelationVectorFromContext(context);
 
                     if (cv != null)
                     {
                         data.Add("CVector", cv.Value);
                     }
                 }
-            }
-
-            foreach (KeyValuePair<string, string> kvp in Data)
-            {
-                data.Add(kvp.Key, kvp.Value);
             }
 
             return data;

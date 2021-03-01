@@ -114,7 +114,7 @@ namespace Ngsa.App
                 // end app on error
                 if (Logger != null)
                 {
-                    Logger.LogError($"Exception: {ex}");
+                    Logger.LogError(nameof(RunApp), $"Exception", ex: ex);
                 }
                 else
                 {
