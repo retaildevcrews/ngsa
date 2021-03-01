@@ -37,7 +37,7 @@ az monitor action-group update -n $Ngsa_Action_Group_Name -g $Ngsa_Log_Analytics
 
 ```
 
-## Update json files to make desired alert changes
+### Update json files to make desired alert changes
 
 Before running the script, make the desired changes to the alerts by saving changes to the associated json files.
 
