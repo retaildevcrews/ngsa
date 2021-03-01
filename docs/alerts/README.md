@@ -12,7 +12,7 @@ The JSON files in this directory contain the properties for the alerts described
 export Ngsa_Sub='az account show -o tsv --query id'
 
 # set prefix
-export Ngsa_Name=ngsa-pre-west
+export Ngsa_Name=[your prefix]
 
 # set name of existing resource group containing log analytics
 export Ngsa_Log_Analytics_RG="${Ngsa_Name}-log-rg"
