@@ -1,0 +1,49 @@
+{
+    "id":"/subscriptions/%%SUBSCRIPTION_GUID%%/resourceGroups/%%Ngsa_Log_Analytics_RG%%/providers/microsoft.insights/scheduledqueryrules/FailedClientRequests-cosmos",
+    "type":"microsoft.insights/scheduledqueryrules",
+    "location":"westus2",
+    "name":"FailedClientRequests-cosmos",
+    "tags":{},
+    "properties":
+    {
+        "description":"LodeRunner (client) had >20 failed requests to an ngsa-cosmos app ",
+        "displayName":"FailedClientRequests-cosmos",
+        "enabled":"true",
+        "source":
+        {
+            "query":"loderunner_CL | where Server_s contains 'ngsa-cosmos' and StatusCode_d >= 400 | summarize FailedRequests=count() by bin(TimeGenerated, 5m), Zone_s | project-rename AggregatedValue=FailedRequests",
+            "dataSourceId":"/subscriptions/%%SUBSCRIPTION_GUID%%/resourceGroups/%%Ngsa_Log_Analytics_RG%%/providers/Microsoft.OperationalInsights/workspaces/%%Ngsa_Log_Analytics_Name%%",
+            "queryType":"ResultCount",
+            "authorizedResources":[]
+        },
+        "schedule":
+        {
+            "frequencyInMinutes":15,
+            "timeWindowInMinutes":15
+        },
+        "action":
+        {
+            "severity":"3",
+            "aznsAction":
+            {
+                "actionGroup":["/subscriptions/%%SUBSCRIPTION_GUID%%/resourcegroups/%%Ngsa_Log_Analytics_RG%%/providers/microsoft.insights/actiongroups/%%Ngsa_Action_Group_Name%%"]
+            },
+            "trigger":
+            {
+                "thresholdOperator":"GreaterThan",
+                "threshold":20,
+                "consecutiveBreach":1,
+                "metricTrigger":
+                {
+                    "thresholdOperator":"Equal",
+                    "threshold":0,
+                    "metricTriggerType":"Total",
+                    "metricColumn":"Zone_s"
+                }
+            },
+            "odata.type":"Microsoft.WindowsAzure.Management.Monitoring.Alerts.Models.Microsoft.AppInsights.Nexus.DataContracts.Resources.ScheduledQueryRules.AlertingAction",
+            "throttleConsecutiveWindowCount":0,
+            "throttlingInMin":30
+        }
+    }
+}

@@ -1,7 +1,7 @@
 
 # Alerts
 
-The following describes the proposed alerts for our ngsa pre-prod environment based off of log analytics queries from `ngsa-pre-west-log`.  The thresholds and triggers will likely need to be adjusted as we understand in practice how often they are actually triggered and how useful they are (i.e. are they false positives, too sensitive, etc.).  
+The following describes the proposed alerts for our ngsa pre-prod environment based off of log analytics queries from `ngsa-pre-log`.  The thresholds and triggers will likely need to be adjusted as we understand in practice how often they are actually triggered and how useful they are (i.e. are they false positives, too sensitive, etc.).  
 
 ## Reliability
 
@@ -21,14 +21,14 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 
   # Failed Server Requests (ngsa-cosmos)
 
-  fbngsa_CL
-  | where PodType_s == 'ngsa-cosmos' and StatusCode_d >= 400
+  ngsa_CL
+  | where k_container_s == 'app' and k_app_s == 'ngsa-cosmos' and StatusCode_d >= 400
   | summarize AggregatedValue=count() by bin(TimeGenerated, 5m), Zone_s
   
   # Failed Server Requests (ngsa-memory)
 
-  fbngsa_CL
-  | where PodType_s == 'ngsa-memory' and StatusCode_d >= 400
+  ngsa_CL
+  | where k_container_s == 'app' and k_app_s == 'ngsa-memory' and StatusCode_d >= 400
   | summarize AggregatedValue=count() by bin(TimeGenerated, 5m), Zone_s
 
 ```
@@ -50,13 +50,13 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
   # Failed Client Requests (ngsa-cosmos)
 
   loderunner_CL
-  | where PodType_s == 'l8r' and AppPodType_s == 'ngsa-cosmos' and StatusCode_d >= 400
+  | where Server_s contains 'ngsa-cosmos' and StatusCode_d >= 400
   | summarize AggregatedValue=count() by bin(TimeGenerated, 5m), Zone_s
 
   # Failed Client Requests (ngsa-memory)
 
   loderunner_CL
-  | where PodType_s == 'l8r' and AppPodType_s == 'ngsa-memory' and StatusCode_d >= 400
+  | where Server_s contains 'ngsa-memory' and StatusCode_d >= 400
   | summarize AggregatedValue=count() by bin(TimeGenerated, 5m), Zone_s
 
 ```
@@ -77,14 +77,14 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 
   # Too Few Server Requests (ngsa-cosmos)
 
-  fbngsa_CL
-  | where PodType_s == 'ngsa-cosmos'
+  ngsa_CL
+  | where k_container_s == 'app' and k_app_s == 'ngsa-cosmos'
   | summarize AggregatedValue=count() by bin(TimeGenerated,1m), Zone_s
 
   # Too Few Server Requests (ngsa-memory)
 
-  fbngsa_CL 
-  | where PodType_s == 'ngsa-memory'
+  ngsa_CL 
+  | where k_container_s == 'app' and k_app_s == 'ngsa-memory'
   | summarize AggregatedValue=count() by bin(TimeGenerated,1m), Zone_s
 
 ```
@@ -106,13 +106,13 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
   # Too Few Client Requests (ngsa-cosmos)
 
   loderunner_CL
-  | where PodType_s == 'l8r' and AppPodType_s == 'ngsa-cosmos'
+  | where Server_s contains 'ngsa-cosmos'
   | summarize AggregatedValue=count() by bin(TimeGenerated,1m), Zone_s
 
   # Too Few Client Requests (ngsa-memory)
 
-  loderunner_CL 
-  | where PodType_s == 'l8r' and AppPodType_s == 'ngsa-memory'
+  loderunner_CL
+  | where Server_s contains 'ngsa-memory'
   | summarize AggregatedValue=count() by bin(TimeGenerated,1m), Zone_s
 
 ```
@@ -126,10 +126,10 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 - **Metric**: 95th %tile response time per minute
 - **Thresholds**:
   - ngsa-cosmos:
-    - Az-EastUS2: >165ms
-    - Az-CentralUS: >116ms
-    - Az-WestUS2: >24ms
-  - ngsa-memory: >3ms
+    - Az-EastUS2: >130ms
+    - Az-CentralUS: >26ms
+    - Az-WestUS2: >100ms
+  - ngsa-memory: >9ms
 - **Trigger**: If threshold is breached >4 times in last 10 minutes
 - **Period**: 10 minutes
 - **Frequency**: 10 minutes
@@ -140,26 +140,26 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 
   # High Server Response Time in CentralUS (ngsa-cosmos)
 
-  fbngsa_CL
-  | where PodType_s == 'ngsa-cosmos' and Zone_s == "Az-CentralUS"
+  ngsa_CL 
+  | where k_container_s == 'app' and k_app_s == 'ngsa-cosmos' and Zone_s == "Az-CentralUS"
   | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)
 
   # High Server Response Time in EastUS2 (ngsa-cosmos)
 
-  fbngsa_CL
-  | where PodType_s == 'ngsa-cosmos' and Zone_s == "Az-EastUS2"
+  ngsa_CL 
+  | where k_container_s == 'app' and k_app_s == 'ngsa-cosmos' and Zone_s == "Az-EastUS2"
   | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)
 
   # High Server Response Time in WestUS2 (ngsa-cosmos)
 
-  fbngsa_CL
-  | where PodType_s == 'ngsa-cosmos' and Zone_s == "Az-WestUS2"
+  ngsa_CL 
+  | where k_container_s == 'app' and k_app_s == 'ngsa-cosmos' and Zone_s == "Az-WestUS2"
   | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)
 
   # High Server Response Time (ngsa-memory)
 
-  fbngsa_CL
-  | where PodType_s == 'ngsa-memory'
+  ngsa_CL 
+  | where k_container_s == 'app' and k_app_s == 'ngsa-memory'
   | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m), Zone_s
 
 ```
@@ -171,10 +171,10 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 - **Metric**: 95th %tile response time per minute
 - **Thresholds**:
   - ngsa-cosmos:
-    - Az-EastUS2: >166ms
-    - Az-CentralUS: >116ms
-    - Az-WestUS2: >25ms
-  - ngsa-memory: >7ms
+    - Az-EastUS2: >130ms
+    - Az-CentralUS: >30ms
+    - Az-WestUS2: >105ms
+  - ngsa-memory: >11ms
 - **Trigger**: If threshold is breached >4 times in last 10 minutes
 - **Period**: 10 minutes
 - **Frequency**: 10 minutes
@@ -186,25 +186,25 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
   # High Client Response Time in CentralUS (ngsa-cosmos)
 
   loderunner_CL
-  | where AppPodType_s == 'ngsa-cosmos' and Zone_s == "Az-CentralUS"
+  | where Server_s contains 'ngsa-cosmos' and Zone_s == "Az-CentralUS"
   | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)
 
   # High Client Response Time in EastUS2 (ngsa-cosmos)
 
   loderunner_CL
-  | where AppPodType_s == 'ngsa-cosmos' and Zone_s == "Az-EastUS2"
+  | where Server_s contains 'ngsa-cosmos' and Zone_s == "Az-EastUS2"
   | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)
 
   # High Client Response Time in WestUS2 (ngsa-cosmos)
 
   loderunner_CL
-  | where AppPodType_s == 'ngsa-cosmos' and Zone_s == "Az-WestUS2"
+  | where Server_s contains 'ngsa-cosmos' and Zone_s == "Az-WestUS2"
   | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m)
 
   # High Client Response Time (ngsa-memory)
 
   loderunner_CL
-  | where AppPodType_s == 'ngsa-memory'
+  | where Server_s contains == 'ngsa-memory'
   | summarize AggregatedValue=percentile(Duration_d, 95) by bin(TimeGenerated, 1m), Zone_s
 
 ```
@@ -226,13 +226,13 @@ The following describes the proposed alerts for our ngsa pre-prod environment ba
 ```bash
 
   # Too Many Server Requests (ngsa-cosmos)
-  fbngsa_CL
-  | where PodType_s == "ngsa-cosmos"
+  ngsa_CL 
+  | where k_container_s == 'app' and k_app_s == "ngsa-cosmos"
   | summarize AggregatedValue=count() by bin(TimeGenerated, 1m), Zone_s
 
   # Too Many Server Requests (ngsa-memory)
-  fbngsa_CL
-  | where PodType_s == "ngsa-memory"
+  ngsa_CL 
+  | where k_container_s == 'app' and k_app_s == "ngsa-memory"
   | summarize AggregatedValue=count() by bin(TimeGenerated, 1m), Zone_s
 
 ```

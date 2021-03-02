@@ -1,0 +1,44 @@
+{
+    "id": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourceGroups/%%Ngsa_Log_Analytics_RG%%/providers/microsoft.insights/scheduledqueryrules/FailedServerRequests-memory",
+    "location": "westus2",
+    "name": "FailedServerRequests-memory",
+    "properties": {
+      "action": {
+        "aznsAction": {
+          "actionGroup": [
+            "/subscriptions/%%SUBSCRIPTION_GUID%%/resourcegroups/%%Ngsa_Log_Analytics_RG%%/providers/microsoft.insights/actiongroups/ngsa-alert"
+          ]
+        },
+        "odata.type": "Microsoft.WindowsAzure.Management.Monitoring.Alerts.Models.Microsoft.AppInsights.Nexus.DataContracts.Resources.ScheduledQueryRules.AlertingAction",
+        "severity": "3",
+        "throttleConsecutiveWindowCount": 0,
+        "throttlingInMin": 30,
+        "trigger": {
+          "metricTrigger": {
+            "metricColumn": "Zone_s",
+            "metricTriggerType": "Total",
+            "threshold": 0,
+            "thresholdOperator": "GreaterThan"
+          },
+          "threshold": 20,
+          "thresholdOperator": "GreaterThan"
+        }
+      },
+      "description": "A ngsa-memory app instance had > 20 failures over 5 minutes",
+      "displayName": "FailedServerRequests-memory",
+      "enabled": "true",
+      "schedule": {
+        "frequencyInMinutes": 10,
+        "timeWindowInMinutes": 10
+      },
+      "source": {
+        "authorizedResources": [],
+        "dataSourceId": "/subscriptions/%%SUBSCRIPTION_GUID%%/resourceGroups/%%Ngsa_Log_Analytics_RG%%/providers/Microsoft.OperationalInsights/workspaces/%%Ngsa_Log_Analytics_Name%%",
+        "query": "ngsa_CL \n| where k_container_s == 'app' and k_app_s == 'ngsa-memory' and StatusCode_d >= 400 | summarize FailedRequests=count() by bin(TimeGenerated, 5m), Zone_s | project-rename AggregatedValue=FailedRequests",
+        "queryType": "ResultCount"
+      }
+    },
+    "resourceGroup": "%%Ngsa_Log_Analytics_RG%%",
+    "tags": {},
+    "type": "microsoft.insights/scheduledqueryrules"
+  }
