@@ -12,7 +12,7 @@ spec:
   chart:
     git: https://github.com/retaildevcrews/ngsa.git
     path: spikes/aks-secure-baseline/charts/ngsa
-    ref: spike/ngsa-pnp
+    ref: main
   values:
     app:
       args:
