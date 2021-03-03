@@ -21,11 +21,41 @@ We pledge to follow the [Microsoft Open Source Code of Conduct](https://opensour
 - **Understand disagreements**: Disagreements, both social and technical, are useful learning opportunities. Seek to understand the other viewpoints and resolve differences constructively.
 - This code is not exhaustive or complete. It serves to capture our common understanding of a productive, collaborative environment. We expect the code to be followed in spirit as much as in the letter.
 
+## How we work together
+
+Teams and feature crews should feel free to be flexible based on your life situation - especially during COVID. Many of us work split schedules to accomodate our personal lives and health. You should feel empowered to work "your" schedule. 
+
+### Model, Coach, Care
+
+We should personally practice a growth mindset with three skills in particular: active role modeling, coaching others to be active role models, and showing care about team members and their personal growth.
+
+We should all display accountability, integrity, and respect.
+
+At every level, we practice Two-in-a-Box project management. If something is not right, you have permission to hold leads accountable. If you see something, say something.
+
+### Timezones
+
+Our crews are distributed across timezones and across the world. Where possible, we will have ceremonies and meetings at a time convenient to everyone. Where it's not possible, we will do our best to share the timezone tax. We don't currently have "core hours" but may consider implementing them in the future.
+
+### How we track and share information
+
+- We will prefer our Teams General Channel for discussions or questions over email
+- We will use Teams for meetings and calls
+- Teams and email communication are asynchronous, especially with crews based in different regions
+- We will make documentation accessible:
+  | Type | Where? | Examples |
+  |------|--------|----------|
+  | Organization Artifacts | ArtifactHub | Game Plan, SDD, draft documents |
+  | Project Artifacts | Teams Channel Files | ADS agenda, Sprint Review videos, Meeting Notes |
+  | Project Documentation | GitHub Repo | Working Agreement, code of conduct, high-level overview |
+  | Architecture / Designs | GitHub Repo| Technical Design documents |
+
 ## How we plan together
 
 ### Work Items
 
 - We will track our work in GitHub
+- We will prefer public repos when possible
 - Our sprint work items will follow the hierarchy:  --
   - Epic
     - Story
@@ -102,12 +132,12 @@ We pledge to follow the [Microsoft Open Source Code of Conduct](https://opensour
 - Kanban Board will be used to track project progress
   - Board columns:
     - **Triage**: All net-new tasks/bugs/features/stories need to be created as an "issue"; things to discuss/notes can be added as a "note"
-    - **Backlog**: Stories that have been refined, triaged, and prioritized.
+    - **Backlog**: Stories and tasks that have been refined, triaged, and prioritized.
     - **Sprint Goals**: Stories that have been committed for the current sprint.
     - **Sprint Backlog**:  Tasks that have been committed for the current sprint.
     - **In Progress**: A development team member owns the story or bug and begins work.
     - **PR Submitted/In Review**: The owner of the story or bug determines the item meets our Definition of Done and has created a Pull Request. The item will stay in this status through the PR process -- including addressing requested feedback or fixing issues found.
-    - **Closed**: The Pull Request/Task has completed, and the work has been committed to the `main` branch of the project repository.
+    - **Done**: The Pull Request/Task has completed, and the work has been committed to the `main` branch of the project repository.
 
 ### Estimating
 
@@ -116,16 +146,17 @@ We pledge to follow the [Microsoft Open Source Code of Conduct](https://opensour
 
 ### Ceremonies
 
-- Our sprints will be two weeks and run from Thursday - Wednesday with Review, Retrospective, and Planning occurring back-to-back.
+- Our sprints will be one week and run from Wednesday - Tuesday with Review, Retrospective, and Planning occurring back-to-back.
 - We will use an assigned Scrum Master versus rotating the role among the team.
 
 |  | When | Length | Participants | Purpose |
 |------|------|--------|--------------|---------|
-| **Standup** | Monday, Tuesday, Thursday  @ 4:30PM CST | 10 minutes | Development Team, Scrum Master, Product Owner | Those with committed work answer: What did I do yesterday? What will I do today? Is there anything in my way? |
-| **Triage** | Monday, Tuesday, Thursday  @ 4:40PM CST | 10 minutes | Development Team, Scrum Master, Product Owner| Review an net-new issues for prioritization and discussion |
-| **Review** | Wednesday @ 4:00PM CST | 30 minutes | Development Team, Scrum Master, Product Owner | Demonstrate the work we did this week. Show and tell time. |
-| **Retrospective** | Wednesday @ 4:30PM  | 30 minutes | Development Team, Scrum Master, Product Owner | Reflect as a team on how we're doing -- what's working well for us, and what could we do better? |
+| **Standup** | Monday, Wednesday, Thursday  @ 1PM CST | 10 minutes | Development Team, Scrum Master, Product Owner | Those with committed work answer: What did I do yesterday? What will I do today? Is there anything in my way? |
+| **Triage** | Monday, Wednesday, Thursday  @ 1:10PM CST | 10 minutes | Development Team, Scrum Master, Product Owner| Review an net-new issues for prioritization and discussion |
+| **Review** | Tuesday @ 4:00PM CST | 30 minutes | Development Team, Scrum Master, Product Owner | Demonstrate the work we did this week. Show and tell time. |
+| **Retrospective** | Tuesday @ 4:30PM CST | 30 minutes | Development Team, Scrum Master, Product Owner | Reflect as a team on how we're doing -- what's working well for us, and what could we do better? |
 | **Planning** | Wednesday @ 5:00PM | 30 minutes | Scrum Master, Product Owner, Development Team | Commit to work for the next sprint. |
+
 
 ## How we code together
 
@@ -146,6 +177,7 @@ We pledge to follow the [Microsoft Open Source Code of Conduct](https://opensour
 
 ### Reviews
 
+- The entire team owns quality.
 - While Pull Requests will be required as an official form of review for any work done, ad-hoc code reviews or design reviews are encouraged.
 - Designs that may impact other areas or assumptions should be reviewed with a larger audience (preferably including the project leads) for visibility to the proposed changes and feedback.
 
@@ -166,14 +198,6 @@ We pledge to follow the [Microsoft Open Source Code of Conduct](https://opensour
 
 Pairing work is recommended to support knowledge sharing between the team members. Work items have a dedicated field *Pairing with* so that a second team members is explicitly assigned. Each team member should look for pairing opportunities before picking up a new work item. Commits should be made by the people that are assigned to the story. Other team members are encouraged to provide feedback using PR comments.
 
-## How we track and share information
+### Sharing
 
-- We will prefer our Teams General Channel for discussions or questions over email.
-- We will use Teams for meetings and calls
-- We will make documentation accessible:
-  | Type | Where? | Examples |
-  |------|--------|----------|
-  | Organization Artifacts | ArtifactHub | Game Plan, SDD, draft documents |
-  | Project Artifacts | Teams Channel Files | ADS agenda, Sprint Review videos, Meeting Notes |
-  | Project Documentation | GitHub Repo | Working Agreement, code of conduct, high-level overview |
-  | Architecture / Designs | GitHub Repo| Technical Design documents |
+Sharing is caring. We will record demos to share early and share often. We will share as we go and not wait until the end of the project.
