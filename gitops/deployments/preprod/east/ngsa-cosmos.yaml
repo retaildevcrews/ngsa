@@ -16,7 +16,10 @@ spec:
   values:
     app:
       args:
-      - --no-cache
+      - -a
+      - WebAPI
+      - -s
+      - https://ncpc.cse.ms
       - -z
       - Az-EastUS2
       - -r
