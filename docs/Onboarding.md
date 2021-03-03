@@ -28,7 +28,9 @@ Welcome to the team! The goal of this document is to get you onboarded and ready
 
 ## Feature Crews
 
-We use Feature Crews to break up themes and epics into pairable tasks. FCs foster more pairing opportunities, allow for faster development, and shorter Dev Crew duration. Each Feature Crew should be cross-Dev Crew to promote collaboration.
+We use Feature Crews to break up themes and epics into pairable tasks. FCs foster more collaboration opportunities, allow for faster development, and shorter Dev Crew duration. Each FC should be cross-Dev Crew to promote collaboration.
+
+FCs should manage their own process and may choose to run their own scrum. They are encouraged to pair program or [mob program](https://www.agilealliance.org/glossary/mob-programming). FCs will provide status updates on their progress/blockers at the daily standup. 
 
 You can find a discussion of the proposed Feature Crews here: https://github.com/orgs/retaildevcrews/teams/nextgen-team/discussions/2
 
@@ -42,6 +44,6 @@ If you are working on a task, be sure to self-assign and move to the `In progres
 
 ## Point Dev
 
-We assign "Point Devs" each Sprint. These paired devs are responsible for everything in Point Dev Checklist. E.g. keeping a watch on running applications, deleting old tags, and triaging any security issues that may arise during the sprint. Point Devs are not soley responsible for fixing every issue, but they are responsible for ensuring they do not fall through the cracks.
+We assign "Point Dev" status to a Feature Crew each Sprint. The FC will be responsible for everything in Point Dev Checklist. E.g. keeping a watch on running applications, deleting old tags, and triaging any security issues that may arise during the sprint. Point Devs are not soley responsible for fixing every issue, but they are responsible for ensuring they do not fall through the cracks.
 
  
