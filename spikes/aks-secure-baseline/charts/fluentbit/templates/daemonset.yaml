@@ -66,6 +66,8 @@ spec:
               readOnly: true
             - name: fluent-bit-config
               mountPath: /fluent-bit/etc/
+            - name: secrets
+              mountPath: /fluent-bit/secrets
           resources:
             limits:
               cpu: "1"
@@ -83,9 +85,9 @@ spec:
         - name: fluent-bit-config
           configMap:
             name: {{ include "fluentbit.fullname" . }}
-        - csi:
+        - name: secrets
+          csi:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
               secretProviderClass: fluentbit-csi-secrets
-          name: secrets
