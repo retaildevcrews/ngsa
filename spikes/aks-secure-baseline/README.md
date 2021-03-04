@@ -50,6 +50,7 @@ Follow the [aks-secure-baseline](https://github.com/mspnp/aks-secure-baseline) w
   - Using the Log Analytics in the Hub resource group.
   - **Is sharing key vaults like this okay? Should they be broken up?**
   - **Which log analytics should we use for custom logs?**
+  - **Need to use node labels on daemonset to limit pods to nodes in user node pools.**
 
 ## Commands
 
