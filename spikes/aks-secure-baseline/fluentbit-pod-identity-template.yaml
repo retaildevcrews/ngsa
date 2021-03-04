@@ -1,0 +1,18 @@
+apiVersion: aadpodidentity.k8s.io/v1
+kind: AzureIdentity
+metadata:
+  name: $FLUENTBIT_MI_NAME
+spec:
+  type: 0
+  resourceID: $FLUENTBIT_MI_RESOURCE_ID
+  clientID: $FLUENTBIT_MI_CLIENT_ID
+
+---
+
+apiVersion: aadpodidentity.k8s.io/v1
+kind: AzureIdentityBinding
+metadata:
+  name: ${FLUENTBIT_MI_NAME}-binding
+spec:
+  azureIdentity: $FLUENTBIT_MI_NAME
+  selector: $FLUENTBIT_MI_NAME

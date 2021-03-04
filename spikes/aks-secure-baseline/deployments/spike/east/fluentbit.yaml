@@ -9,8 +9,9 @@ spec:
   chart:
     git: https://github.com/retaildevcrews/ngsa.git
     path: spikes/aks-secure-baseline/charts/fluentbit
-    ref: main
+    ref: aakindele/fluentbit-ngsa-secrets
   values:
+    aadpodidbinding: fluentbit-mi
     image:
       repository: acraksioxqpbmcqokqq.azurecr.io/fluent/fluent-bit
       tag: "1.5-debug"
