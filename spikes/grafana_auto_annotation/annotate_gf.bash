@@ -1,8 +1,8 @@
 #!/bin/bash
 
 usage(){
-    echo """
-    $0 -d "some description" -i 4 -p 2 -u http://some.url:23232 [Optional Args/Flags]
+echo """
+$0 -d 'some description' -i 4 -p 2 -u http://some.url:23232 [Optional Args/Flags]
 
 Required args:
     -d | --description DESCRPTN     Annotation description
