@@ -45,6 +45,9 @@ Follow the [aks-secure-baseline](https://github.com/mspnp/aks-secure-baseline) w
   - **How to integrate the ngsa secrets with the key vault?**
   - **How to handle NGSA docker images? Keep in sync with private registry? Update policies to allow the images? Or something else?**
   - **Should NGSA resource defaults and/or azure policies be updated so a default helm install works?**
+- Fluenbit
+  - Using the Log Analytics in the Hub resource group.
+  - **Which log analytics should we use for custom logs?**
 
 ## Commands
 
@@ -136,5 +139,26 @@ kubectl create secret generic ngsa-secrets \
 # import images to private acr to allow cluser to pull images
 az acr import --source ghcr.io/retaildevcrews/ngsa-app:beta -n $ACR_NAME
 az acr import --source ghcr.io/retaildevcrews/ngsa-lr:beta -n $ACR_NAME
+
+```
+
+Fluentbit setup
+
+```bash
+
+# create fluentbit namespace
+kubectl create namespace fluentbit
+
+Ngsa_Log_Analytics_RG="rg-enterprise-networking-hubs"
+Ngsa_Log_Analytics_Name="la-hub-eastus2-lq7hlzxsovd4c"
+
+# create fluentbit secrets
+kubectl create secret generic fluentbit-secrets \
+  --namespace fluentbit \
+  --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query customerId -o tsv) \
+  --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query primarySharedKey -o tsv)
+
+# import images to private acr to allow cluser to pull images
+az acr import --source docker.io/fluent/fluent-bit:1.5-debug -n $ACR_NAME
 
 ```
