@@ -50,13 +50,46 @@ Examples:
 
 ## Kubernetes Namespaces
 
-K8s namespace will follow the format: `[Team Name]-[Application Name]`
+Kubernetes namespace names follow the format: `[Main Application Name]-[Optional Supporting Application name]`
+
+Namespaces are broken up by application boundries. Our use case for namespaces is group all the Kubernetes resources needed to run a specific application. Multiple deployments of a single application can live in the same namespace. One example of this is `ngsa-cosmos` and `ngsa-memory` deployments in the `ngsa` namespace.
 
 Examples:
 
-- `rdc-ngsa`
-- `rdc-loderunner`
-- `team2-app2`
+- `fluentbit` for fluentbit
+- `ngsa` for the ngsa-app
+- `ngsa-l8r` for loderunner
+
+## Kubernetes Workloads
+
+Workloads names follow the format: `[Application name]-[Optional Identifier]`.
+
+This allows multiple versions of an app to run in the same namespace. The optional identifier can be used to specify what makes the specific workload unique.
+
+Examples:
+
+- `fluentbit` for fluentbit
+- `l8r` for loderunner
+- `ngsa-cosmos` for cosmos version of ngsa-app
+- `ngsa-memory` for in-memory version of ngsa-app
+
+## Kubernetes Configs/Secrets
+
+ConfigMap and Secret names follow the format: `[Application name]-[Optional Identifier]-[optional config|secrets]`
+
+This allows for flexibilty to have mmultiple configs for a workload, and to also share configs between workload in the same namespace.
+
+ConfigMap Examples:
+
+- `fluentbit`
+- `fluentbit-log-config`
+- `ngsa-cosmos-config`
+- `ngsa-memory-config`
+
+Secret Examples:
+
+- `fluentbit-secrets`
+- `ngsa-secrets`
 
 ## DNS
 
