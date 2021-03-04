@@ -9,7 +9,7 @@ spec:
   chart:
     git: https://github.com/retaildevcrews/ngsa.git
     path: spikes/aks-secure-baseline/charts/fluentbit
-    ref: aakindele/fluentbit-ngsa-secrets
+    ref: main
   values:
     aadpodidbinding: fluentbit-mi
     image:
