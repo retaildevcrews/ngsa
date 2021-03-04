@@ -77,7 +77,7 @@ Examples:
 
 ConfigMap and Secret names follow the format: `[Application name]-[Optional Identifier]-[optional config|secrets]`
 
-This allows for flexibilty to have mmultiple configs for a workload, and to also share configs between workload in the same namespace.
+This allows for flexibilty to have multiple configs for a workload, and to also share configs between workload in the same namespace.
 
 ConfigMap Examples:
 
