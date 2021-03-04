@@ -8,7 +8,7 @@ Reference Documentation [here](https://docs.microsoft.com/en-us/azure/azure-moni
 
 1. Save the Workspace ID and the key for log Analytics work space from the Azure dashboard
 2. If deploying to a AKS cluster, check whether you already have OMS Agent running.
-   1. Check if `omsagent` Pod is running: `kubectl get pods -A`
+   1. Check if `omsagent` Pod is running: `kubectl get pods -A | grep omsagent`
    2. If `omsagent` is running then only apply the config file: `kubectl apply -f 3-container-azm-ms-agentconfig.yaml`
    3. Skip to Step 6
 3. To use OMS Agent Daemonset and deployment:
@@ -60,4 +60,3 @@ Reference Documentation [here](https://docs.microsoft.com/en-us/azure/azure-moni
   ![Image](workspace-query-results.png)
 
 > More about dashboards with queries . Reference : https://docs.microsoft.com/en-us/azure/azure-monitor/visualize/tutorial-logs-dashboards
-
