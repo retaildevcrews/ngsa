@@ -12,12 +12,15 @@ For further details, visit ["Sealed Secrets" for Kubernetes](https://github.com/
 ## Setup Sealed Secrets in a cluster
 
 1. Install sealed secrets in a cluster with Helm
+
+<!-- markdown-link-check-disable -->
 ```
 
 helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
 helm install sealed-secrets --namespace kube-system --version 1.13.2 sealed-secrets/sealed-secrets
 
 ```
+<!-- markdown-link-check-enable-->
 
 2. Install sealed secrets CLI tool locally
  
