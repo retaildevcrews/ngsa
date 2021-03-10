@@ -1,0 +1,19 @@
+---
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: fluentbit
+  namespace: fluentbit
+spec:
+  releaseName: fluentbit
+  chart:
+    git: https://github.com/retaildevcrews/ngsa.git
+    path: spikes/aks-secure-baseline/charts/fluentbit
+    ref: main
+  values:
+    image:
+      repository: acraksioxqpbmcqokqq.azurecr.io/fluent/fluent-bit
+      tag: "1.5-debug"
+    log:
+      region: "East"
+      zone: "Az-EastUS2"

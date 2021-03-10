@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "fluentbit.fullname" . }}-log-config
+data:
+  zone: {{ .Values.log.zone }}
+  region: {{ .Values.log.region }}
+  lodeLog: {{ .Values.log.lodeLog }}
+  ngsaLog: {{ .Values.log.ngsaLog }}
