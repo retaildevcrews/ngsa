@@ -51,7 +51,7 @@ Follow the [aks-secure-baseline](https://github.com/mspnp/aks-secure-baseline) w
 
 ## Commands
 
-Create cosmos
+### Create cosmos
 
 ```bash
 
@@ -84,7 +84,7 @@ az network vnet subnet update \
 
 ```
 
-Flux setup
+### Flux setup
 
 ```bash
 
@@ -121,7 +121,7 @@ helm upgrade -i helm-operator fluxcd/helm-operator --wait \
 
 ```
 
-NGSA setup
+### NGSA setup
 
 ```bash
 
@@ -142,15 +142,22 @@ az acr import --source ghcr.io/retaildevcrews/ngsa-lr:beta -n $ACR_NAME
 
 ```
 
-Fluentbit setup
+### Fluentbit setup
 
 ```bash
 
 # create fluentbit namespace
 kubectl create namespace fluentbit
 
-Ngsa_Log_Analytics_RG="rg-enterprise-networking-hubs"
-Ngsa_Log_Analytics_Name="la-hub-eastus2-lq7hlzxsovd4c"
+# Choose one of the log analytics instances in the aks-secure-baseline architecture to send logs to.
+Ngsa_Log_Analytics_RG=<log analytics resource group>
+Ngsa_Log_Analytics_Name=<log analytics name>
+
+# Example:
+#   This will choose the log analytics in the hub resource group that was created during the spike.
+#   Your log analytics name may be different.
+# Ngsa_Log_Analytics_RG="rg-enterprise-networking-hubs"
+# Ngsa_Log_Analytics_Name="la-hub-eastus2-lq7hlzxsovd4c"
 
 # create fluentbit secrets
 kubectl create secret generic fluentbit-secrets \
