@@ -43,12 +43,14 @@ Follow the [aks-secure-baseline](https://github.com/mspnp/aks-secure-baseline) w
   - Imported images from GitHub container registry into private ACR.
   - Reduced resource limits for deployments because of default policies.
   - Using the existing key vault from aks-secure-baseline to save NGSA secrets.
+  - Added simple template files for csi driver and pod identity configurations. These are applied manually to the cluster. Same for fluentbit.
   - **How to handle NGSA docker images? Keep in sync with private registry? Update policies to allow the images? Or something else?**
   - **Should NGSA resource defaults and/or azure policies be updated so a default helm install works?**
+  - **Add pod identity and csi driver configs to GitOps workflow. Same for fluentbit.**
 - Fluentbit
   - Using the existing key vault to save fluentbit secrets. The same key vault NGSA is using.
   - Using the Log Analytics in the Hub resource group.
-  - **Is sharing key vaults like this okay? Should they be broken up?**
+  - **Is sharing key vaults like this okay? Should they be broken up by app or some other criteria?**
   - **Which log analytics should we use for custom logs?**
   - **Need to use node labels on daemonset to limit pods to nodes in user node pools.**
 
@@ -132,8 +134,14 @@ helm upgrade -i helm-operator fluxcd/helm-operator --wait \
 kubectl create namespace ngsa
 
 # set ngsa secrets in key vault
-export KEYVAULT_NAME="kv-aks-ioxqpbmcqokqq"
-export AKS_NAME="aks-ioxqpbmcqokqq"
+
+# set the key vault name and AKS variable names
+export KEYVAULT_NAME=<key vault name>
+export AKS_NAME=<aks cluster name>
+
+# Example values that were auto generated during the initial aks-secure-baseline setup
+# export KEYVAULT_NAME="kv-aks-ioxqpbmcqokqq"
+# export AKS_NAME="aks-ioxqpbmcqokqq"
 
 az keyvault secret set -o table --vault-name $KEYVAULT_NAME --name "CosmosDatabase" --value $Imdb_DB
 az keyvault secret set -o table --vault-name $KEYVAULT_NAME --name "CosmosCollection" --value $Imdb_Col
@@ -142,22 +150,29 @@ az keyvault secret set -o table --vault-name $KEYVAULT_NAME --name "CosmosKey" \
 az keyvault secret set -o table --vault-name $KEYVAULT_NAME --name "CosmosUrl" --value https://${Imdb_Name}.documents.azure.com:443/
 
 # create managed identity for NGSA
-export NGSA_MI_NAME="ngsa-mi"
+export NGSA_MI_NAME=<managed identity name for NGSA>
+
+# Example name following naming conventions from /docs/NamingConvention.md
+# export NGSA_MI_NAME="ngsa-id"
+
 az identity create -g $Imdb_RG -n $NGSA_MI_NAME
 export NGSA_MI_PRINCIPAL_ID=$(az identity show -n $NGSA_MI_NAME -g $Imdb_RG --query "principalId" -o tsv)
 export NGSA_MI_RESOURCE_ID=$(az identity show -n $NGSA_MI_NAME -g $Imdb_RG --query "id" -o tsv)
 export NGSA_MI_CLIENT_ID=$(az identity show -n $NGSA_MI_NAME -g $Imdb_RG --query "clientId" -o tsv)
 
-# give AKS nodes control of ngsa managed identity
+# give the AKS node managed identity control of ngsa managed identity
 AKS_IDENTITY_ID=$(az aks show -g $Imdb_RG -n $AKS_NAME --query "identityProfile.kubeletidentity.objectId" -o tsv)
 az role assignment create --role "Managed Identity Operator" --assignee $AKS_IDENTITY_ID --scope $NGSA_MI_RESOURCE_ID
 
-# give ngsa identity read access to keyvault
+# give the ngsa identity read access to keyvault
 az keyvault set-policy -n $KEYVAULT_NAME --object-id $NGSA_MI_PRINCIPAL_ID --secret-permissions get
 
 export TENANT_ID=$(az account show --query "tenantId" -o tsv)
 
+# manually apply pod identity configs to cluster
 envsubst < ngsa-pod-identity-template.yaml | kubectl apply -n ngsa -f -
+
+# manually apply csi configs for key vault integration to cluster
 envsubst < ngsa-csi-template.yaml | kubectl apply -n ngsa -f -
 
 # import images to private acr to allow cluser to pull images
