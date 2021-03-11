@@ -14,7 +14,7 @@ spec:
     path: spikes/aks-secure-baseline/charts/ngsa
     ref: aakindele/fluentbit-ngsa-secrets
   values:
-    aadpodidbinding: ngsa-mi
+    aadpodidbinding: ngsa-id
     app:
       args:
       - --no-cache
