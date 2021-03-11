@@ -12,7 +12,7 @@ spec:
   chart:
     git: https://github.com/retaildevcrews/ngsa.git
     path: spikes/aks-secure-baseline/charts/ngsa
-    ref: aakindele/fluentbit-ngsa-secrets
+    ref: main
   values:
     aadpodidbinding: ngsa-id
     app:
