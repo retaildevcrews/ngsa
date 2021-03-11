@@ -156,6 +156,7 @@ export NGSA_MI_NAME=<managed identity name for NGSA>
 # export NGSA_MI_NAME="ngsa-id"
 
 az identity create -g $Imdb_RG -n $NGSA_MI_NAME
+
 export NGSA_MI_PRINCIPAL_ID=$(az identity show -n $NGSA_MI_NAME -g $Imdb_RG --query "principalId" -o tsv)
 export NGSA_MI_RESOURCE_ID=$(az identity show -n $NGSA_MI_NAME -g $Imdb_RG --query "id" -o tsv)
 export NGSA_MI_CLIENT_ID=$(az identity show -n $NGSA_MI_NAME -g $Imdb_RG --query "clientId" -o tsv)
@@ -164,7 +165,7 @@ export NGSA_MI_CLIENT_ID=$(az identity show -n $NGSA_MI_NAME -g $Imdb_RG --query
 AKS_IDENTITY_ID=$(az aks show -g $Imdb_RG -n $AKS_NAME --query "identityProfile.kubeletidentity.objectId" -o tsv)
 az role assignment create --role "Managed Identity Operator" --assignee $AKS_IDENTITY_ID --scope $NGSA_MI_RESOURCE_ID
 
-# give the ngsa identity read access to keyvault
+# give the ngsa managed identity read access to keyvault
 az keyvault set-policy -n $KEYVAULT_NAME --object-id $NGSA_MI_PRINCIPAL_ID --secret-permissions get
 
 export TENANT_ID=$(az account show --query "tenantId" -o tsv)
@@ -205,19 +206,27 @@ az keyvault secret set -o table --vault-name $KEYVAULT_NAME --name "SharedKey" \
   --value $(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query primarySharedKey -o tsv)
 
 # create managed identity for fluentbit
-export FLUENTBIT_MI_NAME="fluentbit-mi"
+export FLUENTBIT_MI_NAME=<managed identity name for fluentbit>
+
+# Example name following naming conventions from /docs/NamingConvention.md
+# export FLUENTBIT_MI_NAME="fluentbit-id"
+
 az identity create -g $Imdb_RG -n $FLUENTBIT_MI_NAME
+
 export FLUENTBIT_MI_PRINCIPAL_ID=$(az identity show -n $FLUENTBIT_MI_NAME -g $Imdb_RG --query "principalId" -o tsv)
 export FLUENTBIT_MI_RESOURCE_ID=$(az identity show -n $FLUENTBIT_MI_NAME -g $Imdb_RG --query "id" -o tsv)
 export FLUENTBIT_MI_CLIENT_ID=$(az identity show -n $FLUENTBIT_MI_NAME -g $Imdb_RG --query "clientId" -o tsv)
 
-# give AKS nodes control of fluentbit managed identity
+# give the AKS node managed identity control of fluentbit managed identity
 az role assignment create --role "Managed Identity Operator" --assignee $AKS_IDENTITY_ID --scope $FLUENTBIT_MI_RESOURCE_ID
 
-# give fluentbit identity read access to keyvault
+# give the fluentbit managed identity read access to keyvault
 az keyvault set-policy -n $KEYVAULT_NAME --object-id $FLUENTBIT_MI_PRINCIPAL_ID --secret-permissions get
 
+# manually apply pod identity configs to cluster
 envsubst < fluentbit-pod-identity-template.yaml | kubectl apply -n fluentbit -f -
+
+# manually apply csi configs for key vault integration to cluster
 envsubst < fluentbit-csi-template.yaml | kubectl apply -n fluentbit -f -
 
 # import images to private acr to allow cluser to pull images
