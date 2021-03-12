@@ -54,6 +54,11 @@ Follow the [aks-secure-baseline](https://github.com/mspnp/aks-secure-baseline) w
   - **Which log analytics should we use for custom logs?**
   - **Pods in the Daemonset fail to create in the aks-npsystem nodes. The csi driver for handling secrets is not installed on the nodes in that node pool.**
 
+## Helpful links
+
+- [Pod identity walkthrough](https://azure.github.io/aad-pod-identity/docs/demo/standard_walkthrough)
+- [Azure key vault csi provider usage](https://azure.github.io/secrets-store-csi-driver-provider-azure/getting-started/usage)
+
 ## Commands
 
 ### Create cosmos
