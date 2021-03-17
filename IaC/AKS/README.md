@@ -419,7 +419,7 @@ kubectl create namespace ngsa-l8r
 
 cp ./loderunner/helm-config.example.yaml ./loderunner/helm-config.yaml
 
-helm install l8r loderunner -f ./loderunner/helm-config.yaml --namespace ngsa-l8r
+helm install l8r loderunner -f ./loderunner/helm-config.yaml --namespace ngsa-l8r --set region=$Ngsa_Location
 
 # Verify the pods are running
 kubectl get pods --namespace ngsa-l8r
