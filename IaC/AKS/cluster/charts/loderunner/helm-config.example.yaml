@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 ingressURLs:
-  - http://ngsa-aks.ngsa.svc.cluster.local:4120
+  - http://ngsa-aks.ngsa.svc.cluster.local:8080
 
 region: "Debug"
 zone: "Debug"
