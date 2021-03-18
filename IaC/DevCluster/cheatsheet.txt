@@ -25,13 +25,13 @@ sudo cp -R grafanadata/. /grafana
 sudo chown -R 472:472 /grafana
 
 # check az access
-az cosmosdb keys list -n ngsa-pre-cosmos -g ngsa-pre-shared-rg --query primaryReadonlyMasterKey --subscription bartr-wcnp -o tsv
+az cosmosdb keys list -n ngsa-pre-cosmos -g ngsa-pre-shared-rg --query primaryMasterKey --subscription bartr-wcnp -o tsv
 
 # requires access to bartr-wcnp subscription
 kubectl create secret generic ngsa-secrets \
   --from-literal=CosmosDatabase=imdb \
   --from-literal=CosmosCollection=movies \
-  --from-literal=CosmosKey=$(az cosmosdb keys list -n ngsa-pre-cosmos -g ngsa-pre-shared-rg --query primaryReadonlyMasterKey --subscription bartr-wcnp -o tsv) \
+  --from-literal=CosmosKey=$(az cosmosdb keys list -n ngsa-pre-cosmos -g ngsa-pre-shared-rg --query primaryMasterKey --subscription bartr-wcnp -o tsv) \
   --from-literal=CosmosUrl=https://ngsa-pre-cosmos.documents.azure.com:443/ \
  
 # dev-logs

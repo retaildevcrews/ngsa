@@ -151,7 +151,7 @@ export AKS_NAME=<aks cluster name>
 az keyvault secret set -o table --vault-name $KEYVAULT_NAME --name "CosmosDatabase" --value $Imdb_DB
 az keyvault secret set -o table --vault-name $KEYVAULT_NAME --name "CosmosCollection" --value $Imdb_Col
 az keyvault secret set -o table --vault-name $KEYVAULT_NAME --name "CosmosKey" \
-  --value $(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryReadonlyMasterKey -o tsv)
+  --value $(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryMasterKey -o tsv)
 az keyvault secret set -o table --vault-name $KEYVAULT_NAME --name "CosmosUrl" --value https://${Imdb_Name}.documents.azure.com:443/
 
 # create managed identity for NGSA
