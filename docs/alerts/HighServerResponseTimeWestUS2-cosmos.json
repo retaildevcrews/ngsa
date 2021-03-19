@@ -19,11 +19,11 @@
             "threshold": 4,
             "thresholdOperator": "GreaterThan"
           },
-          "threshold": 100,
+          "threshold": 175,
           "thresholdOperator": "GreaterThan"
         }
       },
-      "description": "Server response time is  > 100ms",
+      "description": "Server response time is  > 175ms",
       "displayName": "HighServerResponseTimeWestUS2-cosmos",
       "enabled": "true",
       "schedule": {
