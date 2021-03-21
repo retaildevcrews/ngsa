@@ -29,7 +29,7 @@ spec:
       secretName: ngsa-secrets
       image:
         repository: ghcr.io/retaildevcrews/ngsa-app
-        tag: beta-0.3.0-0318-2018-23
+        tag: beta-0.3.0-0321-0605-24
     cert:
       enabled: false
       name: ngsa-cert
