@@ -1,6 +1,7 @@
 # Logical Views
-## Current State - NGSA
-![Current State - NGSA](NGSA.svg)
+
+## Current State - NGSA Dev Cluster
+![Current State - NGSA](NGSA-dev.drawio.svg)
 
 ## Logical View - Single Instance
 ![Logical View 1](Logical-1.drawio.svg)
