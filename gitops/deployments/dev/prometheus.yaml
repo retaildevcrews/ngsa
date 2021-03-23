@@ -1,0 +1,48 @@
+---
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: prometheus
+  namespace: monitoring
+  annotations:
+    fluxcd.io/automated: "true"
+    filter.fluxcd.io/app: glob:beta-*
+spec:
+  releaseName: prometheus
+  chart:
+    repository: https://prometheus-community.github.io/helm-charts
+    name: prometheus
+    version: 13.6.0
+  values:
+    alertmanager:
+      enabled: false
+    alertmanagerFiles:
+      alertmanager.yml: ""
+    kubeStateMetrics:
+      enabled: true
+    nodeExporter:
+      enabled: false
+    pushgateway:
+      enabled: false
+    # podSecurityPolicy:
+    #   enabled: true
+    server:
+      global:
+        scrape_interval: 15s
+      service:
+        servicePort: 9090
+      persistentVolume:
+        enabled: false # Per
+        size: 4Gi
+    # extraScrapeConfigs: |
+    #   - job_name: 'ngsa-cosmos'
+    #     static_configs:
+    #       - targets:
+    #           - ngsa-cosmos.ngsa.svc.cluster.local:8080
+    #   - job_name: 'ngsa-memory'
+    #     static_configs:
+    #       - targets:
+    #           - ngsa-memory.ngsa.svc.cluster.local:8080
+    #   - job_name: 'loderunner'
+    #     static_configs:
+    #       - targets: [ 'loderunner.l8r.svc.cluster.local:8080' ]
