@@ -1,0 +1,20 @@
+---
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: grafana
+  namespace: monitoring
+  annotations:
+    fluxcd.io/automated: "true"
+spec:
+  releaseName: grafana
+  chart:
+    repository: https://grafana.github.io/helm-charts
+    name: grafana
+    version: 6.6.4
+  values:
+    podAnnotations:
+      prometheus.io/scrape: 'true'
+      prometheus.io/port:   '3000'
+    ingress:
+      enabled: true
