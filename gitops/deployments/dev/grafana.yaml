@@ -18,3 +18,7 @@ spec:
       prometheus.io/port:   '3000'
     ingress:
       enabled: true
+    admin:
+      existingSecret: 'grafana-secret'
+      userKey: 'admin-user'
+      passwordKey: 'admin-password'
