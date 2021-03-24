@@ -291,8 +291,6 @@ You should see the following components:
 
 - `istio*` - the Istio components
 - `tracing` - tracing addon
-- `prometheus` - metrics addon
-- `grafana` - analytics and monitoring dashboard addon
 - `kiali` - service mesh dashboard addon
 
 Enable automatic sidecar injection in the ngsa namespace:

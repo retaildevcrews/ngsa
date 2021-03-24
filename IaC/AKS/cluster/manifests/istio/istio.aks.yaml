@@ -10,9 +10,9 @@ spec:
   # Enable the addons that we will want to use
   addonComponents:
     grafana:
-      enabled: true
+      enabled: false
     prometheus:
-      enabled: true
+      enabled: false
     tracing:
       enabled: true
     kiali:
