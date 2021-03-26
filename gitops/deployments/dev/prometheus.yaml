@@ -6,7 +6,6 @@ metadata:
   namespace: monitoring
   annotations:
     fluxcd.io/automated: "true"
-    filter.fluxcd.io/app: glob:beta-*
 spec:
   releaseName: prometheus
   chart:
