@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#set -euf -o pipefail
-#( set -o posix ; set ) >/tmp/variables.before
 usage(){
 echo """
 $0 -d 'DESCRIPTION' REQRD_ARGS [OPTIONAL ARGS] [-]
@@ -89,11 +87,6 @@ else
     read -t 1 -s auth <<< "$GRAFANA_USER_PASS"
 fi
 
-#( set -o posix ; set ) >/tmp/variables.after
-#diff /tmp/variables.before /tmp/variables.after
-#rm /tmp/variables.before /tmp/variables.after
-#echo 1
-#sleep 5
 if  [[ -z ${desc} ]] || \
     [[ -z ${dash_id} ]] || \
     [[ -z ${panel_id} ]] || \
@@ -110,13 +103,13 @@ header+=(-H "Content-Type: application/json")
 [[ ! -z ${auth} ]] && header+=(-H "Authorization: Basic $(printf $auth | base64 -w 0)")
 
 request='"dashboardId":'$dash_id',"panelId":'$panel_id',"text":"'$desc'"'
-echo 11"{${request}}"
-echo 22"${header[@]}"
 [[ ! -z "${time_start}" ]] && request+=', "time":'$((time_start*1000))
 [[ ! -z "${time_end}" ]] && request+=',"timeEnd":'$((time_end*1000))
 [[ ! -z ${tags} ]] && request+=',"tags":["'${tags//,/\",\"}'"]'
 
-curl --max-time 5 --insecure -X POST --url "${url}/api/annotations" \
+# For dev purpose/self-signed cert: https://stackoverflow.com/questions/38571099/how-can-i-set-the-certificates-in-curl
+# And use -k param
+curl --max-time 5 -X POST --url "${url}/api/annotations" \
     "${header[@]}" \
     --data "{${request}}"
 #http -v POST "${url}" Accept:application/json Content-type:application/json 
