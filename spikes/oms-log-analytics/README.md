@@ -4,59 +4,60 @@ Prometheus is a popular open source metric monitoring solution and is a part of 
 
 Reference Documentation [here](https://docs.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-prometheus-integration).
 
-## Steps to Scrape Metrics into Log Analytics
+## Installation on AKS Clusters
 
-1. Save the Workspace ID and the key for log Analytics work space from the Azure dashboard
-2. If deploying to a AKS cluster, check whether you already have OMS Agent running.
-   1. Check if `omsagent` Pod is running: `kubectl get pods -A | grep omsagent`
-   2. If `omsagent` is running then only apply the config file: `kubectl apply -f 3-container-azm-ms-agentconfig.yaml`
-   3. Skip to Step 6
-3. To use OMS Agent Daemonset and deployment:
-   1. Create the log analytics secrets with kubectl:
+For non-AKS clusters please see [non-aks/README.md](non-aks/README.md).
 
-    ```bash
+For installing on AKS clusters, we recommend enabling Azure Monitor for Containers through your Infrastructure as Code solution.
+Please see, [Enable Container Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-onboard) for instructions on enabling Azure Monitor for Containers for your cluster.
 
-    kubectl create secret generic omsagent-secret -n kube-system \
-                --from-literal=KEY=$(az monitor log-analytics workspace get-shared-keys \
-                -g LOG_ANALYTICS_GROUP -n LOG_ANALYTICS_NAME --query primarySharedKey -o tsv) \
-                --from-literal=WSID=$(az monitor log-analytics workspace show \
-                -g ngsa-fb-test-test-rg -n ngsa-fb-test-log --query customerId -o tsv)
-    # If you don't have az cli access, replace the $(az monitor...) portion with actual values
-    
-    ```
+For more detail on what is created, please see the yaml files in non-aks.
 
-   2. Check secrets created, run `kubectl get secrets omsagent-secret -n kube-system -o jsonpath='{.data}'`
-   3. Properly annotate target pods so that Prometheus can select and scrape the pod metrics. For details on proper annotations for OMS agent see [this link](https://docs.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-prometheus-integration)
+Once Azure Monitor for Containers has been deployed, you need to apply a config map to enable application log and metric collection.
+An example config map is provided in [container-azm-ms-agentconfig.yaml](./container-azm-ms-agentconfig.yaml).
+This can be applied through `kubectl` or a gitops solution like Flux.
+For `kubectl`:
 
-    ```bash
-    
-    # Make sure --prometheus argument has been passed to ngsa-memory or ngsa-cosmos
-    # Otherwise, ngsa won't output Prometheus data to `/metrics` path
+```bash
+kubectl apply -f container-azm-ms-agentconfig.yaml
+```
 
-    # Annotate the pod instance "ngsa-memory"
-    kubectl annotate pod ngsa-memory prometheus.io/scrape=true --overwrite prometheus.io/path='/metrics' prometheus.io/port=8080 prometheus.io/scheme=http interval=30s --overwrite
+The provided config map enables:
 
-    # Check ngsa-memory has the correct annotations
-    kubectl get pod ngsa-memory -o jsonpath='{.metadata.annotations}' | jq
+* Collection of application logs
+* Collection of application metrics
+  * Note: With this Config Map, Azure Monitor For Containers relies on pod annotations to point to the port and endpoint for metric collection.
+  * Pods should be annotated with the following labels:
+    * `prometheus.io/scrape: 'true'`
+    * `prometheus.io/path: '/metrics'`
+    * `prometheus.io/port: '8080'`
+    * `prometheus.io/scheme: 'http'`
+    * `interval: '30s'`
+  * Please see [Configure scaping of Prometheus metrics with Container insights](https://docs.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-prometheus-integration) for more details on the config and how to tune it for your application
 
-    ```
+Note: For the NGSA application, the `--prometheus` flag must be provided as a command line argument in order for the application to expose a metrics endpoint.
 
-   4. Apply the OMS yaml files: `kubectl apply -f .`
-   5. Check if resources are created properly:
+## Verify Metrics Collection
 
-      1. Configmap: `kubectl get cm container-azm-ms-agentconfig -n kube-system`
-      2. Secrets:  `kubectl get secrets omsagent-secret -n kube-system`
-      3. Daemonset: `kubectl get ds omsagent -n kube-system`
+Now monitoring is enabled; go into the logs tab of your Log analytics workspace and type the query below.
+You should be able to see the prometheus metrics in the azure log analytics
 
-   6. Check the OMS agent logs with command and it should indicate the Prometheus config processing
-    ``` kubectl logs -f <omsagent-pod-name> --namespace kube-system ```
+```kusto
+InsightsMetrics
+| where Namespace contains "prometheus"
+| sort by TimeGenerated desc
+```
 
-      ![Image](agent-logs.png)
+An example for NGSA, to get the latency quantiles, use:
 
-4. Now go into the logs tab of the Log analytics workspace and type the query below you should be able to see the prometheus metrics in the azure log analytics
+```kusto
+InsightsMetrics
+| where Namespace contains "prometheus"
+| where Name == "NgsaAppSummary"
+| extend t=parse_json(Tags)
+| project TimeGenerated, quantile=tostring(t.quantile), Latency_ms=Val
+```
 
-  ` InsightsMetrics | where Namespace contains "prometheus" | sort by TimeGenerated desc  `
+![Image](images/quantile-example-query.png)
 
-  ![Image](workspace-query-results.png)
-
-> More about dashboards with queries . Reference : https://docs.microsoft.com/en-us/azure/azure-monitor/visualize/tutorial-logs-dashboards
+> More about dashboards with queries . Reference : [Azure Monitor Log Tutorial](https://docs.microsoft.com/en-us/azure/azure-monitor/visualize/tutorial-logs-dashboards)
