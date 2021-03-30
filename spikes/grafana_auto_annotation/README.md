@@ -66,7 +66,7 @@ In that JSON,
 Only HTTPS is supported
 
 # Create an annotation with username and pass as args:
-./annotate_gf.bash -d "Test Arg auth" -i 4 -p 2 -u https://localhost:32000 - << "${USER_PASS_BASH_VAR}"
+./annotate_gf.bash -d "Test Arg auth" -i 4 -p 2 -u https://localhost:32000 - <<< "${USER_PASS_BASH_VAR}"
 
 # Export the Env variable GRAFANA_USER_PASS in format username:pass
 
