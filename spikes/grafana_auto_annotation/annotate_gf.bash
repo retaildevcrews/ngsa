@@ -113,4 +113,4 @@ request='"dashboardId":'$dash_id',"panelId":'$panel_id',"text":"'$desc'"'
 curl --max-time 5 -X POST --url "${url}/api/annotations" \
     "${header[@]}" \
     --data "{${request}}"
-#http -v POST "${url}" Accept:application/json Content-type:application/json 
+#http -v POST "${url}" Accept:application/json Content-type:application/json
