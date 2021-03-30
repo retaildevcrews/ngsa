@@ -3,8 +3,8 @@
 usage(){
 echo """
 $0 -d 'DESCRIPTION' REQRD_ARGS [OPTIONAL ARGS] [-]
-# '-' at the end means: script will read user auth from stdin 
-$0 -d 'Specific desc' -i 4 --panel-id 9     -u https://some.url:23232 -t realtag,tag2 - <<< "$auth_bash_var"
+'-' at the end means: script will read user auth from stdin 
+$0 -d 'Specific desc' -i 4 --panel-id 9 -u https://some.url:23232 -t realtag,tag2 - <<< \"\$auth_bash_var\"
 $0 -d 'Runnin load' --dashboard-id 2 -p 6 -u https://some.url:23232 -r 1616836775,1616836795
 
 Required args:
@@ -21,14 +21,15 @@ Optional Flags:
     -h | --help                     Show the usage
 
 Passing Auth info:
-    It expects basic auth info in the form of `user:pass`
-    1. Passing `-` at the end
+    It expects basic auth info in the form of user:pass
+    1. Passing '-' at the end
         Script will read auth info from stdin
         e.g.
-        echo $auth_var | $0 -d desc -i 4 -p 4 -u grafana-url.com -
-        $0 -d desc -i 4 -p 4 -u grafana-url.com - <<< $(echo $"auth_var")
-        $0 -d desc -i 4 -p 4 -u grafana-url.com - <<< $"auth_var"
-    2. Export environment variable named GRAFANA_USER_PASS and call this script
+        echo \$AUTH_VAR | $0 -d desc -i 4 -p 4 -u grafana-url.com -
+        $0 -d desc -i 4 -p 2 -u https://grafana-url.com - <<< $(echo \"\$AUTH_VAR\")
+        $0 -d desc -i 4 -p 6 -u https://localhost:10000 - <<< \"\$AUTH_VAR\"
+    2. Export environment variable named GRAFANA_USER_PASS and call this script without '-' at the end
+        $0 -d desc -i 4 -p 4 -u https://some.grafana.url:32000        
 """
 }
 echo_exit(){
