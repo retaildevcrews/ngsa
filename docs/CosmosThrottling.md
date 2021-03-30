@@ -1,10 +1,4 @@
-- I think we should take all of the below items and have a few people do a spike on scale testing
-- followed by a design review and necessary code / infra changes
-- i see (at least) two patterns
-  - your backend services don't autoscale
-    - your backend services do autoscale
-    - i think the code and how you respond is different in each scenario
-    - i think our existing approach is tuned for the 2nd scenario - would like to test to verify
+# Cosmos Throttling Findings
 
 We ran series of tests to setup a consistent baseline for Cosmos throttling. Tests were ran with the following params:
 
