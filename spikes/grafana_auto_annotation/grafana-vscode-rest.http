@@ -1,0 +1,33 @@
+### To generate basic auth use `base64 -w 0`
+
+### Search Dashboards in the Home folder 
+GET https://localhost:32000/api/dashboards/home
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic BASE64-ENCODED-AUTH
+
+### Get dashboards matching the query 'ngsa'
+GET https://localhost:32000/api/search?query=ngsa
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic BASE64-ENCODED-AUTH
+
+### Get dashboard information named 'ngsa'
+GET https://localhost:32000/api/dashboards/uid/ngsa
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic BASE64-ENCODED-AUTH
+
+### Get all annotations
+GET https://localhost:32000/api/annotations
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic BASE64-ENCODED-AUTH
+
+### Create annotation
+POST https://localhost:32000/api/annotations HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic BASE64-ENCODED-AUTH
+
+{  "dashboardId":4,  "panelId":2, "tags":["Bragging","TAG"], "text":"Hola Annotation Description"}
