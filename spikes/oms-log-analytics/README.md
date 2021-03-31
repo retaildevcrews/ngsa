@@ -11,7 +11,7 @@ For non-AKS clusters please see [non-aks/README.md](non-aks/README.md).
 For installing on AKS clusters, we recommend enabling Azure Monitor for Containers through your Infrastructure as Code solution.
 Please see, [Enable Container Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-onboard) for instructions on enabling Azure Monitor for Containers for your cluster.
 
-For more detail on what is created, please see the yaml files in non-aks.
+For more detail on what is created, please see the YAML files in `./non-aks`.
 
 Once Azure Monitor for Containers has been deployed, you need to apply a config map to enable application log and metric collection.
 An example config map is provided in [container-azm-ms-agentconfig.yaml](./container-azm-ms-agentconfig.yaml).
