@@ -313,3 +313,4 @@ dist
 .DS_Store
 IaC/PnP/monitoring/aks/terraform.tfstate
 IaC/PnP/monitoring/aks/terraform.tfstate.backup
+IaC/PnP/monitoring/aks/.terraform.lock.hcl
