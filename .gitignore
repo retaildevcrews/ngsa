@@ -311,3 +311,5 @@ dist
 ### OSX ###
 # General
 .DS_Store
+IaC/PnP/monitoring/aks/terraform.tfstate
+IaC/PnP/monitoring/aks/terraform.tfstate.backup
