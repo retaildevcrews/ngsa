@@ -2,7 +2,7 @@
 
 ## Deploy cluster baseline settings via Flux
 
-Make sure the current folder is "*.../aks*"
+Make sure the current folder is "*enterprise_scale/construction_sets/aks*"
 
   ```bash
  # Login to the AKS if in ESLZ
