@@ -2,7 +2,7 @@
 
 ## Deploy cluster baseline settings via Flux
 
-Make sure the current folder is "*enterprise_scale/construction_sets/aks*"
+Make sure the current folder is "*.../aks*"
 
   ```bash
  # Login to the AKS if in ESLZ
@@ -90,7 +90,7 @@ If there is a need to change the folder to your own folk, please modify [flux.ya
     apiVersion: secrets-store.csi.x-k8s.io/v1alpha1
     kind: SecretProviderClass
     metadata:
-      name: aks-ingress-contoso-com-tls-secret-csi-akv
+      name: aks-ingress-ngsa-monitoring-dev-com-tls-secret-csi-akv
       namespace: a0008
     spec:
       provider: azure

@@ -46,7 +46,7 @@ application_gateway_applications = {
 
     backend_pool = {
       fqdns = [
-        "bu0001a0008-00.aks-ingress.contoso.com"
+        "bu0001a0008-00.ngsa-monitoring-dev.com"
       ]
     }
 
