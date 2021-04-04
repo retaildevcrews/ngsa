@@ -27,7 +27,7 @@ The provided config map enables:
 * Collection of application logs
 * Collection of application metrics
   * Note: With this Config Map, Azure Monitor For Containers relies on pod annotations to point to the port and endpoint for metric collection.
-  * Pods should be annotated with the following labels:
+  * Pods should be annotated with labels for `scrape`, `path`, `port`, `scheme` and `interval` as in the following example. Note: make sure the values are updated for your specific pods:
     * `prometheus.io/scrape: 'true'`
     * `prometheus.io/path: '/metrics'`
     * `prometheus.io/port: '8080'`
