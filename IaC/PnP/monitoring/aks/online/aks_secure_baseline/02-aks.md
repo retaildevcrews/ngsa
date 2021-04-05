@@ -52,28 +52,32 @@ If there is a need to change the folder to your own folk, please modify [flux.ya
 
    > Create the Traefik Azure Identity and the Azure Identity Binding to let Azure Active Directory Pod Identity to get tokens on behalf of the Traefik's User Assigned Identity and later on assign them to the Traefik's pod.
 
-    ```yaml
-    cat <<EOF | kubectl create -f -
-    apiVersion: aadpodidentity.k8s.io/v1
-    kind: AzureIdentity
-    metadata:
-        name: podmi-ingress-controller-identity
-        namespace: a0008
-    spec:
-        type: 0
-        resourceID: $TRAEFIK_USER_ASSIGNED_IDENTITY_RESOURCE_ID
-        clientID: $TRAEFIK_USER_ASSIGNED_IDENTITY_CLIENT_ID
-    ---
-    apiVersion: aadpodidentity.k8s.io/v1
-    kind: AzureIdentityBinding
-    metadata:
-        name: podmi-ingress-controller-binding
-        namespace: a0008
-    spec:
-        azureIdentity: podmi-ingress-controller-identity
-        selector: podmi-ingress-controller
-    EOF
-    ```
+  ```bash
+  export INGRESS_IDENTITY=$(terraform output -json | jq -r .managed_identities.value.ingress.id | rev | cut -d/ -f1 | rev)
+  ```
+
+  ```yaml
+  cat <<EOF | kubectl create -f -
+  apiVersion: aadpodidentity.k8s.io/v1
+  kind: AzureIdentity
+  metadata:
+      name: podmi-ingress-controller-identity
+      namespace: a0008
+  spec:
+      type: 0
+      resourceID: $TRAEFIK_USER_ASSIGNED_IDENTITY_RESOURCE_ID
+      clientID: $TRAEFIK_USER_ASSIGNED_IDENTITY_CLIENT_ID
+  ---
+  apiVersion: aadpodidentity.k8s.io/v1
+  kind: AzureIdentityBinding
+  metadata:
+      name: podmi-ingress-controller-binding
+      namespace: a0008
+  spec:
+      azureIdentity: podmi-ingress-controller-identity
+      selector: $INGRESS_IDENTITY
+  EOF
+  ```
 
 1. Create the Traefik's Secret Provider Class resource.
 
