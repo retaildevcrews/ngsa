@@ -1,5 +1,6 @@
 global_settings = {
-  passthrough    = true
+  passthrough    = false
+  prefix = "mon-dev"
   random_length  = 0  
   default_region = "region1"
   regions = {

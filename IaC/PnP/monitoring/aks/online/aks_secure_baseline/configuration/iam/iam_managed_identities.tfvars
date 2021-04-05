@@ -1,10 +1,10 @@
 managed_identities = {
   ingress = {
-    name               = "mi-monitoring-dev-ingress-controller"
+    name               = "podmi-ingress-controller"
     resource_group_key = "devops_re1"
   }
   apgw_keyvault_secrets = {
-    name               = "mi-monitoring-dev-agw-secrets"
+    name               = "agw-secrets-msi"
     resource_group_key = "devops_re1"
   }
 }

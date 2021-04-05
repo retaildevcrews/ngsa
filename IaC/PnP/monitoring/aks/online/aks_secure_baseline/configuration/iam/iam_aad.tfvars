@@ -24,7 +24,7 @@ azuread_groups = {
   # cluster_re1 AKS admin group
   #
   aks_cluster_re1_admins = {
-    name        = "monitoring-dev-aks-cluster-re1-admins"
+    name        = "aks-cluster-re1-admins"
     description = "Provide read and write access to the keyvault secrets / level0."
     members = {
       user_principal_names = [

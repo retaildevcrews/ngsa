@@ -3,7 +3,7 @@ keyvaults = {
 
   # This keyvault is used to store the complex password created for the AKS breakglass admin user
   secrets = {
-    name                = "kv-monitoring-dev-ue2"
+    name                = "secrets"
     resource_group_key  = "aks_re1"
     region              = "region1"
     sku_name            = "premium"

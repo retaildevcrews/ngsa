@@ -29,8 +29,8 @@ aks_clusters = {
       enabled = true
       azure_active_directory = {
         managed = true
-        #admin_group_object_names = ["monitoring-dev-aks-cluster-re1-admins"]
-        admin_group_object_ids = ["a8159ca8-bb9c-4ecc-a862-e3116d7d798d"]  # NGSA-Dev
+        admin_group_object_names = ["monitoring-dev-aks-cluster-re1-admins"]
+        admin_group_object_ids = [ "a8159ca8-bb9c-4ecc-a862-e3116d7d798d"]  # NGSA-Dev
         # azuread_groups = {
         #   keys = ["aks_cluster_re1_admins"]
         # }
@@ -73,8 +73,7 @@ aks_clusters = {
       }
     }
 
-#    node_resource_group_name = "aks-nodes-re1"
-    node_resource_group_name = "rg-monitoring-dev-ue2-aks-nodes"
+    node_resource_group_name = "aks-nodes-re1"
 
     node_pools = {
       pool1 = {

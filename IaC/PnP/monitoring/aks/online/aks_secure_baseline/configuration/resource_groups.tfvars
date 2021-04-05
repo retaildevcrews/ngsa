@@ -1,36 +1,36 @@
 resource_groups = {
   aks_re1 = {
-    name   = "rg-monitoring-dev-ue2-aks"
+    name   = "aks-re1"
     region = "region1"
   }
 
   agw_re1 = {
-    name   = "rg-monitoring-dev-ue2-agw"
+    name   = "agw-re1"
     region = "region1"
   }
 
   vnet_hub_re1 = {
-    name   = "rg-monitoring-dev-ue2-vnet-hub"
+    name   = "vnet-hub-re1"
     region = "region1"
   }
 
   aks_spoke_re1 = {
-    name   = "rg-monitoring-dev-ue2-aks-spoke"
+    name   = "aks_spoke_re1"
     region = "region1"
   }
   
   ops_re1 = {
-    name   = "rg-monitoring-dev-ue2-ops"
+    name   = "ops_re1"
     region = "region1"
   }
 
   devops_re1 = {
-    name   = "rg-monitoring-dev-ue2-devops"
+    name   = "devops_re1"
     region = "region1"
   }
 
   jumpbox_re1 = {
-    name   = "rg-monitoring-dev-ue2-jumpbox"
+    name   = "jumpbox_re1"
     region = "region1"
   }
 }

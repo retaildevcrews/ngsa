@@ -1,6 +1,6 @@
 public_ip_addresses = {
   firewall_re1 = {
-    name                    = "pip-egress-1"
+    name                    = "pip-egress-re1-1"
     resource_group_key      = "vnet_hub_re1"
     sku                     = "Standard"
     allocation_method       = "Static"
@@ -10,7 +10,7 @@ public_ip_addresses = {
   }
 
   firewall_pip2_re1 = {
-    name                    = "pip-egress-2"
+    name                    = "pip-egress-re1-2"
     resource_group_key      = "vnet_hub_re1"
     sku                     = "Standard"
     allocation_method       = "Static"
@@ -20,7 +20,7 @@ public_ip_addresses = {
   }
 
   bastion_host_re1 = {
-    name                    = "pip-bastion-monitoring-dev-ue2"
+    name                    = "pip-bastion-re1-1"
     resource_group_key      = "jumpbox_re1"
     sku                     = "Standard"
     allocation_method       = "Static"
@@ -29,7 +29,7 @@ public_ip_addresses = {
   }
 
   agw_pip1_re1 = {
-    name                    = "pip-agw-monitoring-dev-ue2"
+    name                    = "pip-agw-re1-1"
     resource_group_key      = "agw_re1"
     sku                     = "Standard"
     allocation_method       = "Static"
