@@ -35,3 +35,6 @@
 
 ## Grafana
 
+## PnP Request Routing - Monitoring Dev Cluster
+
+![Flow for an incoming request, from the user through to a pod in the PnP deployment](Azure-Native-Flow.drawio.svg)
