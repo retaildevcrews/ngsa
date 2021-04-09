@@ -34,6 +34,13 @@ terraform {
     }
   }
   required_version = ">= 0.13"
+  backend "azurerm" {
+      #These values must be set during terraform init  
+      resource_group_name  = ""
+      storage_account_name = ""
+      container_name       = ""
+      key                  = ""
+  }  
 }
 
 
