@@ -138,7 +138,14 @@ If there is a need to change the folder to your own folk, please modify [flux.ya
     terraform output -json | jq -r '"https://" + (.domain_name_registrations.value.random_domain.dns_domain_registration_name)'
     ```
 
-4. You can now test the application from a browser. After couple of the minutes the application gateway health check warning should disappear
+4. Update your local hosts file and add an entry for the DNS name.  The IP address should be the PIP of the AGW.
+```bash
+terraform output -json | jq -r ".domain_name_registrations.value.random_domain.dns_domain_registration_name"
+```
+> This is a temporary step until we settle on the domain strategy for multiple environments
+
+
+5. You can now test the application from a browser. After couple of the minutes the application gateway health check warning should disappear
 
 ## Destroy resources
 
