@@ -102,21 +102,3 @@ spec:
             name: ngsa-memory
             port:
               number: 8080
----
-# Most probably not used
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: ngsa-memory-np
-#   namespace: ngsa
-#   labels:
-#     app: ngsa-memory
-
-# spec:
-#   type: NodePort
-#   selector:
-#     app: ngsa-memory
-#   ports:
-#     - port: 8080
-#       targetPort: 8080
-#       nodePort: 30080
