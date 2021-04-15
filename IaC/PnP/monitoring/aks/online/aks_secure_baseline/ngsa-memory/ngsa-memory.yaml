@@ -25,6 +25,9 @@ spec:
         app: ngsa-memory
         version: beta-0329-1641
         deploy: 21-03-29-16-41-59
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '9102'
     spec:
       containers:
         - name: app
