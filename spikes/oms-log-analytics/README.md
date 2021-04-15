@@ -60,4 +60,15 @@ InsightsMetrics
 
 ![Image](images/quantile-example-query.png)
 
+We have also included the json file (`azure-workbook.json`) for an Azure Monitor workbook that can be [added to your log analytics workspace](https://www.cloudsma.com/2020/11/import-azure-monitor-workbooks/).
+This workbook currently has 3 queries:
+
+* The one above for showing the percentiles vs. time
+* A query that shows requests per second measured by the application. This query contains the equivalent of PromQL's `rate` function
+* A query showing the amount of data ingested to log analytics per data source over the last 30 days
+
+Note: Kusto Query Language (used for querying log analytics) does not have build in support for a `rate` function, however the team put together a set of User Defined Functions that recreated the experience.
+Please see [series_metric_fl](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/functions-library/series-metric-fl?tabs=adhoc) to convert the metric data to a time series and the [series_rate_fl](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/functions-library/series-rate-fl?tabs=adhoc) for calculating the rate of the new series.
+See the second query in the workbook for a demonstration of using this.
+
 > More about dashboards with queries . Reference : [Azure Monitor Log Tutorial](https://docs.microsoft.com/en-us/azure/azure-monitor/visualize/tutorial-logs-dashboards)
