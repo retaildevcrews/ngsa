@@ -15,7 +15,7 @@ metadata:
   labels:
     app.kubernetes.io/name: ngsa-memory
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: ngsa-memory
