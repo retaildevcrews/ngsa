@@ -1,0 +1,62 @@
+{
+    "version": "Notebook/1.0",
+    "items": [
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "InsightsMetrics\n| where Namespace contains \"prometheus\"\n| where Name == \"NgsaAppSummary\"\n| extend t=parse_json(Tags)\n| project TimeGenerated, quantile=tostring(t.quantile), Val\n| where quantile != \"1\"",
+          "size": 0,
+          "title": "Latency Percentiles for NGSA App (ms)",
+          "timeContext": {
+            "durationMs": 3600000
+          },
+          "queryType": 0,
+          "resourceType": "microsoft.operationalinsights/workspaces",
+          "visualization": "linechart"
+        },
+        "name": "query - 0"
+      },
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "let series_rate_fl=(tbl:(timestamp:dynamic, value:dynamic), n_bins:int=1, fix_reset:bool=true)\n{\n    tbl\n    | where fix_reset                                                   //  Prometheus counters can only go up\n    | mv-apply value to typeof(double) on   \n    ( extend correction = iff(value < prev(value), prev(value), 0.0)    // if the value decreases we assume it was reset to 0, so add last value\n    | extend cum_correction = row_cumsum(correction)\n    | extend corrected_value = value + cum_correction\n    | summarize value = make_list(corrected_value))\n    | union (tbl | where not(fix_reset))\n    | extend timestampS = array_shift_right(timestamp, n_bins), valueS = array_shift_right(value, n_bins)\n    | extend dt = series_subtract(timestamp, timestampS)\n    | extend dt = series_divide(dt, 1e7)                              //  converts from ticks to seconds\n    | extend dv = series_subtract(value, valueS)\n    | extend rate = series_divide(dv, dt)\n    | project-away dt, dv, timestampS, value, valueS\n}\n;\nlet series_metric_fl=(metrics_tbl:(*), timestamp_col:string, name_col:string, labels_col:string, value_col:string, metric_name:string, labels_selector:string='', lookback:timespan=timespan(10m), offset:timespan=timespan(0))\n{\n    let selector_d=iff(labels_selector == '', dynamic(['']), split(labels_selector, ','));\n    let etime = ago(offset);\n    let stime = etime - lookback;\n    metrics_tbl\n    | extend timestamp = column_ifexists(timestamp_col, datetime(null)), name = column_ifexists(name_col, ''), labels = column_ifexists(labels_col, dynamic(null)), value = column_ifexists(value_col, 0)\n    | extend labels = dynamic_to_json(labels)       //  convert to string and sort by key\n    | where name == metric_name and timestamp between(stime..etime)\n    | order by timestamp asc\n    | summarize timestamp = make_list(timestamp), value=make_list(value) by name, labels\n    | where labels has_all (selector_d)\n}\n;\n//\nInsightsMetrics\n| where Namespace contains \"prometheus\"\n| where Name == \"NgsaAppDuration_count\"\n| extend t = parse_json(Tags)\n| invoke series_metric_fl('TimeGenerated', 'Name', 't', 'Val', 'NgsaAppDuration_count', '\"app.kubernetes.io/instance\":\"ngsa-cosmos\"', 1h)\n| invoke series_rate_fl(2)\n| render timechart with(series=labels)",
+          "size": 0,
+          "title": "Requests Per Second",
+          "timeContext": {
+            "durationMs": 14400000
+          },
+          "queryType": 0,
+          "resourceType": "microsoft.operationalinsights/workspaces"
+        },
+        "name": "query - 1"
+      },
+      {
+        "type": 1,
+        "content": {
+          "json": "# Log Ingestion in GB by Source"
+        },
+        "name": "text - 3"
+      },
+      {
+        "type": 3,
+        "content": {
+          "version": "KqlItem/1.0",
+          "query": "Usage\n| where TimeGenerated > startofday(ago(31d))\n| where IsBillable == true\n| summarize TotalVolumeGB = sum(Quantity) / 1000 by bin(TimeGenerated, 1d), DataType\n",
+          "size": 0,
+          "timeContext": {
+            "durationMs": 2592000000
+          },
+          "queryType": 0,
+          "resourceType": "microsoft.operationalinsights/workspaces",
+          "visualization": "barchart"
+        },
+        "name": "query - 2"
+      }
+    ],
+    "fallbackResourceIds": [
+      "/subscriptions/9300257b-f4e9-4775-acb9-bc538260bc5a/resourceGroups/jomalsan-dev-log-rg/providers/Microsoft.OperationalInsights/workspaces/jomalsan-dev-log"
+    ],
+    "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+  }
