@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Namespace
 metadata:
+  name: ngsa
   labels:
     name: ngsa
-  name: ngsa
 ---
 apiVersion: apps/v1
 kind: Deployment

@@ -97,8 +97,8 @@ To deploy another application (say App-A) in another namespace (app-ns), these s
             name: traefik-watch-workloads
             namespace: app-ns # Namespace where the app is
             labels:
-            app.kubernetes.io/name: traefik-ingress-ilb
-            app.kubernetes.io/instance: traefik-ingress-ilb
+                app.kubernetes.io/name: traefik-ingress-ilb
+                app.kubernetes.io/instance: traefik-ingress-ilb
         roleRef:
             apiGroup: rbac.authorization.k8s.io
             kind: ClusterRole
