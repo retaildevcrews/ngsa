@@ -11,7 +11,6 @@ kind: Deployment
 metadata:
   name: ngsa-memory
   namespace: ngsa
-# We should label our app with proper k8s label
   labels:
     app.kubernetes.io/name: ngsa-memory
 spec:

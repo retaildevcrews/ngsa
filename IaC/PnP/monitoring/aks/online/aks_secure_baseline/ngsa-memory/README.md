@@ -89,7 +89,7 @@ To deploy another application (say App-A) in another namespace (app-ns), these s
 
 - We need to attach the `app-ns` namespace to the `traefik-ingress-controller` ServiceAccount. To do that we need to apply a new RoleBinding
 
-    ```yaml
+    ```bash
     cat <<EOF | kubectl apply -f -
         kind: RoleBinding
         apiVersion: rbac.authorization.k8s.io/v1
