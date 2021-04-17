@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: ghcr.io/retaildevcrews/ngsa-lr:beta-0.3.0-0416-0603-56
+        image: ghcr.io/retaildevcrews/ngsa-lr:beta-0.3.0-0417-0603-57
         imagePullPolicy: Always
         args:
         - -l
