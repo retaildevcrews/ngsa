@@ -14,8 +14,7 @@
 - Apply the new traefik configuration
 
     ```bash
-    # REPO_ROOT=Root directory of this repository
-    kubectl apply -f ${REPO_ROOT}/enterprise_scale/construction_sets/aks/online/aks_secure_baseline/workloads/baseline/traefik.yaml
+    kubectl apply -f ../workloads/baseline/traefik.yaml
     ```
 
 ## Notes
