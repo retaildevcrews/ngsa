@@ -126,4 +126,4 @@ To deploy another application (say App-A) in another namespace (app-ns), these s
   - Check flux instance using the command ***kubectl logs [flux pod name] -n [flux pod namespace]*** e.g.,
     ```bash
     kubectl logs ngsa-flux-698f4b466c-rvc7q -n ngsa-memory-settings
-    ``
+    ```
