@@ -113,10 +113,14 @@ To deploy another application (say App-A) in another namespace (app-ns), these s
 
 - (Optional) Add a Flux CD instance for the app (see [this sample yaml file](../ngsa-settings/ngsa_memory_flux.yaml) for an example). Flux CD instances automatically ensure that the state of resources deployed in the AKS cluster match their description in a GIT repository. The Flux CD instance routinely compares the deployed resources to the resource descriptions at the specified path in the specified repository and updates the deployed resources automatically to match the repository if there is any difference. To deploy a Flux CD instance for the newly deployed app:
   - Update the following fields in the [yaml file](../ngsa-settings/ngsa_memory_flux.yaml):
-    - --git-url=""          # This should point to the repository you wish to watch for updates
-    - --git-branch=""       # Should be set to "main", unless you have a reason to watch a specific branch of the repository.
-    - --git-path=""         # Path to the folder in the repository containing the yaml files that describe the desired state of the app's resources in our AKS cluster (```ngsa-memory.yaml``` in this case)
-    - --k8s-secret-name=""  # The name of the secret used by your Flux CD instance. The secret is defined in the yaml file, so its name should be updated too. The default name is ```flux-git-deploy```, but this is being updated to prevent confusion because more than one Flux CD instances is in use in the AKS cluster. 
+    - --git-url=""          
+    The ```git-url``` field should point to the repository you wish to watch for updates
+    - --git-branch=""       
+    The ```git-branch``` field should be set to "main", unless you have a reason to watch a specific branch of the repository.
+    - --git-path=""         
+    The ```git-path``` fields is the path to the folder in the repository containing the yaml files that describe the desired state of the app's resources in our AKS cluster (```ngsa-memory.yaml``` in this case)
+    - --k8s-secret-name=""  
+    The ```k8s-secret-name``` field sets the name of the secret used by your Flux CD instance. The secret is defined in the yaml file, so its name should be updated too. The default value is ```flux-git-deploy```, but this is being updated to prevent confusion because more than one Flux CD instances is in use in the AKS cluster. 
     - All resource names and namespaces
   - Apply the app's flux yaml file: 
   
