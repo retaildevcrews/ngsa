@@ -16,6 +16,11 @@
     ```bash
     kubectl apply -f ./workloads/baseline/traefik.yaml
     ```
+- Create a Flux CD instance for the NGSA app
+
+    ```bash
+    kubectl apply -f ./ngsa-settings/ngsa_memory_flux.yaml 
+    ```
 
 ## Notes
 
@@ -24,6 +29,10 @@
   - In `traefik-ingress-config` ConfigMap
     - Added `ngsa` namespace in `traefik.toml` under `[providers.kubernetesingress]`
     - Added a new middleware to strip the `/memory` and `/cosmos` path prefix from the URL under `[http.middlewares.ngsa-stripprefix.stripPrefix]`
+- Before creating the Flux CD instance, the settings in the yaml file [./../ngsa-settings/ngsa_memory_flux.yaml](./../ngsa-settings/ngsa_memory_flux.yaml) need to be verified
+  - The gitops repo is specified in the yaml file using the variable `--git-url`
+  - The path in the gitops repo is specified in the yaml file using the variable `--git-path`. There should be a yaml file for ngsa-memory in the specified folder.
+  - There should be a `config.json` file one folder above the path specified in the yaml file by `--git-path`. Ensure that the variables set in this json file (hostname, url prefix, agentpool, etc) are correct, as they are needed by autogitops to enable the automated generation of the `ngsa-memory.yaml` file.
 
 
 ## Deploying another app
