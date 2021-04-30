@@ -1,4 +1,4 @@
-# Deploying NGSA Memory with Traefik middleware CRF
+# Deploying NGSA Memory with Traefik middleware CRD
 
 ## Prerequisites
 
@@ -80,3 +80,7 @@ Add the following lines under `[provider]` section:
 ```
 
 Adding this configuration can be done manually (`kubectl edit`) or via a pre-configured configmap yaml file. The preconfigured yaml file is not provided because the config might be different and applying haphazardly it would delete the previous configmap.
+
+> *Finding the configmap for Traefik:*
+> 
+> If the deployment was created following [Pnp CAF](https://github.com/retaildevcrews/caf-terraform-landingzones-starter/tree/main/enterprise_scale/construction_sets/aks/online/aks_secure_baseline) then there would be one Traefik configmap (traefik-ingress-config) under `a0008` namespace. Edit the configmap with `kubectl edit cm traefik-ingress-config`.
