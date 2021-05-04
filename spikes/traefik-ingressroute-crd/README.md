@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- A Deployment with Traefik installed
+- A PnP Deployment with Traefik installed ([PnP deployment](https://github.com/retaildevcrews/caf-terraform-landingzones-starter/tree/main/enterprise_scale/construction_sets/aks/online/aks_secure_baseline)))
 
 ## Install NGSA-Memory app with Traefik IngressRoute and Middleware
 
