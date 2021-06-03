@@ -13,7 +13,7 @@ for filename in ./*.json; do
 
   # create or update alert
   az rest --method PUT --url "https://management.azure.com/subscriptions/$(eval ${Ngsa_Sub})/resourceGroups/${Ngsa_Log_Analytics_RG}/providers/microsoft.insights/scheduledqueryrules/${Alert_Name}?api-version=2018-04-16" --body @$filename-temp.json &> /dev/null
-  
+
   # remove temporary file
   rm $filename-temp.json
 
