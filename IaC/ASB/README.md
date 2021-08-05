@@ -24,9 +24,9 @@
 🛑 # These env vars are already set in Codespaces enviroment for "cse.ms"
 
 # check certs
-if [ -z $APP_GW_CERT_CSEMS ]; then echo "App Gateway cert not set correctly"; fi
-if [ -z $INGRESS_CERT_CSEMS ]; then echo "Ingress cert not set correctly"; fi
-if [ -z $INGRESS_KEY_CSEMS ]; then echo "Ingress key not set correctly"; fi
+if [ -z $CSEMS_APP_GW_CERT ]; then echo "App Gateway cert not set correctly"; fi
+if [ -z $CSEMS_INGRESS_CERT ]; then echo "Ingress cert not set correctly"; fi
+if [ -z $CSEMS_INGRESS_KEY ]; then echo "Ingress key not set correctly"; fi
 
 ```
 
@@ -273,9 +273,9 @@ az deployment group create -g $ASB_RG_CORE \
      targetVnetResourceId=${ASB_SPOKE_VNET_ID} \
      clusterAdminAadGroupObjectId=${ASB_CLUSTER_ADMIN_ID} \
      k8sControlPlaneAuthorizationTenantId=${ASB_TENANT_ID} \
-     appGatewayListenerCertificate=${APP_GW_CERT_CSEMS} \
-     aksIngressControllerCertificate="$(echo $INGRESS_CERT_CSEMS | base64 -d)" \
-     aksIngressControllerKey="$(echo $INGRESS_KEY_CSEMS | base64 -d)" \
+     appGatewayListenerCertificate=${CSEMS_APP_GW_CERT} \
+     aksIngressControllerCertificate="$(echo $CSEMS_INGRESS_CERT | base64 -d)" \
+     aksIngressControllerKey="$(echo $CSEMS_INGRESS_KEY | base64 -d)" \
      --query name
 
 ```
