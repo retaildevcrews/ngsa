@@ -1,0 +1,108 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ngsa-cosmos
+  namespace: ngsa
+  labels:
+    app.kubernetes.io/name: ngsa-cosmos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ngsa-cosmos
+  template:
+    metadata:
+      labels:
+        app: ngsa-cosmos
+        aadpodidbinding: $ASB_NGSA_MI_NAME
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8080'
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/retaildevcrews/ngsa-app:beta
+          imagePullPolicy: Always
+
+          args:
+          - --prometheus
+          - --url-prefix
+          - /cosmos
+          - --zone
+          - az-eastus2
+          - --region
+          - East
+
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 500m
+              memory: 512Mi
+
+          volumeMounts:
+            - name: secrets
+              mountPath: "/app/secrets"
+      volumes:
+        - name: secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: ngsa-secrets
+
+      nodeSelector:
+        agentpool: npuser01
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ngsa-cosmos
+  namespace: ngsa
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: ngsa-cosmos
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ngsa-cosmos-ingress
+  namespace: ngsa
+  annotations:
+    kubernetes.io/ingress.allow-http: "false"
+    kubernetes.io/ingress.class: traefik-internal
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.options: default
+    traefik.ingress.kubernetes.io/router.middlewares: ngsa-stripprefix@file
+spec:
+  tls:
+  - hosts:
+      - ${ASB_DOMAIN}
+  rules:
+  - host: ${ASB_DOMAIN}
+    http:
+      paths:
+      - path: /cosmos
+        pathType: Prefix
+        backend:
+          service:
+            name: ngsa-cosmos
+            port:
+              number: 8080
