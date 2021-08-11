@@ -338,7 +338,7 @@ kubectl create secret generic ngsa-secrets \
   --namespace ngsa \
   --from-literal=CosmosDatabase=$Imdb_DB \
   --from-literal=CosmosCollection=$Imdb_Col \
-  --from-literal=CosmosKey=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryReadonlyMasterKey -o tsv) \
+  --from-literal=CosmosKey=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryMasterKey -o tsv) \
   --from-literal=CosmosUrl=https://${Imdb_Name}.documents.azure.com:443/
 
 ```
@@ -419,7 +419,7 @@ kubectl create namespace ngsa-l8r
 
 cp ./loderunner/helm-config.example.yaml ./loderunner/helm-config.yaml
 
-helm install l8r loderunner -f ./loderunner/helm-config.yaml --namespace ngsa-l8r
+helm install l8r loderunner -f ./loderunner/helm-config.yaml --namespace ngsa-l8r --set region=$Ngsa_Location
 
 # Verify the pods are running
 kubectl get pods --namespace ngsa-l8r

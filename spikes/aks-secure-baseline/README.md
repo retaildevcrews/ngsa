@@ -42,12 +42,22 @@ Follow the [aks-secure-baseline](https://github.com/mspnp/aks-secure-baseline) w
   - Removed templates from the chart that are not needed. Things like certmanager and istio resources.
   - Imported images from GitHub container registry into private ACR.
   - Reduced resource limits for deployments because of default policies.
-  - **How to integrate the ngsa secrets with the key vault?**
+  - Using the existing key vault from aks-secure-baseline to save NGSA secrets.
+  - Added simple template files for csi driver and pod identity configurations. These are applied manually to the cluster. Same for fluentbit.
   - **How to handle NGSA docker images? Keep in sync with private registry? Update policies to allow the images? Or something else?**
   - **Should NGSA resource defaults and/or azure policies be updated so a default helm install works?**
-- Fluenbit
+  - **Add pod identity and csi driver configs to GitOps workflow. Same for fluentbit.**
+- Fluentbit
+  - Using the existing key vault to save fluentbit secrets. The same key vault NGSA is using.
   - Using the Log Analytics in the Hub resource group.
+  - **Is sharing key vaults like this okay? Should they be broken up by app or some other criteria?**
   - **Which log analytics should we use for custom logs?**
+  - **Pods in the Daemonset fail to create in the aks-npsystem nodes. The csi driver for handling secrets is not installed on the nodes in that node pool.**
+
+## Helpful links
+
+- [Pod identity walkthrough](https://azure.github.io/aad-pod-identity/docs/demo/standard_walkthrough)
+- [Azure key vault csi provider usage](https://azure.github.io/secrets-store-csi-driver-provider-azure/getting-started/usage)
 
 ## Commands
 
@@ -128,13 +138,48 @@ helm upgrade -i helm-operator fluxcd/helm-operator --wait \
 # create ngsa namespace
 kubectl create namespace ngsa
 
-# create ngsa secrets
-kubectl create secret generic ngsa-secrets \
-  --namespace ngsa \
-  --from-literal=CosmosDatabase=$Imdb_DB \
-  --from-literal=CosmosCollection=$Imdb_Col \
-  --from-literal=CosmosKey=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryReadonlyMasterKey -o tsv) \
-  --from-literal=CosmosUrl=https://${Imdb_Name}.documents.azure.com:443/
+# set ngsa secrets in key vault
+
+# set the key vault name and AKS variable names
+export KEYVAULT_NAME=<key vault name>
+export AKS_NAME=<aks cluster name>
+
+# Example values that were auto generated during the initial aks-secure-baseline setup
+# export KEYVAULT_NAME="kv-aks-ioxqpbmcqokqq"
+# export AKS_NAME="aks-ioxqpbmcqokqq"
+
+az keyvault secret set -o table --vault-name $KEYVAULT_NAME --name "CosmosDatabase" --value $Imdb_DB
+az keyvault secret set -o table --vault-name $KEYVAULT_NAME --name "CosmosCollection" --value $Imdb_Col
+az keyvault secret set -o table --vault-name $KEYVAULT_NAME --name "CosmosKey" \
+  --value $(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryMasterKey -o tsv)
+az keyvault secret set -o table --vault-name $KEYVAULT_NAME --name "CosmosUrl" --value https://${Imdb_Name}.documents.azure.com:443/
+
+# create managed identity for NGSA
+export NGSA_MI_NAME=<managed identity name for NGSA>
+
+# Example name following naming conventions from /docs/NamingConvention.md
+# export NGSA_MI_NAME="ngsa-id"
+
+az identity create -g $Imdb_RG -n $NGSA_MI_NAME
+
+export NGSA_MI_PRINCIPAL_ID=$(az identity show -n $NGSA_MI_NAME -g $Imdb_RG --query "principalId" -o tsv)
+export NGSA_MI_RESOURCE_ID=$(az identity show -n $NGSA_MI_NAME -g $Imdb_RG --query "id" -o tsv)
+export NGSA_MI_CLIENT_ID=$(az identity show -n $NGSA_MI_NAME -g $Imdb_RG --query "clientId" -o tsv)
+
+# give the AKS node managed identity control of ngsa managed identity
+AKS_IDENTITY_ID=$(az aks show -g $Imdb_RG -n $AKS_NAME --query "identityProfile.kubeletidentity.objectId" -o tsv)
+az role assignment create --role "Managed Identity Operator" --assignee $AKS_IDENTITY_ID --scope $NGSA_MI_RESOURCE_ID
+
+# give the ngsa managed identity read access to keyvault
+az keyvault set-policy -n $KEYVAULT_NAME --object-id $NGSA_MI_PRINCIPAL_ID --secret-permissions get
+
+export TENANT_ID=$(az account show --query "tenantId" -o tsv)
+
+# manually apply pod identity configs to cluster
+envsubst < ngsa-pod-identity-template.yaml | kubectl apply -n ngsa -f -
+
+# manually apply csi configs for key vault integration to cluster
+envsubst < ngsa-csi-template.yaml | kubectl apply -n ngsa -f -
 
 # import images to private acr to allow cluser to pull images
 az acr import --source ghcr.io/retaildevcrews/ngsa-app:beta -n $ACR_NAME
@@ -159,11 +204,35 @@ Ngsa_Log_Analytics_Name=<log analytics name>
 # Ngsa_Log_Analytics_RG="rg-enterprise-networking-hubs"
 # Ngsa_Log_Analytics_Name="la-hub-eastus2-lq7hlzxsovd4c"
 
-# create fluentbit secrets
-kubectl create secret generic fluentbit-secrets \
-  --namespace fluentbit \
-  --from-literal=WorkspaceId=$(az monitor log-analytics workspace show -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query customerId -o tsv) \
-  --from-literal=SharedKey=$(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query primarySharedKey -o tsv)
+# set fluentbit secrets in key vault
+az keyvault secret set -o table --vault-name $KEYVAULT_NAME --name "WorkspaceId" \
+  --value $(az monitor log-analytics workspace show -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query customerId -o tsv)
+az keyvault secret set -o table --vault-name $KEYVAULT_NAME --name "SharedKey" \
+  --value $(az monitor log-analytics workspace get-shared-keys -g $Ngsa_Log_Analytics_RG -n $Ngsa_Log_Analytics_Name --query primarySharedKey -o tsv)
+
+# create managed identity for fluentbit
+export FLUENTBIT_MI_NAME=<managed identity name for fluentbit>
+
+# Example name following naming conventions from /docs/NamingConvention.md
+# export FLUENTBIT_MI_NAME="fluentbit-id"
+
+az identity create -g $Imdb_RG -n $FLUENTBIT_MI_NAME
+
+export FLUENTBIT_MI_PRINCIPAL_ID=$(az identity show -n $FLUENTBIT_MI_NAME -g $Imdb_RG --query "principalId" -o tsv)
+export FLUENTBIT_MI_RESOURCE_ID=$(az identity show -n $FLUENTBIT_MI_NAME -g $Imdb_RG --query "id" -o tsv)
+export FLUENTBIT_MI_CLIENT_ID=$(az identity show -n $FLUENTBIT_MI_NAME -g $Imdb_RG --query "clientId" -o tsv)
+
+# give the AKS node managed identity control of fluentbit managed identity
+az role assignment create --role "Managed Identity Operator" --assignee $AKS_IDENTITY_ID --scope $FLUENTBIT_MI_RESOURCE_ID
+
+# give the fluentbit managed identity read access to keyvault
+az keyvault set-policy -n $KEYVAULT_NAME --object-id $FLUENTBIT_MI_PRINCIPAL_ID --secret-permissions get
+
+# manually apply pod identity configs to cluster
+envsubst < fluentbit-pod-identity-template.yaml | kubectl apply -n fluentbit -f -
+
+# manually apply csi configs for key vault integration to cluster
+envsubst < fluentbit-csi-template.yaml | kubectl apply -n fluentbit -f -
 
 # import images to private acr to allow cluser to pull images
 az acr import --source docker.io/fluent/fluent-bit:1.5-debug -n $ACR_NAME

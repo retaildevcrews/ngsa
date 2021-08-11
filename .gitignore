@@ -311,5 +311,9 @@ dist
 ### OSX ###
 # General
 .DS_Store
-IaC/PnP/monitoring/aks/terraform.tfstate
-IaC/PnP/monitoring/aks/terraform.tfstate.backup
+
+# Terraform
+**/*tfstate
+**/*tfstate.backup
+**/*.terraform.lock.hcl
+

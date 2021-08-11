@@ -11,6 +11,7 @@ spec:
     path: spikes/aks-secure-baseline/charts/fluentbit
     ref: main
   values:
+    aadpodidbinding: fluentbit-id
     image:
       repository: acraksioxqpbmcqokqq.azurecr.io/fluent/fluent-bit
       tag: "1.5-debug"

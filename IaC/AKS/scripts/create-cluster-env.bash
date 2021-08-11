@@ -224,7 +224,7 @@ else
     Imdb_RW_Key=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryMasterKey -o tsv ${subs_arg})
     docker run -it --rm retaildevcrew/imdb-import $Imdb_Name ${Imdb_RW_Key} $Imdb_DB $Imdb_Col
     ## Finished Loading IMDB
-    Ngsa_Imdb_CM_Key=$(az cosmosdb keys list -n $Imdb_Name -g $Imdb_RG --query primaryReadonlyMasterKey -o tsv ${subs_arg})
+    Ngsa_Imdb_CM_Key=$Imdb_RW_Key
     Ngsa_Imdb_CM_Url=https://${Imdb_Name}.documents.azure.com:443/
 fi
 

@@ -17,6 +17,7 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       labels:
+        aadpodidbinding: {{ .Values.aadpodidbinding }}
         app.kubernetes.io/component: app
         {{- include "ngsa.labels" . | nindent 8 }}
     spec:
@@ -58,9 +59,11 @@ spec:
               mountPath: "/app/secrets"
       volumes:
         - name: secrets
-          secret:
-            secretName: {{ .Values.app.secretName }}
-            defaultMode: 444
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: ngsa-csi-secrets
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

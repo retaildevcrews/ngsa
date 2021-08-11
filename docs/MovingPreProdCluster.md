@@ -142,7 +142,7 @@ kubectl create secret generic ngsa-secrets \
         --namespace ngsa \
         --from-literal=CosmosDatabase=imdb \
         --from-literal=CosmosCollection=movies \
-        --from-literal=CosmosKey=$(az cosmosdb keys list -n ngsa-pre-west-cosmos -g ngsa-pre-west-cosmos-rg --query primaryReadonlyMasterKey -o tsv) \
+        --from-literal=CosmosKey=$(az cosmosdb keys list -n ngsa-pre-west-cosmos -g ngsa-pre-west-cosmos-rg --query primaryMasterKey -o tsv) \
         --from-literal=CosmosUrl=https://ngsa-pre-west-cosmos.documents.azure.com:443/
 
 kubectl create namespace fluentbit

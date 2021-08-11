@@ -1,0 +1,52 @@
+---
+# RoleBinding for `mock` namespace
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: traefik-watch-workloads
+  namespace: mock
+  labels:
+    app.kubernetes.io/name: traefik-ingress-ilb
+    app.kubernetes.io/instance: traefik-ingress-ilb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: traefik-ingress-controller
+subjects:
+- kind: ServiceAccount
+  name: traefik-ingress-controller
+  namespace: a0008
+---
+# Middleware definition for ngsa-mock-memory
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: mock-middleware
+  namespace: mock
+spec:
+  stripPrefix:
+    prefixes:
+      - /mock
+---
+# Traefik IngressRoute instead of k8s Ingress
+# TODO: Can I do it without the internal host information
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mock-route
+  namespace: mock
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`bu0001a0008-00.ngsa-monitoring-dev.com`) && PathPrefix(`/mock`)
+    kind: Rule
+    middlewares:
+    - name: mock-middleware
+      namespace: mock
+    services:
+    - kind: Service
+      name: ngsa-mock-memory
+      namespace: mock
+      port: 8080
+---

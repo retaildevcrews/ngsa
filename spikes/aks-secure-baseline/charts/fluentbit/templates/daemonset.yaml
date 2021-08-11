@@ -12,6 +12,7 @@ spec:
   template:
     metadata:
       labels:
+        aadpodidbinding: {{ .Values.aadpodidbinding }}
         app.kubernetes.io/component: fluentbit
         {{- include "fluentbit.labels" . | nindent 8 }}
       annotations:
@@ -65,6 +66,8 @@ spec:
               readOnly: true
             - name: fluent-bit-config
               mountPath: /fluent-bit/etc/
+            - name: secrets
+              mountPath: /fluent-bit/secrets
           resources:
             limits:
               cpu: "1"
@@ -82,3 +85,9 @@ spec:
         - name: fluent-bit-config
           configMap:
             name: {{ include "fluentbit.fullname" . }}
+        - name: secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: fluentbit-csi-secrets
