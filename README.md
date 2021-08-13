@@ -17,6 +17,7 @@ At it's culmination the project will be a collection of guidance for deployment 
 3. Cluster Setup Guides
    1. [Developer Cluster](./IaC/DevCluster)
    2. [AKS](./IaC/AKS)
+   3. [Azure Secure Baseline](./IaC/ASB)
 4. Design, Practices, and Conventions
    1. [Architecture](./docs/ApplicationArch.md)
    2. [Engineering Practices](./docs/EngineeringPractices.md)
