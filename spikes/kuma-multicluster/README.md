@@ -5,7 +5,7 @@ Setup a multi-cluster service mesh with Kuma
 ## Prerequisites
 
 - Azure CLI ([download instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli))
-- Kuma CLI 1.0.3 ([download instructions](https://kuma.io/docs/1.0.3/installation/kubernetes/#_1-download-kuma))
+- Kuma CLI 1.0.3 ([download instructions](https://kuma.io/install))
 
 This has been tested in Ubuntu(WSL)
 
