@@ -12,7 +12,6 @@ metadata:
   namespace: ngsa-l8r
   annotations:
     fluxcd.io/automated: "true"
-    filter.fluxcd.io/app: glob:beta-*
 spec:
   replicas: 1
   selector:
@@ -25,7 +24,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: ghcr.io/retaildevcrews/ngsa-lr:beta-0.3.0-0503-0613-73
+        image: ghcr.io/retaildevcrews/ngsa-lr:beta
         imagePullPolicy: Always
         args:
         - -l
@@ -34,6 +33,7 @@ spec:
         - -s
         - http://ngsa-memory.ngsa:8080
         - http://ngsa-cosmos.ngsa:8080
+        - http://ngsa-java.ngsa:8080
         - -f
         - benchmark.json
         resources:
