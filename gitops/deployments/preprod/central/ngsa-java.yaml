@@ -1,0 +1,39 @@
+---
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: ngsa-java
+  namespace: ngsa
+  annotations:
+    fluxcd.io/automated: "true"
+spec:
+  releaseName: ngsa-java
+  chart:
+    git: git@github.com:retaildevcrews/ngsa
+    path: gitops/charts/ngsa
+    ref: main
+  template:
+    metadata:
+      labels:
+        app: ngsa-java
+        version: beta-rc
+  values:
+    autoscaling:
+      enabled: false
+    app:
+      secretName: ngsa-secrets
+      image:
+        repository: ghcr.io/retaildevcrews/ngsa-java
+        tag: beta
+    cert:
+      enabled: false
+      name: ngsa-cert
+    ingress:
+      hosts:
+      - ngsa-java-pre-central.cse.ms
+      - alpha-ngsa-java-pre-central.cse.ms
+      - njpc.cse.ms
+      paths:
+      - /
+    gateway:
+      name: wildcard-gateway
