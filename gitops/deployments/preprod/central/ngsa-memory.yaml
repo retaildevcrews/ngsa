@@ -6,13 +6,17 @@ metadata:
   namespace: ngsa
   annotations:
     fluxcd.io/automated: "true"
-    filter.fluxcd.io/app: glob:beta-*
 spec:
   releaseName: ngsa-memory
   chart:
     git: git@github.com:retaildevcrews/ngsa
     path: gitops/charts/ngsa
     ref: main
+  template:
+    metadata:
+      labels:
+        app: ngsa-memory
+        version: beta-rc    
   values:
     autoscaling:
       enabled: false
@@ -26,7 +30,7 @@ spec:
       secretName: ngsa-secrets
       image:
         repository: ghcr.io/retaildevcrews/ngsa-app
-        tag: beta-0.4.0-0503-0226-41
+        tag: beta
     cert:
       enabled: false
       name: ngsa-cert
