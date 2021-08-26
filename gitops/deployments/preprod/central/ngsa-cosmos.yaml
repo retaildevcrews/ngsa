@@ -16,7 +16,7 @@ spec:
     metadata:
       labels:
         app: ngsa-cosmos
-        version: beta-rc    
+        version: beta-rc01    
   values:
     autoscaling:
       enabled: false
