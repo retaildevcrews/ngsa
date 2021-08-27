@@ -16,7 +16,7 @@ spec:
     metadata:
       labels:
         app: ngsa-cosmos
-        version: beta-rc01    
+        version: beta-rc01
   values:
     autoscaling:
       enabled: false
@@ -28,7 +28,7 @@ spec:
       secretName: ngsa-secrets
       image:
         repository: ghcr.io/retaildevcrews/ngsa-app
-        tag: dev
+        tag: beta
     cert:
       enabled: false
       name: ngsa-cert
