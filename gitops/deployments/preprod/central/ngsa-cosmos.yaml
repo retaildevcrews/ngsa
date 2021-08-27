@@ -11,7 +11,7 @@ spec:
   chart:
     git: git@github.com:retaildevcrews/ngsa
     path: gitops/charts/ngsa
-    ref: main
+    ref: joaquinrz-prerelease
   template:
     metadata:
       labels:
@@ -23,10 +23,8 @@ spec:
     app:
       args:
       - --no-cache
-      - -z
-      - Az-CentralUS
-      - -r
-      - Central
+      zone: Az-CentralUS
+      region: Central
       secretName: ngsa-secrets
       image:
         repository: ghcr.io/retaildevcrews/ngsa-app
