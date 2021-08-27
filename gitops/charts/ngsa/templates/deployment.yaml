@@ -43,6 +43,11 @@ spec:
             - name: http
               containerPort: {{ .Values.app.port }}
               protocol: TCP
+          env:
+            - name: ZONE
+              value: {{ .Values.app.zone }}
+            - name: REGION
+              value: {{ .Values.app.region }}
           livenessProbe:
             httpGet:
               path: /healthz

@@ -19,6 +19,8 @@ app:
     requests:
       cpu: 500m
       memory: 512Mi
+  zone: dev1
+  region: dev1
 
 imagePullSecrets: []
 nameOverride: ""

@@ -11,7 +11,7 @@ spec:
   chart:
     git: git@github.com:retaildevcrews/ngsa
     path: gitops/charts/ngsa
-    ref: main
+    ref: joaquinrz-prerelease
   template:
     metadata:
       labels:
@@ -21,8 +21,8 @@ spec:
     autoscaling:
       enabled: false
     app:
-      args:
-      - 'region=Central zone=Az-CentralUS'
+      zone: Az-CentralUS
+      region: Central
       secretName: ngsa-secrets
       image:
         repository: ghcr.io/retaildevcrews/ngsa-java
