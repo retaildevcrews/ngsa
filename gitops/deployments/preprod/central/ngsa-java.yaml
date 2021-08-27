@@ -21,6 +21,8 @@ spec:
     autoscaling:
       enabled: false
     app:
+      args:
+      - -Dspring-boot.run.arguments="--region=Central --zone=Az-CentralUS"
       secretName: ngsa-secrets
       image:
         repository: ghcr.io/retaildevcrews/ngsa-java
