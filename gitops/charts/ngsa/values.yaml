@@ -7,7 +7,7 @@ replicaCount: 1
 app:
   image:
     repository: ghcr.io/retaildevcrews/ngsa-app
-    tag: dev
+    tag: beta
     pullPolicy: Always
   args: []
   port: 8080
