@@ -21,6 +21,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/instance: l8r
+        rcversion: beta-rc01
     spec:
       containers:
       - name: app

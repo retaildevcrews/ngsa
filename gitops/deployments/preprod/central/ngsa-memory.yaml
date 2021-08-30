@@ -12,11 +12,6 @@ spec:
     git: git@github.com:retaildevcrews/ngsa
     path: gitops/charts/ngsa
     ref: joaquinrz-prerelease
-  template:
-    metadata:
-      labels:
-        app: ngsa-memory
-        version: beta-rc01
   values:
     autoscaling:
       enabled: false
@@ -29,6 +24,7 @@ spec:
       image:
         repository: ghcr.io/retaildevcrews/ngsa-app
         tag: beta
+      rcversion: beta-rc01
     cert:
       enabled: false
       name: ngsa-cert
