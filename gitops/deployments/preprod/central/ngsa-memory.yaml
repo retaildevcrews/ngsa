@@ -4,8 +4,6 @@ kind: HelmRelease
 metadata:
   name: ngsa-memory
   namespace: ngsa
-  annotations:
-    fluxcd.io/automated: "true"
 spec:
   releaseName: ngsa-memory
   chart:
