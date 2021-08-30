@@ -10,8 +10,6 @@ kind: Deployment
 metadata:
   name: l8r
   namespace: ngsa-l8r
-  annotations:
-    fluxcd.io/automated: "true"
 spec:
   replicas: 1
   selector:
