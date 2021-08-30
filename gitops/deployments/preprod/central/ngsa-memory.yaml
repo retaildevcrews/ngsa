@@ -22,7 +22,7 @@ spec:
       image:
         repository: ghcr.io/retaildevcrews/ngsa-app
         tag: beta
-      rcversion: beta-rc01
+      rcversion: beta-rc02
     cert:
       enabled: false
       name: ngsa-cert
