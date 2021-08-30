@@ -20,7 +20,6 @@ spec:
     {{- end }}
       labels:
         app.kubernetes.io/component: app
-        rcversion: {{ .Values.app.rcversion }}
         {{- include "ngsa.labels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}

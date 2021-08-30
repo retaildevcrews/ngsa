@@ -10,6 +10,8 @@ kind: Deployment
 metadata:
   name: l8r
   namespace: ngsa-l8r
+  annotations:
+    fluxcd.io/automated: "true"
 spec:
   replicas: 1
   selector:
@@ -19,7 +21,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/instance: l8r
-        rcversion: beta-rc02
+        rcversion: beta-rc03
     spec:
       containers:
       - name: app
