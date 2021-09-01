@@ -14,7 +14,7 @@ metadata:
     fluxcd.io/automated: "true"
     filter.fluxcd.io/app: glob:beta-*
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app.kubernetes.io/instance: l8r
