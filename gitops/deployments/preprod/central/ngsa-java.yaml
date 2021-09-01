@@ -19,7 +19,7 @@ spec:
       secretName: ngsa-secrets
       image:
         repository: ghcr.io/retaildevcrews/ngsa-java
-        tag: beta
+        tag: dev
     cert:
       enabled: false
       name: ngsa-cert
