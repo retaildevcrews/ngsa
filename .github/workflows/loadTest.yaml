@@ -7,9 +7,9 @@ on:
     - 'TestFiles/baseline.json'
     - 'TestFiles/benchmark.json'
 
-  schedule:
+  #schedule:
     # Run daily at 03:00Z
-    - cron: "0 3 * * *"
+    # - cron: "0 3 * * *"
     
 jobs:
 
