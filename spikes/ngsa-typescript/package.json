@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/retaildevcrews/ngsa#readme",
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "body-parser": "^1.19.0",
     "bunyan": "^1.8.15",
     "command-line-args": "^5",
