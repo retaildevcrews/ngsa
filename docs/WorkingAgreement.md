@@ -119,9 +119,9 @@ Our crews are distributed across timezones and across the world. Where possible,
 #### Definition of Done
 
 - Acceptance Criteria are satisfied
-- Appropriate [Pull Request template(s)](https://github.com/retaildevcrews/ngsa/blob/main/.github/PULL_REQUEST_TEMPLATE.md) satisfied
-- [Pull Request](https://github.com/orgs/retaildevcrews/projects/4) approved and completed
-- [DoD Review & Release](https://github.com/orgs/retaildevcrews/projects/4?card_filter_query=label%3Arelease) checklist satisfied and completed
+- Appropriate [Pull Request template(s)](https://github.com/retaildevcrews/wcnp/blob/main/.github/PULL_REQUEST_TEMPLATE.md) satisfied
+- [Pull Request](https://github.com/orgs/retaildevcrews/projects/12) approved and completed
+- [DoD Review & Release](https://github.com/retaildevcrews/wcnp/blob/main/.github/ISSUE_TEMPLATE/release.md) checklist satisfied and completed
 - Demonstration recorded and available to customer (when applicable)
 
 ### Backlogs and (Dash)boards
@@ -146,16 +146,16 @@ Our crews are distributed across timezones and across the world. Where possible,
 
 ### Ceremonies
 
-- Our sprints will be one week and run from Wednesday - Tuesday with Review, Retrospective, and Planning occurring back-to-back.
+- Our sprints will be two weeks and run from Wednesday - Tuesday with Review, Retrospective, and Planning occurring back-to-back.
 - We will use an assigned Scrum Master versus rotating the role among the team.
 
 |  | When | Length | Participants | Purpose |
 |------|------|--------|--------------|---------|
-| **Standup** | Monday, Wednesday, Thursday  @ 1PM CST | 10 minutes | Development Team, Scrum Master, Product Owner | Those with committed work answer: What did I do yesterday? What will I do today? Is there anything in my way? |
-| **Triage** | Monday, Wednesday, Thursday  @ 1:10PM CST | 10 minutes | Development Team, Scrum Master, Product Owner| Review an net-new issues for prioritization and discussion |
-| **Review** | Tuesday @ 4:00PM CST | 30 minutes | Development Team, Scrum Master, Product Owner | Demonstrate the work we did this week. Show and tell time. |
-| **Retrospective** | Tuesday @ 4:30PM CST | 30 minutes | Development Team, Scrum Master, Product Owner | Reflect as a team on how we're doing -- what's working well for us, and what could we do better? |
-| **Planning** | Wednesday @ 5:00PM | 30 minutes | Scrum Master, Product Owner, Development Team | Commit to work for the next sprint. |
+| **Standup** | Monday, Tuesday, Wednesday, Thursday  @ 2PM CST | 10 minutes | Development Team, Scrum Master, Product Owner | Those with committed work answer: What did I do yesterday? What will I do today? Is there anything in my way? |
+| **Triage** | Monday, Tuesday, Wednesday, Thursday  @ 2:10PM CST | 10 minutes | Development Team, Scrum Master, Product Owner| Review an net-new issues for prioritization and discussion |
+| **Review** | Wednesday @ 1:30PM CST | 30 minutes | Development Team, Scrum Master, Product Owner | Demonstrate the work we did this week. Show and tell time. |
+| **Retrospective** | Wednesday @ 2:00PM CST | 30 minutes | Development Team, Scrum Master, Product Owner | Reflect as a team on how we're doing -- what's working well for us, and what could we do better? |
+| **Planning** | Thursday @ 1:30PM | 60 minutes | Scrum Master, Product Owner, Development Team | Commit to work for the next sprint. |
 
 
 ## How we code together
