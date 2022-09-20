@@ -1,7 +1,6 @@
 {
 	"name": "ASB-Ngsa",
-	"image": "ghcr.io/retaildevcrews/asb:latest",
-	//"build": { "dockerfile": "Dockerfile" },
+	"build": { "dockerfile": "Dockerfile" },
 	"runArgs": [ "--init", "--privileged" ],
 	"overrideCommand": false,
 
