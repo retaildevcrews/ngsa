@@ -1,5 +1,5 @@
 {
-	"name": "ASB-Ngsa",
+	"name": "Ngsa",
 	"build": { "dockerfile": "Dockerfile" },
 	"runArgs": [ "--init", "--privileged" ],
 	"overrideCommand": false,
